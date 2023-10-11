@@ -1,0 +1,211 @@
+extends RigidBody3D
+
+signal make_noise(intensity:int)
+signal damage_update(damage: float)
+signal paddle_left(level: float)
+signal paddle_right(level: float)
+
+@export var paddle_force: Curve
+
+@onready var left_paddle = $LeftPaddle
+@onready var right_paddle = $RightPaddle
+
+@onready var audio_paddle_right = $AudioPaddleRight
+@onready var audio_paddle_left = $AudioPaddleLeft
+@onready var audio_collision = $AudioCollision
+@onready var character_animation = $character/AnimationPlayer
+
+
+const SPEED := 150
+const TORQUE := 35
+
+var torque := .0
+var paddle_previous_status := 0
+var paddle_status := 0
+var paddle_hold := .0
+var next_paddle := 0
+var consecutive_paddling := 0
+var alternate_paddling := -1
+var first_paddle := 0
+var previous_side := 0
+var stopped := true
+var holding := false
+
+var max_life := 100
+var life := 100
+
+func _ready():
+	character_animation.get_animation("Idle").loop_mode = 1
+	character_animation.get_animation("Idle")
+	character_animation.set_blend_time("Idle", "LeftPaddle", 0.2)
+	character_animation.set_blend_time("Idle", "RightPaddle", 0.2)
+	character_animation.set_blend_time("LeftPaddle", "RightPaddle", 0.2)
+	character_animation.set_blend_time("RightPaddle", "LeftPaddle", 0.2)
+	character_animation.set_blend_time("LeftPaddle", "Idle", 0.2)
+	character_animation.set_blend_time("RightPaddle", "Idle", 0.2)
+	play_animation("idle")
+
+func _input(event):
+	#TODO if trying to press 2 buttons at the same time
+	#change state when first button is released. Don't block
+	if event.is_action_pressed("paddle_left"):
+		if paddle_status == 0:
+			next_paddle = 0
+			set_paddle_state(-1)
+			play_animation("left")
+		else:
+			next_paddle = -1
+	elif event.is_action_pressed("paddle_right"):
+		if paddle_status == 0:
+			next_paddle = 0
+			set_paddle_state(1)
+			play_animation("right")
+		else:
+			next_paddle = 1
+	elif event.is_action_released("paddle_left") or event.is_action_released("paddle_right"):
+		match next_paddle:
+			0:
+				set_paddle_state(0)
+				play_animation("idle")
+			-1:
+				set_paddle_state(-1)
+				play_animation("left")
+			1:
+				set_paddle_state(1)
+				play_animation("right")
+		next_paddle = 0
+
+
+func _physics_process(delta):
+	var new_state = false
+	var started_holding = false
+	if paddle_status != paddle_previous_status:
+		if stopped:
+			first_paddle = true
+		else:
+			first_paddle = false
+		paddle_hold = .0
+		paddle_previous_status = paddle_status
+		new_state = true
+		emit_signal("paddle_right", 0)
+		emit_signal("paddle_left", 0)
+	else:
+		paddle_hold += delta
+	if paddle_hold >= 1.5:
+		if !holding:
+			holding = true
+			started_holding = true
+			alternate_paddling = -1
+	else:
+		holding = false
+	
+	if paddle_status == 1:
+		torque = TORQUE
+		emit_signal("paddle_right", min(1, paddle_hold/1.5))
+	elif paddle_status == -1:
+		torque = -TORQUE
+		emit_signal("paddle_left", min(1, paddle_hold/1.5))
+	
+	left_paddle.position.y = 0.2
+	right_paddle.position.y = 0.2
+	if paddle_status != 0 :
+		if !holding:
+			var turning_assist: float = 1.0 - min(1, float(consecutive_paddling) / 2)
+			var torque_assist: float = (1.0 - turning_assist) * float(torque) * 1
+			var rithm_assist: float = 1 + min(1, float(alternate_paddling) / 20)
+			if !first_paddle:
+				go_forward((SPEED*rithm_assist)*paddle_force.sample(paddle_hold)*turning_assist*delta)
+			apply_torque(Vector3(0, (torque+torque_assist)*paddle_force.sample(paddle_hold)*delta, 0))
+			if paddle_status == -1:
+				right_paddle.position.y = 0.2
+				left_paddle.position.y = 0
+				left_paddle.position.z = paddle_force.sample(paddle_hold)
+			elif paddle_status == 1:
+				left_paddle.position.y = 0.2
+				right_paddle.position.y = 0
+				right_paddle.position.z = paddle_force.sample(paddle_hold)
+		else:
+			apply_torque(Vector3(0, -torque*paddle_force.sample(paddle_hold-1.5)*delta*3, 0))
+		if new_state:
+			#print("Paddle")
+			pass
+		elif started_holding:
+			#print("Hold")
+			pass
+	stopped = false
+	if holding:
+		stopped = true
+
+
+func set_paddle_state(state: int):
+	paddle_status = state
+	if state != 0:
+		play_paddle_sound(state)
+		emit_signal("make_noise", 2)
+		if state == previous_side:
+			consecutive_paddling += 1
+			alternate_paddling = 0
+		else:
+			consecutive_paddling = 0
+			alternate_paddling += 1
+		previous_side = state
+
+
+func _integrate_forces(state):
+	if paddle_status !=0 and holding:
+		state.linear_velocity *= 0.99
+		state.angular_velocity *= 0.999
+	else:
+		state.linear_velocity *= 0.999
+		state.angular_velocity *= 0.99
+	var forward_direction := (transform.basis * Vector3.FORWARD).normalized()
+	var forward_component: Vector3 = forward_direction * state.linear_velocity.dot(forward_direction)
+	state.linear_velocity = forward_component
+	
+
+
+func go_forward(speed:float):
+	var direction := (transform.basis * Vector3.FORWARD).normalized()
+	apply_central_force(direction * speed)
+
+
+func play_paddle_sound(side):
+	var sound_path = "res://sounds/paddle_0"+str(randi_range(1, 9))+".mp3"
+	var sound = load(sound_path)
+	if side == 1:
+		audio_paddle_right.stream = sound
+		audio_paddle_right.play()
+	elif side == -1:
+		audio_paddle_left.stream = sound
+		audio_paddle_left.play()
+
+
+func _on_body_entered(_body):
+	var sound_path = "res://sounds/collision_0"+str(randi_range(1, 8))+".mp3"
+	var sound = load(sound_path)
+	audio_collision.stream = sound
+	audio_collision.play()
+	emit_signal("make_noise", 6)
+	#add_damage(30)
+
+
+func play_animation(anim: String):
+	character_animation.speed_scale = 2
+	match anim:
+		"idle":
+			character_animation.play("Idle")
+		"right":
+			character_animation.play("RightPaddle")
+			character_animation.seek(0.6)
+		"left":
+			character_animation.play("LeftPaddle")
+			character_animation.seek(0.6)
+
+
+func add_damage(damage:int):
+	life -= damage
+	if life < 0:
+		life = 0
+	var damage_level = 1.0 - (float(life)/float(max_life))
+	#print(damage_level)
+	emit_signal("damage_update", damage_level)

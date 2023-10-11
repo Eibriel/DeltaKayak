@@ -1,0 +1,24 @@
+[gd_scene load_steps=4 format=3 uid="uid://b0b7qx6t0fnav"]
+
+[ext_resource type="PackedScene" uid="uid://detrxx1yuffwd" path="res://Muelle001.glb" id="1_pde03"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_660vr"]
+size = Vector3(2.73565, 2.40327, 3.28922)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_r8ow1"]
+size = Vector3(21.6732, 2.4107, 2.5417)
+
+[node name="muelle001" type="Node3D"]
+
+[node name="RigidBody3D" type="RigidBody3D" parent="."]
+freeze = true
+
+[node name="Muelle001" parent="RigidBody3D" instance=ExtResource("1_pde03")]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="RigidBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.87204, 0, -2.87598)
+shape = SubResource("BoxShape3D_660vr")
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="RigidBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13.2907, 0, -0.0903702)
+shape = SubResource("BoxShape3D_r8ow1")

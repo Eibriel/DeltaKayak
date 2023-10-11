@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3 uid="uid://bmc3g83h55jke"]
+
+[ext_resource type="PackedScene" uid="uid://dil36hopjn1ds" path="res://Juncos001.glb" id="1_2xw0q"]
+
+[node name="Juncos001_1" type="Node3D"]
+
+[node name="Juncos001" parent="." instance=ExtResource("1_2xw0q")]

@@ -1,0 +1,60 @@
+[gd_scene load_steps=7 format=3 uid="uid://nr6v23qqk8cq"]
+
+[ext_resource type="Script" path="res://player.gd" id="1_uptun"]
+[ext_resource type="PackedScene" uid="uid://dd3yqh8e1w42r" path="res://Kayak.glb" id="2_mpxi0"]
+[ext_resource type="PackedScene" uid="uid://brl72ky2q062u" path="res://character.glb" id="3_w7gwq"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_1oafd"]
+friction = 0.5
+bounce = 0.4
+
+[sub_resource type="Curve" id="Curve_oqg3q"]
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.496753, 0.963636), 0.0, 0.0, 0, 0, Vector2(0.795455, 0.863636), -1.62791, -1.62791, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 4
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_438mp"]
+radius = 0.499303
+height = 4.23762
+
+[node name="Player" type="RigidBody3D"]
+axis_lock_linear_y = true
+axis_lock_angular_x = true
+axis_lock_angular_z = true
+physics_material_override = SubResource("PhysicsMaterial_1oafd")
+gravity_scale = 0.0
+max_contacts_reported = 1
+contact_monitor = true
+can_sleep = false
+script = ExtResource("1_uptun")
+paddle_force = SubResource("Curve_oqg3q")
+
+[node name="Kayak" parent="." instance=ExtResource("2_mpxi0")]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0.176264, -0.667382)
+shape = SubResource("CapsuleShape3D_438mp")
+
+[node name="LeftPaddle" type="CSGSphere3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0.2, 0)
+visible = false
+radius = 0.1
+
+[node name="RightPaddle" type="CSGSphere3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0.2, 0)
+visible = false
+radius = 0.1
+
+[node name="AudioPaddleRight" type="AudioStreamPlayer3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.42407, 0, 0)
+bus = &"Kayak"
+
+[node name="AudioPaddleLeft" type="AudioStreamPlayer3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.70991, 0, 0)
+bus = &"Kayak"
+
+[node name="AudioCollision" type="AudioStreamPlayer3D" parent="."]
+bus = &"Kayak"
+
+[node name="character" parent="." instance=ExtResource("3_w7gwq")]
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]

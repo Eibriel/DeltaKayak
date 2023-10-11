@@ -1,0 +1,25 @@
+[gd_scene load_steps=3 format=3 uid="uid://c7o2upjashcwj"]
+
+[ext_resource type="PackedScene" uid="uid://dt7038a13dt3o" path="res://shore002.glb" id="1_cpsaf"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_6fere"]
+size = Vector3(20.526, 2.44485, 13.4739)
+
+[node name="Node3D" type="Node3D"]
+
+[node name="RigidBody3D" type="RigidBody3D" parent="."]
+freeze = true
+
+[node name="shore002" parent="RigidBody3D" instance=ExtResource("1_cpsaf")]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="RigidBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -18.4143, 0, 7.33579)
+shape = SubResource("BoxShape3D_6fere")
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="RigidBody3D"]
+transform = Transform3D(0.997905, 0, 0.0646891, 0, 1, 0, -0.0646891, 0, 0.997905, 0.698326, 0, 6.72903)
+shape = SubResource("BoxShape3D_6fere")
+
+[node name="CollisionShape3D3" type="CollisionShape3D" parent="RigidBody3D"]
+transform = Transform3D(0.955454, 0, 0.295141, 0, 1, 0, -0.295141, 0, 0.955454, 18.4964, 0, 3.08852)
+shape = SubResource("BoxShape3D_6fere")
