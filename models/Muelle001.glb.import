@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://hs6qtvdsxoix"
-path="res://.godot/imported/medusa.glb-094f20823b60f58a9b1256772c73a391.scn"
+uid="uid://detrxx1yuffwd"
+path="res://.godot/imported/Muelle001.glb-992090b5b2a5d99d3edf3bdd82a10202.scn"
 
 [deps]
 
-source_file="res://medusa.glb"
-dest_files=["res://.godot/imported/medusa.glb-094f20823b60f58a9b1256772c73a391.scn"]
+source_file="res://models/Muelle001.glb"
+dest_files=["res://.godot/imported/Muelle001.glb-992090b5b2a5d99d3edf3bdd82a10202.scn"]
 
 [params]
 

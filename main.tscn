@@ -1,13 +1,12 @@
-[gd_scene load_steps=25 format=3 uid="uid://dm0vfm6e713yh"]
+[gd_scene load_steps=23 format=3 uid="uid://dm0vfm6e713yh"]
 
 [ext_resource type="PackedScene" uid="uid://nr6v23qqk8cq" path="res://player.tscn" id="1_hx60n"]
 [ext_resource type="Script" path="res://main.gd" id="1_vakhf"]
 [ext_resource type="Shader" path="res://water.gdshader" id="2_efo20"]
 [ext_resource type="Shader" path="res://shaders/damage.gdshader" id="2_o2ish"]
 [ext_resource type="Texture2D" uid="uid://dlywgj4my3hsj" path="res://images/lense_drops.jpeg" id="3_1dtfm"]
-[ext_resource type="PackedScene" uid="uid://3e13w5pq7o86" path="res://river_section.tscn" id="5_he05a"]
-[ext_resource type="PackedScene" uid="uid://b810w574u75t0" path="res://medusa.tscn" id="7_4o40i"]
 [ext_resource type="AudioStream" uid="uid://caeipbtmk04k2" path="res://sounds/river.mp3" id="7_kc7ja"]
+[ext_resource type="PackedScene" uid="uid://b0b7qx6t0fnav" path="res://elements/muelle001.tscn" id="8_r312o"]
 [ext_resource type="AudioStream" uid="uid://cwpo3iwwniwbe" path="res://sounds/kayak.mp3" id="8_tlc1p"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_b77lc"]
@@ -86,10 +85,6 @@ shader_parameter/albedo = Color(0.921569, 0.921569, 0.921569, 1)
 shader_parameter/texture_1 = SubResource("NoiseTexture2D_egqph")
 shader_parameter/texture_2 = SubResource("NoiseTexture2D_37nns")
 
-[sub_resource type="Curve" id="Curve_271yp"]
-_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.381988, 0.709091), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
-point_count = 3
-
 [node name="Node3D" type="Node3D"]
 script = ExtResource("1_vakhf")
 
@@ -103,6 +98,46 @@ grow_vertical = 2
 texture = ExtResource("3_1dtfm")
 expand_mode = 1
 
+[node name="Control" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TimeLabel" type="Label" parent="Control"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -20.0
+offset_right = 20.0
+offset_bottom = 23.0
+grow_horizontal = 2
+text = "00:10"
+horizontal_alignment = 1
+
+[node name="XPLabel" type="Label" parent="Control"]
+unique_name_in_owner = true
+layout_mode = 1
+offset_right = 41.0
+offset_bottom = 26.0
+text = "100"
+
+[node name="DamageLabel" type="Label" parent="Control"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -41.0
+offset_bottom = 26.0
+grow_horizontal = 0
+text = "0.0"
+horizontal_alignment = 2
+
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(-0.866025, -0.433013, 0.25, 0, 0.5, 0.866025, -0.5, 0.75, -0.433013, 0, 0, 0)
 visible = false
@@ -115,7 +150,7 @@ environment = SubResource("Environment_cyhdn")
 [node name="Player" parent="." instance=ExtResource("1_hx60n")]
 
 [node name="GPUParticles3D" type="GPUParticles3D" parent="Player"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.98118, -23.5281)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.24008, -0.403648)
 amount = 100
 lifetime = 5.0
 fixed_fps = 15
@@ -126,14 +161,14 @@ draw_pass_1 = SubResource("QuadMesh_hxajk")
 [node name="Camera3D" type="Camera3D" parent="Player"]
 transform = Transform3D(0.999227, 0.0147298, -0.0364483, 0.0196715, 0.61538, 0.787985, 0.0340364, -0.788093, 0.614615, -0.05192, 13.0947, 10.3383)
 
-[node name="OmniLight3D" type="OmniLight3D" parent="Player"]
+[node name="OmniLight3D2" type="OmniLight3D" parent="Player"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.55263, -1.46322)
 light_color = Color(0.768627, 0.768627, 0.768627, 1)
 light_energy = 10.033
 omni_range = 7.786
 omni_attenuation = 1.41421
 
-[node name="OmniLight3D2" type="OmniLight3D" parent="Player"]
+[node name="OmniLight3D3" type="OmniLight3D" parent="Player"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 8.5393, -1.46322)
 light_energy = 2.704
 omni_range = 34.089
@@ -159,28 +194,11 @@ volume_db = -9.768
 autoplay = true
 bus = &"River"
 
-[node name="RiverSection" parent="." instance=ExtResource("5_he05a")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.76721, 0)
-trees_amount = SubResource("Curve_271yp")
-
 [node name="Enemies" type="Node3D" parent="."]
 
-[node name="Medusa" parent="Enemies" node_paths=PackedStringArray("player") instance=ExtResource("7_4o40i")]
-transform = Transform3D(0.506395, 0, -0.862302, 0, 1, 0, 0.862302, 0, 0.506395, -4.7239, 2.12476, -29.7767)
-player = NodePath("../../Player")
+[node name="Items" type="Node3D" parent="."]
 
-[node name="Medusa2" parent="Enemies" node_paths=PackedStringArray("player") instance=ExtResource("7_4o40i")]
-transform = Transform3D(-0.577174, 0, 0.816621, 0, 1, 0, -0.816621, 0, -0.577174, 1.59316, 4.46887, -39.7669)
-player = NodePath("../../Player")
+[node name="Level" type="Node3D" parent="."]
 
-[node name="Medusa3" parent="Enemies" node_paths=PackedStringArray("player") instance=ExtResource("7_4o40i")]
-transform = Transform3D(0.799412, 0, 0.600783, 0, 1, 0, -0.600783, 0, 0.799412, 5.59804, 3.33038, -58.1396)
-player = NodePath("../../Player")
-
-[node name="Medusa4" parent="Enemies" node_paths=PackedStringArray("player") instance=ExtResource("7_4o40i")]
-transform = Transform3D(-0.969961, 0, -0.24326, 0, 1, 0, 0.24326, 0, -0.969961, 15.6439, 1.65619, -69.7981)
-player = NodePath("../../Player")
-
-[node name="Medusa5" parent="Enemies" node_paths=PackedStringArray("player") instance=ExtResource("7_4o40i")]
-transform = Transform3D(0.305313, 0, 0.952252, 0, 1, 0, -0.952252, 0, 0.305313, 22.3122, 4.60297, -83.7084)
-player = NodePath("../../Player")
+[node name="muelle001" parent="." instance=ExtResource("8_r312o")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 0, -18)

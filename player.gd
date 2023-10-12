@@ -1,4 +1,5 @@
 extends RigidBody3D
+class_name Player
 
 signal make_noise(intensity:int)
 signal damage_update(damage: float)
@@ -34,6 +35,9 @@ var holding := false
 var max_life := 100
 var life := 100
 
+var kayak_material: StandardMaterial3D
+var character_material: StandardMaterial3D
+
 func _ready():
 	character_animation.get_animation("Idle").loop_mode = 1
 	character_animation.get_animation("Idle")
@@ -44,6 +48,16 @@ func _ready():
 	character_animation.set_blend_time("LeftPaddle", "Idle", 0.2)
 	character_animation.set_blend_time("RightPaddle", "Idle", 0.2)
 	play_animation("idle")
+	
+	var kayak_mesh:ArrayMesh = $Kayak/Kayak2.mesh
+	kayak_material = kayak_mesh.surface_get_material(0)
+	kayak_material.shading_mode = StandardMaterial3D.SHADING_MODE_PER_VERTEX
+	kayak_material.emission_enabled = true
+	var character_mesh:ArrayMesh = $character/Armature/Skeleton3D/Character.mesh
+	character_material = character_mesh.surface_get_material(0)
+	character_material.shading_mode = StandardMaterial3D.SHADING_MODE_PER_VERTEX
+	character_material.emission_enabled = true
+	
 
 func _input(event):
 	#TODO if trying to press 2 buttons at the same time
@@ -207,5 +221,16 @@ func add_damage(damage:int):
 	if life < 0:
 		life = 0
 	var damage_level = 1.0 - (float(life)/float(max_life))
-	#print(damage_level)
+	print(damage_level)
+	var tween = create_tween()
+	tween.set_parallel()
+	tween.tween_property(kayak_material, "emission", Color.RED, 0.1)
+	tween.tween_property(character_material, "emission", Color.RED, 0.1)
+	tween.set_parallel(false)
+	tween.tween_property(character_material, "emission", Color.BLACK, 0.1)
+	tween.tween_property(kayak_material, "emission", Color.BLACK, 0.1)
 	emit_signal("damage_update", damage_level)
+
+
+func add_weapon(node: Weapon):
+	$Weapons.add_child(node)

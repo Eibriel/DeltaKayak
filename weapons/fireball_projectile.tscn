@@ -1,0 +1,14 @@
+[gd_scene load_steps=3 format=3 uid="uid://dteno4mc7ko2e"]
+
+[ext_resource type="Script" path="res://projectile.gd" id="1_ms1jh"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1mp0h"]
+shading_mode = 0
+albedo_color = Color(0.568627, 0.027451, 0.027451, 1)
+
+[node name="fireball_projectile" type="Node3D"]
+script = ExtResource("1_ms1jh")
+
+[node name="CSGSphere3D" type="CSGSphere3D" parent="."]
+radius = 0.2
+material = SubResource("StandardMaterial3D_1mp0h")

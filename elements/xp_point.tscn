@@ -1,0 +1,17 @@
+[gd_scene load_steps=3 format=3 uid="uid://d4akxb8ybxldd"]
+
+[ext_resource type="Script" path="res://elements/xp_point.gd" id="1_emd3g"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_52xcc"]
+albedo_color = Color(0.168627, 1, 1, 1)
+emission_enabled = true
+
+[node name="xp_point" type="Node3D"]
+script = ExtResource("1_emd3g")
+
+[node name="CSGSphere3D" type="CSGSphere3D" parent="."]
+radius = 0.15
+material = SubResource("StandardMaterial3D_52xcc")
+
+[node name="OmniLight3D" type="OmniLight3D" parent="."]
+light_color = Color(0.188235, 1, 1, 1)

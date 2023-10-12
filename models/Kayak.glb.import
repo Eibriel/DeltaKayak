@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://dt7038a13dt3o"
-path="res://.godot/imported/shore002.glb-9c0734bfec661e1370144a9c7fcca785.scn"
+uid="uid://dd3yqh8e1w42r"
+path="res://.godot/imported/Kayak.glb-983acf2f44fb83f638f40dbc3159b4d4.scn"
 
 [deps]
 
-source_file="res://shore002.glb"
-dest_files=["res://.godot/imported/shore002.glb-9c0734bfec661e1370144a9c7fcca785.scn"]
+source_file="res://models/Kayak.glb"
+dest_files=["res://.godot/imported/Kayak.glb-983acf2f44fb83f638f40dbc3159b4d4.scn"]
 
 [params]
 

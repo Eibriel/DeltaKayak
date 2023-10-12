@@ -1,8 +1,8 @@
 [gd_scene load_steps=7 format=3 uid="uid://nr6v23qqk8cq"]
 
 [ext_resource type="Script" path="res://player.gd" id="1_uptun"]
-[ext_resource type="PackedScene" uid="uid://dd3yqh8e1w42r" path="res://Kayak.glb" id="2_mpxi0"]
-[ext_resource type="PackedScene" uid="uid://brl72ky2q062u" path="res://character.glb" id="3_w7gwq"]
+[ext_resource type="PackedScene" uid="uid://dd3yqh8e1w42r" path="res://models/Kayak.glb" id="2_mpxi0"]
+[ext_resource type="PackedScene" uid="uid://brl72ky2q062u" path="res://models/character.glb" id="3_w7gwq"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_1oafd"]
 friction = 0.5
@@ -56,5 +56,7 @@ bus = &"Kayak"
 bus = &"Kayak"
 
 [node name="character" parent="." instance=ExtResource("3_w7gwq")]
+
+[node name="Weapons" type="Node3D" parent="."]
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]

@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://dil36hopjn1ds"
-path="res://.godot/imported/Juncos001.glb-cffa25978df229a14143e524a7a33ca2.scn"
+uid="uid://hs6qtvdsxoix"
+path="res://.godot/imported/medusa.glb-0c9dcc3c52f4900eb4dc865805fbbbbc.scn"
 
 [deps]
 
-source_file="res://Juncos001.glb"
-dest_files=["res://.godot/imported/Juncos001.glb-cffa25978df229a14143e524a7a33ca2.scn"]
+source_file="res://models/medusa.glb"
+dest_files=["res://.godot/imported/medusa.glb-0c9dcc3c52f4900eb4dc865805fbbbbc.scn"]
 
 [params]
 

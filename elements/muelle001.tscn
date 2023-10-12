@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://b0b7qx6t0fnav"]
 
-[ext_resource type="PackedScene" uid="uid://detrxx1yuffwd" path="res://Muelle001.glb" id="1_pde03"]
+[ext_resource type="PackedScene" uid="uid://detrxx1yuffwd" path="res://models/Muelle001.glb" id="1_pde03"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_660vr"]
 size = Vector3(2.73565, 2.40327, 3.28922)

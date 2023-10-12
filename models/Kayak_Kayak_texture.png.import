@@ -2,8 +2,8 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b4xesw5ldcasb"
-path="res://.godot/imported/Juncos001_Juncos001.png-82d715e25f7d5eedd96d89b23ee756fd.ctex"
+uid="uid://dy4d85hf02286"
+path="res://.godot/imported/Kayak_Kayak_texture.png-fee34775bf2bc495b3a05046409211f0.ctex"
 metadata={
 "vram_texture": false
 }
@@ -11,8 +11,8 @@ generator_parameters={}
 
 [deps]
 
-source_file="res://Juncos001_Juncos001.png"
-dest_files=["res://.godot/imported/Juncos001_Juncos001.png-82d715e25f7d5eedd96d89b23ee756fd.ctex"]
+source_file="res://models/Kayak_Kayak_texture.png"
+dest_files=["res://.godot/imported/Kayak_Kayak_texture.png-fee34775bf2bc495b3a05046409211f0.ctex"]
 
 [params]
 
