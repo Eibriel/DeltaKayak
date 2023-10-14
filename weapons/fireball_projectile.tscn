@@ -1,14 +1,29 @@
-[gd_scene load_steps=3 format=3 uid="uid://dteno4mc7ko2e"]
+[gd_scene load_steps=6 format=3 uid="uid://dteno4mc7ko2e"]
 
-[ext_resource type="Script" path="res://projectile.gd" id="1_ms1jh"]
+[ext_resource type="Script" path="res://weapons/fireball_projectile.gd" id="1_kfyyl"]
+[ext_resource type="Script" path="res://components/projectile.gd" id="1_w4sjs"]
+[ext_resource type="Script" path="res://components/damage.gd" id="2_4d21o"]
+[ext_resource type="PackedScene" uid="uid://cd24q4c22uw7j" path="res://models/jellyfish.glb" id="3_3fd7m"]
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1mp0h"]
-shading_mode = 0
-albedo_color = Color(0.568627, 0.027451, 0.027451, 1)
+[sub_resource type="SphereShape3D" id="SphereShape3D_vihnt"]
+radius = 0.357106
 
 [node name="fireball_projectile" type="Node3D"]
-script = ExtResource("1_ms1jh")
+script = ExtResource("1_kfyyl")
 
-[node name="CSGSphere3D" type="CSGSphere3D" parent="."]
-radius = 0.2
-material = SubResource("StandardMaterial3D_1mp0h")
+[node name="ProjectileComponent" type="Node3D" parent="."]
+script = ExtResource("1_w4sjs")
+
+[node name="DamageComponent" type="Node3D" parent="."]
+script = ExtResource("2_4d21o")
+
+[node name="jellyfish" parent="." instance=ExtResource("3_3fd7m")]
+transform = Transform3D(0.3, 0, 0, 0, 0.3, 0, 0, 0, 0.3, 0, 0, 0)
+
+[node name="Hitbox" type="Area3D" parent="."]
+collision_layer = 2
+collision_mask = 4
+input_ray_pickable = false
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Hitbox"]
+shape = SubResource("SphereShape3D_vihnt")

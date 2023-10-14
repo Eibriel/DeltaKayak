@@ -1,0 +1,36 @@
+[gd_scene load_steps=8 format=3 uid="uid://ujm5v5skheff"]
+
+[ext_resource type="Script" path="res://enemies/drone.gd" id="1_3ww7p"]
+[ext_resource type="Script" path="res://components/damage.gd" id="2_sxden"]
+[ext_resource type="Script" path="res://components/follow_player.gd" id="3_xtrai"]
+[ext_resource type="PackedScene" uid="uid://c0hf7iuyad4ja" path="res://components/particle_splash.tscn" id="4_mtlsl"]
+[ext_resource type="PackedScene" uid="uid://4rslod3hjxcs" path="res://models/drone001.glb" id="4_oeu73"]
+[ext_resource type="Script" path="res://components/knockback.gd" id="5_ba52l"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_u40fa"]
+size = Vector3(0.750121, 1.36981, 1.1486)
+
+[node name="Drone" type="Node3D"]
+script = ExtResource("1_3ww7p")
+
+[node name="DamageComponent" type="Node3D" parent="."]
+script = ExtResource("2_sxden")
+
+[node name="FollowPlayerComponent" type="Node3D" parent="."]
+script = ExtResource("3_xtrai")
+
+[node name="particle_splash" parent="." instance=ExtResource("4_mtlsl")]
+
+[node name="KnockbackComponent" type="Node3D" parent="."]
+script = ExtResource("5_ba52l")
+
+[node name="drone001" parent="." instance=ExtResource("4_oeu73")]
+transform = Transform3D(0.7, 0, 0, 0, 0.7, 0, 0, 0, 0.7, 0, 0, 0)
+
+[node name="Hitbox" type="Area3D" parent="."]
+collision_layer = 4
+input_ray_pickable = false
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Hitbox"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.102502, 0.0717181)
+shape = SubResource("BoxShape3D_u40fa")

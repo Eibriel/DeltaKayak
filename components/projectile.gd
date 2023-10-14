@@ -1,27 +1,33 @@
 extends Node3D
-class_name Projectile
+class_name ProjectileComponent
+## Parent will move on a direction at a speed.
+##
+## Useful for projectiles.
 
 const MODES = {
 	"ACTIVE": 0,
 	"HIDDEN": 1
 }
 
+var parent: Node3D
+var time_alive:= 0.0
+
+# Set outside
 var DAMAGE: int = 2
 var DISTANCE: float = 1*1*1 # Squared distance
 var SPEED: float = 3
 var DIRECTION: Vector3 = Vector3.FORWARD
 var MODE: int = MODES.ACTIVE
 
-var time_alive:= 0.0
-#func _ready():
-#	set_mode(MODES.HIDDEN)
-
-# TODO destroy projectiles after some time
+func _ready():
+	parent = get_parent_node_3d()
+	DIRECTION = parent.get_meta("projectile_direction")
+	# get_meta("projectile_mode", ProjectileComponent.MODES.ACTIVE)
 
 func _process(delta):
 	time_alive += delta
 	if time_alive > 10:
-		queue_free()
+		parent.queue_free()
 
 func set_direction(_direction: Vector3) -> void:
 	DIRECTION = _direction.normalized()
@@ -33,19 +39,11 @@ func set_mode(mode: int) -> void:
 	MODE = mode
 	match mode:
 		MODES.ACTIVE:
-			visible = true
+			parent.visible = true
 		MODES.HIDDEN:
-			visible = false
+			parent.visible = false
 
 func _physics_process(delta):
 	if MODE == MODES.HIDDEN: return
-	position += DIRECTION*delta*SPEED
+	parent.global_position += DIRECTION*delta*SPEED
 	
-	for e in Global.enemies_node.get_children():
-		if not e.alive: continue
-		var target_position = e.global_position
-		var distance = global_position.distance_squared_to(target_position)
-		if distance < DISTANCE:
-			e.add_damage(DAMAGE)
-			set_mode(MODES.HIDDEN)
-			break

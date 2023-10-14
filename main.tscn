@@ -2,12 +2,12 @@
 
 [ext_resource type="PackedScene" uid="uid://nr6v23qqk8cq" path="res://player.tscn" id="1_hx60n"]
 [ext_resource type="Script" path="res://main.gd" id="1_vakhf"]
-[ext_resource type="Shader" path="res://water.gdshader" id="2_efo20"]
+[ext_resource type="Shader" path="res://shaders/water.gdshader" id="2_efo20"]
 [ext_resource type="Shader" path="res://shaders/damage.gdshader" id="2_o2ish"]
 [ext_resource type="Texture2D" uid="uid://dlywgj4my3hsj" path="res://images/lense_drops.jpeg" id="3_1dtfm"]
 [ext_resource type="AudioStream" uid="uid://caeipbtmk04k2" path="res://sounds/river.mp3" id="7_kc7ja"]
-[ext_resource type="PackedScene" uid="uid://b0b7qx6t0fnav" path="res://elements/muelle001.tscn" id="8_r312o"]
 [ext_resource type="AudioStream" uid="uid://cwpo3iwwniwbe" path="res://sounds/kayak.mp3" id="8_tlc1p"]
+[ext_resource type="PackedScene" uid="uid://d4akxb8ybxldd" path="res://elements/xp_point.tscn" id="8_vp5jo"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_b77lc"]
 shader = ExtResource("2_o2ish")
@@ -29,14 +29,20 @@ sky_material = SubResource("ProceduralSkyMaterial_f0w1c")
 radiance_size = 0
 
 [sub_resource type="Environment" id="Environment_cyhdn"]
-background_mode = 2
+background_energy_multiplier = 0.0
 sky = SubResource("Sky_chauj")
-ambient_light_source = 3
-ambient_light_sky_contribution = 0.21
-reflected_light_source = 2
-tonemap_mode = 2
+tonemap_mode = 1
+glow_enabled = true
+glow_levels/1 = 1.0
+glow_levels/2 = 0.5
+glow_levels/3 = 0.0
+glow_levels/5 = 0.0
+glow_bloom = 0.08
+glow_blend_mode = 0
 fog_light_color = Color(0.188235, 0.188235, 0.188235, 1)
 fog_density = 0.0429
+volumetric_fog_albedo = Color(0.454902, 0.439216, 0.313726, 1)
+volumetric_fog_sky_affect = 0.0
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_m7qls"]
 emission_shape = 3
@@ -81,7 +87,7 @@ noise = SubResource("FastNoiseLite_aou4y")
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_ggbls"]
 render_priority = 0
 shader = ExtResource("2_efo20")
-shader_parameter/albedo = Color(0.921569, 0.921569, 0.921569, 1)
+shader_parameter/albedo = Color(0.247059, 0.239216, 0.235294, 1)
 shader_parameter/texture_1 = SubResource("NoiseTexture2D_egqph")
 shader_parameter/texture_2 = SubResource("NoiseTexture2D_37nns")
 
@@ -106,6 +112,18 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
+[node name="XPProgressBar" type="ProgressBar" parent="Control"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -319.0
+offset_right = 318.0
+offset_bottom = 27.0
+grow_horizontal = 2
+show_percentage = false
+
 [node name="TimeLabel" type="Label" parent="Control"]
 unique_name_in_owner = true
 layout_mode = 1
@@ -113,29 +131,61 @@ anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
 offset_left = -20.0
-offset_right = 20.0
-offset_bottom = 23.0
+offset_top = 35.0
+offset_right = 21.0
+offset_bottom = 61.0
 grow_horizontal = 2
 text = "00:10"
 horizontal_alignment = 1
 
-[node name="XPLabel" type="Label" parent="Control"]
+[node name="DamageLabel" type="Label" parent="Control"]
 unique_name_in_owner = true
 layout_mode = 1
-offset_right = 41.0
-offset_bottom = 26.0
-text = "100"
+offset_left = 1.0
+offset_top = 32.0
+offset_right = 42.0
+offset_bottom = 58.0
+text = "0.0"
 
-[node name="DamageLabel" type="Label" parent="Control"]
+[node name="CoinsLabel" type="Label" parent="Control"]
 unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -41.0
+offset_left = -44.0
+offset_top = 33.0
+offset_right = -3.0
+offset_bottom = 59.0
+grow_horizontal = 0
+text = "0 C"
+horizontal_alignment = 2
+
+[node name="LevelLabel" type="Label" parent="Control"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -46.0
+offset_right = -5.0
 offset_bottom = 26.0
 grow_horizontal = 0
-text = "0.0"
+text = "LV 1"
+horizontal_alignment = 2
+
+[node name="KillsLabel" type="Label" parent="Control"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -111.0
+offset_top = 31.0
+offset_right = -70.0
+offset_bottom = 57.0
+grow_horizontal = 0
+text = "0 K"
 horizontal_alignment = 2
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
@@ -149,7 +199,7 @@ environment = SubResource("Environment_cyhdn")
 
 [node name="Player" parent="." instance=ExtResource("1_hx60n")]
 
-[node name="GPUParticles3D" type="GPUParticles3D" parent="Player"]
+[node name="GPUParticles3D_air" type="GPUParticles3D" parent="Player"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.24008, -0.403648)
 amount = 100
 lifetime = 5.0
@@ -171,17 +221,39 @@ omni_attenuation = 1.41421
 [node name="OmniLight3D3" type="OmniLight3D" parent="Player"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 8.5393, -1.46322)
 light_energy = 2.704
-omni_range = 34.089
+light_volumetric_fog_energy = 0.0
+omni_range = 18.963
 omni_attenuation = 1.10957
 
 [node name="SpotLight3D" type="SpotLight3D" parent="Player"]
-transform = Transform3D(1, 0, 0, 0, 0.991642, 0.129021, 0, -0.129021, 0.991642, 0, 0.746385, -0.617026)
-spot_range = 10.0
+transform = Transform3D(1, 0, 0, 0, 0.991642, 0.129021, 0, -0.129021, 0.991642, 0, 1.43944, -0.617026)
+light_energy = 3.667
+light_volumetric_fog_energy = 16.0
+spot_range = 28.679
+spot_angle = 12.6
 
 [node name="Water" type="CSGMesh3D" parent="Player"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -87.1605)
 mesh = SubResource("PlaneMesh_xoete")
 material = SubResource("ShaderMaterial_ggbls")
+
+[node name="Node3D" type="Node3D" parent="Player"]
+
+[node name="SpawnPoint1" type="Marker3D" parent="Player/Node3D"]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -35.9387, 0.265381, -35.3651)
+
+[node name="SpawnPoint2" type="Marker3D" parent="Player/Node3D"]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 44.5502, 0.265381, -39.0335)
+
+[node name="SpawnPoint3" type="Marker3D" parent="Player/Node3D"]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11.3556, 0.265381, 12.1974)
+
+[node name="SpawnPoint4" type="Marker3D" parent="Player/Node3D"]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.94268, 0.265381, 10.0868)
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("7_kc7ja")
@@ -198,7 +270,7 @@ bus = &"River"
 
 [node name="Items" type="Node3D" parent="."]
 
-[node name="Level" type="Node3D" parent="."]
+[node name="xp_point" parent="Items" instance=ExtResource("8_vp5jo")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.05582, 1, -2.83253)
 
-[node name="muelle001" parent="." instance=ExtResource("8_r312o")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 0, -18)
+[node name="Level" type="Node3D" parent="."]

@@ -216,7 +216,7 @@ func play_animation(anim: String):
 			character_animation.seek(0.6)
 
 
-func add_damage(damage:int):
+func receive_attack(damage:int):
 	life -= damage
 	if life < 0:
 		life = 0
@@ -232,5 +232,5 @@ func add_damage(damage:int):
 	emit_signal("damage_update", damage_level)
 
 
-func add_weapon(node: Weapon):
+func add_weapon(node: Node3D):
 	$Weapons.add_child(node)

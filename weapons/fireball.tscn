@@ -1,9 +1,13 @@
-[gd_scene load_steps=2 format=3 uid="uid://wija6y0rw4od"]
+[gd_scene load_steps=3 format=3 uid="uid://wija6y0rw4od"]
 
 [ext_resource type="Script" path="res://weapons/fireball.gd" id="1_8u83b"]
+[ext_resource type="Script" path="res://components/projectile_dispenser.gd" id="2_cfm3s"]
 
 [node name="fireball" type="Node3D"]
 script = ExtResource("1_8u83b")
+
+[node name="ProjectileDispenser" type="Node3D" parent="."]
+script = ExtResource("2_cfm3s")
 
 [node name="projectiles" type="Node3D" parent="."]
 top_level = true

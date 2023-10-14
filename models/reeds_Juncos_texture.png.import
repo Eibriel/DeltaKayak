@@ -2,17 +2,18 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://m43q16k1o2kv"
-path.s3tc="res://.godot/imported/Juncos_texture.png-a968c050afd32fb890b2d848da0b416b.s3tc.ctex"
+uid="uid://cv4upww0c63le"
+path.s3tc="res://.godot/imported/reeds_Juncos_texture.png-590495af958fd7460ec1fd74600c2cfd.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
 }
+generator_parameters={}
 
 [deps]
 
-source_file="res://raw_assets/Juncos_texture.png"
-dest_files=["res://.godot/imported/Juncos_texture.png-a968c050afd32fb890b2d848da0b416b.s3tc.ctex"]
+source_file="res://models/reeds_Juncos_texture.png"
+dest_files=["res://.godot/imported/reeds_Juncos_texture.png-590495af958fd7460ec1fd74600c2cfd.s3tc.ctex"]
 
 [params]
 

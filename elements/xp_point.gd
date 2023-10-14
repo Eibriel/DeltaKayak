@@ -8,6 +8,7 @@ var DISTANCE_B = 1*1*1
 func _ready():
 	var tween = create_tween()
 	tween.tween_property(self, "position:y", 0.2, 1)
+	$GPUParticles3D.set_emitting(true)
 
 func _physics_process(delta):
 	if claimed:

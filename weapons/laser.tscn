@@ -1,6 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://cp8xb26k5s7pv"]
+[gd_scene load_steps=6 format=3 uid="uid://cp8xb26k5s7pv"]
 
 [ext_resource type="Script" path="res://weapons/laser.gd" id="1_8hjwe"]
+[ext_resource type="Script" path="res://components/orbiting.gd" id="2_71rbx"]
+[ext_resource type="Script" path="res://components/damage.gd" id="4_l13am"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_iitp1"]
 shading_mode = 2
@@ -8,11 +10,28 @@ albedo_color = Color(0.564706, 0.796078, 0.717647, 1)
 emission_enabled = true
 emission = Color(0.996078, 0.960784, 0, 1)
 
+[sub_resource type="SphereShape3D" id="SphereShape3D_j6shr"]
+radius = 0.566454
+
 [node name="laser" type="Node3D"]
-script = ExtResource("1_8hjwe")
 
 [node name="orbiting_axis" type="Node3D" parent="."]
+
+[node name="OrbitComponent" type="Node3D" parent="orbiting_axis"]
+script = ExtResource("2_71rbx")
 
 [node name="projectile1" type="CSGSphere3D" parent="orbiting_axis"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.63721, -5.36271)
 material = SubResource("StandardMaterial3D_iitp1")
+script = ExtResource("1_8hjwe")
+
+[node name="DamageComponent" type="Node3D" parent="orbiting_axis/projectile1"]
+script = ExtResource("4_l13am")
+
+[node name="Hitbox" type="Area3D" parent="orbiting_axis/projectile1"]
+collision_layer = 2
+collision_mask = 4
+monitorable = false
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="orbiting_axis/projectile1/Hitbox"]
+shape = SubResource("SphereShape3D_j6shr")

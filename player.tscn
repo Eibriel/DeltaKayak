@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://nr6v23qqk8cq"]
+[gd_scene load_steps=10 format=3 uid="uid://nr6v23qqk8cq"]
 
 [ext_resource type="Script" path="res://player.gd" id="1_uptun"]
 [ext_resource type="PackedScene" uid="uid://dd3yqh8e1w42r" path="res://models/Kayak.glb" id="2_mpxi0"]
@@ -15,6 +15,23 @@ point_count = 4
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_438mp"]
 radius = 0.499303
 height = 4.23762
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_4u5f0"]
+size = Vector3(1.06633, 1.71325, 3.3791)
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_ewjn6"]
+emission_shape = 3
+emission_box_extents = Vector3(0.7, 0, 0.1)
+direction = Vector3(0, 0, 1)
+spread = 0.0
+gravity = Vector3(0, 0, 0)
+initial_velocity_min = 0.5
+initial_velocity_max = 0.5
+damping_min = 0.1
+damping_max = 0.2
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_f857p"]
+size = Vector2(0.1, 2)
 
 [node name="Player" type="RigidBody3D"]
 axis_lock_linear_y = true
@@ -58,5 +75,19 @@ bus = &"Kayak"
 [node name="character" parent="." instance=ExtResource("3_w7gwq")]
 
 [node name="Weapons" type="Node3D" parent="."]
+
+[node name="Hitbox" type="Area3D" parent="."]
+input_ray_pickable = false
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Hitbox"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.450964, -0.602506)
+shape = SubResource("BoxShape3D_4u5f0")
+
+[node name="GPUParticles3D_Trail" type="GPUParticles3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0659482, 1.38694)
+amount = 100
+lifetime = 30.0
+process_material = SubResource("ParticleProcessMaterial_ewjn6")
+draw_pass_1 = SubResource("PlaneMesh_f857p")
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]
