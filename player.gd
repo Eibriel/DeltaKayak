@@ -17,8 +17,8 @@ signal paddle_right(level: float)
 @onready var character_animation = $character/AnimationPlayer
 
 
-const SPEED := 150
-const TORQUE := 35
+const SPEED := 300
+const TORQUE := 60
 
 var torque := .0
 var paddle_previous_status := 0

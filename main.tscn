@@ -208,8 +208,12 @@ visibility_aabb = AABB(-4, -1.1109, -4, 8, 2.2218, 8)
 process_material = SubResource("ParticleProcessMaterial_m7qls")
 draw_pass_1 = SubResource("QuadMesh_hxajk")
 
-[node name="Camera3D" type="Camera3D" parent="Player"]
-transform = Transform3D(0.999227, 0.0147298, -0.0364483, 0.0196715, 0.61538, 0.787985, 0.0340364, -0.788093, 0.614615, -0.05192, 13.0947, 10.3383)
+[node name="Node3D2" type="Node3D" parent="Player"]
+top_level = true
+
+[node name="Camera3D" type="Camera3D" parent="Player/Node3D2"]
+unique_name_in_owner = true
+transform = Transform3D(0.999227, 0.0147298, -0.0364483, 0.0196715, 0.61538, 0.787985, 0.0340364, -0.788093, 0.614615, -1.01394, 33.8928, 26.5605)
 
 [node name="OmniLight3D2" type="OmniLight3D" parent="Player"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.55263, -1.46322)
@@ -219,41 +223,23 @@ omni_range = 7.786
 omni_attenuation = 1.41421
 
 [node name="OmniLight3D3" type="OmniLight3D" parent="Player"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 8.5393, -1.46322)
-light_energy = 2.704
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 13.2101, -8.46322)
+light_energy = 1.819
 light_volumetric_fog_energy = 0.0
-omni_range = 18.963
-omni_attenuation = 1.10957
+omni_range = 66.263
+omni_attenuation = 0.707107
 
 [node name="SpotLight3D" type="SpotLight3D" parent="Player"]
-transform = Transform3D(1, 0, 0, 0, 0.991642, 0.129021, 0, -0.129021, 0.991642, 0, 1.43944, -0.617026)
+transform = Transform3D(1, 0, 0, 0, 0.995183, 0.0980349, 0, -0.0980349, 0.995183, 0, 1.43944, -0.617026)
 light_energy = 3.667
 light_volumetric_fog_energy = 16.0
-spot_range = 28.679
-spot_angle = 12.6
+spot_range = 44.004
+spot_angle = 23.19
 
 [node name="Water" type="CSGMesh3D" parent="Player"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -87.1605)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.13126)
 mesh = SubResource("PlaneMesh_xoete")
 material = SubResource("ShaderMaterial_ggbls")
-
-[node name="Node3D" type="Node3D" parent="Player"]
-
-[node name="SpawnPoint1" type="Marker3D" parent="Player/Node3D"]
-unique_name_in_owner = true
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -35.9387, 0.265381, -35.3651)
-
-[node name="SpawnPoint2" type="Marker3D" parent="Player/Node3D"]
-unique_name_in_owner = true
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 44.5502, 0.265381, -39.0335)
-
-[node name="SpawnPoint3" type="Marker3D" parent="Player/Node3D"]
-unique_name_in_owner = true
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11.3556, 0.265381, 12.1974)
-
-[node name="SpawnPoint4" type="Marker3D" parent="Player/Node3D"]
-unique_name_in_owner = true
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.94268, 0.265381, 10.0868)
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("7_kc7ja")

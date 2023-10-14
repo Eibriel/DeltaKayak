@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://bob3cdbi2c8ny"]
+[gd_scene load_steps=10 format=3 uid="uid://bob3cdbi2c8ny"]
 
 [ext_resource type="Script" path="res://enemies/torpedo.gd" id="1_1tejg"]
 [ext_resource type="Script" path="res://components/damage.gd" id="2_0nuts"]
@@ -6,9 +6,13 @@
 [ext_resource type="PackedScene" uid="uid://c3le1xpg6t7t3" path="res://models/torpedo001.glb" id="4_jpcq1"]
 [ext_resource type="PackedScene" uid="uid://c0hf7iuyad4ja" path="res://components/particle_splash.tscn" id="5_dxaeq"]
 [ext_resource type="Script" path="res://components/knockback.gd" id="5_okuy0"]
+[ext_resource type="Script" path="res://components/soft_collision.gd" id="6_bsrh6"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_u40fa"]
-size = Vector3(0.750121, 1.36981, 1.1486)
+size = Vector3(0.750121, 1.36981, 2.8191)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_xpg5x"]
+size = Vector3(1.05753, 1.48013, 2.92412)
 
 [node name="Torpedo" type="Node3D"]
 script = ExtResource("1_1tejg")
@@ -24,6 +28,9 @@ script = ExtResource("3_mket7")
 [node name="KnockbackComponent" type="Node3D" parent="."]
 script = ExtResource("5_okuy0")
 
+[node name="SoftCollisionComponent" type="Node3D" parent="."]
+script = ExtResource("6_bsrh6")
+
 [node name="torpedo001" parent="." instance=ExtResource("4_jpcq1")]
 transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0)
 
@@ -32,5 +39,14 @@ collision_layer = 4
 input_ray_pickable = false
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Hitbox"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.102502, 0.0717181)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.102502, 0.24332)
 shape = SubResource("BoxShape3D_u40fa")
+
+[node name="Collisionbox" type="Area3D" parent="."]
+collision_layer = 16
+collision_mask = 16
+input_ray_pickable = false
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Collisionbox"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.102502, 0.24332)
+shape = SubResource("BoxShape3D_xpg5x")

@@ -3,13 +3,7 @@ extends Node3D
 @onready var player = $Player
 @onready var damage_texture = $DamageTexture
 @onready var enemies = $Enemies
-@onready var perimeter := [
-	[%SpawnPoint1, %SpawnPoint2],
-	[%SpawnPoint2, %SpawnPoint3],
-	[%SpawnPoint3, %SpawnPoint4],
-	[%SpawnPoint4, %SpawnPoint1],
-]
-
+@onready var camera := %Camera3D
 
 const CLAIM_DISTANCE = 2*2*2 # Squared distance
 
@@ -18,7 +12,7 @@ var last_enemy_spawn := 9999.0
 var needed_xp := 0
 
 var wave_time := 60.0
-var wave_quota := 5
+var wave_quota := 500
 
 
 func _ready():
@@ -35,13 +29,15 @@ func _ready():
 
 
 func _process(delta):
+	$Player/Node3D2.position = $Player.position
+	#
 	last_enemy_spawn += delta
 	wave_time -= delta
 	if wave_time < 0:
 		wave_time = 60.0
-		wave_quota = randi_range(5, 15)
+		wave_quota = randi_range(150, 1500)
 	if enemies.get_children().size() >= wave_quota: return
-	if last_enemy_spawn > 0.8:
+	if last_enemy_spawn > 0.1:
 		last_enemy_spawn = 0.0
 		spawn_enemy()
 	#check_collisions()
@@ -88,10 +84,26 @@ func spawn_enemy():
 	var enemy = load("res://enemies/%s.tscn" % enemy_list)
 	var e = enemy.instantiate()
 	enemies.add_child(e)
-#	var random_direction = Vector3(randf()-0.5, 0.0, randf()-0.5).normalized()
-#	e.position = Global.player.position + (random_direction * 20) + Vector3(0, 1, 0)
-	var p = perimeter.pick_random()
-	e.global_position = lerp(p[0].global_position, p[1].global_position, randf()) + Vector3(0, 1, 0)
+	
+	var width := 640
+	var height := 480
+	var screen_corners = [
+		Vector2i(0, 0),
+		Vector2i(0, height),
+		Vector2i(width, height),
+		Vector2i(width, 0),
+		Vector2i(0, 0)
+	]
+	var corner_intersections = []
+	for c in screen_corners:
+		var rayVector = camera.project_ray_normal(c)
+		var rayPoint = camera.project_ray_origin(c)
+		var intersection = planeRayIntersection(rayVector,rayPoint, Vector3.ZERO, Vector3.UP)
+		corner_intersections.append(intersection)
+	
+	#var p = randi_range(0, screen_corners.size()-2)
+	var p = [0, 0, 0, 1, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3].pick_random()
+	e.global_position = lerp(corner_intersections[p], corner_intersections[p+1], randf()) + Vector3(0, 1, 0)
 
 func equip_weapon(_weapon: String):
 	var weapon = load("res://weapons/%s.tscn" % _weapon)
@@ -139,3 +151,12 @@ func _on_claimed_item(item_id: int, amount: int):
 				Global.player_xp -= needed_xp
 				Global.player_level += 1
 				start_level()
+
+
+func planeRayIntersection(rayVector: Vector3, rayPoint: Vector3, planePoint: Vector3, planeNormal: Vector3):
+	var diff: Vector3 = rayPoint - planePoint
+	var prod1 = diff.dot(planeNormal)
+	var prod2 = rayVector.dot(planeNormal)
+	var prod3 = prod1 / prod2
+	var intersection: Vector3 = rayPoint - (rayVector * prod3)
+	return intersection

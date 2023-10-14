@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://dl7ifkl8txcyl"]
+[gd_scene load_steps=10 format=3 uid="uid://dl7ifkl8txcyl"]
 
 [ext_resource type="Script" path="res://enemies/tires.gd" id="1_prj21"]
 [ext_resource type="Script" path="res://components/damage.gd" id="2_4l7pt"]
@@ -6,9 +6,13 @@
 [ext_resource type="PackedScene" uid="uid://c0hf7iuyad4ja" path="res://components/particle_splash.tscn" id="4_1grgk"]
 [ext_resource type="PackedScene" uid="uid://dffag6ya8u63m" path="res://models/tires001.glb" id="4_kc8ba"]
 [ext_resource type="Script" path="res://components/knockback.gd" id="5_q12e5"]
+[ext_resource type="Script" path="res://components/soft_collision.gd" id="6_uu7pk"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_u40fa"]
 size = Vector3(2.97543, 1.74571, 2.72739)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_i6m67"]
+size = Vector3(2.71326, 1.60887, 2.55106)
 
 [node name="Tires" type="Node3D"]
 script = ExtResource("1_prj21")
@@ -24,6 +28,9 @@ script = ExtResource("3_0dwo6")
 [node name="KnockbackComponent" type="Node3D" parent="."]
 script = ExtResource("5_q12e5")
 
+[node name="SoftCollisionComponent" type="Node3D" parent="."]
+script = ExtResource("6_uu7pk")
+
 [node name="tires001" parent="." instance=ExtResource("4_kc8ba")]
 transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0.250117, -0.874761, 0.0553942)
 
@@ -35,3 +42,13 @@ input_ray_pickable = false
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Hitbox"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0448841, 0.0717181)
 shape = SubResource("BoxShape3D_u40fa")
+
+[node name="Collisionbox" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.417213, 0)
+collision_layer = 16
+collision_mask = 16
+input_ray_pickable = false
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Collisionbox"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0448841, 0.0717181)
+shape = SubResource("BoxShape3D_i6m67")

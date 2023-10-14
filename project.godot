@@ -58,6 +58,7 @@ paddle_left={
 3d_physics/layer_2="Weapons"
 3d_physics/layer_3="Enemies"
 3d_physics/layer_4="Claimeables"
+3d_physics/layer_5="Collideable"
 
 [rendering]
 

@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://b810w574u75t0"]
+[gd_scene load_steps=10 format=3 uid="uid://b810w574u75t0"]
 
 [ext_resource type="Script" path="res://enemies/tank.gd" id="1_imngt"]
 [ext_resource type="Script" path="res://components/damage.gd" id="2_ihk5q"]
@@ -6,11 +6,15 @@
 [ext_resource type="PackedScene" uid="uid://wwugru26j0rx" path="res://models/tank.glb" id="4_t4yyj"]
 [ext_resource type="PackedScene" uid="uid://c0hf7iuyad4ja" path="res://components/particle_splash.tscn" id="4_yq3ro"]
 [ext_resource type="Script" path="res://components/knockback.gd" id="5_73oqi"]
+[ext_resource type="Script" path="res://components/soft_collision.gd" id="7_3abkk"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_u40fa"]
 size = Vector3(1.06801, 1.36981, 2.56814)
 
-[node name="Medusa" type="Node3D"]
+[sub_resource type="BoxShape3D" id="BoxShape3D_cweve"]
+size = Vector3(1.75425, 1.5062, 2.08852)
+
+[node name="Tank" type="Node3D"]
 script = ExtResource("1_imngt")
 
 [node name="DamageComponent" type="Node3D" parent="."]
@@ -27,6 +31,9 @@ script = ExtResource("5_73oqi")
 [node name="tank" parent="." instance=ExtResource("4_t4yyj")]
 transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, -0.828472, 0)
 
+[node name="SoftCollisionComponent" type="Node3D" parent="."]
+script = ExtResource("7_3abkk")
+
 [node name="Hitbox" type="Area3D" parent="."]
 collision_layer = 4
 input_ray_pickable = false
@@ -34,3 +41,10 @@ input_ray_pickable = false
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Hitbox"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.364901, 0.0717181)
 shape = SubResource("BoxShape3D_u40fa")
+
+[node name="Collisionbox" type="Area3D" parent="."]
+collision_layer = 16
+collision_mask = 16
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Collisionbox"]
+shape = SubResource("BoxShape3D_cweve")
