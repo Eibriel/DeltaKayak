@@ -1,0 +1,14 @@
+[gd_resource type="StandardMaterial3D" load_steps=2 format=3 uid="uid://dsd84qk6oh55t"]
+
+[ext_resource type="Texture2D" uid="uid://emjdm1co30xw" path="res://models/iceberg_iceberg_IcebergTexture.png" id="1_s22df"]
+
+[resource]
+resource_name = "Iceberg"
+cull_mode = 2
+vertex_color_use_as_albedo = true
+albedo_texture = ExtResource("1_s22df")
+roughness = 0.360215
+emission_enabled = true
+emission_energy_multiplier = 0.2
+emission_texture = ExtResource("1_s22df")
+texture_filter = 2

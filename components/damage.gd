@@ -13,6 +13,7 @@ func _ready():
 	parent = get_parent_node_3d()
 	hitbox = parent.get_node("Hitbox")
 	hitbox.connect("area_entered", _on_hitbox_area_entered)
+	DAMAGE = parent.DAMAGE
 
 func _on_hitbox_area_entered(area):
 	var enemy_or_player = area.get_parent_node_3d()

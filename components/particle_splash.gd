@@ -7,5 +7,4 @@ func _ready():
 	parent.connect("received_attack", play_particles)
 
 func play_particles():
-	print("Splash")
 	$GPUParticles3D.set_emitting(true)

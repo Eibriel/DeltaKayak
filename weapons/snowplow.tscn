@@ -1,10 +1,11 @@
-[gd_scene load_steps=4 format=3 uid="uid://cq71dbprntqkr"]
+[gd_scene load_steps=5 format=3 uid="uid://cq71dbprntqkr"]
 
 [ext_resource type="Script" path="res://weapons/snowplow.gd" id="1_7p20v"]
 [ext_resource type="Script" path="res://components/damage.gd" id="3_2ubwv"]
+[ext_resource type="PackedScene" uid="uid://dspu2n1rgb5iv" path="res://models/snowplow.glb" id="3_qe7ri"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_jynln"]
-size = Vector3(1.60594, 1.49311, 1.52451)
+size = Vector3(2.91977, 1.49311, 2.03871)
 
 [node name="snowplow" type="Node3D"]
 script = ExtResource("1_7p20v")
@@ -15,6 +16,10 @@ script = ExtResource("3_2ubwv")
 
 [node name="CSGBox3D" type="CSGBox3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -4.44096)
+visible = false
+
+[node name="snowplow" parent="." instance=ExtResource("3_qe7ri")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -4.9678)
 
 [node name="Hitbox" type="Area3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.63721, -5.36271)

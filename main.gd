@@ -12,7 +12,7 @@ var last_enemy_spawn := 9999.0
 var needed_xp := 0
 
 var wave_time := 60.0
-var wave_quota := 500
+var wave_quota := 5
 
 
 func _ready():
@@ -35,7 +35,7 @@ func _process(delta):
 	wave_time -= delta
 	if wave_time < 0:
 		wave_time = 60.0
-		wave_quota = randi_range(150, 1500)
+		wave_quota = randi_range(15, 150)
 	if enemies.get_children().size() >= wave_quota: return
 	if last_enemy_spawn > 0.1:
 		last_enemy_spawn = 0.0
@@ -47,10 +47,15 @@ func _process(delta):
 func start_level():
 	if Global.player_level == 1:
 		equip_weapon("snowplow")
+		equip_weapon("peace_meteor")
 	if Global.player_level == 2:
 		equip_weapon("fireball")
 	if Global.player_level == 3:
 		equip_weapon("laser")
+	if Global.player_level == 4:
+		equip_weapon("lighthouse")
+	if Global.player_level == 5:
+		equip_weapon("peace_meteor")
 	needed_xp = Global.level_xp(Global.player_level)
 	update_xp()
 

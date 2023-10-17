@@ -2,21 +2,22 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dy4d85hf02286"
-path="res://.godot/imported/Kayak_Kayak_texture.png-fee34775bf2bc495b3a05046409211f0.ctex"
+uid="uid://emjdm1co30xw"
+path.s3tc="res://.godot/imported/iceberg_iceberg_IcebergTexture.png-4d95ff2a781dbbeff344741472662ace.s3tc.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc"],
+"vram_texture": true
 }
 generator_parameters={}
 
 [deps]
 
-source_file="res://models/Kayak_Kayak_texture.png"
-dest_files=["res://.godot/imported/Kayak_Kayak_texture.png-fee34775bf2bc495b3a05046409211f0.ctex"]
+source_file="res://models/iceberg_iceberg_IcebergTexture.png"
+dest_files=["res://.godot/imported/iceberg_iceberg_IcebergTexture.png-4d95ff2a781dbbeff344741472662ace.s3tc.ctex"]
 
 [params]
 
-compress/mode=0
+compress/mode=2
 compress/high_quality=false
 compress/lossy_quality=0.7
 compress/hdr_compression=1

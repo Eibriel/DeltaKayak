@@ -32,6 +32,8 @@ radiance_size = 0
 background_energy_multiplier = 0.0
 sky = SubResource("Sky_chauj")
 tonemap_mode = 1
+ssao_radius = 3.34
+ssao_intensity = 12.48
 glow_enabled = true
 glow_levels/1 = 1.0
 glow_levels/2 = 0.5
@@ -87,7 +89,7 @@ noise = SubResource("FastNoiseLite_aou4y")
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_ggbls"]
 render_priority = 0
 shader = ExtResource("2_efo20")
-shader_parameter/albedo = Color(0.247059, 0.239216, 0.235294, 1)
+shader_parameter/albedo = Color(0.294118, 0.0117647, 0.2, 1)
 shader_parameter/texture_1 = SubResource("NoiseTexture2D_egqph")
 shader_parameter/texture_2 = SubResource("NoiseTexture2D_37nns")
 
@@ -95,6 +97,7 @@ shader_parameter/texture_2 = SubResource("NoiseTexture2D_37nns")
 script = ExtResource("1_vakhf")
 
 [node name="DamageTexture" type="TextureRect" parent="."]
+visible = false
 material = SubResource("ShaderMaterial_b77lc")
 anchors_preset = 15
 anchor_right = 1.0
@@ -217,22 +220,27 @@ transform = Transform3D(0.999227, 0.0147298, -0.0364483, 0.0196715, 0.61538, 0.7
 
 [node name="OmniLight3D2" type="OmniLight3D" parent="Player"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.55263, -1.46322)
-light_color = Color(0.768627, 0.768627, 0.768627, 1)
+light_color = Color(0.85098, 0.411765, 0.643137, 1)
 light_energy = 10.033
+shadow_enabled = true
 omni_range = 7.786
 omni_attenuation = 1.41421
 
 [node name="OmniLight3D3" type="OmniLight3D" parent="Player"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 13.2101, -8.46322)
+light_color = Color(0.980392, 0.847059, 0.890196, 1)
 light_energy = 1.819
 light_volumetric_fog_energy = 0.0
+shadow_enabled = true
 omni_range = 66.263
 omni_attenuation = 0.707107
 
 [node name="SpotLight3D" type="SpotLight3D" parent="Player"]
-transform = Transform3D(1, 0, 0, 0, 0.995183, 0.0980349, 0, -0.0980349, 0.995183, 0, 1.43944, -0.617026)
+transform = Transform3D(1, 0, 0, 0, 0.980478, 0.196631, 0, -0.196631, 0.980478, 0, 2.51155, -0.633473)
+light_color = Color(0.658824, 0.717647, 0.937255, 1)
 light_energy = 3.667
 light_volumetric_fog_energy = 16.0
+shadow_enabled = true
 spot_range = 44.004
 spot_angle = 23.19
 

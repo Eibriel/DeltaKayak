@@ -46,7 +46,9 @@ const enemies = [
 const weapons = [
 	"snowplow",
 	"fireball",
-	"laser"
+	"laser",
+	"lighthouse",
+	"peace_meteor"
 ]
 
 const ITEMS = {

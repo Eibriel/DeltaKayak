@@ -19,10 +19,12 @@ func _ready():
 
 func _physics_process(delta):
 	if not parent.MOVING: return
-	for node in colliding_nodes:
-		var target_position = node.global_position
-		var player_direction = target_position - parent.global_position
-		parent.global_position -= player_direction.normalized()*delta*SPEED*0.01
+	if colliding_nodes.size() == 0: return
+	#for node in colliding_nodes:
+	var node = colliding_nodes.pick_random()
+	var target_position: Vector3 = node.global_position
+	var player_direction = target_position.direction_to(parent.global_position)
+	parent.global_position += player_direction.normalized()*delta*SPEED*0.01
 
 func _on_collisionbox_area_entered(area):
 	var node = area.get_parent_node_3d()

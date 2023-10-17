@@ -2,6 +2,7 @@ extends AttackingComponent
 
 var SPEED = 300
 var LOOK_PLAYER = true
+var DAMAGE = 1
 
 func _ready():
 	POWER = 5

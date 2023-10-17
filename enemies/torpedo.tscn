@@ -46,6 +46,7 @@ shape = SubResource("BoxShape3D_u40fa")
 collision_layer = 16
 collision_mask = 16
 input_ray_pickable = false
+priority = -5
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Collisionbox"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.102502, 0.24332)

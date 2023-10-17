@@ -1,0 +1,32 @@
+[gd_scene load_steps=5 format=3 uid="uid://cdw683nsip8wu"]
+
+[ext_resource type="Script" path="res://weapons/lighthouse.gd" id="1_gnvnx"]
+[ext_resource type="Script" path="res://components/damage.gd" id="2_muoag"]
+[ext_resource type="PackedScene" uid="uid://bonjkswo7atv1" path="res://models/lighthouse.glb" id="3_gngi2"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_jynln"]
+size = Vector3(2.5085, 1.49311, 13.8568)
+
+[node name="lighthouse" type="Node3D"]
+script = ExtResource("1_gnvnx")
+
+[node name="DamageComponent" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.63721, -5.36271)
+script = ExtResource("2_muoag")
+
+[node name="Hitbox" type="Area3D" parent="."]
+collision_layer = 2
+collision_mask = 4
+monitorable = false
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Hitbox"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.264586, -12.8025)
+shape = SubResource("BoxShape3D_jynln")
+
+[node name="CSGBox3D" type="CSGBox3D" parent="Hitbox"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -12.8096)
+visible = false
+size = Vector3(1, 1, 13.3091)
+
+[node name="lighthouse" parent="Hitbox" instance=ExtResource("3_gngi2")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.449795, -6)

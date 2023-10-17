@@ -45,6 +45,7 @@ shape = SubResource("BoxShape3D_u40fa")
 [node name="Collisionbox" type="Area3D" parent="."]
 collision_layer = 16
 collision_mask = 16
+priority = -5
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Collisionbox"]
 shape = SubResource("BoxShape3D_cweve")
