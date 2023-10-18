@@ -4,12 +4,12 @@ importer="scene"
 importer_version=1
 type="PackedScene"
 uid="uid://dd3yqh8e1w42r"
-path="res://.godot/imported/Kayak.glb-983acf2f44fb83f638f40dbc3159b4d4.scn"
+path="res://.godot/imported/Kayak.glb-e4480b9f17fd667af3acd32353b32270.scn"
 
 [deps]
 
-source_file="res://models/Kayak.glb"
-dest_files=["res://.godot/imported/Kayak.glb-983acf2f44fb83f638f40dbc3159b4d4.scn"]
+source_file="res://models/kayaks/Kayak.glb"
+dest_files=["res://.godot/imported/Kayak.glb-e4480b9f17fd667af3acd32353b32270.scn"]
 
 [params]
 
@@ -28,5 +28,18 @@ animation/fps=30
 animation/trimming=false
 animation/remove_immutable_tracks=true
 import_script/path=""
-_subresources={}
+_subresources={
+"meshes": {
+"Kayak_Cube_001": {
+"generate/lightmap_uv": 0,
+"generate/lods": 0,
+"generate/shadow_meshes": 0,
+"lods/normal_merge_angle": 60.0,
+"lods/normal_split_angle": 25.0,
+"save_to_file/enabled": true,
+"save_to_file/make_streamable": "",
+"save_to_file/path": "res://meshes/kayaks/normal.res"
+}
+}
+}
 gltf/embedded_image_handling=1

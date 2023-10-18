@@ -1,4 +1,4 @@
-[gd_scene load_steps=23 format=3 uid="uid://dm0vfm6e713yh"]
+[gd_scene load_steps=25 format=3 uid="uid://dm0vfm6e713yh"]
 
 [ext_resource type="PackedScene" uid="uid://nr6v23qqk8cq" path="res://player.tscn" id="1_hx60n"]
 [ext_resource type="Script" path="res://main.gd" id="1_vakhf"]
@@ -8,6 +8,8 @@
 [ext_resource type="AudioStream" uid="uid://caeipbtmk04k2" path="res://sounds/river.mp3" id="7_kc7ja"]
 [ext_resource type="AudioStream" uid="uid://cwpo3iwwniwbe" path="res://sounds/kayak.mp3" id="8_tlc1p"]
 [ext_resource type="PackedScene" uid="uid://d4akxb8ybxldd" path="res://elements/xp_point.tscn" id="8_vp5jo"]
+[ext_resource type="PackedScene" uid="uid://detrxx1yuffwd" path="res://models/Muelle001.glb" id="9_d0csy"]
+[ext_resource type="PackedScene" uid="uid://bwyr02v7y1ps8" path="res://models/Tree001.glb" id="9_q8nxv"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_b77lc"]
 shader = ExtResource("2_o2ish")
@@ -218,32 +220,6 @@ top_level = true
 unique_name_in_owner = true
 transform = Transform3D(0.999227, 0.0147298, -0.0364483, 0.0196715, 0.61538, 0.787985, 0.0340364, -0.788093, 0.614615, -1.01394, 33.8928, 26.5605)
 
-[node name="OmniLight3D2" type="OmniLight3D" parent="Player"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.55263, -1.46322)
-light_color = Color(0.85098, 0.411765, 0.643137, 1)
-light_energy = 10.033
-shadow_enabled = true
-omni_range = 7.786
-omni_attenuation = 1.41421
-
-[node name="OmniLight3D3" type="OmniLight3D" parent="Player"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 13.2101, -8.46322)
-light_color = Color(0.980392, 0.847059, 0.890196, 1)
-light_energy = 1.819
-light_volumetric_fog_energy = 0.0
-shadow_enabled = true
-omni_range = 66.263
-omni_attenuation = 0.707107
-
-[node name="SpotLight3D" type="SpotLight3D" parent="Player"]
-transform = Transform3D(1, 0, 0, 0, 0.980478, 0.196631, 0, -0.196631, 0.980478, 0, 2.51155, -0.633473)
-light_color = Color(0.658824, 0.717647, 0.937255, 1)
-light_energy = 3.667
-light_volumetric_fog_energy = 16.0
-shadow_enabled = true
-spot_range = 44.004
-spot_angle = 23.19
-
 [node name="Water" type="CSGMesh3D" parent="Player"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.13126)
 mesh = SubResource("PlaneMesh_xoete")
@@ -268,3 +244,18 @@ bus = &"River"
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.05582, 1, -2.83253)
 
 [node name="Level" type="Node3D" parent="."]
+
+[node name="Muelle001" parent="Level" instance=ExtResource("9_d0csy")]
+transform = Transform3D(0.948826, 0.315798, 0, -0.315798, 0.948826, 0, 0, 0, 1, 2.28082, -10.1472, 0)
+
+[node name="Muelle002" parent="Level" instance=ExtResource("9_d0csy")]
+transform = Transform3D(-0.411145, 1.95728, 0, -1.95728, -0.411145, 0, 0, 0, 2, -0.972057, -5.69555, -53.6161)
+
+[node name="Tree001" parent="Level" instance=ExtResource("9_q8nxv")]
+transform = Transform3D(0.806063, -1.77549, 0, 0.59183, 2.41819, 0, 0, 0, 1, 13.3366, -11.9914, -9.38574)
+
+[node name="Tree002" parent="Level" instance=ExtResource("9_q8nxv")]
+transform = Transform3D(0.105085, -1.21263, -0.90861, 0.967828, 0.75484, 0, 0.228618, -2.63813, 0.417645, -12.0042, -3.86042, -10.0928)
+
+[node name="Tree003" parent="Level" instance=ExtResource("9_q8nxv")]
+transform = Transform3D(-0.248987, 2.87318, -0.144097, 0.967828, 0.75484, -6.2234e-09, 0.0362567, -0.418384, -0.989564, -16.0639, -4.03919, -27.8949)

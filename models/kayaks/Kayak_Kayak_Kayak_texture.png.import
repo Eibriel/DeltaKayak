@@ -3,7 +3,7 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bacuujby1qy5o"
-path.s3tc="res://.godot/imported/Kayak_Kayak_Kayak_texture.png-aaaf016b88bfdc66deee28023f613668.s3tc.ctex"
+path.s3tc="res://.godot/imported/Kayak_Kayak_Kayak_texture.png-0522c61f14df221728a47cadd5f58ce2.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -12,8 +12,8 @@ generator_parameters={}
 
 [deps]
 
-source_file="res://models/Kayak_Kayak_Kayak_texture.png"
-dest_files=["res://.godot/imported/Kayak_Kayak_Kayak_texture.png-aaaf016b88bfdc66deee28023f613668.s3tc.ctex"]
+source_file="res://models/kayaks/Kayak_Kayak_Kayak_texture.png"
+dest_files=["res://.godot/imported/Kayak_Kayak_Kayak_texture.png-0522c61f14df221728a47cadd5f58ce2.s3tc.ctex"]
 
 [params]
 

@@ -19,6 +19,14 @@ signal paddle_right(level: float)
 
 const SPEED := 300
 const TORQUE := 60
+const KAYAKS := {
+	"NORMAL_PINK": 0,
+	"NORMAL_CIAN": 1,
+	"NORMAL_GREEN": 2,
+	"NORMAL_VIOLET": 3,
+	"HOTDOG": 4,
+	"BANANA": 5
+}
 
 var torque := .0
 var paddle_previous_status := 0
@@ -49,10 +57,10 @@ func _ready():
 	character_animation.set_blend_time("RightPaddle", "Idle", 0.2)
 	play_animation("idle")
 	
-	var kayak_mesh:ArrayMesh = $Kayak/Kayak2.mesh
-	kayak_material = kayak_mesh.surface_get_material(0)
-	kayak_material.shading_mode = StandardMaterial3D.SHADING_MODE_PER_VERTEX
-	kayak_material.emission_enabled = true
+#	var kayak_mesh:ArrayMesh = $Kayak/Kayak2.mesh
+#	kayak_material = kayak_mesh.surface_get_material(0)
+#	kayak_material.shading_mode = StandardMaterial3D.SHADING_MODE_PER_VERTEX
+#	kayak_material.emission_enabled = true
 	var character_mesh:ArrayMesh = $character/Armature/Skeleton3D/Character.mesh
 	character_material = character_mesh.surface_get_material(0)
 	character_material.shading_mode = StandardMaterial3D.SHADING_MODE_PER_VERTEX
@@ -224,13 +232,40 @@ func receive_attack(damage:int):
 	print(damage_level)
 	var tween = create_tween()
 	tween.set_parallel()
-	tween.tween_property(kayak_material, "emission", Color.RED, 0.1)
+	#tween.tween_property(kayak_material, "emission", Color.RED, 0.1)
 	tween.tween_property(character_material, "emission", Color.RED, 0.1)
 	tween.set_parallel(false)
 	tween.tween_property(character_material, "emission", Color.BLACK, 0.1)
-	tween.tween_property(kayak_material, "emission", Color.BLACK, 0.1)
+	#tween.tween_property(kayak_material, "emission", Color.BLACK, 0.1)
 	emit_signal("damage_update", damage_level)
 
 
 func add_weapon(node: Node3D):
 	$Weapons.add_child(node)
+
+
+func set_kayak(kayak_id: int):
+	$Normal.visible = false
+	$Banana.visible = false
+	$Hotdog.visible = false
+	match kayak_id:
+		KAYAKS.NORMAL_PINK:
+			$Normal.visible = true
+			$OmniLight3D2.light_color = Color(0.85, 0.41, 0.64)
+			$OmniLight3D3.light_color = Color(0.98, 0.85, 0.89)
+			$GPUParticles3D_Trail.draw_pass_1.material.albedo_color = Color(0.54, 0.15, 0.31)
+		KAYAKS.NORMAL_GREEN:
+			$Normal.visible = true
+			$OmniLight3D2.light_color = Color(0.42, 0.85, 0.41)
+			$OmniLight3D3.light_color = Color(0.9, 0.98, 0.84)
+		KAYAKS.NORMAL_CIAN:
+			$Normal.visible = true
+		KAYAKS.NORMAL_VIOLET:
+			$Normal.visible = true
+		KAYAKS.BANANA:
+			$Banana.visible = true
+			$OmniLight3D2.light_color = Color(0.85, 0.8, 0.41)
+			$OmniLight3D3.light_color = Color(0.98, 0.93, 0.84)
+			$GPUParticles3D_Trail.draw_pass_1.material.albedo_color = Color(0.54, 0.51, 0.15) 
+		KAYAKS.HOTDOG:
+			$Hotdog.visible = true

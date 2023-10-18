@@ -25,6 +25,7 @@ func _ready():
 	
 	Global.connect("dropped_item", _on_dropped_item)
 	Global.connect("claimed_item", _on_claimed_item)
+	player.set_kayak(Player.KAYAKS.NORMAL_PINK)
 	start_level()
 
 
@@ -47,7 +48,7 @@ func _process(delta):
 func start_level():
 	if Global.player_level == 1:
 		equip_weapon("snowplow")
-		equip_weapon("peace_meteor")
+		#equip_weapon("peace_meteor")
 	if Global.player_level == 2:
 		equip_weapon("fireball")
 	if Global.player_level == 3:
