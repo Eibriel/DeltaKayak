@@ -1,10 +1,12 @@
-[gd_scene load_steps=13 format=3 uid="uid://nr6v23qqk8cq"]
+[gd_scene load_steps=23 format=3 uid="uid://nr6v23qqk8cq"]
 
 [ext_resource type="Script" path="res://player.gd" id="1_uptun"]
 [ext_resource type="ArrayMesh" uid="uid://cee32cluwkn5e" path="res://meshes/kayaks/banana.res" id="3_53yu7"]
 [ext_resource type="PackedScene" uid="uid://brl72ky2q062u" path="res://models/character.glb" id="3_w7gwq"]
 [ext_resource type="ArrayMesh" uid="uid://dt4xluyt6ckn1" path="res://meshes/kayaks/normal.res" id="4_a7mya"]
 [ext_resource type="ArrayMesh" uid="uid://ceocuipu8o2xo" path="res://meshes/kayaks/hotdog.res" id="4_b7jyd"]
+[ext_resource type="PackedScene" uid="uid://c0hf7iuyad4ja" path="res://components/particle_splash.tscn" id="6_hbloe"]
+[ext_resource type="Shader" path="res://shaders/water.gdshader" id="6_ouq5p"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_1oafd"]
 friction = 0.5
@@ -39,6 +41,43 @@ albedo_color = Color(0.541176, 0.505882, 0.152941, 1)
 [sub_resource type="PlaneMesh" id="PlaneMesh_f857p"]
 material = SubResource("StandardMaterial3D_6qvhj")
 size = Vector2(0.1, 2)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_7lkku"]
+size = Vector2(100, 200)
+
+[sub_resource type="Gradient" id="Gradient_r3uqa"]
+offsets = PackedFloat32Array(0.745455, 0.825455)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_lldkn"]
+noise_type = 3
+frequency = 0.02
+fractal_type = 2
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_egqph"]
+seamless = true
+color_ramp = SubResource("Gradient_r3uqa")
+noise = SubResource("FastNoiseLite_lldkn")
+
+[sub_resource type="Gradient" id="Gradient_27l4t"]
+offsets = PackedFloat32Array(0.730909, 0.814545)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_d5tpc"]
+noise_type = 3
+seed = 1
+frequency = 0.02
+fractal_type = 2
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_37nns"]
+seamless = true
+color_ramp = SubResource("Gradient_27l4t")
+noise = SubResource("FastNoiseLite_d5tpc")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_3654b"]
+render_priority = 0
+shader = ExtResource("6_ouq5p")
+shader_parameter/albedo = Color(0.290196, 0.207843, 0.0117647, 1)
+shader_parameter/texture_1 = SubResource("NoiseTexture2D_egqph")
+shader_parameter/texture_2 = SubResource("NoiseTexture2D_37nns")
 
 [node name="Player" type="RigidBody3D"]
 axis_lock_linear_y = true
@@ -93,6 +132,8 @@ bus = &"Kayak"
 
 [node name="Weapons" type="Node3D" parent="."]
 
+[node name="particle_splash" parent="." instance=ExtResource("6_hbloe")]
+
 [node name="Hitbox" type="Area3D" parent="."]
 input_ray_pickable = false
 
@@ -133,5 +174,10 @@ light_volumetric_fog_energy = 16.0
 shadow_enabled = true
 spot_range = 44.004
 spot_angle = 23.19
+
+[node name="Water" type="CSGMesh3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.13126)
+mesh = SubResource("PlaneMesh_7lkku")
+material = SubResource("ShaderMaterial_3654b")
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]

@@ -12,4 +12,4 @@ func _ready():
 	parent = get_parent_node_3d()
 
 func _physics_process(delta):
-	parent.rotate_y(SPEED)
+	parent.rotate_y(SPEED*(Global.player_modifiers.speed * 0.01))

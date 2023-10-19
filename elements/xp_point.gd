@@ -11,6 +11,8 @@ func _ready():
 	$GPUParticles3D.set_emitting(true)
 
 func _physics_process(delta):
+	# Todo remove from _process
+	$Hitbox.scale = Vector3.ONE * (Global.player_modifiers.magnet * 0.01)
 	if claimed:
 		move_to_player(delta)
 
@@ -27,4 +29,5 @@ func move_to_player(delta:float):
 func claim():
 	if claimed: return
 	claimed = true
-	Global.claim_item(Global.ITEMS.XP, 1)
+	var modified_xp = Global.ITEMS.XP * (Global.player_modifiers.growth * 0.01)
+	Global.claim_item(modified_xp, 1)

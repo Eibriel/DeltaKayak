@@ -45,5 +45,5 @@ func set_mode(mode: int) -> void:
 
 func _physics_process(delta):
 	if MODE == MODES.HIDDEN: return
-	parent.global_position += DIRECTION*delta*SPEED
+	parent.global_position += DIRECTION*delta*SPEED*(Global.player_modifiers.speed * 0.01)
 	

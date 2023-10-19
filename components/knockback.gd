@@ -11,6 +11,6 @@ func _ready():
 func play_knockback():
 	var target_position = Global.player.global_position + Vector3(0, 1, 0)
 	var player_direction = target_position - parent.global_position
-	var new_position = parent.position - (player_direction.normalized() * 2.0)
+	var new_position = parent.position - (player_direction.normalized() * 3.0)
 	var tween = create_tween()
 	tween.tween_property(parent, "position", new_position, 0.1)

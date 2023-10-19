@@ -15,12 +15,12 @@ var player_kills := 0
 
 
 var player_modifiers := {
-	"max_health": 100, # max health
+	"max_health": 1000, # 100 max health
 	"recovery": 0, # health recovery per second
 	"armor": 0, # reduced incoming damage
 	"move_speed": 100, # % player speed
 	"might": 100, # % damage for all attacks
-	"area": 100, # % area for all attacks
+	"area": 100, # 100 % area for all attacks
 	"speed": 100, # % speed for all projectiles
 	"duration": 100, # % duration of weapon effects
 	"amount": 0, # extra projectiles
@@ -29,7 +29,7 @@ var player_modifiers := {
 	"growth": 100, # % modifies XP gained
 	"greed": 100, # % modifies coins gained
 	"curse": 100, # % modifies enemies speed, health, quantity and frequency
-	"magnet": 30, # pickup radius
+	"magnet": 100, # pickup radius (original 30)
 	"revival": 0, # amount of extra lives
 	"reroll": 0, # rerolls allowed on level-up
 	"skip": 0, # skips allowed on level-up

@@ -5,6 +5,7 @@ signal make_noise(intensity:int)
 signal damage_update(damage: float)
 signal paddle_left(level: float)
 signal paddle_right(level: float)
+signal received_attack
 
 @export var paddle_force: Curve
 
@@ -17,7 +18,7 @@ signal paddle_right(level: float)
 @onready var character_animation = $character/AnimationPlayer
 
 
-const SPEED := 300
+const SPEED := 370
 const TORQUE := 60
 const KAYAKS := {
 	"NORMAL_PINK": 0,
@@ -40,8 +41,10 @@ var previous_side := 0
 var stopped := true
 var holding := false
 
-var max_life := 100
+#var max_life := 100
 var life := 100
+var recovery_life := 0.0
+var recovery_time := 0.0
 
 var kayak_material: StandardMaterial3D
 var character_material: StandardMaterial3D
@@ -97,6 +100,16 @@ func _input(event):
 				play_animation("right")
 		next_paddle = 0
 
+func _process(delta):
+	recovery_time += delta
+	if recovery_time >= 1.0:
+		recovery_time = 0.0
+		recovery_life += Global.player_modifiers.recovery
+		if recovery_life >= 1.0:
+			recovery_life -= 1.0
+			life += 1
+			if life > Global.player_modifiers.max_health:
+				life = Global.player_modifiers.max_health
 
 func _physics_process(delta):
 	var new_state = false
@@ -136,7 +149,8 @@ func _physics_process(delta):
 			var torque_assist: float = (1.0 - turning_assist) * float(torque) * 1
 			var rithm_assist: float = 1 + min(1, float(alternate_paddling) / 20)
 			if !first_paddle:
-				go_forward((SPEED*rithm_assist)*paddle_force.sample(paddle_hold)*turning_assist*delta)
+				var modified_speed = SPEED * (Global.player_modifiers.move_speed * 0.01)
+				go_forward((modified_speed*rithm_assist)*paddle_force.sample(paddle_hold)*turning_assist*delta)
 			apply_torque(Vector3(0, (torque+torque_assist)*paddle_force.sample(paddle_hold)*delta, 0))
 			if paddle_status == -1:
 				right_paddle.position.y = 0.2
@@ -225,11 +239,13 @@ func play_animation(anim: String):
 
 
 func receive_attack(damage:int):
+	damage -= Global.player_modifiers.armor
+	var modified_max_life = Global.player_modifiers.max_health
 	life -= damage
 	if life < 0:
 		life = 0
-	var damage_level = 1.0 - (float(life)/float(max_life))
-	print(damage_level)
+	var damage_level = 1.0 - (float(life)/float(modified_max_life))
+	#print(damage_level)
 	var tween = create_tween()
 	tween.set_parallel()
 	#tween.tween_property(kayak_material, "emission", Color.RED, 0.1)
@@ -238,6 +254,7 @@ func receive_attack(damage:int):
 	tween.tween_property(character_material, "emission", Color.BLACK, 0.1)
 	#tween.tween_property(kayak_material, "emission", Color.BLACK, 0.1)
 	emit_signal("damage_update", damage_level)
+	emit_signal("received_attack")
 
 
 func add_weapon(node: Node3D):
@@ -248,12 +265,15 @@ func set_kayak(kayak_id: int):
 	$Normal.visible = false
 	$Banana.visible = false
 	$Hotdog.visible = false
+	var particle_material = $GPUParticles3D_Trail.draw_pass_1.material
+	var water_material = $Water.material
 	match kayak_id:
 		KAYAKS.NORMAL_PINK:
 			$Normal.visible = true
 			$OmniLight3D2.light_color = Color(0.85, 0.41, 0.64)
 			$OmniLight3D3.light_color = Color(0.98, 0.85, 0.89)
-			$GPUParticles3D_Trail.draw_pass_1.material.albedo_color = Color(0.54, 0.15, 0.31)
+			particle_material.albedo_color = Color(0.54, 0.15, 0.31)
+			water_material.set_shader_parameter("albedo", Color(0.29, 0.01, 0.2))
 		KAYAKS.NORMAL_GREEN:
 			$Normal.visible = true
 			$OmniLight3D2.light_color = Color(0.42, 0.85, 0.41)
@@ -266,6 +286,11 @@ func set_kayak(kayak_id: int):
 			$Banana.visible = true
 			$OmniLight3D2.light_color = Color(0.85, 0.8, 0.41)
 			$OmniLight3D3.light_color = Color(0.98, 0.93, 0.84)
-			$GPUParticles3D_Trail.draw_pass_1.material.albedo_color = Color(0.54, 0.51, 0.15) 
+			particle_material.albedo_color = Color(0.54, 0.51, 0.15)
+			water_material.set_shader_parameter("albedo", Color(0.29, 0.21, 0.01))
 		KAYAKS.HOTDOG:
 			$Hotdog.visible = true
+
+func about_to_pause():
+	set_paddle_state(0)
+	play_animation("idle")

@@ -19,13 +19,15 @@ var hit_enemies := {}
 
 # Set this parameters on the Weapon!
 var DAMAGE = 2
-var DISTANCE = 10
+#var DISTANCE = 10
 var COOLDOWN = 0.8
 var HITBOX_DELAY = 1
 var MODE = MODES.ORBITING
 
 func _ready():
 	parent = get_parent_node_3d()
+	DAMAGE = parent.DAMAGE
+	COOLDOWN = parent.COOLDOWN
 
 
 func _physics_process(delta):
@@ -34,7 +36,8 @@ func _physics_process(delta):
 
 func fire_projectile(delta):
 	cooldown_time += delta
-	if cooldown_time < COOLDOWN: return
+	var modified_cooldown = COOLDOWN * (Global.player_modifiers.cooldown * 0.01)
+	if cooldown_time < modified_cooldown: return
 	var enemies: Array = get_alive_enemies()
 	if enemies.size() == 0: return
 	cooldown_time = 0

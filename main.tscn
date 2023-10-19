@@ -1,21 +1,29 @@
-[gd_scene load_steps=25 format=3 uid="uid://dm0vfm6e713yh"]
+[gd_scene load_steps=19 format=3 uid="uid://dm0vfm6e713yh"]
 
 [ext_resource type="PackedScene" uid="uid://nr6v23qqk8cq" path="res://player.tscn" id="1_hx60n"]
 [ext_resource type="Script" path="res://main.gd" id="1_vakhf"]
-[ext_resource type="Shader" path="res://shaders/water.gdshader" id="2_efo20"]
 [ext_resource type="Shader" path="res://shaders/damage.gdshader" id="2_o2ish"]
 [ext_resource type="Texture2D" uid="uid://dlywgj4my3hsj" path="res://images/lense_drops.jpeg" id="3_1dtfm"]
 [ext_resource type="AudioStream" uid="uid://caeipbtmk04k2" path="res://sounds/river.mp3" id="7_kc7ja"]
+[ext_resource type="PackedScene" uid="uid://hh7yay58utkb" path="res://levels/level_roads.tscn" id="8_d001q"]
 [ext_resource type="AudioStream" uid="uid://cwpo3iwwniwbe" path="res://sounds/kayak.mp3" id="8_tlc1p"]
-[ext_resource type="PackedScene" uid="uid://d4akxb8ybxldd" path="res://elements/xp_point.tscn" id="8_vp5jo"]
-[ext_resource type="PackedScene" uid="uid://detrxx1yuffwd" path="res://models/Muelle001.glb" id="9_d0csy"]
-[ext_resource type="PackedScene" uid="uid://bwyr02v7y1ps8" path="res://models/Tree001.glb" id="9_q8nxv"]
+[ext_resource type="PackedScene" uid="uid://bsooagmcbjwpj" path="res://levels/level_temple.tscn" id="9_3nvj0"]
+[ext_resource type="PackedScene" uid="uid://bswt35i3mdia2" path="res://levels/level_hauses.tscn" id="10_0yiw2"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_b77lc"]
 shader = ExtResource("2_o2ish")
 shader_parameter/damage_level = 0.0
 shader_parameter/paddle_left = 0.0
 shader_parameter/paddle_right = null
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_yyt62"]
+bg_color = Color(0.380392, 0.478431, 0.498039, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qd7s2"]
+bg_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0co7g"]
+bg_color = Color(0.552941, 0, 0, 0.592157)
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_f0w1c"]
 sky_top_color = Color(0.278431, 0.278431, 0.278431, 1)
@@ -58,43 +66,6 @@ turbulence_enabled = true
 [sub_resource type="QuadMesh" id="QuadMesh_hxajk"]
 size = Vector2(0.1, 0.1)
 
-[sub_resource type="PlaneMesh" id="PlaneMesh_xoete"]
-size = Vector2(100, 200)
-
-[sub_resource type="Gradient" id="Gradient_nh55g"]
-offsets = PackedFloat32Array(0.745455, 0.825455)
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_ygx8g"]
-noise_type = 3
-frequency = 0.02
-fractal_type = 2
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_egqph"]
-seamless = true
-color_ramp = SubResource("Gradient_nh55g")
-noise = SubResource("FastNoiseLite_ygx8g")
-
-[sub_resource type="Gradient" id="Gradient_ptu5k"]
-offsets = PackedFloat32Array(0.730909, 0.814545)
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_aou4y"]
-noise_type = 3
-seed = 1
-frequency = 0.02
-fractal_type = 2
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_37nns"]
-seamless = true
-color_ramp = SubResource("Gradient_ptu5k")
-noise = SubResource("FastNoiseLite_aou4y")
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_ggbls"]
-render_priority = 0
-shader = ExtResource("2_efo20")
-shader_parameter/albedo = Color(0.294118, 0.0117647, 0.2, 1)
-shader_parameter/texture_1 = SubResource("NoiseTexture2D_egqph")
-shader_parameter/texture_2 = SubResource("NoiseTexture2D_37nns")
-
 [node name="Node3D" type="Node3D"]
 script = ExtResource("1_vakhf")
 
@@ -127,6 +98,27 @@ offset_left = -319.0
 offset_right = 318.0
 offset_bottom = 27.0
 grow_horizontal = 2
+theme_override_styles/fill = SubResource("StyleBoxFlat_yyt62")
+value = 50.0
+show_percentage = false
+
+[node name="DamageProgressBar" type="ProgressBar" parent="Control"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -19.0
+offset_top = 24.0
+offset_right = 19.0
+offset_bottom = 28.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/background = SubResource("StyleBoxFlat_qd7s2")
+theme_override_styles/fill = SubResource("StyleBoxFlat_0co7g")
+value = 100.0
 show_percentage = false
 
 [node name="TimeLabel" type="Label" parent="Control"]
@@ -145,6 +137,7 @@ horizontal_alignment = 1
 
 [node name="DamageLabel" type="Label" parent="Control"]
 unique_name_in_owner = true
+visible = false
 layout_mode = 1
 offset_left = 1.0
 offset_top = 32.0
@@ -220,11 +213,6 @@ top_level = true
 unique_name_in_owner = true
 transform = Transform3D(0.999227, 0.0147298, -0.0364483, 0.0196715, 0.61538, 0.787985, 0.0340364, -0.788093, 0.614615, -1.01394, 33.8928, 26.5605)
 
-[node name="Water" type="CSGMesh3D" parent="Player"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.13126)
-mesh = SubResource("PlaneMesh_xoete")
-material = SubResource("ShaderMaterial_ggbls")
-
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("7_kc7ja")
 autoplay = true
@@ -240,22 +228,142 @@ bus = &"River"
 
 [node name="Items" type="Node3D" parent="."]
 
-[node name="xp_point" parent="Items" instance=ExtResource("8_vp5jo")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.05582, 1, -2.83253)
+[node name="LevelRoads" parent="." instance=ExtResource("8_d001q")]
+visible = false
 
-[node name="Level" type="Node3D" parent="."]
+[node name="LevelSkyscrapers" parent="." instance=ExtResource("9_3nvj0")]
 
-[node name="Muelle001" parent="Level" instance=ExtResource("9_d0csy")]
-transform = Transform3D(0.948826, 0.315798, 0, -0.315798, 0.948826, 0, 0, 0, 1, 2.28082, -10.1472, 0)
+[node name="LevelHauses" parent="." instance=ExtResource("10_0yiw2")]
+visible = false
 
-[node name="Muelle002" parent="Level" instance=ExtResource("9_d0csy")]
-transform = Transform3D(-0.411145, 1.95728, 0, -1.95728, -0.411145, 0, 0, 0, 2, -0.972057, -5.69555, -53.6161)
+[node name="StatsMenu" type="Control" parent="."]
+process_mode = 2
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 
-[node name="Tree001" parent="Level" instance=ExtResource("9_q8nxv")]
-transform = Transform3D(0.806063, -1.77549, 0, 0.59183, 2.41819, 0, 0, 0, 1, 13.3366, -11.9914, -9.38574)
+[node name="ColorRect" type="ColorRect" parent="StatsMenu"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.945098)
 
-[node name="Tree002" parent="Level" instance=ExtResource("9_q8nxv")]
-transform = Transform3D(0.105085, -1.21263, -0.90861, 0.967828, 0.75484, 0, 0.228618, -2.63813, 0.417645, -12.0042, -3.86042, -10.0928)
+[node name="StatsTextLabel" type="RichTextLabel" parent="StatsMenu"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.0140625
+anchor_top = 0.11875
+anchor_right = 0.190625
+anchor_bottom = 0.89375
+theme_override_font_sizes/normal_font_size = 10
+metadata/_edit_use_anchors_ = true
 
-[node name="Tree003" parent="Level" instance=ExtResource("9_q8nxv")]
-transform = Transform3D(-0.248987, 2.87318, -0.144097, 0.967828, 0.75484, -6.2234e-09, 0.0362567, -0.418384, -0.989564, -16.0639, -4.03919, -27.8949)
+[node name="PauseMenu" type="Control" parent="."]
+process_mode = 2
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PauseMenu"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -35.0
+offset_top = -33.0
+offset_right = 35.0
+offset_bottom = 33.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ResumeButton" type="Button" parent="PauseMenu/VBoxContainer"]
+layout_mode = 2
+text = "Resume"
+
+[node name="QuitButton" type="Button" parent="PauseMenu/VBoxContainer"]
+layout_mode = 2
+text = "Quit"
+
+[node name="LevelUpMenu" type="Control" parent="."]
+process_mode = 2
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="LevelUpMenu"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -182.5
+offset_top = -33.0
+offset_right = 182.5
+offset_bottom = 33.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="LevelUpMenu/VBoxContainer"]
+layout_mode = 2
+
+[node name="LevelUpLabel1" type="Label" parent="LevelUpMenu/VBoxContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Increase speed by 10%"
+
+[node name="LevelUpButton1" type="Button" parent="LevelUpMenu/VBoxContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Level up 1"
+
+[node name="HSeparator" type="HSeparator" parent="LevelUpMenu/VBoxContainer"]
+layout_mode = 2
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="LevelUpMenu/VBoxContainer"]
+layout_mode = 2
+
+[node name="LevelUpLabel2" type="Label" parent="LevelUpMenu/VBoxContainer/VBoxContainer2"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Increase speed by 10%"
+
+[node name="LevelUpButton2" type="Button" parent="LevelUpMenu/VBoxContainer/VBoxContainer2"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Level up 1"
+
+[node name="HSeparator2" type="HSeparator" parent="LevelUpMenu/VBoxContainer"]
+layout_mode = 2
+
+[node name="VBoxContainer3" type="VBoxContainer" parent="LevelUpMenu/VBoxContainer"]
+layout_mode = 2
+
+[node name="LevelUpLabel3" type="Label" parent="LevelUpMenu/VBoxContainer/VBoxContainer3"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Increase speed by 10%"
+
+[node name="LevelUpButton3" type="Button" parent="LevelUpMenu/VBoxContainer/VBoxContainer3"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Level up 1"
+
+[connection signal="button_up" from="PauseMenu/VBoxContainer/ResumeButton" to="." method="_on_resume_button_button_up"]
+[connection signal="button_up" from="PauseMenu/VBoxContainer/QuitButton" to="." method="_on_quit_button_button_up"]

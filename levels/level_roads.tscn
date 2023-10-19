@@ -1,0 +1,100 @@
+[gd_scene load_steps=7 format=3 uid="uid://hh7yay58utkb"]
+
+[ext_resource type="PackedScene" uid="uid://5pr321d48tjw" path="res://models/environment/bridge_big.glb" id="1_mli1a"]
+[ext_resource type="PackedScene" uid="uid://oq04venlbmyb" path="res://models/environment/bridge_small.glb" id="2_v7hjw"]
+[ext_resource type="PackedScene" uid="uid://1xnw1ln2sq6x" path="res://models/environment/road_light.glb" id="3_fnaui"]
+[ext_resource type="PackedScene" uid="uid://ct86sx5t3h6vc" path="res://models/environment/road_loop.glb" id="4_o0vby"]
+[ext_resource type="PackedScene" uid="uid://1p478wv10fla" path="res://models/environment/road_ramp.glb" id="5_3yqfe"]
+[ext_resource type="PackedScene" uid="uid://dbsr6y02pna0b" path="res://models/environment/road_triangle.glb" id="6_jhmg7"]
+
+[node name="LevelRoads" type="Node3D"]
+
+[node name="bridge_big" parent="." instance=ExtResource("1_mli1a")]
+transform = Transform3D(1, 0, 0, 0, 0.855265, -0.518191, 0, 0.518191, 0.855265, -298.897, -87.7615, -149.246)
+
+[node name="bridge_big2" parent="." instance=ExtResource("1_mli1a")]
+transform = Transform3D(0.958133, 0.244883, -0.148371, -0.286324, 0.819457, -0.496496, 0, 0.518191, 0.855265, -654.987, 1.37862, -186.962)
+
+[node name="bridge_small" parent="." instance=ExtResource("2_v7hjw")]
+transform = Transform3D(0.214735, 0.102358, -0.971294, 0.439597, 0.877933, 0.189705, 0.872149, -0.467714, 0.143527, -198.078, -177.995, -217.579)
+
+[node name="road_light" parent="." instance=ExtResource("3_fnaui")]
+transform = Transform3D(0.31255, -0.266956, -0.911618, 0, 0.959698, -0.281035, 0.949901, 0.0878377, 0.299954, -296.944, -37.3398, -88.1622)
+
+[node name="road_light2" parent="." instance=ExtResource("3_fnaui")]
+transform = Transform3D(1, 0, 0, 0, 0.959697, -0.281035, 0, 0.281035, 0.959697, -17.8389, -37.3398, -47.9308)
+
+[node name="road_light3" parent="." instance=ExtResource("3_fnaui")]
+transform = Transform3D(0.267978, 0.270756, 0.924596, 0, 0.959698, -0.281035, -0.963425, 0.0753113, 0.257178, -7.78107, -37.3398, -22.7863)
+
+[node name="road_light4" parent="." instance=ExtResource("3_fnaui")]
+transform = Transform3D(-0.582735, 0.44202, -0.681937, 0.455512, 0.872588, 0.176349, 0.673, -0.207866, -0.709833, -181.279, -48.2905, -203.827)
+
+[node name="road_loop" parent="." instance=ExtResource("4_o0vby")]
+transform = Transform3D(0.92446, -0.38128, 0, 0.38128, 0.92446, 0, 0, 0, 1, -334.109, -175.754, -48.3696)
+
+[node name="road_ramp" parent="." instance=ExtResource("5_3yqfe")]
+transform = Transform3D(0.873857, -0.486183, 0, 0.449174, 0.807339, -0.382683, 0.186054, 0.334411, 0.92388, -181.489, -79.832, -69.2094)
+
+[node name="road_triangle" parent="." instance=ExtResource("6_jhmg7")]
+transform = Transform3D(1, 0, 0, 0, 0.784647, 0.619943, 0, -0.619943, 0.784647, -168.005, -117.666, -48.2454)
+
+[node name="bridge_big3" parent="." instance=ExtResource("1_mli1a")]
+transform = Transform3D(-0.672328, 0.383593, 0.633113, 0, 0.855265, -0.518191, -0.740253, -0.348394, -0.575018, -257.576, -87.7614, 339.527)
+
+[node name="bridge_big4" parent="." instance=ExtResource("1_mli1a")]
+transform = Transform3D(-0.64418, 0.218951, 0.732866, -0.286324, 0.819457, -0.496496, -0.709261, -0.52967, -0.465187, -46.0861, 1.37874, 628.482)
+
+[node name="bridge_small2" parent="." instance=ExtResource("2_v7hjw")]
+transform = Transform3D(0.501239, -0.415045, 0.759274, 0.439597, 0.877933, 0.189705, -0.745328, 0.238687, 0.622506, -375.944, -177.995, 310.838)
+
+[node name="road_light5" parent="." instance=ExtResource("3_fnaui")]
+transform = Transform3D(0.493031, 0.244504, 0.834948, -7.07732e-09, 0.959697, -0.281035, -0.870012, 0.138559, 0.473161, -213.672, -37.3397, 297.013)
+
+[node name="road_light6" parent="." instance=ExtResource("3_fnaui")]
+transform = Transform3D(-0.672328, 0.208037, 0.710419, 0, 0.959698, -0.281035, -0.740253, -0.188948, -0.645231, -371.54, -37.3397, 63.3559)
+
+[node name="road_light7" parent="." instance=ExtResource("3_fnaui")]
+transform = Transform3D(-0.893348, -0.126288, -0.431255, 0, 0.959698, -0.281035, 0.449366, -0.251062, -0.857344, -359.689, -37.3397, 39.0052)
+
+[node name="road_light8" parent="." instance=ExtResource("3_fnaui")]
+transform = Transform3D(0.88998, -0.451056, -0.0669713, 0.455512, 0.872588, 0.176349, -0.0211047, -0.187453, 0.982047, -377.058, -48.2904, 289.156)
+
+[node name="road_loop2" parent="." instance=ExtResource("4_o0vby")]
+transform = Transform3D(-0.62154, 0.256345, 0.740253, 0.38128, 0.92446, 0, -0.684334, 0.282244, -0.672328, -159.228, -175.754, 297.771)
+
+[node name="road_ramp2" parent="." instance=ExtResource("5_3yqfe")]
+transform = Transform3D(-0.449791, 0.574423, 0.683905, 0.449174, 0.807339, -0.382683, -0.771965, 0.135065, -0.62115, -277.265, -79.8319, 198.805)
+
+[node name="road_triangle2" parent="." instance=ExtResource("6_jhmg7")]
+transform = Transform3D(-0.672328, -0.458915, 0.580837, 0, 0.784647, 0.619943, -0.740253, 0.416805, -0.52754, -270.812, -117.666, 174.729)
+
+[node name="bridge_big5" parent="." instance=ExtResource("1_mli1a")]
+transform = Transform3D(0.711057, 0.364358, 0.601366, 0, 0.855265, -0.518191, -0.703134, 0.368464, 0.608142, 110.636, -87.7613, 79.8133)
+
+[node name="bridge_big6" parent="." instance=ExtResource("1_mli1a")]
+transform = Transform3D(0.681287, 0.538484, 0.495866, -0.286324, 0.819457, -0.496496, -0.673696, 0.196278, 0.712467, -169.085, 1.37886, 303.374)
+
+[node name="bridge_small3" parent="." instance=ExtResource("2_v7hjw")]
+transform = Transform3D(0.765926, -0.256083, -0.589727, 0.439596, 0.877933, 0.189705, 0.46916, -0.404542, 0.785006, 134.276, -177.994, -39.6653)
+
+[node name="road_light9" parent="." instance=ExtResource("3_fnaui")]
+transform = Transform3D(0.890149, -0.128059, -0.437305, -7.07732e-09, 0.959698, -0.281035, 0.455669, 0.250163, 0.854274, 154.974, -37.3396, 121.874)
+
+[node name="road_light10" parent="." instance=ExtResource("3_fnaui")]
+transform = Transform3D(0.711057, 0.197606, 0.674796, -1.01217e-09, 0.959698, -0.281035, -0.703134, 0.199832, 0.6824, 381.722, -37.3396, -45.7676)
+
+[node name="road_light11" parent="." instance=ExtResource("3_fnaui")]
+transform = Transform3D(-0.486869, 0.245477, 0.838272, -6.65596e-09, 0.959697, -0.281035, -0.873475, -0.136827, -0.467247, 406.553, -37.3396, -34.9604)
+
+[node name="road_light12" parent="." instance=ExtResource("3_fnaui")]
+transform = Transform3D(0.0588508, 0.168144, -0.984004, 0.455512, 0.872588, 0.176349, 0.888282, -0.458604, -0.0252391, 155.891, -48.2903, -41.6987)
+
+[node name="road_loop3" parent="." instance=ExtResource("4_o0vby")]
+transform = Transform3D(0.657344, -0.271112, 0.703134, 0.38128, 0.92446, 0, -0.650019, 0.268091, 0.711057, 156.527, -175.753, 176.301)
+
+[node name="road_ramp3" parent="." instance=ExtResource("5_3yqfe")]
+transform = Transform3D(0.752183, -0.110568, 0.649611, 0.449174, 0.807339, -0.382683, -0.482144, 0.579637, 0.656931, 250.395, -79.8318, 54.1703)
+
+[node name="road_triangle3" parent="." instance=ExtResource("6_jhmg7")]
+transform = Transform3D(0.711057, -0.435903, 0.551712, -2.00369e-08, 0.784647, 0.619943, -0.703134, -0.440815, 0.557929, 274.724, -117.666, 59.5959)

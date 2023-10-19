@@ -32,7 +32,7 @@ radial_segments = 6
 rings = 6
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_v5ec8"]
-radius = 4.34226
+radius = 7.96327
 
 [node name="xp_point" type="Node3D"]
 script = ExtResource("1_emd3g")
