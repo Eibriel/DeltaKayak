@@ -13,7 +13,7 @@ var parent: Node3D
 var time_alive:= 0.0
 
 # Set outside
-var DAMAGE: int = 2
+#var DAMAGE: float = 2
 var DISTANCE: float = 1*1*1 # Squared distance
 var SPEED: float = 3
 var DIRECTION: Vector3 = Vector3.FORWARD
@@ -32,7 +32,7 @@ func _process(delta):
 func set_direction(_direction: Vector3) -> void:
 	DIRECTION = _direction.normalized()
 
-func set_speed(value: int) -> void:
+func set_speed(value: float) -> void:
 	SPEED = value
 
 func set_mode(mode: int) -> void:

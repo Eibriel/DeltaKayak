@@ -1,12 +1,12 @@
 extends AttackingComponent
 
-var SPEED = 140
+var SPEED = 100
 var LOOK_PLAYER = false
-var DAMAGE = 1
 
 func _ready():
-	POWER = 5
-	HEALTH = 1
+	POWER = 10
+	HEALTH = 15
+	XP = 2
 
 	#var anim = $tires001/AnimationPlayer
 	#anim.get_animation("TiresIdle").set_loop_mode(Animation.LOOP_LINEAR)

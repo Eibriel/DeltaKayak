@@ -8,7 +8,7 @@ extends Node3D
 @onready var pu_button_2 := %LevelUpButton2
 @onready var pu_button_3 := %LevelUpButton3
 
-const CLAIM_DISTANCE = 2*2*2 # Squared distance
+const CLAIM_DISTANCE = 2*2*2 # Squared distanceg
 
 var last_enemy_spawn := 9999.0
 
@@ -16,147 +16,8 @@ var needed_xp := 0
 
 var wave_time := 60.0
 var wave_quota := 15
-var used_powerups = ["laser"]
-var powerups = {
-	# Attacks
-	"snowplow": {
-		"type": "attack",
-		"name": "Snowplow",
-		"description": "Push enemies around",
-		"requires": "",
-	},
-	"fireball": {
-		"type": "attack",
-		"name": "Fireball",
-		"description": "Fireballs hitting a random enemy",
-		"requires": "",
-	},
-	"laser": {
-		"type": "attack",
-		"name": "Laser",
-		"description": "A laser rotating around the character",
-		"requires": "",
-	},
-	"lighthouse": {
-		"type": "attack",
-		"name": "Lighthouse",
-		"description": "A rotating light",
-		"requires": "",
-	},
-	"peace_meteor": {
-		"type": "attack",
-		"name": "Peace Meteor",
-		"description": "Meteors falling from the sky",
-		"requires": "",
-	},
-	
-	# PowerUps
-	"might": {
-		"type": "powerup",
-		"name": "Might",
-		"description": "Increases inflicted damage by 5%",
-		"requires": "",
-		"stat": "might",
-		"adds": 5,
-		"ranks": 5,
-		"current_rank": 0
-	},
-	"armor": {
-		"type": "powerup",
-		"name": "Armor",
-		"description": "Increases Armor by 1",
-		"requires": "",
-		"stat": "armor",
-		"adds": 1,
-		"ranks": 3,
-		"current_rank": 0
-	},
-	"max_health": {
-		"type": "powerup",
-		"name": "Max Health",
-		"description": "Increases Max Health by 10%",
-		"requires": "",
-		"stat": "max_health",
-		"adds": 10,
-		"ranks": 3,
-		"current_rank": 0
-	},
-	"recovery": {
-		"type": "powerup",
-		"name": "Recovery",
-		"description": "Recovers additional 0.1 per second",
-		"requires": "",
-		"stat": "recovery",
-		"adds": 0.1,
-		"ranks": 3,
-		"current_rank": 0
-	},
-	"cooldown": {
-		"type": "powerup",
-		"name": "Colldown",
-		"description": "Colldown reduced by 2.5%",
-		"requires": "",
-		"stat": "cooldown",
-		"adds": -2.5,
-		"ranks": 2,
-		"current_rank": 0
-	},
-	"area": {
-		"type": "powerup",
-		"name": "Area",
-		"description": "Increases area by 5%",
-		"requires": "",
-		"stat": "area",
-		"adds": 5,
-		"ranks": 2,
-		"current_rank": 0
-	},
-	"speed": {
-		"type": "powerup",
-		"name": "Speed",
-		"description": "Projectile speed increased by 10%",
-		"requires": "",
-		"stat": "area",
-		"adds": 10,
-		"ranks": 2,
-		"current_rank": 0
-	},
-	# Duration
-	# Amount
-	"move_speed": {
-		"type": "powerup",
-		"name": "Move Speed",
-		"description": "Character speed increased by 5%",
-		"requires": "",
-		"stat": "move_speed",
-		"adds": 5,
-		"ranks": 2,
-		"current_rank": 0
-	},
-	"magnet": {
-		"type": "powerup",
-		"name": "Magnet",
-		"description": "Item pickup area increased by 25%",
-		"requires": "",
-		"stat": "magnet",
-		"adds": 25,
-		"ranks": 2,
-		"current_rank": 0
-	},
-	# Luck
-	"growth": {
-		"type": "powerup",
-		"name": "Growth",
-		"description": "XP drops value increase by 3%",
-		"requires": "",
-		"stat": "growth",
-		"adds": 3,
-		"ranks": 5,
-		"current_rank": 0
-	}
-}
-
-
+var current_wave := 7
+var boss_spawned := false
 
 func pause():
 	player.about_to_pause()
@@ -178,12 +39,15 @@ func levelup():
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 	
 	var available_powerups := []
-	for p in powerups:
-		if used_powerups.has(p): continue
-		if powerups[p].requires != "":
-			if not used_powerups.has(powerups[p].requires): continue
-			if powerups[p].type == "powerup":
-				if powerups[p].current_rank >= powerups[p].ranks -1:
+	for p in Global.powerups:
+		#if used_powerups.has(p): continue
+		if Global.powerups[p].requires != "":
+			#if not used_powerups.has(Global.powerups[p].requires): continue
+			if Global.powerups[p].type == "attack":
+				if Global.powerups[p].current_level >= Global.powerups[p].levels -1:
+					continue
+			if Global.powerups[p].type == "powerup":
+				if Global.powerups[p].current_rank >= Global.powerups[p].ranks -1:
 					continue
 		available_powerups.append(p)
 	available_powerups.shuffle()
@@ -199,14 +63,16 @@ func levelup():
 	]
 	for n in range(min(3, available_powerups.size()+1)):
 		var select_powerup = available_powerups.pop_back()
-		buttons[n].text = powerups[select_powerup].name
-		labels[n].text = powerups[select_powerup].description
+		buttons[n].text = Global.powerups[select_powerup].name
+		labels[n].text = Global.powerups[select_powerup].description
 		buttons[n].set_meta("powerup", select_powerup)
 
 func _ready():
 	$PauseMenu.hide()
 	$LevelUpMenu.hide()
 	$StatsMenu.hide()
+	%PaddleLeft.hide()
+	%PaddleRight.hide()
 	Global.player = player
 	Global.enemies_node = enemies
 	player.connect("damage_update", _on_damage_update)
@@ -231,10 +97,15 @@ func _process(delta):
 	last_enemy_spawn += delta
 	wave_time -= delta
 	if wave_time < 0:
+		current_wave += 1
+		if current_wave >= Global.waves.size():
+			current_wave = 0
+		boss_spawned = false
+		print(current_wave)
 		wave_time = 60.0
-		wave_quota = randi_range(20, 150)
-	if enemies.get_children().size() >= wave_quota: return
-	if last_enemy_spawn > 0.1:
+		wave_quota = Global.waves[current_wave].min
+	if enemies.get_children().size() >= wave_quota*100: return
+	if last_enemy_spawn > Global.waves[current_wave].time:
 		last_enemy_spawn = 0.0
 		spawn_enemy()
 	#check_collisions()
@@ -246,8 +117,20 @@ func _input(event):
 func start_level():
 	if Global.player_level != 1:
 		levelup()
+		pass
 	if Global.player_level == 1:
-		equip_weapon("laser")
+		#equip_weapon("snowplow")
+		#equip_weapon("fireball")
+		#equip_weapon("fireball")
+		#equip_weapon("laser")
+		#equip_weapon("lighthouse")
+		#equip_weapon("peace_meteor")
+		#equip_weapon("peace_meteor")
+		#equip_weapon("peace_meteor")
+		#equip_weapon("peace_meteor")
+		#equip_weapon("peace_meteor")
+		#equip_weapon("peace_meteor")
+		pass
 	needed_xp = Global.level_xp(Global.player_level)
 	update_xp()
 
@@ -256,7 +139,7 @@ func update_time(delta):
 	Global.player_time += delta
 	var minutes = (Global.player_time/60) as int
 	var seconds = Global.player_time - (minutes*60)
-	%TimeLabel.text = "%d:%d" % [minutes, seconds]
+	%TimeLabel.text = "%02d:%02d" % [minutes, seconds]
 	# TODO move to other place
 	%KillsLabel.text = "%d K" % Global.player_kills
 
@@ -284,8 +167,13 @@ func load_enemies():
 		var enemy = load("res://enemies/%s.tscn" % e)
 
 func spawn_enemy():
-	var enemy_list = Global.enemies.pick_random()
-	var enemy = load("res://enemies/%s.tscn" % enemy_list)
+	var random_enemy: String
+	if Global.waves[current_wave].has("bosses") and not boss_spawned:
+		random_enemy = Global.waves[current_wave].bosses.pick_random()
+		boss_spawned = true
+	else:
+		random_enemy = Global.waves[current_wave].enemies.pick_random()
+	var enemy = load("res://enemies/%s.tscn" % random_enemy)
 	var e = enemy.instantiate()
 	enemies.add_child(e)
 	
@@ -309,10 +197,14 @@ func spawn_enemy():
 	var p = [0, 0, 0, 1, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3].pick_random()
 	e.global_position = lerp(corner_intersections[p], corner_intersections[p+1], randf()) + Vector3(0, 1, 0)
 
+var weapon_nodes: = {}
 func equip_weapon(_weapon: String):
-	var weapon = load("res://weapons/%s.tscn" % _weapon)
-	var w = weapon.instantiate()
-	Global.player.add_weapon(w)
+	Global.powerups[_weapon].current_level += 1
+	if Global.powerups[_weapon].current_level == 1:
+		var weapon = load("res://weapons/%s.tscn" % _weapon)
+		var w = weapon.instantiate()
+		weapon_nodes[_weapon] = w
+		Global.player.add_weapon(w)
 
 func _exit_tree():
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
@@ -333,20 +225,29 @@ func _on_damage_update(damage:float):
 
 func _on_paddle_left(level:float):
 	damage_texture.material.set_shader_parameter("paddle_left", level)
+	if level > 0:
+		%PaddleLeft.show()
+	else:
+		%PaddleLeft.hide()
 	
 func _on_paddle_right(level:float):
 	damage_texture.material.set_shader_parameter("paddle_right", level)
+	if level > 0:
+		%PaddleRight.show()
+	else:
+		%PaddleRight.hide()
 
 
-func _on_dropped_item(item_id: int, amount: int, pos: Vector3):
+func _on_dropped_item(item_id: int, amount: float, pos: Vector3):
 	match item_id:
 		Global.ITEMS.XP:
 			var xp = preload("res://elements/xp_point.tscn").instantiate()
 			xp.position = pos
+			xp.XP = amount
 			$Items.add_child(xp)
 
 
-func _on_claimed_item(item_id: int, amount: int):
+func _on_claimed_item(item_id: int, amount: float):
 	match item_id:
 		Global.ITEMS.XP:
 			Global.player_xp += amount
@@ -355,9 +256,6 @@ func _on_claimed_item(item_id: int, amount: int):
 				Global.player_xp -= needed_xp
 				Global.player_level += 1
 				start_level()
-
-
-
 
 
 func planeRayIntersection(rayVector: Vector3, rayPoint: Vector3, planePoint: Vector3, planeNormal: Vector3):
@@ -383,8 +281,8 @@ func _on_select_levelup(button):
 	$StatsMenu.hide()
 	Input.mouse_mode = Input.MOUSE_MODE_HIDDEN
 	var p = button.get_meta("powerup")
-	if powerups[p].type == "powerup":
-		Global.player_modifiers[powerups[p].stat] += powerups[p].adds
-	elif powerups[p].type == "attack":
-		used_powerups.append(p)
+	if Global.powerups[p].type == "powerup":
+		Global.player_modifiers[Global.powerups[p].stat] += Global.powerups[p].adds
+	elif Global.powerups[p].type == "attack":
+		#used_powerups.append(p)
 		equip_weapon(p)

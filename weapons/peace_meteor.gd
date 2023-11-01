@@ -2,10 +2,10 @@ extends AttackingComponent
 
 @onready var hitbox = $Hitbox
 
-var DAMAGE = 10
 var COOLDOWN = 3.0
 
 func _ready():
+	POWER = 10
 	reposition()
 	rebuild_tween()
 
@@ -16,6 +16,10 @@ func rebuild_tween():
 	tween.tween_callback(reposition)
 	var modified_time: float = 0.2 * (Global.player_modifiers.speed * 0.01)
 	tween.tween_property(hitbox, "position:y", -1, modified_time)
+	tween.tween_callback(func():
+		$Hitbox/GPUParticles3D.emitting = true
+		$AudioStreamPlayer3D.play()
+		)
 	tween.tween_property(hitbox, "position:y", 0, 0.5)
 	tween.tween_property(hitbox, "position:y", -60, 3)
 	tween.set_parallel()

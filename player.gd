@@ -42,7 +42,7 @@ var stopped := true
 var holding := false
 
 #var max_life := 100
-var life := 100
+var life:float = 100.0
 var recovery_life := 0.0
 var recovery_time := 0.0
 
@@ -104,12 +104,9 @@ func _process(delta):
 	recovery_time += delta
 	if recovery_time >= 1.0:
 		recovery_time = 0.0
-		recovery_life += Global.player_modifiers.recovery
-		if recovery_life >= 1.0:
-			recovery_life -= 1.0
-			life += 1
-			if life > Global.player_modifiers.max_health:
-				life = Global.player_modifiers.max_health
+		life += Global.player_modifiers.recovery
+		if life > Global.player_modifiers.max_health:
+			life = Global.player_modifiers.max_health
 
 func _physics_process(delta):
 	var new_state = false
@@ -238,21 +235,24 @@ func play_animation(anim: String):
 			character_animation.seek(0.6)
 
 
-func receive_attack(damage:int):
+func receive_attack(damage:float):
 	damage -= Global.player_modifiers.armor
-	var modified_max_life = Global.player_modifiers.max_health
+	if damage < 0.:
+		damage = 0.
+	prints("DAMAGE:", damage)
+	var modified_max_life: float = Global.player_modifiers.max_health
 	life -= damage
-	if life < 0:
-		life = 0
-	var damage_level = 1.0 - (float(life)/float(modified_max_life))
+	if life < 0.:
+		life = 0.
+	var damage_level: float = 1. - (life/modified_max_life)
 	#print(damage_level)
 	var tween = create_tween()
 	tween.set_parallel()
-	#tween.tween_property(kayak_material, "emission", Color.RED, 0.1)
+	tween.tween_property(kayak_material, "emission", Color.RED, 0.1)
 	tween.tween_property(character_material, "emission", Color.RED, 0.1)
 	tween.set_parallel(false)
 	tween.tween_property(character_material, "emission", Color.BLACK, 0.1)
-	#tween.tween_property(kayak_material, "emission", Color.BLACK, 0.1)
+	tween.tween_property(kayak_material, "emission", Color.BLACK, 0.1)
 	emit_signal("damage_update", damage_level)
 	emit_signal("received_attack")
 
@@ -269,27 +269,52 @@ func set_kayak(kayak_id: int):
 	var water_material = $Water.material
 	match kayak_id:
 		KAYAKS.NORMAL_PINK:
+			kayak_material = $Normal.mesh.surface_get_material(0)
 			$Normal.visible = true
 			$OmniLight3D2.light_color = Color(0.85, 0.41, 0.64)
 			$OmniLight3D3.light_color = Color(0.98, 0.85, 0.89)
 			particle_material.albedo_color = Color(0.54, 0.15, 0.31)
+			kayak_material.albedo_color = Color(0.54, 0.15, 0.31)
 			water_material.set_shader_parameter("albedo", Color(0.29, 0.01, 0.2))
 		KAYAKS.NORMAL_GREEN:
+			kayak_material = $Normal.mesh.surface_get_material(0)
 			$Normal.visible = true
 			$OmniLight3D2.light_color = Color(0.42, 0.85, 0.41)
 			$OmniLight3D3.light_color = Color(0.9, 0.98, 0.84)
+			particle_material.albedo_color = Color(0.15, 0.54, 0.24)
+			kayak_material.albedo_color = Color(0.15, 0.54, 0.24)
+			water_material.set_shader_parameter("albedo", Color(0.01, 0.29, 0.04))
 		KAYAKS.NORMAL_CIAN:
+			kayak_material = $Normal.mesh.surface_get_material(0)
 			$Normal.visible = true
+			$OmniLight3D2.light_color = Color(0.41, 0.83, 0.85)
+			$OmniLight3D3.light_color = Color(0.84, 0.97, 0.98)
+			particle_material.albedo_color = Color(0.15, 0.51, 0.54)
+			kayak_material.albedo_color = Color(0.15, 0.51, 0.54)
+			water_material.set_shader_parameter("albedo", Color(0.01, 0.27, 0.29))
 		KAYAKS.NORMAL_VIOLET:
+			kayak_material = $Normal.mesh.surface_get_material(0)
 			$Normal.visible = true
+			$OmniLight3D2.light_color = Color(0.66, 0.41, 0.85)
+			$OmniLight3D3.light_color = Color(0.92, 0.84, 0.98)
+			particle_material.albedo_color = Color(0.38, 0.15, 0.54)
+			kayak_material.albedo_color = Color(0.38, 0.15, 0.54)
+			water_material.set_shader_parameter("albedo", Color(0.19, 0.01, 0.29))
+			
 		KAYAKS.BANANA:
+			kayak_material = $Banana.mesh.surface_get_material(0)
 			$Banana.visible = true
 			$OmniLight3D2.light_color = Color(0.85, 0.8, 0.41)
 			$OmniLight3D3.light_color = Color(0.98, 0.93, 0.84)
 			particle_material.albedo_color = Color(0.54, 0.51, 0.15)
 			water_material.set_shader_parameter("albedo", Color(0.29, 0.21, 0.01))
 		KAYAKS.HOTDOG:
+			kayak_material = $Hotdog.mesh.surface_get_material(1)
 			$Hotdog.visible = true
+			$OmniLight3D2.light_color = Color(0.85, 0.69, 0.41)
+			$OmniLight3D3.light_color = Color(0.98, 0.92, 0.84)
+			particle_material.albedo_color = Color(0.32, 0.27, 0.11)
+			water_material.set_shader_parameter("albedo", Color(0.11, 0.14, 0.05))
 
 func about_to_pause():
 	set_paddle_state(0)

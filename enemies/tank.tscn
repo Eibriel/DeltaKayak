@@ -12,7 +12,7 @@
 size = Vector3(1.06801, 1.36981, 2.56814)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_cweve"]
-size = Vector3(1.75425, 1.5062, 2.08852)
+size = Vector3(3.01847, 1.5062, 3.51644)
 
 [node name="Tank" type="Node3D"]
 script = ExtResource("1_imngt")
@@ -28,11 +28,12 @@ script = ExtResource("3_xrxu0")
 [node name="KnockbackComponent" type="Node3D" parent="."]
 script = ExtResource("5_73oqi")
 
-[node name="tank" parent="." instance=ExtResource("4_t4yyj")]
-transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, -0.828472, 0)
-
 [node name="SoftCollisionComponent" type="Node3D" parent="."]
 script = ExtResource("7_3abkk")
+
+[node name="tank" parent="." instance=ExtResource("4_t4yyj")]
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, -0.828472, 0)
+visible = false
 
 [node name="Hitbox" type="Area3D" parent="."]
 collision_layer = 4
@@ -45,6 +46,8 @@ shape = SubResource("BoxShape3D_u40fa")
 [node name="Collisionbox" type="Area3D" parent="."]
 collision_layer = 16
 collision_mask = 16
+monitoring = false
+monitorable = false
 priority = -5
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Collisionbox"]

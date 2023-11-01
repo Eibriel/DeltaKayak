@@ -7,8 +7,12 @@ class_name SoftCollisionComponent
 var parent: Node3D
 var collisionbox: Area3D
 var colliding_nodes: Array[Node3D]
+var push_amount := 0
+var push_direction: Vector3
 
 var SPEED := 0.5
+
+const MAX_PUSHES := 10
 
 func _ready():
 	parent = get_parent_node_3d()
@@ -20,11 +24,15 @@ func _ready():
 func _physics_process(delta):
 	if not parent.MOVING: return
 	if colliding_nodes.size() == 0: return
-	#for node in colliding_nodes:
-	var node = colliding_nodes.pick_random()
-	var target_position: Vector3 = node.global_position
-	var player_direction = target_position.direction_to(parent.global_position)
-	parent.global_position += player_direction.normalized()*delta*SPEED*0.01
+	if push_amount <= 0:
+		var node = colliding_nodes.pick_random()
+		var target_position: Vector3 = node.global_position
+		var player_direction = target_position.direction_to(parent.global_position)
+		push_direction = player_direction.normalized()
+		push_amount = MAX_PUSHES
+	
+	parent.global_position += push_direction*delta*SPEED*0.05
+	push_amount -= 1
 
 func _on_collisionbox_area_entered(area):
 	var node = area.get_parent_node_3d()

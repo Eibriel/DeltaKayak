@@ -12,7 +12,7 @@
 size = Vector3(2.97543, 1.74571, 2.72739)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_i6m67"]
-size = Vector3(2.71326, 1.60887, 2.55106)
+size = Vector3(4.67201, 1.60887, 4.59655)
 
 [node name="Tires" type="Node3D"]
 script = ExtResource("1_prj21")
@@ -33,6 +33,7 @@ script = ExtResource("6_uu7pk")
 
 [node name="tires001" parent="." instance=ExtResource("4_kc8ba")]
 transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0.250117, -0.874761, 0.0553942)
+visible = false
 
 [node name="Hitbox" type="Area3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.417213, 0)
@@ -48,6 +49,8 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.417213, 0)
 collision_layer = 16
 collision_mask = 16
 input_ray_pickable = false
+monitoring = false
+monitorable = false
 priority = -5
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Collisionbox"]

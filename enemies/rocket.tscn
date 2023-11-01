@@ -1,0 +1,54 @@
+[gd_scene load_steps=10 format=3 uid="uid://lrwypeps355x"]
+
+[ext_resource type="Script" path="res://enemies/rocket.gd" id="1_wv3lq"]
+[ext_resource type="Script" path="res://components/damage.gd" id="2_cp2u2"]
+[ext_resource type="Script" path="res://components/follow_player.gd" id="3_mq5ck"]
+[ext_resource type="PackedScene" uid="uid://c0hf7iuyad4ja" path="res://components/particle_splash.tscn" id="4_dpyjh"]
+[ext_resource type="Script" path="res://components/knockback.gd" id="5_u682u"]
+[ext_resource type="Script" path="res://components/soft_collision.gd" id="6_t4g80"]
+[ext_resource type="PackedScene" uid="uid://bpp8iscnuewlb" path="res://models/enemies/rocket.glb" id="8_3pqht"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_u40fa"]
+size = Vector3(1.93074, 1.36981, 1.91444)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_cweve"]
+size = Vector3(4.27772, 1.5062, 4.51131)
+
+[node name="Rocket" type="Node3D"]
+script = ExtResource("1_wv3lq")
+
+[node name="DamageComponent" type="Node3D" parent="."]
+script = ExtResource("2_cp2u2")
+
+[node name="FollowPlayerComponent" type="Node3D" parent="."]
+script = ExtResource("3_mq5ck")
+
+[node name="particle_splash" parent="." instance=ExtResource("4_dpyjh")]
+
+[node name="KnockbackComponent" type="Node3D" parent="."]
+script = ExtResource("5_u682u")
+
+[node name="SoftCollisionComponent" type="Node3D" parent="."]
+script = ExtResource("6_t4g80")
+
+[node name="rocket" parent="." instance=ExtResource("8_3pqht")]
+transform = Transform3D(1, 0, 0, 0, 0.80913, 0.58763, 0, -0.58763, 0.80913, -0.325233, -1.09772, 0.342487)
+visible = false
+
+[node name="Hitbox" type="Area3D" parent="."]
+collision_layer = 4
+input_ray_pickable = false
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Hitbox"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.364901, 0.0717181)
+shape = SubResource("BoxShape3D_u40fa")
+
+[node name="Collisionbox" type="Area3D" parent="."]
+collision_layer = 16
+collision_mask = 16
+monitoring = false
+monitorable = false
+priority = -5
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Collisionbox"]
+shape = SubResource("BoxShape3D_cweve")

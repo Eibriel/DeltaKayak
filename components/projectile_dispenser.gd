@@ -18,10 +18,10 @@ var parent: Node3D
 var hit_enemies := {}
 
 # Set this parameters on the Weapon!
-var DAMAGE = 2
+var DAMAGE: float = 2.0
 #var DISTANCE = 10
-var COOLDOWN = 0.8
-var HITBOX_DELAY = 1
+var COOLDOWN: float = 0.8
+var HITBOX_DELAY: float = 1
 var MODE = MODES.ORBITING
 
 func _ready():

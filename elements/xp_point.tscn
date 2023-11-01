@@ -1,8 +1,9 @@
-[gd_scene load_steps=9 format=3 uid="uid://d4akxb8ybxldd"]
+[gd_scene load_steps=11 format=3 uid="uid://d4akxb8ybxldd"]
 
 [ext_resource type="Script" path="res://elements/xp_point.gd" id="1_emd3g"]
 [ext_resource type="Script" path="res://components/claim.gd" id="2_3keri"]
 [ext_resource type="PackedScene" uid="uid://d3one2fmirpyp" path="res://models/lotus001.glb" id="2_7isdd"]
+[ext_resource type="AudioStream" uid="uid://bnuxx8rrj2cfe" path="res://sounds/TinCoin.mp3" id="4_binkk"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_52xcc"]
 albedo_color = Color(0.168627, 1, 1, 1)
@@ -33,6 +34,11 @@ rings = 6
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_v5ec8"]
 radius = 7.96327
+
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_myucu"]
+streams_count = 1
+stream_0/stream = ExtResource("4_binkk")
+stream_0/weight = 1.0
 
 [node name="xp_point" type="Node3D"]
 script = ExtResource("1_emd3g")
@@ -67,3 +73,7 @@ monitorable = false
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Hitbox"]
 shape = SubResource("SphereShape3D_v5ec8")
+
+[node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="."]
+stream = SubResource("AudioStreamRandomizer_myucu")
+bus = &"FX"

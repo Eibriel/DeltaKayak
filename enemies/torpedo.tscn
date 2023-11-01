@@ -12,7 +12,7 @@
 size = Vector3(0.750121, 1.36981, 2.8191)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_xpg5x"]
-size = Vector3(1.05753, 1.48013, 2.92412)
+size = Vector3(2.27523, 1.48013, 3.44901)
 
 [node name="Torpedo" type="Node3D"]
 script = ExtResource("1_1tejg")
@@ -33,6 +33,7 @@ script = ExtResource("6_bsrh6")
 
 [node name="torpedo001" parent="." instance=ExtResource("4_jpcq1")]
 transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0)
+visible = false
 
 [node name="Hitbox" type="Area3D" parent="."]
 collision_layer = 4
@@ -46,6 +47,8 @@ shape = SubResource("BoxShape3D_u40fa")
 collision_layer = 16
 collision_mask = 16
 input_ray_pickable = false
+monitoring = false
+monitorable = false
 priority = -5
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Collisionbox"]

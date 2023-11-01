@@ -1,12 +1,14 @@
-[gd_scene load_steps=19 format=3 uid="uid://dm0vfm6e713yh"]
+[gd_scene load_steps=21 format=3 uid="uid://dm0vfm6e713yh"]
 
 [ext_resource type="PackedScene" uid="uid://nr6v23qqk8cq" path="res://player.tscn" id="1_hx60n"]
 [ext_resource type="Script" path="res://main.gd" id="1_vakhf"]
 [ext_resource type="Shader" path="res://shaders/damage.gdshader" id="2_o2ish"]
 [ext_resource type="Texture2D" uid="uid://dlywgj4my3hsj" path="res://images/lense_drops.jpeg" id="3_1dtfm"]
+[ext_resource type="Texture2D" uid="uid://b2w6ifdxd2jkp" path="res://images/paddle.png" id="4_orv4b"]
 [ext_resource type="AudioStream" uid="uid://caeipbtmk04k2" path="res://sounds/river.mp3" id="7_kc7ja"]
 [ext_resource type="PackedScene" uid="uid://hh7yay58utkb" path="res://levels/level_roads.tscn" id="8_d001q"]
 [ext_resource type="AudioStream" uid="uid://cwpo3iwwniwbe" path="res://sounds/kayak.mp3" id="8_tlc1p"]
+[ext_resource type="AudioStream" uid="uid://crmux8m833h8s" path="res://music/C33-01_reduced.mp3" id="8_vxodl"]
 [ext_resource type="PackedScene" uid="uid://bsooagmcbjwpj" path="res://levels/level_temple.tscn" id="9_3nvj0"]
 [ext_resource type="PackedScene" uid="uid://bswt35i3mdia2" path="res://levels/level_hauses.tscn" id="10_0yiw2"]
 
@@ -166,6 +168,7 @@ anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
 offset_left = -46.0
+offset_top = 7.0
 offset_right = -5.0
 offset_bottom = 26.0
 grow_horizontal = 0
@@ -185,6 +188,29 @@ offset_bottom = 57.0
 grow_horizontal = 0
 text = "0 K"
 horizontal_alignment = 2
+
+[node name="PaddleLeft" type="TextureRect" parent="Control"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 36.0
+offset_top = 397.0
+offset_right = 127.0
+offset_bottom = 443.011
+texture = ExtResource("4_orv4b")
+expand_mode = 5
+stretch_mode = 4
+
+[node name="PaddleRight" type="TextureRect" parent="Control"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 602.0
+offset_top = 450.0
+offset_right = 693.0
+offset_bottom = 496.011
+rotation = 3.14159
+texture = ExtResource("4_orv4b")
+expand_mode = 5
+stretch_mode = 4
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(-0.866025, -0.433013, 0.25, 0, 0.5, 0.866025, -0.5, 0.75, -0.433013, 0, 0, 0)
@@ -206,6 +232,10 @@ visibility_aabb = AABB(-4, -1.1109, -4, 8, 2.2218, 8)
 process_material = SubResource("ParticleProcessMaterial_m7qls")
 draw_pass_1 = SubResource("QuadMesh_hxajk")
 
+[node name="AudioListener3D" type="AudioListener3D" parent="Player"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.44465, 0)
+current = true
+
 [node name="Node3D2" type="Node3D" parent="Player"]
 top_level = true
 
@@ -224,6 +254,12 @@ volume_db = -9.768
 autoplay = true
 bus = &"River"
 
+[node name="MusicPlayer" type="AudioStreamPlayer" parent="."]
+process_mode = 3
+stream = ExtResource("8_vxodl")
+autoplay = true
+bus = &"Music"
+
 [node name="Enemies" type="Node3D" parent="."]
 
 [node name="Items" type="Node3D" parent="."]
@@ -238,6 +274,7 @@ visible = false
 
 [node name="StatsMenu" type="Control" parent="."]
 process_mode = 2
+visible = false
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -262,7 +299,7 @@ anchor_left = 0.0140625
 anchor_top = 0.11875
 anchor_right = 0.190625
 anchor_bottom = 0.89375
-theme_override_font_sizes/normal_font_size = 10
+theme_override_font_sizes/normal_font_size = 15
 metadata/_edit_use_anchors_ = true
 
 [node name="PauseMenu" type="Control" parent="."]

@@ -25,6 +25,12 @@ window/size/viewport_width=640
 window/size/viewport_height=480
 window/stretch/mode="viewport"
 
+[gui]
+
+fonts/dynamic_fonts/use_oversampling=false
+theme/custom_font="res://fonts/m6x11.ttf"
+theme/default_font_antialiasing=0
+
 [input]
 
 paddle_right={

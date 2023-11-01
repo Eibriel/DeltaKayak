@@ -9,17 +9,19 @@ var MOVING := true
 var ALIVE := true
 var DIE_ON_ATTACK := false
 
-# Set this parameters on the Enemy!
-var HEALTH: int = 1
-var POWER: int = 5
-var KB_FORCE: int = 1 # knockback to player
-var KB_RESISTANCE: int = 3 # knockback resistance
-var XP: int = 1 # XP to drop
+# Set this parameters on the Enemy/Weapon!
+var HEALTH: float = 1.
+var POWER: float = 5.
+var KB_FORCE: float = 1. # knockback to player
+var KB_RESISTANCE: float = 3. # knockback resistance
+var XP: float = 1. # XP to drop
 
-func receive_attack(value:int):
+func receive_attack(value:float):
+	var modified_power = value * (Global.player_modifiers.might * 0.01)
+	prints("POWER:", modified_power, "HEALTH:", HEALTH)
 	if not ALIVE: return
-	HEALTH -= value
-	if HEALTH < 0:
+	HEALTH -= modified_power
+	if HEALTH <= 0:
 		ALIVE = false
 	MOVING = false
 	var tween = create_tween()

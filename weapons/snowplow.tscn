@@ -14,19 +14,22 @@ script = ExtResource("1_7p20v")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.63721, -5.36271)
 script = ExtResource("3_2ubwv")
 
-[node name="CSGBox3D" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -4.44096)
-visible = false
-
-[node name="snowplow" parent="." instance=ExtResource("3_qe7ri")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -4.9678)
-
 [node name="Hitbox" type="Area3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.63721, -5.36271)
 collision_layer = 2
 collision_mask = 4
 monitorable = false
 
+[node name="snowplow" parent="Hitbox" instance=ExtResource("3_qe7ri")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.63721, 0.39491)
+
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Hitbox"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.65159, 0.936522)
+shape = SubResource("BoxShape3D_jynln")
+
+[node name="snowplow2" parent="Hitbox" instance=ExtResource("3_qe7ri")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, -3.45241e-08, -1.63721, 9.67802)
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="Hitbox"]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, -8.18734e-08, -1.65159, 9.1364)
 shape = SubResource("BoxShape3D_jynln")

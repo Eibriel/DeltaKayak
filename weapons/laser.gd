@@ -1,10 +1,9 @@
 extends AttackingComponent
 
-var DAMAGE = 2
 var COOLDOWN = 0.5
 
 func _ready():
-	pass
+	POWER = 10
 
 func _process(delta):
 	# Move outside process

@@ -4,6 +4,7 @@ var claimed := false
 
 var SPEED = 5.0
 var DISTANCE_B = 1*1*1
+var XP: float = 1.0
 
 func _ready():
 	var tween = create_tween()
@@ -28,6 +29,7 @@ func move_to_player(delta:float):
 
 func claim():
 	if claimed: return
+	$AudioStreamPlayer3D.play()
 	claimed = true
-	var modified_xp = Global.ITEMS.XP * (Global.player_modifiers.growth * 0.01)
-	Global.claim_item(modified_xp, 1)
+	var modified_xp = XP * (Global.player_modifiers.growth * 0.01)
+	Global.claim_item(Global.ITEMS.XP, modified_xp)

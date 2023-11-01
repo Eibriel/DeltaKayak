@@ -7,7 +7,7 @@ class_name DamageComponent
 var parent: Node3D
 var hitbox: Area3D
 
-var POWER: int = 2
+var POWER: float = 2.0
 
 func _ready():
 	parent = get_parent_node_3d()

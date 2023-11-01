@@ -1,0 +1,54 @@
+[gd_scene load_steps=10 format=3 uid="uid://tfrih2a1g08h"]
+
+[ext_resource type="Script" path="res://enemies/fridge.gd" id="1_1h2b6"]
+[ext_resource type="Script" path="res://components/damage.gd" id="2_lgkxl"]
+[ext_resource type="Script" path="res://components/follow_player.gd" id="3_rjm8r"]
+[ext_resource type="PackedScene" uid="uid://c0hf7iuyad4ja" path="res://components/particle_splash.tscn" id="4_th7au"]
+[ext_resource type="Script" path="res://components/knockback.gd" id="5_x17kl"]
+[ext_resource type="Script" path="res://components/soft_collision.gd" id="7_a16su"]
+[ext_resource type="PackedScene" uid="uid://bepeulrbigchn" path="res://models/enemies/fridge.glb" id="7_s7121"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_u40fa"]
+size = Vector3(1.93074, 1.36981, 1.91444)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_cweve"]
+size = Vector3(4.24564, 1.5062, 4.00728)
+
+[node name="Fridge" type="Node3D"]
+script = ExtResource("1_1h2b6")
+
+[node name="DamageComponent" type="Node3D" parent="."]
+script = ExtResource("2_lgkxl")
+
+[node name="FollowPlayerComponent" type="Node3D" parent="."]
+script = ExtResource("3_rjm8r")
+
+[node name="particle_splash" parent="." instance=ExtResource("4_th7au")]
+
+[node name="KnockbackComponent" type="Node3D" parent="."]
+script = ExtResource("5_x17kl")
+
+[node name="SoftCollisionComponent" type="Node3D" parent="."]
+script = ExtResource("7_a16su")
+
+[node name="fridge" parent="." instance=ExtResource("7_s7121")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.80354, 0)
+visible = false
+
+[node name="Hitbox" type="Area3D" parent="."]
+collision_layer = 4
+input_ray_pickable = false
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Hitbox"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.364901, 0.0717181)
+shape = SubResource("BoxShape3D_u40fa")
+
+[node name="Collisionbox" type="Area3D" parent="."]
+collision_layer = 16
+collision_mask = 16
+monitoring = false
+monitorable = false
+priority = -5
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Collisionbox"]
+shape = SubResource("BoxShape3D_cweve")

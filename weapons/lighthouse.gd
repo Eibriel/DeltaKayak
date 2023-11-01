@@ -2,10 +2,10 @@ extends AttackingComponent
 
 @onready var hitbox = $Hitbox
 
-var DAMAGE = 1
 var COOLDOWN = 0.5
 
 func _ready():
+	POWER = 20
 	rebuild_tween()
 
 func rebuild_tween():

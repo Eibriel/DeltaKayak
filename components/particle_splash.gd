@@ -8,3 +8,4 @@ func _ready():
 
 func play_particles():
 	$GPUParticles3D.set_emitting(true)
+	$AudioStreamPlayer3D.play()

@@ -6,7 +6,7 @@ class_name FollowPlayerComponent
 
 var parent: Node3D
 
-var SPEED := 0.5
+var SPEED: float = 0.5
 var LOOK_PLAYER := false
 
 func _ready():
@@ -21,7 +21,7 @@ func _physics_process(delta):
 	
 	var target_position = Global.player.global_position + Vector3(0, 1, 0)
 	var player_direction = target_position - parent.global_position
-	var modified_speed = SPEED*0.015 # Dont modify this by Speed!
+	var modified_speed = SPEED*0.03 # Dont modify this by Speed!
 	parent.position += player_direction.normalized()*delta*modified_speed
 	
 	if LOOK_PLAYER:
