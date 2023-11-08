@@ -1,6 +1,6 @@
 [gd_scene load_steps=9 format=3 uid="uid://bukvef7k4cu65"]
 
-[ext_resource type="Script" path="res://tests/2DPhysics/2DPhysics.gd" id="1_c7imi"]
+[ext_resource type="Script" path="res://experiments/2DPhysics/2DPhysics.gd" id="1_c7imi"]
 [ext_resource type="ArrayMesh" uid="uid://dt4xluyt6ckn1" path="res://meshes/kayaks/normal.res" id="1_l7vam"]
 [ext_resource type="ArrayMesh" uid="uid://ceocuipu8o2xo" path="res://meshes/kayaks/hotdog.res" id="3_nbd1t"]
 
@@ -34,7 +34,7 @@ buffer = PackedFloat32Array(-2.68822e+38, -2.68822e+38, -2.68822e+38, -2.68822e+
 script = ExtResource("1_c7imi")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
-transform = Transform3D(-0.866023, -0.433016, 0.250001, 0, 0.499998, 0.866027, -0.500003, 0.749999, -0.43301, 0, 0, 0)
+transform = Transform3D(-0.866024, -0.26952, 0.421144, -1.49012e-08, 0.842282, 0.539037, -0.500003, 0.466819, -0.729436, 0, 0, 0)
 shadow_enabled = true
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]

@@ -1,4 +1,4 @@
-[gd_scene load_steps=25 format=3 uid="uid://nr6v23qqk8cq"]
+[gd_scene load_steps=24 format=3 uid="uid://nr6v23qqk8cq"]
 
 [ext_resource type="Script" path="res://player.gd" id="1_uptun"]
 [ext_resource type="ArrayMesh" uid="uid://cee32cluwkn5e" path="res://meshes/kayaks/banana.res" id="3_53yu7"]
@@ -6,7 +6,6 @@
 [ext_resource type="ArrayMesh" uid="uid://dt4xluyt6ckn1" path="res://meshes/kayaks/normal.res" id="4_a7mya"]
 [ext_resource type="ArrayMesh" uid="uid://ceocuipu8o2xo" path="res://meshes/kayaks/hotdog.res" id="4_b7jyd"]
 [ext_resource type="AudioStream" uid="uid://dud0j2l42k5my" path="res://sounds/paddle_01.mp3" id="5_p14ld"]
-[ext_resource type="PackedScene" uid="uid://c0hf7iuyad4ja" path="res://components/particle_splash.tscn" id="6_hbloe"]
 [ext_resource type="AudioStream" uid="uid://dv7envob1xc0a" path="res://sounds/paddle_02.mp3" id="6_jog1s"]
 [ext_resource type="Shader" path="res://shaders/water.gdshader" id="6_ouq5p"]
 
@@ -139,8 +138,6 @@ bus = &"Kayak"
 [node name="character" parent="." instance=ExtResource("3_w7gwq")]
 
 [node name="Weapons" type="Node3D" parent="."]
-
-[node name="particle_splash" parent="." instance=ExtResource("6_hbloe")]
 
 [node name="Hitbox" type="Area3D" parent="."]
 input_ray_pickable = false

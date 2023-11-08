@@ -21,14 +21,16 @@ Global="*res://global.gd"
 
 [display]
 
-window/size/viewport_width=640
-window/size/viewport_height=480
-window/stretch/mode="viewport"
+window/size/viewport_width=1920
+window/size/viewport_height=1080
+window/size/window_width_override=960
+window/size/window_height_override=540
+window/stretch/mode="canvas_items"
 
 [gui]
 
 fonts/dynamic_fonts/use_oversampling=false
-theme/custom_font="res://fonts/m6x11.ttf"
+theme/custom_font="res://fonts/OpenDyslexicAlta-Bold.otf"
 theme/default_font_antialiasing=0
 
 [input]
