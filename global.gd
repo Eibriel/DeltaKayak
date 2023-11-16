@@ -138,3 +138,9 @@ func level_xp(level: int):
 		xp += 2400
 	return xp
 
+func reset():
+	player_level = 1
+	player_xp = 0
+	player_time = 0.0
+	player_damage = 0.0
+	player_kills = 0

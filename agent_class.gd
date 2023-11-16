@@ -7,18 +7,32 @@ var INITIAL_HEALTH := 5.0
 var CURRENT_HEALTH := INITIAL_HEALTH
 
 var INSTANCE_COUNT := 0
-var MULTIMESH : MultiMesh
+var MAX_INSTANCE_COUNT := 1000
+#var MULTIMESH : MultiMesh
 
 var SPAWN_AMOUNT := 0
 var SPAWN_INTERVAL := 0.3
 
+const FLAG := {
+	"FROZEN": 0b1000000,
+	"BURNING": 0b0100000,
+	"MUDDED": 0b0010000,
+	"ELECTROCUTED": 0b0001000,
+	"FLAG_5": 0b0000100,
+	"FLAG_6": 0b0000010,
+	"FLAG_7": 0b0000001
+}
+
 var positions: Array[Vector2]
 var rotations: Array[float]
 var healths: Array[float]
+var flags: Array[int]
 var scale: Vector3 = Vector3.ONE
 var cells: Dictionary = {}
 var shift: Vector2
-var behavior: Array[Dictionary]= []
+var behavior: Dictionary
+
+var s: Scripting
 
 var last_spawn_time := 0.0
 var collides_with: Array[Agent] = []
@@ -40,18 +54,22 @@ const square: Array[Vector2i]= [
 func _init():
 	pass
 
+"""
 func set_multimesh(multimesh: MultiMeshInstance3D):
 	MULTIMESH = multimesh.multimesh
 	INSTANCE_COUNT = multimesh.multimesh.instance_count
-
+	# HACK: the number don't reset when the node is unloaded
+	MULTIMESH.visible_instance_count = 0
+	s = Scripting.new()
+"""
 
 func spawn(agent_position: Vector2, rotation: float, _scale: Vector3) -> int:
-	if MULTIMESH.instance_count == 0:
+	if MAX_INSTANCE_COUNT == 0:
 		return -1
-	if MULTIMESH.visible_instance_count == MULTIMESH.instance_count:
+	if INSTANCE_COUNT >= MAX_INSTANCE_COUNT:
 		return -1
-	MULTIMESH.visible_instance_count += 1
-	var id:int = MULTIMESH.visible_instance_count - 1
+	INSTANCE_COUNT += 1
+	var id:int = INSTANCE_COUNT - 1
 	if positions.size() <= id:
 		positions.append(Vector2())
 	positions[id] = agent_position
@@ -66,10 +84,10 @@ func spawn(agent_position: Vector2, rotation: float, _scale: Vector3) -> int:
 
 
 func remove(id:int):
-	if MULTIMESH.visible_instance_count == 0:
+	if INSTANCE_COUNT <= 0:
 		return
-	var last_item_id = MULTIMESH.visible_instance_count - 1
-	MULTIMESH.visible_instance_count -= 1
+	var last_item_id: int = INSTANCE_COUNT - 1
+	INSTANCE_COUNT -= 1
 	# Clean cell
 	remove_agent_from_cell(id, positions[id])
 	# Move last enemy to this position
@@ -82,6 +100,7 @@ func remove(id:int):
 	positions.resize(positions.size()-1)
 	rotations.resize(rotations.size()-1)
 	healths.resize(healths.size()-1)
+
 
 func process(delta: float):
 	handle_wave(delta)
@@ -100,53 +119,42 @@ func spawn_agent():
 	var position := Vector2.ZERO + shift
 	var rotation := 0.0
 	var scale := Vector3(1, 1, 1)
-	for action in behavior:
-		if action.has("spawn_offscreen"):
-			position = get_offscreen_position()
-		if action.has("spawn_rotation"):
-			if action.spawn_rotation == "random":
-				rotation = randf_range(-PI*2, PI*2)
-		if action.has("scale"):
-			scale = action["scale"]
-				
 	spawn(position, rotation, scale)
 
 
 func move_agents(delta: float):
-	for id in MULTIMESH.visible_instance_count:
+	pass
+
+"""
+	for id in INSTANCE_COUNT:
 		var from_position := positions[id]
-		for action in behavior:
-			if action.has("follow"):
-				var target_position: Vector2= shift + action.follow.target
-				positions[id] += positions[id].direction_to(target_position) * CURRENT_SPEED * delta
-			if action.has("self_collision"):
-				# Collide with other agents
-				if agent_count_on_cell(from_position)>1:
-					var cell_center = cell_center(from_position)
-					positions[id] += cell_center.direction_to(positions[id]) * CURRENT_SPEED * 0.8 * delta
-			if action.has("look_at"):
-				var v2d := positions[id] - shift
-				rotations[id] = (-v2d.angle_to_point(Vector2.ZERO)) + deg_to_rad(-90)
-			if action.has("forward"):
-				var target_position: Vector2= positions[id] + (Vector2.UP.rotated(-rotations[id] + deg_to_rad(180)))
-				positions[id] -= positions[id].direction_to(target_position) * CURRENT_SPEED * delta
-		
-		var v2d := positions[id] - shift
-		move_from_to_cell(id, from_position, positions[id])
-		var v: Vector3 = Vector3(v2d.x, 0.0, v2d.y)
-		var t := Transform3D(Basis(), v)
-		t = t.rotated_local(Vector3.UP, rotations[id])
-		t = t.scaled_local(scale)
-		MULTIMESH.set_instance_transform(id, t)
-		damage_player(id, v2d)
-		if collide(id, positions[id]):
-			queue_for_removal(id)
+		if behavior.has("step"):
+			var rstate = behavior["step"].call({})
+			#s.eval(behavior["step"])
+			positions[id] += rstate.velocity
+		if false:
+			for action in behavior:
+				if action.has("follow"):
+					var target_position: Vector2= shift + action.follow.target
+					positions[id] += positions[id].direction_to(target_position) * CURRENT_SPEED * delta
+				if action.has("self_collision"):
+					# Collide with other agents
+					if agent_count_on_cell(from_position)>1:
+						var cell_center = cell_center(from_position)
+						positions[id] += cell_center.direction_to(positions[id]) * CURRENT_SPEED * 0.8 * delta
+				if action.has("look_at"):
+					var v2d := positions[id] - shift
+					rotations[id] = (-v2d.angle_to_point(Vector2.ZERO)) + deg_to_rad(-90)
+				if action.has("forward"):
+					var target_position: Vector2= positions[id] + (Vector2.UP.rotated(-rotations[id] + deg_to_rad(180)))
+					positions[id] -= positions[id].direction_to(target_position) * CURRENT_SPEED * delta
+"""
 
 func remove_agents():
 	var count := 0
 	while remove_queue.size() > 0:
 		var id = remove_queue.pop_front()
-		var last_item_id = MULTIMESH.visible_instance_count - 1
+		var last_item_id = INSTANCE_COUNT - 1
 		if id != last_item_id:
 			if remove_queue.has(last_item_id):
 				var last_array_index := remove_queue.find(last_item_id)
@@ -161,11 +169,11 @@ func queue_for_removal(id: int):
 	remove_queue.append(id)
 
 func damage_player(id:int, v2d: Vector2):
-	for action in behavior:
-		if action.has("damages_player"):
-			if square.has(Vector2i(v2d)):
-				Global.player.receive_attack(2.0)
-				queue_for_removal(id) # TODO kickback
+	#for action in behavior:
+	if behavior.has("damages_player"):
+		if square.has(Vector2i(v2d)):
+			Global.player.receive_attack(2.0)
+			queue_for_removal(id) # TODO kickback
 
 
 func collide(id:int, v2d: Vector2) -> bool:

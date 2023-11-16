@@ -1,23 +1,39 @@
-extends Node
+extends GutTest
 
-func _ready():
-	run_tests()
+var a :Agent
 
+func before_each():
+	a = create_agent()
 
-func run_tests():
-	test1()
-	test2()
+func after_each():
+	#p.free()
+	pass
 
-func test1():
-	print("\nTest 1")
-	var a := create_agent()
-	a.behavior = [
-		{"forward": 1},
-	]
+func test_spawn():
 	a.spawn(Vector2.ZERO,0.0, Vector3.ONE)
-	print(a.cells)
-	print(a.positions)
+	var expected_cells := {
+		Vector2i(0, 0): [0]
+	}
+	var expected_positions := [Vector2(0, 0)]
+	assert_eq_deep(expected_cells, a.cells)
+	assert_eq_deep(expected_positions, a.positions)
+
+
+func test_move():
+	a.behavior = {
+		"step": "$velocity: v2(0, -1); $angle: 0.0;"
+	}
+	a.spawn(Vector2.ZERO,0.0, Vector3.ONE)
 	a.move_agents(0.25)
+	var expected_cells := {
+		Vector2i(0, -1): [0]
+	}
+	#var expected_positions := [Vector2(0, -1.25)]
+	assert_eq_deep(expected_cells, a.cells)
+	#assert_eq_deep(expected_positions, a.positions, 0.005)
+
+
+func damage():
 	print(a.cells)
 	print(a.positions)
 	a.queue_for_removal(0)
@@ -36,20 +52,17 @@ func test1():
 	print(a.cells)
 	print(a.positions)
 
-func test2():
-	print("\nTest 2")
-	var a := create_agent()
-	a.behavior = [
-		{"forward": 1},
-	]
+func test_removal2():
 	a.spawn(Vector2.ZERO,0.0, Vector3.ONE)
 	a.spawn(Vector2.ZERO,0.0, Vector3.ONE)
 	a.queue_for_removal(0)
 	a.remove_agents()
-	print(a.cells)
-	print(a.positions)
-	if a.cells[Vector2i(0,0)] != [0]:
-		push_error("Test 2 failed")
+	var expected_cells := {
+		Vector2i(0, 0): [0]
+	}
+	var expected_positions := [Vector2(0, 0)]
+	assert_eq_deep(expected_cells, a.cells)
+	assert_eq_deep(expected_positions, a.positions)
 
 
 func create_agent() -> Agent:

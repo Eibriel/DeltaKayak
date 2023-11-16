@@ -148,6 +148,7 @@ shape = SubResource("BoxShape3D_4u5f0")
 
 [node name="GPUParticles3D_Trail" type="GPUParticles3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0659482, 1.38694)
+visible = false
 cast_shadow = 0
 amount = 100
 lifetime = 30.0

@@ -21,11 +21,7 @@ var boss_spawned := false
 
 #var AgentClass = preload("res://agent_class.gd")
 
-var agents : Array[Agent] = [
-	Agent.new(),
-	Agent.new(),
-	Agent.new()
-]
+var agents: Array[Agent] = []
 
 func pause():
 	player.about_to_pause()
@@ -98,33 +94,10 @@ func _ready():
 	pu_button_2.connect("button_up", _on_select_levelup.bind(pu_button_2))
 	pu_button_3.connect("button_up", _on_select_levelup.bind(pu_button_3))
 	
-	agents[0].set_multimesh(%MultiMesh1)
-	agents[0].behavior = [
-		{"name":"drone"},
-		{"self_collision": 1},
-		{"follow":{"target": Vector2.ZERO}},
-		{"look_at":{"target": Vector2.ZERO}},
-		{"scale": Vector3(0.5, 0.5, 0.5)},
-		{"spawn_offscreen": 1},
-		{"health": 5.0},
-		{"power": 5.0},
-		{"damages_player": 1}
-	]
-	agents[1].set_multimesh(%MultiMesh2)
-	agents[1].collide_with(agents[0])
-	agents[1].behavior = [
-		{"name":"fireball"},
-		{"forward": 1},
-		{"scale": Vector3(0.2, 0.2, 0.2)},
-		
-		{"spawn_rotation": "random"},
-		{"uses": 1},
-		{"damage": 2.0},
-	]
-	agents[2].set_multimesh(%MultiMesh3)
-	agents[2].behavior = [
-		{"name":"xp_point"},
-	]
+	var earth_trail := preload("res://skills/earth_trail.gd")
+	agents.append(
+		earth_trail.new()
+	)
 
 
 func _process(delta):
@@ -256,8 +229,14 @@ func _on_damage_update(damage:float):
 	Global.player_damage = damage
 	update_damage()
 	if Global.player_damage == 1:
-		#get_tree().quit()
-		pass
+		back_to_main()
+
+func back_to_main():
+	#get_tree().quit()
+	queue_free()
+	get_tree().change_scene_to_file("res://main.tscn")
+	
+
 
 #func update_damage(damage:float):
 #	#damage_texture.material.set_shader_parameter("damage_level", damage)
@@ -309,9 +288,7 @@ func planeRayIntersection(rayVector: Vector3, rayPoint: Vector3, planePoint: Vec
 
 
 func _on_quit_button_button_up():
-	#get_tree().quit()
-	#var main_scene := preload("res://main.tscn")
-	get_tree().change_scene_to_file("res://main.tscn")
+	back_to_main()
 
 
 func _on_resume_button_button_up():
