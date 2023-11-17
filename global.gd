@@ -1,6 +1,7 @@
 extends Node
 
-signal dropped_item(item_id: int, amount: float, position: Vector3)
+#signal dropped_item(item_id: int, amount: float, position: Vector2)
+signal dropped_item
 signal claimed_item(item_id: int, amount: float)
 
 var player: Player
@@ -9,7 +10,7 @@ var enemies_node: Node3D
 
 
 var player_level := 1
-var player_xp := 0
+var player_xp := 0.0
 var player_time := 0.0
 var player_damage := 0.0
 var player_kills := 0
@@ -37,10 +38,13 @@ var player_modifiers := {
 	"banish": 0., # 0 amount of times player can remove level-up rewards
 }
 
-var powerups = {
-}
-
-const enemies = []
+var skills = [
+	0,
+	0,
+	0,
+	0,
+	0
+]
 
 const weapons = [
 	"snowplow",
@@ -59,8 +63,8 @@ const waves = [
 	# 0
 	{
 		"enemies": ["drone"],
-		"min": 15*100,
-		"time": 1.0*0.1
+		"min": 15,
+		"time": 1.0
 	},
 	# 1
 	{
@@ -117,7 +121,7 @@ const waves = [
 	},
 ]
 
-func drop_item(item_id: int, amount: float, position: Vector3):
+func drop_item(item_id: int, amount: float, position: Vector2):
 	emit_signal("dropped_item", item_id, amount, position)
 
 func claim_item(item_id: int, amount: float):
@@ -144,3 +148,49 @@ func reset():
 	player_time = 0.0
 	player_damage = 0.0
 	player_kills = 0
+
+
+func get_onscreen_position() -> Vector2:
+	var corner_intersections := get_corners()
+	var point_left: Vector3 = lerp(corner_intersections[0], corner_intersections[1], randf())
+	var point_right: Vector3 = lerp(corner_intersections[2], corner_intersections[3], randf())
+	
+	var v3p: Vector3 = lerp(point_left, point_right, randf())
+	return Vector2(v3p.x, v3p.z)
+
+func get_offscreen_position() -> Vector2:
+	var corner_intersections := get_corners()
+	var p = [0, 0, 0, 1, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3].pick_random()
+	var v3p: Vector3 = lerp(corner_intersections[p], corner_intersections[p+1], randf())
+	return Vector2(v3p.x, v3p.z)
+
+func get_corners() -> Array:
+	#var rect_size := DisplayServer.window_get_size()
+	#var rect_size: Vector2 = get_viewport().size
+	#print(rect_size)
+	#var width := rect_size.y
+	#var height := rect_size.x
+	var width:int = ProjectSettings.get_setting("display/window/size/viewport_width")
+	var height:int = ProjectSettings.get_setting("display/window/size/viewport_height")
+	var screen_corners = [
+		Vector2i(0, 0),
+		Vector2i(0, height),
+		Vector2i(width, height),
+		Vector2i(width, 0),
+		Vector2i(0, 0)
+	]
+	var corner_intersections = []
+	for c in screen_corners:
+		var rayVector = Global.camera.project_ray_normal(c)
+		var rayPoint = Global.camera.project_ray_origin(c)
+		var intersection = planeRayIntersection(rayVector,rayPoint, Vector3.ZERO, Vector3.UP)
+		corner_intersections.append(intersection)
+	return corner_intersections
+
+func planeRayIntersection(rayVector: Vector3, rayPoint: Vector3, planePoint: Vector3, planeNormal: Vector3):
+	var diff: Vector3 = rayPoint - planePoint
+	var prod1 = diff.dot(planeNormal)
+	var prod2 = rayVector.dot(planeNormal)
+	var prod3 = prod1 / prod2
+	var intersection: Vector3 = rayPoint - (rayVector * prod3)
+	return intersection

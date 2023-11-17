@@ -42,19 +42,6 @@ func levelup():
 	$StatsMenu.show()
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 	
-	var available_powerups := []
-	for p in Global.powerups:
-		#if used_powerups.has(p): continue
-		if Global.powerups[p].requires != "":
-			#if not used_powerups.has(Global.powerups[p].requires): continue
-			if Global.powerups[p].type == "attack":
-				if Global.powerups[p].current_level >= Global.powerups[p].levels -1:
-					continue
-			if Global.powerups[p].type == "powerup":
-				if Global.powerups[p].current_rank >= Global.powerups[p].ranks -1:
-					continue
-		available_powerups.append(p)
-	available_powerups.shuffle()
 	var buttons = [
 		%LevelUpButton1,
 		%LevelUpButton2,
@@ -65,11 +52,14 @@ func levelup():
 		%LevelUpLabel2,
 		%LevelUpLabel3
 	]
-	for n in range(min(3, available_powerups.size()+1)):
-		var select_powerup = available_powerups.pop_back()
-		buttons[n].text = Global.powerups[select_powerup].name
-		labels[n].text = Global.powerups[select_powerup].description
-		buttons[n].set_meta("powerup", select_powerup)
+	for n in 3:
+		var upgrades := []
+		upgrades.resize(4)
+		upgrades.fill(0)
+		upgrades[3] = randi_range(-3, 3)
+		buttons[n].text = "Season"
+		labels[n].text = "Season %d" % upgrades[3]
+		buttons[n].set_meta("powerup", upgrades)
 
 func _ready():
 	$PauseMenu.hide()
@@ -85,7 +75,6 @@ func _ready():
 	player.connect("paddle_right", _on_paddle_right)
 	Input.mouse_mode = Input.MOUSE_MODE_HIDDEN
 	
-	Global.connect("dropped_item", _on_dropped_item)
 	Global.connect("claimed_item", _on_claimed_item)
 	player.set_kayak(Player.KAYAKS.NORMAL_PINK)
 	start_level()
@@ -93,19 +82,39 @@ func _ready():
 	pu_button_1.connect("button_up", _on_select_levelup.bind(pu_button_1))
 	pu_button_2.connect("button_up", _on_select_levelup.bind(pu_button_2))
 	pu_button_3.connect("button_up", _on_select_levelup.bind(pu_button_3))
-	
-	var earth_trail := preload("res://skills/earth_trail.gd")
-	agents.append(
-		earth_trail.new()
-	)
+	# Skills
+	var a_earth_trail := preload("res://skills/earth_trail.gd")
+	var a_pebble := preload("res://skills/pebble.gd")
+	var a_twister := preload("res://skills/twister.gd")
+	var a_lightning := preload("res://skills/lightning.gd")
+	# Enemies
+	var a_drone := preload("res://skills/drone.gd")
+	# Items
+	var a_xp_drop := preload("res://skills/xp_drop.gd")
+	var enemies := [
+		a_drone.new()
+	]
+	var skills := [
+		a_earth_trail.new(),
+		a_twister.new(),
+		a_pebble.new(),
+		a_lightning.new()
+	]
+	var items := [
+		a_xp_drop.new()
+	]
+	agents.append_array(enemies)
+	agents.append_array(skills)
+	agents.append_array(items)
+	for s in skills:
+		for e in enemies:
+			s.collide_with(e)
 
 
-func _process(delta):
+func _physics_process(delta):
 	$Player/Node3D2.position = $Player.position
 	update_time(delta)
 	handle_wave(delta)
-	#check_collisions()
-	#agents[1].spawn(Vector2.ZERO+agents[1].shift, randf_range(-PI*2, PI*2), 0.25)
 	for agent in agents:
 		agent.set_shift(Vector2(Global.player.position.x, Global.player.position.z))
 		agent.process(delta)
@@ -133,21 +142,9 @@ func start_level():
 		levelup()
 		pass
 	if Global.player_level == 1:
-		#equip_weapon("snowplow")
-		#equip_weapon("fireball")
-		#equip_weapon("fireball")
-		#equip_weapon("laser")
-		#equip_weapon("lighthouse")
-		#equip_weapon("peace_meteor")
-		#equip_weapon("peace_meteor")
-		#equip_weapon("peace_meteor")
-		#equip_weapon("peace_meteor")
-		#equip_weapon("peace_meteor")
-		#equip_weapon("peace_meteor")
 		pass
 	needed_xp = Global.level_xp(Global.player_level)
 	update_xp()
-
 
 func update_time(delta):
 	Global.player_time += delta
@@ -156,9 +153,14 @@ func update_time(delta):
 	%TimeLabel.text = "%02d:%02d" % [minutes, seconds]
 	# TODO move to other place
 	%KillsLabel.text = "%d K" % Global.player_kills
+	%SkillsLabel.text = "Earth: %d
+Water: %d
+Air: %d
+Fire: %d
+Electricity: %d" % Global.skills
 
 func update_xp():
-	%XPProgressBar.value = (Global.player_xp * 100) / needed_xp
+	%XPProgressBar.value = (Global.player_xp * 100.0) / needed_xp
 	#%XPLabel.text = "%d" % Global.player_xp
 	%LevelLabel.text = "LV %d" % Global.player_level
 	var mm = ""
@@ -167,56 +169,7 @@ func update_xp():
 	%StatsTextLabel.text = mm
 
 func update_damage():
-	%DamageLabel.text = "%f" % Global.player_damage
 	%DamageProgressBar.value = (1.0 - Global.player_damage) * 100
-
-#func check_collisions():
-#	for i in $Items.get_children():
-#		if player.global_position.distance_squared_to(i.global_position) < CLAIM_DISTANCE:
-#			i.claim()
-
-
-func load_enemies():
-	for e in Global.enemies:
-		var enemy = load("res://enemies/%s.tscn" % e)
-
-func spawn_enemy():
-	var random_enemy: String
-	if Global.waves[current_wave].has("bosses") and not boss_spawned:
-		random_enemy = Global.waves[current_wave].bosses.pick_random()
-		boss_spawned = true
-	else:
-		random_enemy = Global.waves[current_wave].enemies.pick_random()
-	
-	var width := 640
-	var height := 480
-	var screen_corners = [
-		Vector2i(0, 0),
-		Vector2i(0, height),
-		Vector2i(width, height),
-		Vector2i(width, 0),
-		Vector2i(0, 0)
-	]
-	var corner_intersections = []
-	for c in screen_corners:
-		var rayVector = camera.project_ray_normal(c)
-		var rayPoint = camera.project_ray_origin(c)
-		var intersection = planeRayIntersection(rayVector,rayPoint, Vector3.ZERO, Vector3.UP)
-		corner_intersections.append(intersection)
-	
-	#var p = randi_range(0, screen_corners.size()-2)
-	var p = [0, 0, 0, 1, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3].pick_random()
-	var enemy_position: Vector3 = lerp(corner_intersections[p], corner_intersections[p+1], randf()) + Vector3(0, 1, 0)
-	#agents[0].spawn(Vector2(enemy_position.x, enemy_position.z), 0.0, 0.7)
-
-var weapon_nodes: = {}
-func equip_weapon(_weapon: String):
-	Global.powerups[_weapon].current_level += 1
-	if Global.powerups[_weapon].current_level == 1:
-		var weapon = load("res://weapons/%s.tscn" % _weapon)
-		var w = weapon.instantiate()
-		weapon_nodes[_weapon] = w
-		Global.player.add_weapon(w)
 
 func _exit_tree():
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
@@ -232,11 +185,9 @@ func _on_damage_update(damage:float):
 		back_to_main()
 
 func back_to_main():
-	#get_tree().quit()
 	queue_free()
 	get_tree().change_scene_to_file("res://main.tscn")
 	
-
 
 #func update_damage(damage:float):
 #	#damage_texture.material.set_shader_parameter("damage_level", damage)
@@ -257,16 +208,6 @@ func _on_paddle_right(level:float):
 		%PaddleRight.hide()
 
 
-func _on_dropped_item(item_id: int, amount: float, pos: Vector3):
-#	match item_id:
-#		Global.ITEMS.XP:
-#			var xp = preload("res://elements/xp_point.tscn").instantiate()
-#			xp.position = pos
-#			xp.XP = amount
-#			$Items.add_child(xp)
-	pass
-
-
 func _on_claimed_item(item_id: int, amount: float):
 	match item_id:
 		Global.ITEMS.XP:
@@ -277,19 +218,8 @@ func _on_claimed_item(item_id: int, amount: float):
 				Global.player_level += 1
 				start_level()
 
-
-func planeRayIntersection(rayVector: Vector3, rayPoint: Vector3, planePoint: Vector3, planeNormal: Vector3):
-	var diff: Vector3 = rayPoint - planePoint
-	var prod1 = diff.dot(planeNormal)
-	var prod2 = rayVector.dot(planeNormal)
-	var prod3 = prod1 / prod2
-	var intersection: Vector3 = rayPoint - (rayVector * prod3)
-	return intersection
-
-
 func _on_quit_button_button_up():
 	back_to_main()
-
 
 func _on_resume_button_button_up():
 	unpause()
@@ -300,9 +230,6 @@ func _on_select_levelup(button):
 	$LevelUpMenu.hide()
 	$StatsMenu.hide()
 	Input.mouse_mode = Input.MOUSE_MODE_HIDDEN
-	var p = button.get_meta("powerup")
-	if Global.powerups[p].type == "powerup":
-		Global.player_modifiers[Global.powerups[p].stat] += Global.powerups[p].adds
-	elif Global.powerups[p].type == "attack":
-		#used_powerups.append(p)
-		equip_weapon(p)
+	var p: Array = button.get_meta("powerup")
+	for n in p.size():
+		Global.skills[n] += p[n]

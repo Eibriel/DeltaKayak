@@ -163,15 +163,19 @@ grow_horizontal = 2
 text = "00:10"
 horizontal_alignment = 1
 
-[node name="DamageLabel" type="Label" parent="Control"]
+[node name="SkillsLabel" type="Label" parent="Control"]
 unique_name_in_owner = true
-visible = false
 layout_mode = 1
 offset_left = 1.0
-offset_top = 32.0
-offset_right = 42.0
-offset_bottom = 58.0
-text = "0.0"
+offset_top = 112.0
+offset_right = 342.0
+offset_bottom = 567.0
+theme_override_font_sizes/font_size = 30
+text = "Earth: 0
+Water: 0
+Air: 0
+Fire: 0
+Electricity: 0"
 
 [node name="CoinsLabel" type="Label" parent="Control"]
 unique_name_in_owner = true
@@ -282,16 +286,19 @@ transform = Transform3D(0.999227, 0.0147298, -0.0364483, 0.0196715, 0.61538, 0.7
 [node name="MultiMesh1" type="MultiMeshInstance3D" parent="Player/Node3D2"]
 unique_name_in_owner = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.458014, 0)
+visible = false
 multimesh = SubResource("MultiMesh_mgkhk")
 
 [node name="MultiMesh2" type="MultiMeshInstance3D" parent="Player/Node3D2"]
 unique_name_in_owner = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.220165, 0)
+visible = false
 multimesh = SubResource("MultiMesh_p58jj")
 
 [node name="MultiMesh3" type="MultiMeshInstance3D" parent="Player/Node3D2"]
 unique_name_in_owner = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.556834, 0)
+visible = false
 multimesh = SubResource("MultiMesh_c4vwr")
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]

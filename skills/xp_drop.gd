@@ -3,23 +3,23 @@ extends Agent
 var MULTIMESH: MultiMesh
 
 func _init():
-	var mm:MultiMeshInstance3D = generate_multimesh(preload("res://meshes/iceberg.res"))
+	var mm:MultiMeshInstance3D = generate_multimesh(preload("res://meshes/lotus001.res"))
 	MULTIMESH = mm.multimesh
 	(Global.player as Node3D).get_node("Node3D2").add_child(mm)
+	Global.connect("dropped_item", on_dropped_item)
 
 
 func spawn_agent():
-	var position := Vector2.ZERO + shift + Vector2(randf_range(-1,1), randf_range(-1,1))
-	var rotation := 0.0
-	var scale := Vector3(0.02, 0.02, 0.02)
-	spawn(position, rotation, scale)
+	pass
 
 
 func move_agents(delta: float):
-	for id in INSTANCE_COUNT:
-		time[id] += delta
-		if time[id] > 10.0:
-			queue_for_removal(id)
+	var player_position := Vector2(0,0) + shift
+	var xp_collected := get_id_on_cirle(player_position, 5)
+	if xp_collected >= 0:
+		Global.claim_item(Global.ITEMS.XP, 1.0)
+		queue_for_removal(xp_collected)
+	
 	update_multimesh()
 
 
@@ -32,3 +32,10 @@ func update_multimesh():
 		t = t.rotated_local(Vector3.UP, rotations[id])
 		t = t.scaled_local(scale)
 		MULTIMESH.set_instance_transform(id, t)
+
+
+func on_dropped_item(item_id: int, amount: float, position: Vector2):
+	var rotation := 0.0
+	#var scale := Vector3(1, 1, 1)
+	spawn(position, rotation, scale)
+	

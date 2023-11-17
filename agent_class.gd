@@ -26,6 +26,7 @@ const FLAG := {
 var positions: Array[Vector2]
 var rotations: Array[float]
 var healths: Array[float]
+var time: Array[float]
 var flags: Array[int]
 var scale: Vector3 = Vector3.ONE
 var cells: Dictionary = {}
@@ -78,6 +79,8 @@ func spawn(agent_position: Vector2, rotation: float, _scale: Vector3) -> int:
 	rotations[id] = rotation
 	if healths.size() <= id:
 		healths.append(CURRENT_HEALTH)
+	if time.size() <= id:
+		time.append(0.0)
 	scale = _scale
 	refresh_agent_cell(id, positions[id])
 	return id
@@ -96,10 +99,12 @@ func remove(id:int):
 		positions[id] = positions[last_item_id]
 		rotations[id] = rotations[last_item_id]
 		healths[id] = healths[last_item_id]
+		time[id] = time[last_item_id]
 		switch_agent_from_cell(last_item_id, id, positions[id])
 	positions.resize(positions.size()-1)
 	rotations.resize(rotations.size()-1)
 	healths.resize(healths.size()-1)
+	time.resize(time.size()-1)
 
 
 func process(delta: float):
@@ -168,23 +173,39 @@ func queue_for_removal(id: int):
 	if remove_queue.has(id): return
 	remove_queue.append(id)
 
-func damage_player(id:int, v2d: Vector2):
-	#for action in behavior:
-	if behavior.has("damages_player"):
-		if square.has(Vector2i(v2d)):
-			Global.player.receive_attack(2.0)
-			queue_for_removal(id) # TODO kickback
+func damage_player(size:int):
+	var agent_colliding := get_id_on_cirle(Vector2.ZERO + shift, size)
+	if agent_colliding >= 0:
+		Global.player.receive_attack(2.0)
+		queue_for_removal(agent_colliding) # TODO kickback
 
+"""
+func collide_with_cells(id: int, collide_position: Vector2i, size: int):
+	var agent_position := Vector2i(positions[id]-shift)
+	if collide_position == agent_position:
+		return true
+	return false
+"""
 
 func collide(id:int, v2d: Vector2) -> bool:
 	var cell := Vector2i(v2d)
 	for c in collides_with:
 		for square_cell in square:
 			if c.cells.has(cell+square_cell):
-				print(c.cells[cell+square_cell])
+				#print(c.cells[cell+square_cell])
 				c.damage(c.cells[cell+square_cell][0], 10.0)
 				return true
 	return false
+
+
+func collide2(radius:int) -> int:
+	for c in collides_with:
+		for cell in cells:
+			var collide_id := c.get_id_on_cirle(cell, radius)
+			if collide_id >= 0:
+				c.damage(collide_id, 10.0)
+				return cells[cell][0]
+	return -1
 
 
 func set_shift(_shift: Vector2):
@@ -195,10 +216,14 @@ func collide_with(c_agent: Agent):
 		collides_with.append(c_agent)
 
 func damage(id:int, amount:float):
-	prints("DAMAGE", id, amount)
+	#prints("DAMAGE", id, amount)
 	healths[id] -= amount
 	if healths[id] < 0:
+		on_die(id)
 		queue_for_removal(id)
+
+func on_die(id:int):
+	pass
 
 # Cell functions
 
@@ -246,40 +271,47 @@ func agent_count_on_cell(position: Vector2) -> int:
 	var cell := Vector2i(position)
 	return cells[cell].size()
 
+func get_agents_on_cell(position: Vector2) -> Array:
+	var cell := Vector2i(position)
+	if cells.has(cell):
+		return cells[cell]
+	else:
+		return []
+
 func cell_center(position: Vector2) -> Vector2:
 	var cell := Vector2i(position)
 	return Vector2(cell) + Vector2(0.5, 0.5)
 
+func get_id_on_area(center:Vector2, size:int) -> int:
+	for x in range(-size, size):
+		for y in range(-size,size):
+			var pp := center + Vector2(x, y)
+			var colliding := get_agents_on_cell(pp)
+			if colliding.size() > 0:
+				return colliding[0]
+	return -1
+
+func get_id_on_cirle(center:Vector2, radius:int) -> int:
+	for y in range(-radius, radius):
+		for x in range(-radius, radius):
+			# if(x*x+y*y > radius*radius - radius && x*x+y*y < radius*radius + radius)
+			if x*x+y*y <= radius*radius:
+				var pp := center + Vector2(x, y)
+				var colliding := get_agents_on_cell(pp)
+				if colliding.size() > 0:
+					return colliding[0]
+	return -1
 
 # Misc
 
-func get_offscreen_position() -> Vector2:
-	var rect_size := DisplayServer.window_get_size()
-	var width := rect_size.y
-	var height := rect_size.x
-	var screen_corners = [
-		Vector2i(0, 0),
-		Vector2i(0, height),
-		Vector2i(width, height),
-		Vector2i(width, 0),
-		Vector2i(0, 0)
-	]
-	var corner_intersections = []
-	for c in screen_corners:
-		var rayVector = Global.camera.project_ray_normal(c)
-		var rayPoint = Global.camera.project_ray_origin(c)
-		var intersection = planeRayIntersection(rayVector,rayPoint, Vector3.ZERO, Vector3.UP)
-		corner_intersections.append(intersection)
-	
-	var p = [0, 0, 0, 1, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3].pick_random()
-	var v3p: Vector3 = lerp(corner_intersections[p], corner_intersections[p+1], randf())
-	return Vector2(v3p.x, v3p.z)
-
-
-func planeRayIntersection(rayVector: Vector3, rayPoint: Vector3, planePoint: Vector3, planeNormal: Vector3):
-	var diff: Vector3 = rayPoint - planePoint
-	var prod1 = diff.dot(planeNormal)
-	var prod2 = rayVector.dot(planeNormal)
-	var prod3 = prod1 / prod2
-	var intersection: Vector3 = rayPoint - (rayVector * prod3)
-	return intersection
+func generate_multimesh(mesh_res: Mesh) -> MultiMeshInstance3D:
+	var m := MultiMeshInstance3D.new()
+	var mm = MultiMesh.new()
+	mm.transform_format = MultiMesh.TRANSFORM_3D
+	mm.mesh = mesh_res
+	mm.instance_count = 1000
+	mm.visible_instance_count = 0
+	m.multimesh = mm
+	#m.position = Vector3(0, 0.458, 0)
+	return m
+	#(Global.player as Node3D).get_node("Node3D2").add_child(m)
