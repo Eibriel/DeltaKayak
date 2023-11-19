@@ -18,6 +18,11 @@ func spawn_agent():
 func move_agents(delta: float):
 	for id in INSTANCE_COUNT:
 		time[id] += delta
+		# COLLIDE WITH ENEMIES
+		var collided := collide3(2)
+		if collided.data:
+			# Set as mudded
+			collided.agent.flags[collided.id] |= FLAG.MUDDED
 		if time[id] > 10.0:
 			queue_for_removal(id)
 	update_multimesh()

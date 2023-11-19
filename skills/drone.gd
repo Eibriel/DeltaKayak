@@ -21,7 +21,19 @@ func move_agents(delta: float):
 		var from_position := positions[id]
 		# MOVE TOWARDS PLAYER
 		var target_position: Vector2= shift + Vector2.ZERO
-		positions[id] += positions[id].direction_to(target_position) * CURRENT_SPEED * delta
+		
+		if pushback[id] > 0.0:
+			pushback[id] -= delta
+			var player_position := Vector2.ZERO
+			var enemy_position := positions[id]-shift
+			positions[id] += player_position.direction_to(enemy_position) * 20.0 * delta
+		else:
+			var MODIFIED_SPEED := CURRENT_SPEED * delta
+			# If its mudded
+			if flags[id] & FLAG.MUDDED != 0:
+				MODIFIED_SPEED *= 0.5
+			positions[id] += positions[id].direction_to(target_position) * MODIFIED_SPEED
+		
 		# SELF COLLIDE
 		if agent_count_on_cell(from_position)>1:
 			var cell_center = cell_center(from_position)

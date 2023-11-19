@@ -6,13 +6,20 @@ func _init():
 	var mm:MultiMeshInstance3D = generate_multimesh(preload("res://meshes/jellyfish.res"))
 	MULTIMESH = mm.multimesh
 	INITIAL_DAMAGE = 1.0
+	CURRENT_SPEED = 20
+	SPAWN_INTERVAL = 0.1
 	(Global.player as Node3D).get_node("Node3D2").add_child(mm)
 
 
 func spawn_agent():
 	var position := Vector2.ZERO + shift
-	var rotation := randf_range(PI*-2, PI*2)
+	var rotation := Global.player.rotation.y
 	var scale := Vector3(0.25, 0.25, 0.25)
+	spawn(position, rotation, scale)
+	
+	rotation = Global.player.rotation.y + (PI*0.5)
+	spawn(position, rotation, scale)
+	rotation = Global.player.rotation.y + (PI*-0.5)
 	spawn(position, rotation, scale)
 
 
@@ -30,7 +37,6 @@ func move_agents(delta: float):
 	# COLLIDE WITH ENEMIES
 	var collided := collide2(2)
 	if collided >= 0:
-		#prints(INSTANCE_COUNT, collided)
 		queue_for_removal(collided)
 	
 	update_multimesh()
@@ -43,5 +49,5 @@ func update_multimesh():
 		var v: Vector3 = Vector3(v2d.x, 0.0, v2d.y)
 		var t := Transform3D(Basis(), v)
 		t = t.rotated_local(Vector3.UP, rotations[id])
-		t = t.scaled_local(scale)
+		t = t.scaled_local(scale+(Vector3.ONE * time[id] * 0.25))
 		MULTIMESH.set_instance_transform(id, t)

@@ -8,6 +8,7 @@ func _init():
 	(Global.player as Node3D).get_node("Node3D2").add_child(mm)
 	SPAWN_AMOUNT = 5
 	SPAWN_INTERVAL = 3.0
+	INITIAL_DAMAGE = 1.0
 
 func spawn_agent():
 	var position := Global.get_onscreen_position()

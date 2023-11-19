@@ -87,6 +87,8 @@ func _ready():
 	var a_pebble := preload("res://skills/pebble.gd")
 	var a_twister := preload("res://skills/twister.gd")
 	var a_lightning := preload("res://skills/lightning.gd")
+	var a_fire := preload("res://skills/fire.gd")
+	var a_ice_shield := preload("res://skills/ice_shield.gd")
 	# Enemies
 	var a_drone := preload("res://skills/drone.gd")
 	# Items
@@ -98,7 +100,9 @@ func _ready():
 		a_earth_trail.new(),
 		a_twister.new(),
 		a_pebble.new(),
-		a_lightning.new()
+		a_lightning.new(),
+		a_fire.new(),
+		a_ice_shield.new()
 	]
 	var items := [
 		a_xp_drop.new()

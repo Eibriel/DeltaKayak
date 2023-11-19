@@ -6,9 +6,11 @@ var CURRENT_SPEED := INITIAL_SPEED
 var INITIAL_HEALTH := 5.0
 var CURRENT_HEALTH := INITIAL_HEALTH
 
+var INITIAL_DAMAGE := 0.0
+var CURRENT_DAMAGE := INITIAL_DAMAGE
+
 var INSTANCE_COUNT := 0
 var MAX_INSTANCE_COUNT := 1000
-#var MULTIMESH : MultiMesh
 
 var SPAWN_AMOUNT := 0
 var SPAWN_INTERVAL := 0.3
@@ -27,7 +29,9 @@ var positions: Array[Vector2]
 var rotations: Array[float]
 var healths: Array[float]
 var time: Array[float]
+var pushback: Array[float]
 var flags: Array[int]
+
 var scale: Vector3 = Vector3.ONE
 var cells: Dictionary = {}
 var shift: Vector2
@@ -81,6 +85,10 @@ func spawn(agent_position: Vector2, rotation: float, _scale: Vector3) -> int:
 		healths.append(CURRENT_HEALTH)
 	if time.size() <= id:
 		time.append(0.0)
+	if flags.size() <= id:
+		flags.append(0b0)
+	if pushback.size() <= id:
+		pushback.append(0b0)
 	scale = _scale
 	refresh_agent_cell(id, positions[id])
 	return id
@@ -100,11 +108,15 @@ func remove(id:int):
 		rotations[id] = rotations[last_item_id]
 		healths[id] = healths[last_item_id]
 		time[id] = time[last_item_id]
+		flags[id] = flags[last_item_id]
+		pushback[id] = pushback[last_item_id]
 		switch_agent_from_cell(last_item_id, id, positions[id])
 	positions.resize(positions.size()-1)
 	rotations.resize(rotations.size()-1)
 	healths.resize(healths.size()-1)
 	time.resize(time.size()-1)
+	flags.resize(flags.size()-1)
+	pushback.resize(pushback.size()-1)
 
 
 func process(delta: float):
@@ -177,7 +189,8 @@ func damage_player(size:int):
 	var agent_colliding := get_id_on_cirle(Vector2.ZERO + shift, size)
 	if agent_colliding >= 0:
 		Global.player.receive_attack(2.0)
-		queue_for_removal(agent_colliding) # TODO kickback
+		pushback[agent_colliding] = 0.3
+		#queue_for_removal(agent_colliding) # TODO kickback
 
 """
 func collide_with_cells(id: int, collide_position: Vector2i, size: int):
@@ -203,9 +216,27 @@ func collide2(radius:int) -> int:
 		for cell in cells:
 			var collide_id := c.get_id_on_cirle(cell, radius)
 			if collide_id >= 0:
-				c.damage(collide_id, 10.0)
+				if INITIAL_DAMAGE > 0.0:
+					c.damage(collide_id, INITIAL_DAMAGE)
 				return cells[cell][0]
 	return -1
+
+class CollisionData:
+	var data: bool = false
+	var agent: Agent
+	var id: int
+
+func collide3(radius:int) -> CollisionData:
+	var cd := CollisionData.new()
+	for c in collides_with:
+		for cell in cells:
+			var collide_id := c.get_id_on_cirle(cell, radius)
+			if collide_id >= 0:
+				cd.agent = c
+				cd.id = collide_id
+				cd.data = true
+				return cd
+	return cd
 
 
 func set_shift(_shift: Vector2):
@@ -217,6 +248,7 @@ func collide_with(c_agent: Agent):
 
 func damage(id:int, amount:float):
 	#prints("DAMAGE", id, amount)
+	pushback[id] = 0.3
 	healths[id] -= amount
 	if healths[id] < 0:
 		on_die(id)

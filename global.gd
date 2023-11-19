@@ -194,3 +194,12 @@ func planeRayIntersection(rayVector: Vector3, rayPoint: Vector3, planePoint: Vec
 	var prod3 = prod1 / prod2
 	var intersection: Vector3 = rayPoint - (rayVector * prod3)
 	return intersection
+
+func is_bit_enabled(mask, index):
+	return mask & (1 << index) != 0
+
+func enable_bit(mask, index):
+	return mask | (1 << index)
+
+func disable_bit(mask, index):
+	return mask & ~(1 << index)
