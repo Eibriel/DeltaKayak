@@ -29,9 +29,9 @@ emission_shape = 3
 emission_box_extents = Vector3(0.7, 0, 0.1)
 direction = Vector3(0, 0, 1)
 spread = 0.0
-gravity = Vector3(0, 0, 0)
 initial_velocity_min = 0.5
 initial_velocity_max = 0.5
+gravity = Vector3(0, 0, 0)
 damping_min = 0.1
 damping_max = 0.2
 

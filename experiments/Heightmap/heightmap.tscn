@@ -1,0 +1,3 @@
+[gd_scene format=3 uid="uid://6yl5fve3ihi0"]
+
+[node name="Heightmap" type="Node3D"]
