@@ -21,11 +21,9 @@ Global="*res://global.gd"
 
 [display]
 
-window/size/viewport_width=1920
-window/size/viewport_height=1080
-window/size/window_width_override=960
-window/size/window_height_override=540
-window/stretch/mode="canvas_items"
+window/size/viewport_width=640
+window/size/viewport_height=480
+window/stretch/mode="viewport"
 
 [editor_plugins]
 
@@ -75,6 +73,8 @@ paddle_left={
 [rendering]
 
 textures/canvas_textures/default_texture_filter=0
-renderer/rendering_method.mobile="gl_compatibility"
 shading/overrides/force_vertex_shading=true
 shading/overrides/force_lambert_over_burley=true
+anti_aliasing/screen_space_roughness_limiter/enabled=false
+textures/decals/filter=0
+textures/light_projectors/filter=0

@@ -1,3 +1,22 @@
-[gd_scene format=3 uid="uid://6yl5fve3ihi0"]
+[gd_scene load_steps=6 format=3 uid="uid://6yl5fve3ihi0"]
+
+[ext_resource type="Shader" path="res://experiments/Heightmap/heightmap.gdshader" id="1_d7ass"]
+[ext_resource type="Texture2D" uid="uid://dh4cd31n45g0v" path="res://images/heightmap.png" id="2_8ve2d"]
+[ext_resource type="Script" path="res://experiments/Heightmap/terrain.gd" id="2_nmd3t"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_xk4q3"]
+render_priority = 0
+shader = ExtResource("1_d7ass")
+shader_parameter/heightmap = ExtResource("2_8ve2d")
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_3w6rh"]
+material = SubResource("ShaderMaterial_xk4q3")
+subdivide_width = 50
+subdivide_depth = 50
 
 [node name="Heightmap" type="Node3D"]
+
+[node name="terrain" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -28.7102, 0, 9.14043)
+mesh = SubResource("PlaneMesh_3w6rh")
+script = ExtResource("2_nmd3t")

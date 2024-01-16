@@ -18,8 +18,8 @@ signal received_attack
 @onready var character_animation = $character/AnimationPlayer
 
 
-const SPEED := 370
-const TORQUE := 60
+const SPEED := 170 #370
+const TORQUE := 40 #60
 const KAYAKS := {
 	"NORMAL_PINK": 0,
 	"NORMAL_CIAN": 1,
@@ -140,6 +140,7 @@ func _physics_process(delta):
 	
 	left_paddle.position.y = 0.2
 	right_paddle.position.y = 0.2
+	Global.camera.rotate_z(-Global.camera.rotation.z*0.05)
 	if paddle_status != 0 :
 		if !holding:
 			var turning_assist: float = 1.0 - min(1, float(consecutive_paddling) / 2)
@@ -148,7 +149,9 @@ func _physics_process(delta):
 			if !first_paddle:
 				var modified_speed = SPEED * (Global.player_modifiers.move_speed * 0.01)
 				go_forward((modified_speed*rithm_assist)*paddle_force.sample(paddle_hold)*turning_assist*delta)
-			apply_torque(Vector3(0, (torque+torque_assist)*paddle_force.sample(paddle_hold)*delta, 0))
+			var torque:float = (torque+torque_assist)*paddle_force.sample(paddle_hold)*delta
+			apply_torque(Vector3(0, torque, 0))
+			Global.camera.rotate_z(torque*0.001)
 			if paddle_status == -1:
 				right_paddle.position.y = 0.2
 				left_paddle.position.y = 0
@@ -262,6 +265,7 @@ func add_weapon(node: Node3D):
 
 
 func set_kayak(kayak_id: int):
+	return
 	$Normal.visible = false
 	$Banana.visible = false
 	$Hotdog.visible = false

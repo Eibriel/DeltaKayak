@@ -17,5 +17,5 @@ void fragment() {
 	vec3 color1 = texture(texture_1, (global_uv*0.1)+time1).rgb;
 	vec3 color2 = texture(texture_2, (global_uv*0.1)+time2).rgb;
 	ALBEDO = color1 * color2 * albedo;
-	ALPHA = 0.75;
+	ALPHA = 0.85;
 }

@@ -76,7 +76,7 @@ noise = SubResource("FastNoiseLite_d5tpc")
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_3654b"]
 render_priority = 0
 shader = ExtResource("6_ouq5p")
-shader_parameter/albedo = Color(0.109804, 0.137255, 0.0470588, 1)
+shader_parameter/albedo = Color(0.294118, 0.352941, 0.164706, 1)
 shader_parameter/texture_1 = SubResource("NoiseTexture2D_egqph")
 shader_parameter/texture_2 = SubResource("NoiseTexture2D_37nns")
 
@@ -86,9 +86,9 @@ axis_lock_angular_x = true
 axis_lock_angular_z = true
 physics_material_override = SubResource("PhysicsMaterial_1oafd")
 gravity_scale = 0.0
+can_sleep = false
 max_contacts_reported = 1
 contact_monitor = true
-can_sleep = false
 script = ExtResource("1_uptun")
 paddle_force = SubResource("Curve_oqg3q")
 
@@ -145,6 +145,7 @@ input_ray_pickable = false
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Hitbox"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.450964, -0.602506)
 shape = SubResource("BoxShape3D_4u5f0")
+disabled = true
 
 [node name="GPUParticles3D_Trail" type="GPUParticles3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0659482, 1.38694)
@@ -156,30 +157,29 @@ process_material = SubResource("ParticleProcessMaterial_ewjn6")
 draw_pass_1 = SubResource("PlaneMesh_f857p")
 
 [node name="OmniLight3D2" type="OmniLight3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.55263, -1.46322)
-light_color = Color(0.85098, 0.694118, 0.407843, 1)
-light_energy = 10.033
-shadow_enabled = true
-omni_range = 7.786
-omni_attenuation = 1.41421
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.81766, -2.34075)
+light_energy = 0.274
+omni_range = 12.391
+omni_attenuation = 1.27456
 
 [node name="OmniLight3D3" type="OmniLight3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 13.2101, -8.46322)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 13.2101, -16.025)
 light_color = Color(0.980392, 0.917647, 0.843137, 1)
-light_energy = 1.819
+light_energy = 0.2
 light_volumetric_fog_energy = 0.0
-shadow_enabled = true
-omni_range = 66.263
-omni_attenuation = 0.707107
+omni_range = 34.617
+omni_attenuation = 0.933033
 
 [node name="SpotLight3D" type="SpotLight3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0.980478, 0.196631, 0, -0.196631, 0.980478, 0, 2.51155, -0.633473)
+transform = Transform3D(1, 0, 0, 0, 0.980478, 0.196631, 0, -0.196631, 0.980478, 0, 2.51155, -0.0636178)
 light_color = Color(0.658824, 0.717647, 0.937255, 1)
-light_energy = 3.667
+light_energy = 16.0
 light_volumetric_fog_energy = 16.0
 shadow_enabled = true
-spot_range = 44.004
-spot_angle = 23.19
+spot_range = 66.0
+spot_attenuation = 1.41421
+spot_angle = 38.8043
+spot_angle_attenuation = 1.27456
 
 [node name="Water" type="CSGMesh3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.13126)

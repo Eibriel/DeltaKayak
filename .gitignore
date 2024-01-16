@@ -1,2 +1,7 @@
 # Godot 4+ specific ignores
 .godot/
+*.blend1
+*.blend2
+*.blend3
+*.blend4
+*.blend5

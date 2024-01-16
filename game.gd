@@ -70,6 +70,10 @@ func _ready():
 	Global.player = player
 	Global.camera = camera
 	
+	player.position.x = -1929.6
+	player.position.z = 1860.4
+	previous_position = Global.player.position
+	
 	player.connect("damage_update", _on_damage_update)
 	player.connect("paddle_left", _on_paddle_left)
 	player.connect("paddle_right", _on_paddle_right)
@@ -94,15 +98,15 @@ func _ready():
 	# Items
 	var a_xp_drop := preload("res://skills/xp_drop.gd")
 	var enemies := [
-		a_drone.new()
+		#a_drone.new()
 	]
 	var skills := [
-		a_earth_trail.new(),
-		a_twister.new(),
-		a_pebble.new(),
-		a_lightning.new(),
-		a_fire.new(),
-		a_ice_shield.new()
+		#a_earth_trail.new(),
+		#a_twister.new(),
+		#a_pebble.new(),
+		#a_lightning.new(),
+		#a_fire.new(),
+		#a_ice_shield.new()
 	]
 	var items := [
 		a_xp_drop.new()
@@ -114,8 +118,10 @@ func _ready():
 		for e in enemies:
 			s.collide_with(e)
 
+func _process(delta: float) -> void:
+	$Terrain.position = round(player.position / 10) * 10
 
-func _physics_process(delta):
+func _physics_process(delta: float) -> void:
 	$Player/Node3D2.position = $Player.position
 	update_time(delta)
 	handle_wave(delta)
@@ -150,6 +156,8 @@ func start_level():
 	needed_xp = Global.level_xp(Global.player_level)
 	update_xp()
 
+var previous_position: Vector3
+var total_distance: float
 func update_time(delta):
 	Global.player_time += delta
 	var minutes = (Global.player_time/60) as int
@@ -162,6 +170,12 @@ Water: %d
 Air: %d
 Fire: %d
 Electricity: %d" % Global.skills
+
+	var vel:float = (previous_position.distance_to(Global.player.position) / delta) * (18.0/5.0)
+	total_distance += previous_position.distance_to(Global.player.position)
+	%SkillsLabel.text = "%d Km/h
+%d meters" % [vel, total_distance]
+	previous_position = Global.player.position
 
 func update_xp():
 	%XPProgressBar.value = (Global.player_xp * 100.0) / needed_xp
