@@ -18,12 +18,14 @@ config/icon="res://images/icon.svg"
 [autoload]
 
 Global="*res://global.gd"
+Text="*res://text.gd"
 
 [display]
 
-window/size/viewport_width=640
-window/size/viewport_height=480
+window/size/viewport_width=960
+window/size/viewport_height=720
 window/stretch/mode="viewport"
+window/stretch/aspect="keep_height"
 
 [editor_plugins]
 
@@ -62,6 +64,13 @@ paddle_left={
 ]
 }
 
+[internationalization]
+
+locale/translations=PackedStringArray("res://translations/en.po", "res://translations/es.po")
+locale/translations_pot_files=PackedStringArray("res://text.gd")
+locale/test="es"
+locale/fallback="es"
+
 [layer_names]
 
 3d_physics/layer_1="Player"
@@ -75,6 +84,7 @@ paddle_left={
 textures/canvas_textures/default_texture_filter=0
 shading/overrides/force_vertex_shading=true
 shading/overrides/force_lambert_over_burley=true
+textures/default_filters/anisotropic_filtering_level=0
 anti_aliasing/screen_space_roughness_limiter/enabled=false
 textures/decals/filter=0
 textures/light_projectors/filter=0

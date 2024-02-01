@@ -7,6 +7,8 @@ extends Node3D
 @onready var pu_button_1 := %LevelUpButton1
 @onready var pu_button_2 := %LevelUpButton2
 @onready var pu_button_3 := %LevelUpButton3
+@onready var text_label: Label = %TextLabel
+
 
 const CLAIM_DISTANCE = 2*2*2 # Squared distanceg
 
@@ -117,9 +119,92 @@ func _ready():
 	for s in skills:
 		for e in enemies:
 			s.collide_with(e)
+	
+	var file = "res://world_data.json"
+	var json_as_text = FileAccess.get_file_as_string(file)
+	var json_as_dict = JSON.parse_string(json_as_text)
+	if json_as_dict:
+		create_elements(json_as_dict)
+
+func create_elements(elements:Dictionary) -> void:
+	for e in elements["dialogue"]:
+		var area := Area3D.new()
+		var cube := CollisionShape3D.new()
+		cube.shape = BoxShape3D.new()
+		add_child(area)
+		area.add_child(cube)
+		#var sph := CSGSphere3D.new()
+		#sph.position.z = -1.0
+		#sph.scale = Vector3.ONE * 0.2
+		#area.add_child(sph)
+		area.position = convert_position(e)
+		area.scale = convert_scale(e)
+		area.rotation_order = EULER_ORDER_XYZ
+		area.rotation = convert_rotation(e)
+		area.connect("area_entered", dialogue_callback.bind(area, e.lines))
+	
+	for e in elements["sign"]:
+		print(e["text"])
+		var label := Label3D.new()
+		label.text = (e["text"] as String).replace("|","\n")
+		label.font_size = 128
+		add_child(label)
+		label.position = convert_position(e)
+		label.position.y = 3.0
+		label.scale = convert_scale(e)
+		label.rotation_order = EULER_ORDER_XYZ
+		label.rotation = convert_rotation(e)
+		label.rotate_y(deg_to_rad(180))
+		label.modulate = Color.GREEN
+
+func dialogue_callback(_area:Area3D, area:Area3D, lines:Array):
+	print("Entered")
+	#var a_diff := angle_difference(area.rotation.y, player.rotation.y)
+	prints(area.rotation.y, player.rotation.y)
+	var v1 := Vector2.UP.rotated(area.rotation.y)
+	var v2 := Vector2.UP.rotated(player.rotation.y)
+	prints(v1, v2)
+	var a_diff = v1.dot(v2)
+	prints(a_diff)
+	if a_diff < 0:
+		print("Ignored")
+		return
+	# TODO queue dialogue if previous one is running
+	var dialogue_tween := create_tween()
+	for l: String in lines:
+		for ll in l.split("|"):
+			if ll == "":
+				dialogue_tween.tween_interval(2.0)
+			else:
+				dialogue_tween.tween_callback(func(): text_label.visible_ratio = 0)
+				dialogue_tween.tween_callback(func(): text_label.text = ll)
+				dialogue_tween.tween_property(text_label, "visible_ratio", 1.0, 0.1 * ll.length())
+				dialogue_tween.tween_interval(2.0)
+
+func convert_position(e:Dictionary) -> Vector3:
+	var v:Vector3
+	v.x = e.position_x * 10
+	v.y = e.position_z * 10
+	v.z = -e.position_y * 10
+	return v
+
+func convert_scale(e:Dictionary) -> Vector3:
+	var v:Vector3
+	v.x = e.scale_x
+	v.y = e.scale_z
+	v.z = -e.scale_y
+	return v
+
+func convert_rotation(e:Dictionary) -> Vector3:
+	var v:Vector3
+	v.x = e.rotation_x
+	v.y = e.rotation_z
+	v.z = -e.rotation_y
+	return v
 
 func _process(delta: float) -> void:
 	$Terrain.position = round(player.position / 10) * 10
+	
 
 func _physics_process(delta: float) -> void:
 	$Player/Node3D2.position = $Player.position

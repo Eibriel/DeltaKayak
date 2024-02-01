@@ -1,0 +1,16 @@
+# LANGUAGE translation for Delta for the following files:
+# res://text.gd
+#
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Delta\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8-bit\n"
+
+#: text.gd
+msgid "Huele a quemado|¿De donde vendrá ese olor?"
+msgstr ""

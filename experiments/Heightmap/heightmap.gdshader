@@ -14,9 +14,13 @@ void vertex() {
 
 void fragment() {
 	// Called for every pixel the material is visible on.
-	float val = (texture(heightmap, global_uv).r * 2.0) - 0.8;
-	val = clamp(val,0,1)*0.5;
+	float height = (texture(heightmap, global_uv).r * 2.0) - 0.8;
+	float val = clamp(height,0,1)*0.5;
 	ALBEDO = vec3(val);
+	if (height < 0.05 && height > -0.05) {
+		float gg = abs(height);
+		ALBEDO = mix(vec3(0.5, 0.5, 0.5), ALBEDO, gg * 5.0);
+	}
 }
 
 //void light() {

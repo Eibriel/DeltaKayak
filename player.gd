@@ -18,8 +18,8 @@ signal received_attack
 @onready var character_animation = $character/AnimationPlayer
 
 
-const SPEED := 170 #370
-const TORQUE := 40 #60
+const SPEED := 140 #370
+const TORQUE := 30 #60
 const KAYAKS := {
 	"NORMAL_PINK": 0,
 	"NORMAL_CIAN": 1,

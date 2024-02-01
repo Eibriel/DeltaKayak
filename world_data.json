@@ -1,0 +1,122 @@
+{
+    "dialogue": [
+        {
+            "id": "Dialogue.001",
+            "position_x": -193.06422424316406,
+            "position_y": -186.16644287109375,
+            "position_z": 0.0,
+            "rotation_x": 0.0,
+            "rotation_y": 0.0,
+            "rotation_z": 0.0,
+            "scale_x": 9.184700012207031,
+            "scale_y": 9.184700012207031,
+            "scale_z": 9.184700012207031,
+            "lines": [
+                "Se siente olor a quemado...|¿De donde vendrá?"
+            ]
+        },
+        {
+            "id": "Dialogue.002",
+            "position_x": -192.57643127441406,
+            "position_y": -183.6856689453125,
+            "position_z": 0.0,
+            "rotation_x": 0.0,
+            "rotation_y": -0.0,
+            "rotation_z": -0.6697831749916077,
+            "scale_x": 9.184700012207031,
+            "scale_y": 9.184700012207031,
+            "scale_z": 9.184700012207031,
+            "lines": [
+                "Adelante, lejos, más allá de nuestra vista está nuestra meta.|Yo no la puedo ver, supongo que vos tampoco"
+            ]
+        },
+        {
+            "id": "Dialogue.003",
+            "position_x": -186.32403564453125,
+            "position_y": -180.36917114257812,
+            "position_z": 0.0,
+            "rotation_x": 0.0,
+            "rotation_y": -0.0,
+            "rotation_z": -1.2670378684997559,
+            "scale_x": 16.826217651367188,
+            "scale_y": 16.826217651367188,
+            "scale_z": 16.826217651367188,
+            "lines": [
+                "¿Hacia donde debería ir?"
+            ]
+        },
+        {
+            "id": "Dialogue.004",
+            "position_x": -142.85824584960938,
+            "position_y": -148.8098907470703,
+            "position_z": 0.0,
+            "rotation_x": 0.0,
+            "rotation_y": -0.0,
+            "rotation_z": -1.014916181564331,
+            "scale_x": 16.826217651367188,
+            "scale_y": 16.826217651367188,
+            "scale_z": 16.826217651367188,
+            "lines": [
+                "Uff|Está tomando más de lo que esperaba"
+            ]
+        },
+        {
+            "id": "Dialogue.005",
+            "position_x": -67.2853012084961,
+            "position_y": -115.03376007080078,
+            "position_z": 0.0,
+            "rotation_x": 0.0,
+            "rotation_y": -0.0,
+            "rotation_z": -1.5434054136276245,
+            "scale_x": 16.826217651367188,
+            "scale_y": 16.826217651367188,
+            "scale_z": 16.826217651367188,
+            "lines": [
+                "¡Puedo ver el horizonte!"
+            ]
+        },
+        {
+            "id": "Dialogue.006",
+            "position_x": -190.53135681152344,
+            "position_y": -183.03298950195312,
+            "position_z": 0.0,
+            "rotation_x": 0.0,
+            "rotation_y": -0.0,
+            "rotation_z": 1.7414815425872803,
+            "scale_x": 13.427495002746582,
+            "scale_y": 13.427495002746582,
+            "scale_z": 13.427494049072266,
+            "lines": [
+                "Yo no la puedo ver"
+            ]
+        }
+    ],
+    "sign": [
+        {
+            "id": "Sign.001",
+            "position_x": -184.79983520507812,
+            "position_y": -179.7664794921875,
+            "position_z": 0.0,
+            "rotation_x": 0.0,
+            "rotation_y": -0.0,
+            "rotation_z": 1.813082218170166,
+            "scale_x": 1.0,
+            "scale_y": 1.0,
+            "scale_z": 1.0,
+            "text": "L:Paraná|R:Loop"
+        },
+        {
+            "id": "Sign.002",
+            "position_x": -95.48758697509766,
+            "position_y": -111.3804931640625,
+            "position_z": 0.0,
+            "rotation_x": 0.0,
+            "rotation_y": -0.0,
+            "rotation_z": 1.944146990776062,
+            "scale_x": 1.0,
+            "scale_y": 1.0,
+            "scale_z": 1.0,
+            "text": "C:Paraná|L:Camino Largo|R:Camino Corto"
+        }
+    ]
+}
