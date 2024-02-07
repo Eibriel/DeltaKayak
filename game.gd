@@ -204,7 +204,13 @@ func convert_rotation(e:Dictionary) -> Vector3:
 
 func _process(delta: float) -> void:
 	$Terrain.position = round(player.position / 10) * 10
+	$SubViewport2/Camera3D.global_position = $Player/Marker3D.global_position
+	$SubViewport2/Camera3D.global_rotation = $Player/Marker3D.global_rotation
 	
+	$SubViewport/Map/Heightmap.position.x = -player.position.x + 256
+	$SubViewport/Map/Heightmap.position.y = -player.position.z + 256
+	$SubViewport/Map/Paddle.rotation = -player.rotation.y + deg_to_rad(-90)
+
 
 func _physics_process(delta: float) -> void:
 	$Player/Node3D2.position = $Player.position

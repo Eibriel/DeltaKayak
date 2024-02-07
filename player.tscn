@@ -190,4 +190,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.13126)
 mesh = SubResource("PlaneMesh_7lkku")
 material = SubResource("ShaderMaterial_3654b")
 
+[node name="SpotLight3D2" type="SpotLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -0.924, -0.382393, 0, 0.382393, -0.924, 0, 0.391613, -1.06062)
+spot_range = 1.65541
+spot_angle = 27.3895
+
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]
