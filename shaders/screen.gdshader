@@ -129,6 +129,8 @@ vec4 pixelate(vec2 fragCoord, vec2 uv_pixel_size, int _pixel_size) {
 }
 
 vec3 ramp_color(vec3 color) {
+	return color;
+	
 	vec3 ramped_color = texture(color_ramp, vec2(color.r,0)).rgb;
 	if (color.g > color.r && color.g > color.b) {
 		ramped_color = texture(color_rampb, vec2(color.g,0)).rgb;

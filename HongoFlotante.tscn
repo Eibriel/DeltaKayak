@@ -1,0 +1,27 @@
+[gd_scene load_steps=4 format=3 uid="uid://b8rn6eblpil7k"]
+
+[ext_resource type="PackedScene" uid="uid://du6i3gemtpojn" path="res://models/HongoFlotante.glb" id="1_q5vvy"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_wjegy"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_lc47u"]
+radius = 0.887084
+height = 2.58262
+
+[node name="RigidBody3D" type="RigidBody3D"]
+collision_layer = 256
+collision_mask = 257
+axis_lock_linear_y = true
+physics_material_override = SubResource("PhysicsMaterial_wjegy")
+linear_damp = 5.0
+angular_damp = 5.0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(-0.0132246, -0.935388, -0.353377, 0.9999, -0.0141367, 1.45504e-11, -0.00499559, -0.353342, 0.935481, -0.095932, 0.0917232, -0.0984726)
+shape = SubResource("CapsuleShape3D_lc47u")
+
+[node name="CSGBox3D" type="CSGBox3D" parent="."]
+visible = false
+
+[node name="HongoFlotante" parent="." instance=ExtResource("1_q5vvy")]
+transform = Transform3D(10, 0, 0, 0, 10, 0, 0, 0, 10, 0, 0, 0)

@@ -1,0 +1,24 @@
+[gd_scene load_steps=4 format=3 uid="uid://dhye3vgc16n83"]
+
+[ext_resource type="PackedScene" uid="uid://v1evjkgge8mb" path="res://models/PortonAlambres.glb" id="1_g5vd3"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_tsdw0"]
+absorbent = true
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_vmeho"]
+size = Vector3(14.2794, 9.0426, 0.58078)
+
+[node name="PortonAlambresScene" type="RigidBody3D"]
+collision_layer = 512
+collision_mask = 513
+physics_material_override = SubResource("PhysicsMaterial_tsdw0")
+gravity_scale = 0.0
+linear_damp = 5.0
+angular_damp = 5.0
+
+[node name="PortonAlambres" parent="." instance=ExtResource("1_g5vd3")]
+transform = Transform3D(10, 0, 0, 0, 10, 0, 0, 0, 10, 6.96564, 0, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.95224, -0.0217896, -0.0228729)
+shape = SubResource("BoxShape3D_vmeho")

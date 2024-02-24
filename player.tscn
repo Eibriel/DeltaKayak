@@ -1,4 +1,4 @@
-[gd_scene load_steps=25 format=3 uid="uid://nr6v23qqk8cq"]
+[gd_scene load_steps=29 format=3 uid="uid://nr6v23qqk8cq"]
 
 [ext_resource type="Script" path="res://player.gd" id="1_uptun"]
 [ext_resource type="ArrayMesh" uid="uid://cee32cluwkn5e" path="res://meshes/kayaks/banana.res" id="3_53yu7"]
@@ -6,9 +6,11 @@
 [ext_resource type="ArrayMesh" uid="uid://dt4xluyt6ckn1" path="res://meshes/kayaks/normal.res" id="4_a7mya"]
 [ext_resource type="ArrayMesh" uid="uid://ceocuipu8o2xo" path="res://meshes/kayaks/hotdog.res" id="4_b7jyd"]
 [ext_resource type="AudioStream" uid="uid://dud0j2l42k5my" path="res://sounds/paddle_01.mp3" id="5_p14ld"]
+[ext_resource type="PackedScene" uid="uid://cdw8kil7d6vvq" path="res://models/kayaks/kayak_detailed.glb" id="5_tnqrw"]
 [ext_resource type="AudioStream" uid="uid://dv7envob1xc0a" path="res://sounds/paddle_02.mp3" id="6_jog1s"]
 [ext_resource type="Shader" path="res://shaders/water.gdshader" id="6_ouq5p"]
 [ext_resource type="Texture2D" uid="uid://cc8m8hnubni2e" path="res://images/flashlight.jpg" id="8_nlkqr"]
+[ext_resource type="PackedScene" uid="uid://cg8kpnt8idf2f" path="res://models/Dog.glb" id="10_ttuty"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_1oafd"]
 friction = 0.5
@@ -20,7 +22,7 @@ point_count = 4
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_438mp"]
 radius = 0.499303
-height = 4.23762
+height = 6.04879
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_4u5f0"]
 size = Vector3(1.06633, 1.71325, 3.3791)
@@ -77,7 +79,21 @@ noise = SubResource("FastNoiseLite_d5tpc")
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_3654b"]
 render_priority = 0
 shader = ExtResource("6_ouq5p")
-shader_parameter/albedo = Color(0.419608, 0.419608, 0.419608, 1)
+shader_parameter/albedo = Color(0.690196, 0.392157, 0.0745098, 1)
+shader_parameter/texture_1 = SubResource("NoiseTexture2D_egqph")
+shader_parameter/texture_2 = SubResource("NoiseTexture2D_37nns")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_5vg2k"]
+render_priority = 0
+shader = ExtResource("6_ouq5p")
+shader_parameter/albedo = Color(0.960784, 0.584314, 0.278431, 1)
+shader_parameter/texture_1 = SubResource("NoiseTexture2D_egqph")
+shader_parameter/texture_2 = SubResource("NoiseTexture2D_37nns")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_kp0pn"]
+render_priority = 0
+shader = ExtResource("6_ouq5p")
+shader_parameter/albedo = Color(0.690196, 0.0745098, 0.0745098, 1)
 shader_parameter/texture_1 = SubResource("NoiseTexture2D_egqph")
 shader_parameter/texture_2 = SubResource("NoiseTexture2D_37nns")
 
@@ -103,10 +119,17 @@ mesh = ExtResource("4_b7jyd")
 
 [node name="Normal" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.0895669)
+visible = false
 mesh = ExtResource("4_a7mya")
 
+[node name="kayak_detailed" parent="." instance=ExtResource("5_tnqrw")]
+transform = Transform3D(0.7, 0, 0, 0, 0.7, 0, 0, 0, 0.7, 0, 0.0767593, -0.106201)
+
+[node name="Dog" parent="." instance=ExtResource("10_ttuty")]
+transform = Transform3D(3.27321, 0.330574, -1.1945, -0.480584, 3.44782, -0.362738, 1.14243, 0.50325, 3.2698, -0.120087, 0.879497, -2.35861)
+
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0.176264, -0.667382)
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0.176264, -0.582604)
 shape = SubResource("CapsuleShape3D_438mp")
 
 [node name="LeftPaddle" type="CSGSphere3D" parent="."]
@@ -172,17 +195,31 @@ light_volumetric_fog_energy = 0.0
 omni_range = 34.617
 omni_attenuation = 0.933033
 
-[node name="SpotLight3D" type="SpotLight3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0.980478, 0.196631, 0, -0.196631, 0.980478, 0, 2.51155, -0.0636178)
+[node name="Flashlight" type="Marker3D" parent="."]
+transform = Transform3D(1, -1.60281e-09, 0, 2.12231e-09, 1, 0, -4.65661e-10, 1.45519e-11, 1, 0.0107377, 1.56681, 0.0979832)
+
+[node name="SpotLight3D" type="SpotLight3D" parent="Flashlight"]
+transform = Transform3D(0.992828, 0.00681845, 0.119361, -0.0251058, 0.988002, 0.152388, -0.11689, -0.154291, 0.981087, 0.341948, 0.196943, 0.19781)
 light_color = Color(0.941176, 0.941176, 0.941176, 1)
 light_energy = 26.0
 light_volumetric_fog_energy = 16.0
 light_projector = ExtResource("8_nlkqr")
 light_specular = 1.125
 shadow_enabled = true
-spot_range = 66.0
+spot_range = 120.0
 spot_attenuation = 1.41421
-spot_angle = 38.8043
+spot_angle = 47.5081
+spot_angle_attenuation = 3.36358
+
+[node name="SpotLight3D3" type="SpotLight3D" parent="Flashlight/SpotLight3D"]
+transform = Transform3D(1, -3.12559e-09, 0, 5.99584e-10, 1, 0, -9.31323e-10, -1.45519e-11, 1, 0, 0, 0)
+light_color = Color(0.941176, 0.941176, 0.941176, 1)
+light_energy = 2.0
+light_volumetric_fog_energy = 16.0
+light_specular = 1.125
+spot_range = 80.0
+spot_attenuation = 1.41421
+spot_angle = 60.0
 spot_angle_attenuation = 3.36358
 
 [node name="Water" type="CSGMesh3D" parent="."]
@@ -190,9 +227,20 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.13126)
 mesh = SubResource("PlaneMesh_7lkku")
 material = SubResource("ShaderMaterial_3654b")
 
+[node name="Water2" type="CSGMesh3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.077557, -1.13126)
+mesh = SubResource("PlaneMesh_7lkku")
+material = SubResource("ShaderMaterial_5vg2k")
+
+[node name="Water3" type="CSGMesh3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.169174, -1.13126)
+mesh = SubResource("PlaneMesh_7lkku")
+material = SubResource("ShaderMaterial_kp0pn")
+
 [node name="SpotLight3D2" type="SpotLight3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, -0.924, -0.382393, 0, 0.382393, -0.924, 0, 0.391613, -1.06062)
-spot_range = 1.65541
+transform = Transform3D(1, 0, 0, 0, -0.9295, -0.368822, 0, 0.368822, -0.9295, 0, 0.391613, -1.82466)
+light_energy = 2.0
+spot_range = 50.0
 spot_angle = 27.3895
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]

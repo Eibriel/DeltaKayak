@@ -1,0 +1,43 @@
+[gd_scene load_steps=5 format=3 uid="uid://b8hftxc5l078w"]
+
+[ext_resource type="AudioStream" uid="uid://cwpo3iwwniwbe" path="res://sounds/kayak.mp3" id="1_2qfpo"]
+[ext_resource type="Script" path="res://experiments/SpatialAudio/SpatialAudio.gd" id="1_5dfk2"]
+[ext_resource type="AudioStream" uid="uid://caeipbtmk04k2" path="res://sounds/river.mp3" id="3_ryike"]
+[ext_resource type="AudioStream" uid="uid://ca0udyjnog3jl" path="res://sounds/ambient/112339__alyceobvious__6_27_07-cricket-1.mp3" id="4_gwrgr"]
+
+[node name="SpatialAudio" type="Node3D"]
+script = ExtResource("1_5dfk2")
+
+[node name="CSGSphere3D2" type="CSGSphere3D" parent="."]
+
+[node name="CSGSphere3D" type="CSGSphere3D" parent="CSGSphere3D2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -4.43872)
+
+[node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="CSGSphere3D2/CSGSphere3D"]
+stream = ExtResource("1_2qfpo")
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.8078, 0.00939941)
+
+[node name="AudioStreamPlayer3D2" type="AudioStreamPlayer3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 17.4808, 0.731221, -4.43872)
+stream = ExtResource("1_2qfpo")
+volume_db = -3.0
+
+[node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -23.375, 0, -7.29272)
+stream = ExtResource("3_ryike")
+
+[node name="Radio" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -20.8765, 0, -36.1687)
+
+[node name="AudioStreamPlayer3D3" type="AudioStreamPlayer3D" parent="Radio"]
+transform = Transform3D(0.999946, 0, -0.0103845, 0, 1, 0, 0.0103845, 0, 0.999946, -0.198677, 3.31487, -0.0197945)
+stream = ExtResource("4_gwrgr")
+autoplay = true
+attenuation_filter_cutoff_hz = 2000.0
+
+[node name="AudioStreamPlayer3D4" type="AudioStreamPlayer3D" parent="Radio"]
+transform = Transform3D(0.999786, -0.0178887, -0.0103828, 0.0178877, 0.99984, -0.000185764, 0.0103845, -3.81507e-11, 0.999946, -0.200991, 30.2143, -0.209492)
+stream = ExtResource("4_gwrgr")
+attenuation_filter_cutoff_hz = 2000.0

@@ -16,7 +16,8 @@ signal received_attack
 @onready var audio_paddle_left = $AudioPaddleLeft
 @onready var audio_collision = $AudioCollision
 @onready var character_animation = $character/AnimationPlayer
-
+@onready var dog: Node3D = $Dog
+@onready var flashlight: Marker3D = $Flashlight
 
 const SPEED := 140 #370
 const TORQUE := 30 #60
@@ -64,11 +65,14 @@ func _ready():
 #	kayak_material = kayak_mesh.surface_get_material(0)
 #	kayak_material.shading_mode = StandardMaterial3D.SHADING_MODE_PER_VERTEX
 #	kayak_material.emission_enabled = true
-	var character_mesh:ArrayMesh = $character/Armature/Skeleton3D/Character.mesh
-	character_material = character_mesh.surface_get_material(0)
-	character_material.shading_mode = StandardMaterial3D.SHADING_MODE_PER_VERTEX
-	character_material.emission_enabled = true
+	#var character_mesh:ArrayMesh = $character/Armature/Skeleton3D/Character.mesh
+	#character_material = character_mesh.surface_get_material(0)
+	#character_material.shading_mode = StandardMaterial3D.SHADING_MODE_PER_VERTEX
+	#character_material.emission_enabled = true
 	
+	var dog_anim: AnimationPlayer = dog.get_node("AnimationPlayer") as AnimationPlayer
+	dog_anim.play("Sitting")
+	dog_anim.get_animation("Sitting").loop_mode = Animation.LOOP_LINEAR
 
 func _input(event):
 	#TODO if trying to press 2 buttons at the same time
@@ -140,7 +144,7 @@ func _physics_process(delta):
 	
 	left_paddle.position.y = 0.2
 	right_paddle.position.y = 0.2
-	Global.camera.rotate_z(-Global.camera.rotation.z*0.05)
+	#Global.camera.rotate_z(-Global.camera.rotation.z*0.05)
 	if paddle_status != 0 :
 		if !holding:
 			var turning_assist: float = 1.0 - min(1, float(consecutive_paddling) / 2)
@@ -151,7 +155,7 @@ func _physics_process(delta):
 				go_forward((modified_speed*rithm_assist)*paddle_force.sample(paddle_hold)*turning_assist*delta)
 			var torque:float = (torque+torque_assist)*paddle_force.sample(paddle_hold)*delta
 			apply_torque(Vector3(0, torque, 0))
-			Global.camera.rotate_z(torque*0.001)
+			#Global.camera.rotate_z(torque*0.001)
 			if paddle_status == -1:
 				right_paddle.position.y = 0.2
 				left_paddle.position.y = 0

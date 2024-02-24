@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://dphrkwbby3f0y"]
 
-[ext_resource type="Texture2D" uid="uid://dh4cd31n45g0v" path="res://images/heightmap.png" id="1_ionsc"]
+[ext_resource type="Texture2D" uid="uid://2m7billqw2qx" path="res://images/heightmap_map.png" id="1_ces7b"]
 [ext_resource type="Texture2D" uid="uid://b2w6ifdxd2jkp" path="res://images/paddle.png" id="2_2ontx"]
 
 [node name="Map" type="Control"]
@@ -15,16 +15,16 @@ grow_vertical = 2
 
 [node name="Heightmap" type="Sprite2D" parent="."]
 position = Vector2(221.25, 275.25)
-texture = ExtResource("1_ionsc")
+texture = ExtResource("1_ces7b")
 
 [node name="Label" type="Label" parent="."]
+layout_mode = 0
 offset_right = 40.0
 offset_bottom = 28.0
 theme_override_font_sizes/font_size = 30
 text = "Map"
 
 [node name="Paddle" type="Sprite2D" parent="."]
-self_modulate = Color(1, 0, 0, 1)
 position = Vector2(256, 256)
 scale = Vector2(0.3, 0.3)
 texture = ExtResource("2_2ontx")

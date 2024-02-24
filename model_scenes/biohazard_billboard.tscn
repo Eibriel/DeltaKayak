@@ -1,0 +1,5 @@
+[gd_scene load_steps=2 format=3 uid="uid://c3qngx140crcn"]
+
+[ext_resource type="PackedScene" uid="uid://dk4m4twwwd37p" path="res://models/BiohazardBillboard.glb" id="1_gx5e6"]
+
+[node name="BiohazardBillboard" instance=ExtResource("1_gx5e6")]

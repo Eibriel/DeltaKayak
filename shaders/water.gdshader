@@ -16,6 +16,6 @@ void fragment() {
 	vec2 time2 = (TIME * vec2(0, 1)) * 0.06;
 	vec3 color1 = texture(texture_1, (global_uv*0.1)+time1).rgb;
 	vec3 color2 = texture(texture_2, (global_uv*0.1)+time2).rgb;
-	ALBEDO = color1 * color2 * albedo;
-	ALPHA = 0.85;
+	ALBEDO = (((color1 * color2) * 0.5) + 0.5) * albedo;
+	ALPHA = 0.65; //0.85;
 }

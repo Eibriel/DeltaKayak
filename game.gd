@@ -8,6 +8,7 @@ extends Node3D
 @onready var pu_button_2 := %LevelUpButton2
 @onready var pu_button_3 := %LevelUpButton3
 @onready var text_label: Label = %TextLabel
+@onready var ambient_sounds: Node3D = $AmbientSounds
 
 
 const CLAIM_DISTANCE = 2*2*2 # Squared distanceg
@@ -36,7 +37,7 @@ func unpause():
 	$PauseMenu.hide()
 	$StatsMenu.hide()
 	get_tree().paused = false
-	Input.mouse_mode = Input.MOUSE_MODE_HIDDEN
+	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 
 func levelup():
 	get_tree().paused = true
@@ -63,6 +64,7 @@ func levelup():
 		labels[n].text = "Season %d" % upgrades[3]
 		buttons[n].set_meta("powerup", upgrades)
 
+var current_take := 3
 func _ready():
 	$PauseMenu.hide()
 	$LevelUpMenu.hide()
@@ -72,14 +74,61 @@ func _ready():
 	Global.player = player
 	Global.camera = camera
 	
-	player.position.x = -1929.6
-	player.position.z = 1860.4
+	#player.position.x = -1929.6
+	#player.position.z = 1860.4
+	
+	match current_take:
+		1:
+			pass
+		2:
+			# Biohazard T02
+			player.position.x = -295
+			player.position.z = -282
+			player.rotation.y = deg_to_rad(-2)
+			$Terrain.MULTIMESH.mesh = preload("res://meshes/tree02.res")
+		3:
+			# No Pasar T03
+			player.position.x = -320
+			player.position.z = -345
+			$Terrain.MULTIMESH.mesh = preload("res://meshes/tree02.res")
+			player.dog.visible = false
+		4:
+			# Catarata T04
+			player.position.x = -204
+			player.position.z = -569
+			player.rotation.y = deg_to_rad(-90)
+			$Terrain.MULTIMESH.mesh = preload("res://meshes/tree02.res")
+			player.dog.visible = false
+		7:
+			# Hongos T07
+			player.position.x = 738
+			player.position.z = -445
+			player.rotation.y = deg_to_rad(-110)
+			$Terrain.MULTIMESH.mesh = preload("res://meshes/tree03.res")
+			player.dog.visible = false
+		8:
+			# Desague T08
+			player.position.x = 880
+			player.position.z = -498
+			player.rotation.y = deg_to_rad(-42)
+			$Terrain.MULTIMESH.mesh = preload("res://meshes/tree03.res")
+			player.dog.visible = false
+		9:
+			# Planta T09
+			player.position.x = 1171
+			player.position.z = -380
+			player.rotation.y = deg_to_rad(180)
+			$Terrain.MULTIMESH.mesh = preload("res://meshes/tree03.res")
+			player.dog.visible = false
+	
 	previous_position = Global.player.position
+	
+	#$Terrain.position = Vector3.ZERO
 	
 	player.connect("damage_update", _on_damage_update)
 	player.connect("paddle_left", _on_paddle_left)
 	player.connect("paddle_right", _on_paddle_right)
-	Input.mouse_mode = Input.MOUSE_MODE_HIDDEN
+	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 	
 	Global.connect("claimed_item", _on_claimed_item)
 	player.set_kayak(Player.KAYAKS.NORMAL_PINK)
@@ -125,6 +174,8 @@ func _ready():
 	var json_as_dict = JSON.parse_string(json_as_text)
 	if json_as_dict:
 		create_elements(json_as_dict)
+	
+	start_ambient_sounds()
 
 func create_elements(elements:Dictionary) -> void:
 	for e in elements["dialogue"]:
@@ -202,6 +253,17 @@ func convert_rotation(e:Dictionary) -> Vector3:
 	v.z = -e.rotation_y
 	return v
 
+func start_ambient_sounds() -> void:
+	for c:AudioStreamPlayer3D in ambient_sounds.get_children():
+		if c.name.begins_with("Reverb_"):
+			c.play()
+		else:
+			c.play(0.1)
+		if c.name.begins_with("Desague"):
+			c.play( randf_range(0.0,20.0))
+	$FXSounds/Engine01.play(0.1)
+	$FXSounds/Reverb_Engine01.play()
+
 func _process(delta: float) -> void:
 	$Terrain.position = round(player.position / 10) * 10
 	$SubViewport2/Camera3D.global_position = $Player/Marker3D.global_position
@@ -211,6 +273,7 @@ func _process(delta: float) -> void:
 	$SubViewport/Map/Heightmap.position.y = -player.position.z + 256
 	$SubViewport/Map/Paddle.rotation = -player.rotation.y + deg_to_rad(-90)
 
+	ambient_sounds.position = player.position
 
 func _physics_process(delta: float) -> void:
 	$Player/Node3D2.position = $Player.position
@@ -220,10 +283,40 @@ func _physics_process(delta: float) -> void:
 		agent.set_shift(Vector2(Global.player.position.x, Global.player.position.z))
 		agent.process(delta)
 
-
 func _input(event):
 	if event.is_action_pressed("ui_cancel"):
 		pause()
+	if event.is_action_pressed("ui_accept"):
+		var flashlight_light:SpotLight3D = player.flashlight.get_node("SpotLight3D")
+		match current_take:
+			1:
+				var t := create_tween()
+				t.tween_callback(func(): flashlight_light.visible = false)
+				t.tween_interval(0.05)
+				t.tween_callback(func(): flashlight_light.visible = true)
+				t.tween_interval(0.1)
+				t.tween_callback(func(): flashlight_light.visible = false)
+				t.tween_interval(0.1)
+				t.tween_callback(func(): flashlight_light.visible = true)
+				t.tween_interval(0.1)
+				t.tween_callback(func(): flashlight_light.visible = false)
+				t.tween_interval(0.01)
+				t.tween_callback(func(): player.dog.visible = false)
+				t.tween_interval(0.2)
+				t.tween_callback(func(): flashlight_light.visible = true)
+				
+				#$FXSounds/Dog01.play(0.05)
+				#$FXSounds/Reverb_Dog01.play()
+			2:
+				$FXSounds/Ship01.play(0.05)
+				$FXSounds/Reverb_Ship01.play()
+	var sensibility = 0.1
+	if event is InputEventMouseMotion:
+		$Player/Neck.rotate_object_local(Vector3.UP, deg_to_rad(-event.relative.x * sensibility))
+		camera.rotate_object_local(Vector3.RIGHT, deg_to_rad(-event.relative.y * sensibility))
+		#$Player/Neck.rotate_object_local(Vector3.RIGHT, deg_to_rad(-event.relative.y * sensibility))
+	var flashlight = player.get_node("Flashlight") as Marker3D
+	flashlight.global_rotation = camera.global_rotation
 
 func handle_wave(delta):
 	wave_time -= delta
@@ -338,7 +431,7 @@ func _on_select_levelup(button):
 	get_tree().paused = false
 	$LevelUpMenu.hide()
 	$StatsMenu.hide()
-	Input.mouse_mode = Input.MOUSE_MODE_HIDDEN
+	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 	var p: Array = button.get_meta("powerup")
 	for n in p.size():
 		Global.skills[n] += p[n]
