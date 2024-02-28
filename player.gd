@@ -18,6 +18,9 @@ signal received_attack
 @onready var character_animation = $character/AnimationPlayer
 @onready var dog: Node3D = $Dog
 @onready var flashlight: Marker3D = $Flashlight
+@onready var hongo_decal: Decal = $kayak_detailed/HongoDecal
+@onready var manchas_hongo: Node3D = $kayak_detailed/ManchasHongo
+
 
 const SPEED := 140 #370
 const TORQUE := 30 #60
@@ -210,7 +213,10 @@ func go_forward(speed:float):
 
 
 func play_paddle_sound(side):
-	var sound_path = "res://sounds/paddle_0"+str(randi_range(1, 9))+".mp3"
+	randomize()
+	var n := randi_range(1, 9)
+	if n == 4: n = 1
+	var sound_path = "res://sounds/paddle_0"+str(n)+".mp3"
 	var sound = load(sound_path)
 	if side == 1:
 		audio_paddle_right.stream = sound
@@ -221,6 +227,7 @@ func play_paddle_sound(side):
 
 
 func _on_body_entered(_body):
+	randomize()
 	var sound_path = "res://sounds/collision_0"+str(randi_range(1, 8))+".mp3"
 	var sound = load(sound_path)
 	audio_collision.stream = sound

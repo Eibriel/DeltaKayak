@@ -1,4 +1,4 @@
-[gd_scene load_steps=29 format=3 uid="uid://nr6v23qqk8cq"]
+[gd_scene load_steps=32 format=3 uid="uid://nr6v23qqk8cq"]
 
 [ext_resource type="Script" path="res://player.gd" id="1_uptun"]
 [ext_resource type="ArrayMesh" uid="uid://cee32cluwkn5e" path="res://meshes/kayaks/banana.res" id="3_53yu7"]
@@ -7,8 +7,11 @@
 [ext_resource type="ArrayMesh" uid="uid://ceocuipu8o2xo" path="res://meshes/kayaks/hotdog.res" id="4_b7jyd"]
 [ext_resource type="AudioStream" uid="uid://dud0j2l42k5my" path="res://sounds/paddle_01.mp3" id="5_p14ld"]
 [ext_resource type="PackedScene" uid="uid://cdw8kil7d6vvq" path="res://models/kayaks/kayak_detailed.glb" id="5_tnqrw"]
+[ext_resource type="PackedScene" uid="uid://c62vkiaw50y7y" path="res://models/Almohadon.glb" id="6_0oh5x"]
+[ext_resource type="Texture2D" uid="uid://b6xnv1vj10uyv" path="res://images/hongos_kayaks.jpg" id="6_1gqsb"]
 [ext_resource type="AudioStream" uid="uid://dv7envob1xc0a" path="res://sounds/paddle_02.mp3" id="6_jog1s"]
 [ext_resource type="Shader" path="res://shaders/water.gdshader" id="6_ouq5p"]
+[ext_resource type="PackedScene" uid="uid://du6i3gemtpojn" path="res://models/HongoFlotante.glb" id="7_300n0"]
 [ext_resource type="Texture2D" uid="uid://cc8m8hnubni2e" path="res://images/flashlight.jpg" id="8_nlkqr"]
 [ext_resource type="PackedScene" uid="uid://cg8kpnt8idf2f" path="res://models/Dog.glb" id="10_ttuty"]
 
@@ -125,8 +128,32 @@ mesh = ExtResource("4_a7mya")
 [node name="kayak_detailed" parent="." instance=ExtResource("5_tnqrw")]
 transform = Transform3D(0.7, 0, 0, 0, 0.7, 0, 0, 0, 0.7, 0, 0.0767593, -0.106201)
 
+[node name="Almohadon2" parent="kayak_detailed" instance=ExtResource("6_0oh5x")]
+transform = Transform3D(4.7549, 0, 1.54625, 0, 5, 0, -1.54625, 0, 4.7549, -0.0460379, 0.389429, -3.46055)
+
+[node name="HongoDecal" type="Decal" parent="kayak_detailed"]
+transform = Transform3D(-0.0515037, 0.215371, 0.975173, 0.335292, 0.923519, -0.186254, -0.940705, 0.317376, -0.119777, -0.0410171, 0.363393, -2.82091)
+layers = 16384
+size = Vector3(6.90781, 2.19775, 7.5047)
+texture_albedo = ExtResource("6_1gqsb")
+cull_mask = 16384
+
+[node name="ManchasHongo" type="Node3D" parent="kayak_detailed"]
+
+[node name="HongoFlotante" parent="kayak_detailed/ManchasHongo" instance=ExtResource("7_300n0")]
+transform = Transform3D(1.42857, 0, 0, 0, 1.42857, 0, 0, 0, 1.42857, 0.264457, 0.237198, -2.84476)
+
+[node name="HongoFlotante2" parent="kayak_detailed/ManchasHongo" instance=ExtResource("7_300n0")]
+transform = Transform3D(-0.386202, 0, 1.35661, 0, 0.999, 0, -1.16674, 0, -0.44905, 0.106201, 0.237198, -2.84476)
+
+[node name="HongoFlotante3" parent="kayak_detailed/ManchasHongo" instance=ExtResource("7_300n0")]
+transform = Transform3D(1.11442, -0.273417, -0.4583, 0.317115, 0.960856, -0.130412, 0.409804, 0, 1.34722, -0.317383, 0.22098, -2.80675)
+
+[node name="HongoFlotante4" parent="kayak_detailed/ManchasHongo" instance=ExtResource("7_300n0")]
+transform = Transform3D(1.15842, -0.020538, -0.476392, 0.0238204, 0.998789, -0.00979597, 0.409804, -3.06736e-09, 1.34722, -0.237645, 0.382374, -3.39181)
+
 [node name="Dog" parent="." instance=ExtResource("10_ttuty")]
-transform = Transform3D(3.27321, 0.330574, -1.1945, -0.480584, 3.44782, -0.362738, 1.14243, 0.50325, 3.2698, -0.120087, 0.879497, -2.35861)
+transform = Transform3D(3.27321, 0.330574, -1.1945, -0.480584, 3.44782, -0.362738, 1.14243, 0.50325, 3.2698, -0.120087, 0.915168, -2.35861)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0.176264, -0.582604)

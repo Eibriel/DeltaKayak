@@ -18,8 +18,8 @@ void fragment() {
 	float height = (texture(heightmap, global_uv).r * 2.0) - 0.8;
 	float val = clamp(height,0,1)*0.5;
 
-	//ALBEDO = vec3(val);
-	ALBEDO = texture(texture_1, global_uv * (4096.0 * 0.5)).rgb;
+	ALBEDO = vec3(val);
+	ALBEDO *= texture(texture_1, global_uv * (4096.0 * 0.5)).rgb;
 	if (height < 0.05 && height > -0.05) {
 		float gg = abs(height);
 		ALBEDO = mix(vec3(0.8, 0.5, 0.4), ALBEDO, gg * 5.0);

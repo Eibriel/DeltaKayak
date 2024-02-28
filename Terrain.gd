@@ -7,6 +7,7 @@ var shape := HeightMapShape3D.new()
 var prev_pos: Vector3
 
 @onready var MULTIMESH:MultiMesh = $Trees.multimesh
+@onready var MULTIMESH_JUNCOS:MultiMesh = $Juncos.multimesh
 
 func _ready() -> void:
 	$StaticBody3D/CollisionShape3D.shape = shape
@@ -41,10 +42,13 @@ func pixel2pos(pixel: Vector2i) -> Vector3:
 # Source:
 # https://github.com/ensanmartin/godot-2d-dithering/blob/main/test_project/materials/blue_noise/simplified_blue_noise.tres
 var trees = []
+var juncos = []
 func distribute_trees() -> void:
 	var rec := pos2pixel(position, Vector2i(200, 200))
 	var INSTANCE_COUNT = 0
+	var INSTANCE_COUNT_JUNCOS = 0
 	trees.resize(0)
+	juncos.resize(0)
 	for x in rec.size.x:
 		for y in rec.size.y:
 			place_tree(Vector2i(x + rec.get_center().x - (float(rec.size.x)/2), y + rec.get_center().y - (float(rec.size.y)/2)))
@@ -57,6 +61,14 @@ func distribute_trees() -> void:
 		t = t.scaled_local(trees[id][2])
 		MULTIMESH.set_instance_transform(id, t)
 
+	INSTANCE_COUNT_JUNCOS = juncos.size()
+	MULTIMESH_JUNCOS.visible_instance_count = INSTANCE_COUNT_JUNCOS
+	for id in INSTANCE_COUNT_JUNCOS:
+		var v: Vector3 = juncos[id][0]
+		var t := Transform3D(Basis(), v)
+		t = t.rotated_local(Vector3.UP, juncos[id][1])
+		t = t.scaled_local(juncos[id][2])
+		MULTIMESH_JUNCOS.set_instance_transform(id, t)
 
 func place_tree(COORD: Vector2i) -> void:
 	#var COORD: Vector2i = pos2pixel(position).get_center()
@@ -64,7 +76,8 @@ func place_tree(COORD: Vector2i) -> void:
 	var pixel:Color = img.get_pixelv(COORD)
 	if pixel.r < 0.05:
 		return
-	pixel *= 0.1
+	#pixel *= 0.1
+	pixel *= 0.8
 	#pixel = pixel.clamp()
 	var vector_pixel: Vector3 = Vector3(pixel.r, pixel.r, pixel.r)
 	# LUMA coefficients
@@ -82,15 +95,26 @@ func place_tree(COORD: Vector2i) -> void:
 	
 	
 	if new_color == Color(1,1,1):
-		seed(COORD.x + COORD.y)
+		var seed_str:String = "%s-%s" % [COORD.x, COORD.y]
+		seed(seed_str.hash())
+		#print(COORD.x + COORD.y)
 		var pos := pixel2pos(COORD)
 		pos.y = (img.get_pixelv(COORD).r * 2.0) - 0.8
-		trees.append(
-			[
-				pos,
-				randf_range(-PI*2, PI*2),
-				Vector3.ONE * randf_range(0.2, 1.0)
-			])
+		if pixel.r > 0.7:
+			trees.append(
+				[
+					pos,
+					randf_range(0, PI*2),
+					Vector3.ONE * randf_range(0.2, 1.0)
+				])
+		else:
+			pos.y -= 0.5
+			juncos.append(
+				[
+					pos,
+					randf_range(0, PI*2),
+					Vector3.ONE * randf_range(0.7, 1.0)
+				])
 
 func rand(uv: Vector2) -> float:
 	return fract(sin(uv.dot(Vector2(12.9898,78.233))) * 43758.5453123)

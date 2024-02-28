@@ -9,7 +9,9 @@ extends Node3D
 @onready var pu_button_3 := %LevelUpButton3
 @onready var text_label: Label = %TextLabel
 @onready var ambient_sounds: Node3D = $AmbientSounds
+@onready var hongo_emiter: Marker3D = $LevelTrailer/Toma07/HongosFlotantes/HongoEmiter
 
+const HONGO_FLOTANTE = preload("res://HongoFlotante.tscn")
 
 const CLAIM_DISTANCE = 2*2*2 # Squared distanceg
 
@@ -64,7 +66,8 @@ func levelup():
 		labels[n].text = "Season %d" % upgrades[3]
 		buttons[n].set_meta("powerup", upgrades)
 
-var current_take := 3
+# 1 2 3 4 7 8 9 10
+var current_take := 9
 func _ready():
 	$PauseMenu.hide()
 	$LevelUpMenu.hide()
@@ -76,29 +79,39 @@ func _ready():
 	
 	#player.position.x = -1929.6
 	#player.position.z = 1860.4
-	
+	var screen_mat:ShaderMaterial = $SubViewport2/ScreenShader.material
+	screen_mat.set_shader_parameter("effect_amount", 1.2) #1.593
+	camera.fov = 50
 	match current_take:
 		1:
-			pass
+			player.hongo_decal.albedo_mix = 0.0
+			player.manchas_hongo.visible = false
 		2:
 			# Biohazard T02
 			player.position.x = -295
 			player.position.z = -282
 			player.rotation.y = deg_to_rad(-2)
 			$Terrain.MULTIMESH.mesh = preload("res://meshes/tree02.res")
+			player.dog.visible = false
+			player.hongo_decal.albedo_mix = 0.1
+			player.manchas_hongo.visible = false
 		3:
 			# No Pasar T03
 			player.position.x = -320
 			player.position.z = -345
 			$Terrain.MULTIMESH.mesh = preload("res://meshes/tree02.res")
 			player.dog.visible = false
+			player.hongo_decal.albedo_mix = 0.1
+			player.manchas_hongo.visible = false
 		4:
 			# Catarata T04
 			player.position.x = -204
 			player.position.z = -569
 			player.rotation.y = deg_to_rad(-90)
-			$Terrain.MULTIMESH.mesh = preload("res://meshes/tree02.res")
+			$Terrain.MULTIMESH.mesh = preload("res://meshes/tree03.res")
 			player.dog.visible = false
+			player.hongo_decal.albedo_mix = 0.3
+			player.manchas_hongo.visible = false
 		7:
 			# Hongos T07
 			player.position.x = 738
@@ -106,6 +119,8 @@ func _ready():
 			player.rotation.y = deg_to_rad(-110)
 			$Terrain.MULTIMESH.mesh = preload("res://meshes/tree03.res")
 			player.dog.visible = false
+			player.hongo_decal.albedo_mix = 0.9
+			player.manchas_hongo.visible = false
 		8:
 			# Desague T08
 			player.position.x = 880
@@ -113,13 +128,30 @@ func _ready():
 			player.rotation.y = deg_to_rad(-42)
 			$Terrain.MULTIMESH.mesh = preload("res://meshes/tree03.res")
 			player.dog.visible = false
+			player.hongo_decal.albedo_mix = 0.4
+			player.manchas_hongo.visible = false
 		9:
 			# Planta T09
 			player.position.x = 1171
 			player.position.z = -380
 			player.rotation.y = deg_to_rad(180)
+			$Terrain.MULTIMESH.mesh = preload("res://meshes/tree02.res")
+			player.dog.visible = false
+			player.hongo_decal.albedo_mix = 0.1
+			player.manchas_hongo.visible = false
+		10:
+			# Embudo T10
+			player.position.x = 1069
+			player.position.z = -81
+			player.rotation.y = deg_to_rad(225)
 			$Terrain.MULTIMESH.mesh = preload("res://meshes/tree03.res")
 			player.dog.visible = false
+			player.hongo_decal.albedo_mix = 0.0
+			player.manchas_hongo.visible = false
+			var cam:Camera3D = $LevelTrailer/Toma10/CameraToma10 as Camera3D
+			cam.current = true
+			var cam_tween := create_tween()
+			cam_tween.tween_property(cam, "position", Vector3(1116, 167,-57), 30.0)
 	
 	previous_position = Global.player.position
 	
@@ -255,6 +287,18 @@ func convert_rotation(e:Dictionary) -> Vector3:
 
 func start_ambient_sounds() -> void:
 	for c:AudioStreamPlayer3D in ambient_sounds.get_children():
+		match current_take:
+			3:
+				c.volume_db = -3
+			4:
+				c.volume_db = -4
+			7:
+				c.volume_db = -5
+			8:
+				c.volume_db = -6
+			9:
+				c.volume_db = -7
+			
 		if c.name.begins_with("Reverb_"):
 			c.play()
 		else:
@@ -274,6 +318,14 @@ func _process(delta: float) -> void:
 	$SubViewport/Map/Paddle.rotation = -player.rotation.y + deg_to_rad(-90)
 
 	ambient_sounds.position = player.position
+	
+	$Player/Neck.rotation.y += camera_rotation.y
+	camera.rotation.x += camera_rotation.x
+	camera_rotation.y *= 0.9
+	camera_rotation.x *= 0.9
+	var flashlight = player.get_node("Flashlight") as Marker3D
+	flashlight.global_rotation = camera.global_rotation
+
 
 func _physics_process(delta: float) -> void:
 	$Player/Node3D2.position = $Player.position
@@ -282,7 +334,19 @@ func _physics_process(delta: float) -> void:
 	for agent in agents:
 		agent.set_shift(Vector2(Global.player.position.x, Global.player.position.z))
 		agent.process(delta)
+	emit_hongo(delta)
 
+var emit_time := 0.0
+func emit_hongo(delta:float) -> void:
+	if current_take != 7: return
+	emit_time += delta
+	if emit_time < 0.1: return
+	emit_time = 0.0
+	var hf := HONGO_FLOTANTE.instantiate()
+	hf.position = hongo_emiter.position
+	hongo_emiter.get_parent_node_3d().add_child(hf)
+
+var camera_rotation := Vector3()
 func _input(event):
 	if event.is_action_pressed("ui_cancel"):
 		pause()
@@ -290,33 +354,39 @@ func _input(event):
 		var flashlight_light:SpotLight3D = player.flashlight.get_node("SpotLight3D")
 		match current_take:
 			1:
-				var t := create_tween()
-				t.tween_callback(func(): flashlight_light.visible = false)
-				t.tween_interval(0.05)
-				t.tween_callback(func(): flashlight_light.visible = true)
-				t.tween_interval(0.1)
-				t.tween_callback(func(): flashlight_light.visible = false)
-				t.tween_interval(0.1)
-				t.tween_callback(func(): flashlight_light.visible = true)
-				t.tween_interval(0.1)
-				t.tween_callback(func(): flashlight_light.visible = false)
-				t.tween_interval(0.01)
-				t.tween_callback(func(): player.dog.visible = false)
-				t.tween_interval(0.2)
-				t.tween_callback(func(): flashlight_light.visible = true)
+				player.dog.visible = false
+				#var t := create_tween()
+				#t.tween_callback(func(): flashlight_light.visible = false)
+				#t.tween_interval(0.05)
+				#t.tween_callback(func(): flashlight_light.visible = true)
+				#t.tween_interval(0.1)
+				#t.tween_callback(func(): flashlight_light.visible = false)
+				#t.tween_interval(0.1)
+				#t.tween_callback(func(): flashlight_light.visible = true)
+				#t.tween_interval(0.1)
+				#t.tween_callback(func(): flashlight_light.visible = false)
+				#t.tween_interval(0.01)
+				#t.tween_callback(func(): player.dog.visible = false)
+				#t.tween_interval(0.2)
+				#t.tween_callback(func(): flashlight_light.visible = true)
 				
 				#$FXSounds/Dog01.play(0.05)
 				#$FXSounds/Reverb_Dog01.play()
 			2:
+				$FXSounds/Dog01.play(0.05)
+				$FXSounds/Reverb_Dog01.play()
+			3:
 				$FXSounds/Ship01.play(0.05)
 				$FXSounds/Reverb_Ship01.play()
 	var sensibility = 0.1
 	if event is InputEventMouseMotion:
-		$Player/Neck.rotate_object_local(Vector3.UP, deg_to_rad(-event.relative.x * sensibility))
-		camera.rotate_object_local(Vector3.RIGHT, deg_to_rad(-event.relative.y * sensibility))
+		camera_rotation.x = (camera_rotation.x * 0.9) + (deg_to_rad(-event.relative.y * sensibility) * 0.1)
+		camera_rotation.y = (camera_rotation.y * 0.9) + (deg_to_rad(-event.relative.x * sensibility) * 0.1)
+		#$Player/Neck.rotate_object_local(Vector3.UP, deg_to_rad(-event.relative.x * sensibility))
+		#camera.rotate_object_local(Vector3.RIGHT, deg_to_rad(-event.relative.y * sensibility))
 		#$Player/Neck.rotate_object_local(Vector3.RIGHT, deg_to_rad(-event.relative.y * sensibility))
-	var flashlight = player.get_node("Flashlight") as Marker3D
-	flashlight.global_rotation = camera.global_rotation
+	#$Player/Neck.rotate_object_local(Vector3.UP, camera_rotation.x)
+	#camera.rotate_object_local(Vector3.RIGHT, camera_rotation.y)
 
 func handle_wave(delta):
 	wave_time -= delta
