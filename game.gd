@@ -67,7 +67,7 @@ func levelup():
 		buttons[n].set_meta("powerup", upgrades)
 
 # 1 2 3 4 7 8 9 10
-var current_take := 9
+var current_take := 1
 func _ready():
 	$PauseMenu.hide()
 	$LevelUpMenu.hide()
@@ -81,7 +81,7 @@ func _ready():
 	#player.position.z = 1860.4
 	var screen_mat:ShaderMaterial = $SubViewport2/ScreenShader.material
 	screen_mat.set_shader_parameter("effect_amount", 1.2) #1.593
-	camera.fov = 50
+	#camera.fov = 50
 	match current_take:
 		1:
 			player.hongo_decal.albedo_mix = 0.0

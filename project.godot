@@ -85,7 +85,6 @@ locale/fallback="es"
 textures/canvas_textures/default_texture_filter=0
 shading/overrides/force_vertex_shading=true
 shading/overrides/force_lambert_over_burley=true
-textures/default_filters/use_nearest_mipmap_filter=true
 textures/default_filters/anisotropic_filtering_level=0
 anti_aliasing/screen_space_roughness_limiter/enabled=false
 textures/decals/filter=0

@@ -1191,10 +1191,10 @@ transform = Transform3D(1.22878, -1.47483, 2.30542, 2.30485, 1.92033, 7.32272e-0
 transform = Transform3D(0.110302, 0, -9.99939, 0, 10, 0, 9.99939, 0, 0.110302, 1173.23, 0, -329.934)
 
 [node name="PortonAlambresScene" parent="LevelTrailer/Toma09" instance=ExtResource("33_lkapt")]
-transform = Transform3D(1, 0, 0, 0, 0.946051, -0.324016, 0, 0.324016, 0.946051, 1159.95, 3.30379, -327.945)
+transform = Transform3D(0.991101, 0.0269065, 0.130364, -0.00703597, 0.988577, -0.150547, -0.132925, 0.14829, 0.97997, 1174.44, 3.92004, -326.337)
 
 [node name="PortonAlambresScene2" parent="LevelTrailer/Toma09" instance=ExtResource("33_lkapt")]
-transform = Transform3D(-0.99655, 0.0158495, -0.0814641, 0.0209468, 0.99785, -0.062103, 0.0803047, -0.0635952, -0.994739, 1189.21, 3.14868, -327.945)
+transform = Transform3D(-0.99655, 0.0158495, -0.0814641, 0.0209468, 0.99785, -0.062103, 0.0803047, -0.0635952, -0.994739, 1173.74, 3.76493, -327.945)
 
 [node name="SpotLight3D" type="SpotLight3D" parent="LevelTrailer/Toma09"]
 transform = Transform3D(0.966205, 0.211922, 0.146753, 0.25774, -0.785036, -0.563283, -0.00416595, 0.582071, -0.813127, 1202.38, 6.84027, -291.276)
