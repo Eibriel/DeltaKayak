@@ -67,7 +67,7 @@ func levelup():
 		buttons[n].set_meta("powerup", upgrades)
 
 # 1 2 3 4 7 8 9 10
-var current_take := 1
+var current_take := 9
 func _ready():
 	$PauseMenu.hide()
 	$LevelUpMenu.hide()
@@ -348,6 +348,9 @@ func emit_hongo(delta:float) -> void:
 
 var camera_rotation := Vector3()
 func _input(event):
+	if event.is_action_pressed("ui_down"):
+		print("Refresh")
+		Global.refresh_frame = true
 	if event.is_action_pressed("ui_cancel"):
 		pause()
 	if event.is_action_pressed("ui_accept"):

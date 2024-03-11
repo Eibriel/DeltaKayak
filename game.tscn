@@ -1,4 +1,4 @@
-[gd_scene load_steps=98 format=3 uid="uid://dm0vfm6e713yh"]
+[gd_scene load_steps=101 format=3 uid="uid://dm0vfm6e713yh"]
 
 [ext_resource type="Script" path="res://game.gd" id="1_nflkn"]
 [ext_resource type="Shader" path="res://shaders/damage.gdshader" id="2_epe5b"]
@@ -7,6 +7,7 @@
 [ext_resource type="Texture2D" uid="uid://b2w6ifdxd2jkp" path="res://images/paddle.png" id="5_50um5"]
 [ext_resource type="PackedScene" uid="uid://nr6v23qqk8cq" path="res://player.tscn" id="6_4wp0x"]
 [ext_resource type="ArrayMesh" uid="uid://bsyvk52nmngtq" path="res://meshes/drone001.res" id="7_ly7sb"]
+[ext_resource type="Script" path="res://compositor/datamosh_compositor.gd" id="8_dqgmj"]
 [ext_resource type="ArrayMesh" uid="uid://dhyeol82vi5xl" path="res://meshes/jellyfish.res" id="8_jsv84"]
 [ext_resource type="ArrayMesh" uid="uid://blfgnl6mrxea2" path="res://meshes/lotus001.res" id="9_i5g2g"]
 [ext_resource type="AudioStream" uid="uid://caeipbtmk04k2" path="res://sounds/river.mp3" id="10_ppti4"]
@@ -141,6 +142,18 @@ volumetric_fog_sky_affect = 0.0
 adjustment_enabled = true
 adjustment_brightness = 1.33
 adjustment_contrast = 1.07
+
+[sub_resource type="CompositorEffect" id="CompositorEffect_qwwb5"]
+resource_local_to_scene = false
+resource_name = ""
+enabled = true
+effect_callback_type = 4
+needs_motion_vectors = true
+needs_normal_roughness = false
+script = ExtResource("8_dqgmj")
+
+[sub_resource type="Compositor" id="Compositor_2ncv4"]
+compositor_effects = Array[CompositorEffect]([SubResource("CompositorEffect_qwwb5")])
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_m7qls"]
 emission_shape = 3
@@ -514,6 +527,7 @@ light_energy = 0.01
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_cyhdn")
+compositor = SubResource("Compositor_2ncv4")
 
 [node name="Player" parent="." instance=ExtResource("6_4wp0x")]
 
@@ -1186,6 +1200,7 @@ transform = Transform3D(-2.21687, 1.86183, 0.78682, -1.92937, -2.29729, 0, 0.602
 transform = Transform3D(1.22878, -1.47483, 2.30542, 2.30485, 1.92033, 7.32272e-08, -1.47572, 1.77122, 1.91965, 913.033, 0, -531.147)
 
 [node name="Toma09" type="Node3D" parent="LevelTrailer"]
+visible = false
 
 [node name="Planta" parent="LevelTrailer/Toma09" instance=ExtResource("26_y6kor")]
 transform = Transform3D(0.110302, 0, -9.99939, 0, 10, 0, 9.99939, 0, 0.110302, 1173.23, 0, -329.934)
@@ -1209,7 +1224,6 @@ spot_range = 120.06
 spot_angle = 48.2165
 
 [node name="Toma09B" type="Node3D" parent="LevelTrailer"]
-visible = false
 
 [node name="Planta02" parent="LevelTrailer/Toma09B" instance=ExtResource("38_pfogg")]
 transform = Transform3D(-8.19564e-08, 0, -10, 0, 10, 0, 10, 0, -8.19564e-08, 1173.45, 0, -329.934)

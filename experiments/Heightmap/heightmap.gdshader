@@ -9,7 +9,7 @@ varying vec2 global_uv;
 void vertex() {
 	world_pos = (MODEL_MATRIX * vec4(VERTEX, 1.0)).xyz;
 	global_uv = (world_pos.xz / (1.0 * 4096.0) + vec2(0.5, 0.5));
-	
+
 	VERTEX.y += (texture(heightmap, global_uv).r * 2.0) - 0.8;
 }
 
@@ -24,7 +24,7 @@ void fragment() {
 		float gg = abs(height);
 		ALBEDO = mix(vec3(0.8, 0.5, 0.4), ALBEDO, gg * 5.0);
 	}
-	
+
 }
 
 //void light() {

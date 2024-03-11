@@ -8,6 +8,7 @@ var player: Player
 var camera: Camera3D
 var enemies_node: Node3D
 
+var refresh_frame := true
 
 var player_level := 1
 var player_xp := 0.0
