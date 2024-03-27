@@ -1,6 +1,0 @@
-[gd_scene load_steps=2 format=3 uid="uid://sdrclim7yg6c"]
-
-[ext_resource type="Script" path="res://experiments/BitMasks/bit_masks.gd" id="1_k5tsh"]
-
-[node name="bit_masks" type="Node"]
-script = ExtResource("1_k5tsh")

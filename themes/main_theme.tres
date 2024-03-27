@@ -1,6 +1,0 @@
-[gd_resource type="Theme" load_steps=2 format=3 uid="uid://b0b2tlfmcrlou"]
-
-[ext_resource type="FontFile" uid="uid://5yvqrih3vsbj" path="res://fonts/OpenDyslexicAlta-Bold.otf" id="1_erl0d"]
-
-[resource]
-default_font = ExtResource("1_erl0d")
