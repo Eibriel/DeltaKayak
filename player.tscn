@@ -107,8 +107,8 @@ axis_lock_angular_z = true
 physics_material_override = SubResource("PhysicsMaterial_1oafd")
 gravity_scale = 0.0
 can_sleep = false
-max_contacts_reported = 1
 contact_monitor = true
+max_contacts_reported = 1
 script = ExtResource("1_uptun")
 paddle_force = SubResource("Curve_oqg3q")
 
