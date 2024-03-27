@@ -67,7 +67,7 @@ func levelup():
 		buttons[n].set_meta("powerup", upgrades)
 
 # 1 2 3 4 7 8 9 10
-var current_take := 9
+var current_take := 1
 func _ready():
 	$PauseMenu.hide()
 	$LevelUpMenu.hide()

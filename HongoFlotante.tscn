@@ -20,8 +20,8 @@ collision_layer = 256
 collision_mask = 257
 mass = 10.0
 physics_material_override = SubResource("PhysicsMaterial_wjegy")
-max_contacts_reported = 1
 contact_monitor = true
+max_contacts_reported = 1
 script = ExtResource("1_ejat6")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
