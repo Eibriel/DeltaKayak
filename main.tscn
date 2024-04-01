@@ -1,0 +1,97 @@
+[gd_scene load_steps=12 format=3 uid="uid://ce6e8v1saxjr5"]
+
+[ext_resource type="Script" path="res://main.gd" id="1_gdpyr"]
+[ext_resource type="Texture2D" uid="uid://dvix2u8rr6fnc" path="res://icon.svg" id="2_fdva1"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_gamhf"]
+sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+ground_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+
+[sub_resource type="Sky" id="Sky_iph5d"]
+sky_material = SubResource("ProceduralSkyMaterial_gamhf")
+
+[sub_resource type="Environment" id="Environment_gumxf"]
+background_mode = 2
+sky = SubResource("Sky_iph5d")
+tonemap_mode = 2
+glow_enabled = true
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_ogamo"]
+radius = 0.611159
+height = 2.4738
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_63p3p"]
+size = Vector3(56.9074, 5.04536, 30.1794)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_7ud81"]
+size = Vector3(59.7239, 5.04536, 29.1753)
+
+[sub_resource type="Curve3D" id="Curve3D_b1y35"]
+_data = {
+"points": PackedVector3Array(0, 0, 0, 0, 0, 0, -1.11049, 2.96097, 5.21288, 0, 0, 0, 0, 0, 0, -2.05332, 3.02215, -7.48365),
+"tilts": PackedFloat32Array(-0.3, 0.716171)
+}
+point_count = 2
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_nu74g"]
+albedo_texture = ExtResource("2_fdva1")
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_ptmnv"]
+size = Vector2(50, 50)
+
+[node name="main" type="Node3D"]
+script = ExtResource("1_gdpyr")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_gumxf")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.866025, -0.433013, 0.25, 0, 0.5, 0.866025, -0.5, 0.75, -0.433013, 0, 0, 0)
+shadow_enabled = true
+
+[node name="character" type="Node3D" parent="."]
+
+[node name="CSGCylinder3D" type="CSGCylinder3D" parent="character"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0)
+
+[node name="CSGCylinder3D2" type="CSGCylinder3D" parent="character"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.29791, -0.808935)
+radius = 0.34157
+height = 0.757899
+
+[node name="Area3D" type="Area3D" parent="character"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="character/Area3D"]
+shape = SubResource("CapsuleShape3D_ogamo")
+
+[node name="camera1" type="Node3D" parent="."]
+
+[node name="camera1_camera" type="Camera3D" parent="camera1"]
+transform = Transform3D(1, 0, 0, 0, 0.730639, 0.682764, 0, -0.682764, 0.730639, 0, 2.94863, 4.06885)
+
+[node name="camera1_area" type="Area3D" parent="camera1"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="camera1/camera1_area"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0831795, 0.964531, 14.5897)
+shape = SubResource("BoxShape3D_63p3p")
+
+[node name="camera2" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -8.4224)
+
+[node name="camera2_camera" type="Camera3D" parent="camera2"]
+transform = Transform3D(-0.544902, -0.572497, 0.61264, 2.27056e-08, 0.730639, 0.682764, -0.838499, 0.37204, -0.398127, 3.77825, 2.94863, 1.23947)
+
+[node name="camera2_area" type="Area3D" parent="camera2"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="camera2/camera2_area"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0155313, 0.964531, -9.87779)
+shape = SubResource("BoxShape3D_7ud81")
+
+[node name="camera2_path" type="Path3D" parent="camera2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.78773, 0, -0.750143)
+curve = SubResource("Curve3D_b1y35")
+
+[node name="CSGMesh3D" type="CSGMesh3D" parent="."]
+material_override = SubResource("StandardMaterial3D_nu74g")
+mesh = SubResource("PlaneMesh_ptmnv")
