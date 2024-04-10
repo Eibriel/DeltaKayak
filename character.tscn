@@ -1,0 +1,24 @@
+[gd_scene load_steps=3 format=3 uid="uid://r0o1qsmlq84u"]
+
+[ext_resource type="Script" path="res://character.gd" id="1_mnv7b"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_ogamo"]
+radius = 0.611159
+height = 2.4738
+
+[node name="character" type="Node3D"]
+script = ExtResource("1_mnv7b")
+
+[node name="CSGCylinder3D" type="CSGCylinder3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0)
+
+[node name="CSGCylinder3D2" type="CSGCylinder3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.29791, -0.808935)
+radius = 0.34157
+height = 0.757899
+
+[node name="Area3D" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
+shape = SubResource("CapsuleShape3D_ogamo")

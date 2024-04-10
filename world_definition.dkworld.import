@@ -1,0 +1,15 @@
+[remap]
+
+importer="eibriel.dkworld"
+type="PackedScene"
+uid="uid://b7nhlhkoykc4c"
+path="res://.godot/imported/world_definition.dkworld-50b56ed4d5cc64941dc552c2df6fa34d.scn"
+
+[deps]
+
+source_file="res://world_definition.dkworld"
+dest_files=["res://.godot/imported/world_definition.dkworld-50b56ed4d5cc64941dc552c2df6fa34d.scn"]
+
+[params]
+
+use_red_anyway=false
