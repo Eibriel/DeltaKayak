@@ -1,0 +1,14 @@
+[remap]
+
+importer="glsl"
+type="RDShaderFile"
+uid="uid://bk2nh7li8asbp"
+path="res://.godot/imported/terrain.glsl-9ac09a7f6e3c4535305cbfd4af8fb53b.res"
+
+[deps]
+
+source_file="res://addons/eibriel_terrain/terrain.glsl"
+dest_files=["res://.godot/imported/terrain.glsl-9ac09a7f6e3c4535305cbfd4af8fb53b.res"]
+
+[params]
+

@@ -20,12 +20,15 @@ func _ready():
 	initial_camera.current = true
 	
 	position_look_sphere = CSGSphere3D.new()
+	position_look_sphere.visible = false
 	add_child(position_look_sphere)
 	
 	position_path_sphere = CSGSphere3D.new()
+	position_path_sphere.visible = false
 	add_child(position_path_sphere)
 	
 	camera_sphere = CSGSphere3D.new()
+	camera_sphere.visible = false
 	add_child(camera_sphere)
 
 func _process(delta: float) -> void:

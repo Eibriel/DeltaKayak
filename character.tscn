@@ -1,24 +1,48 @@
-[gd_scene load_steps=3 format=3 uid="uid://r0o1qsmlq84u"]
+[gd_scene load_steps=4 format=3 uid="uid://r0o1qsmlq84u"]
 
 [ext_resource type="Script" path="res://character.gd" id="1_mnv7b"]
+[ext_resource type="PackedScene" uid="uid://b5n8cpa2p23cu" path="res://models/kayak_detailed.glb" id="2_qknmv"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_ogamo"]
-radius = 0.611159
-height = 2.4738
+radius = 0.459692
+height = 3.82348
 
-[node name="character" type="Node3D"]
+[node name="character" type="RigidBody3D"]
+axis_lock_linear_y = true
+axis_lock_angular_x = true
+axis_lock_angular_z = true
 script = ExtResource("1_mnv7b")
 
 [node name="CSGCylinder3D" type="CSGCylinder3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0)
+visible = false
 
 [node name="CSGCylinder3D2" type="CSGCylinder3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.29791, -0.808935)
+visible = false
 radius = 0.34157
 height = 0.757899
 
-[node name="Area3D" type="Area3D" parent="."]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0)
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
+visible = false
 shape = SubResource("CapsuleShape3D_ogamo")
+
+[node name="Area3D" type="Area3D" parent="."]
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="Area3D"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0)
+shape = SubResource("CapsuleShape3D_ogamo")
+
+[node name="CSGBox3D" type="CSGBox3D" parent="."]
+top_level = true
+visible = false
+
+[node name="kayak_detailed" parent="." instance=ExtResource("2_qknmv")]
+transform = Transform3D(0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, 0.0386806, 0.21268)
+
+[node name="SpotLight3D" type="SpotLight3D" parent="."]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0.789039, 0)
+shadow_enabled = true
+spot_range = 7.7868
+spot_angle = 41.0167

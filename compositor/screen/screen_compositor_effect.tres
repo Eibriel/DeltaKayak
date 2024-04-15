@@ -1,0 +1,12 @@
+[gd_resource type="CompositorEffect" script_class="CompositorEffectScreen" load_steps=2 format=3 uid="uid://o01yk1gb130b"]
+
+[ext_resource type="Script" path="res://compositor/screen/screen_compositor.gd" id="1_yf2px"]
+
+[resource]
+resource_local_to_scene = false
+resource_name = ""
+enabled = true
+effect_callback_type = 4
+needs_motion_vectors = true
+needs_normal_roughness = false
+script = ExtResource("1_yf2px")

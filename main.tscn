@@ -1,48 +1,46 @@
 [gd_scene load_steps=9 format=3 uid="uid://ce6e8v1saxjr5"]
 
+[ext_resource type="Environment" uid="uid://xpf4ng2ym0n4" path="res://environments/main_environment.tres" id="1_ekqa4"]
 [ext_resource type="PackedScene" uid="uid://r0o1qsmlq84u" path="res://character.tscn" id="2_3sgbv"]
 [ext_resource type="Texture2D" uid="uid://dvix2u8rr6fnc" path="res://icon.svg" id="2_fdva1"]
 [ext_resource type="PackedScene" uid="uid://b7nhlhkoykc4c" path="res://world_definition.dkworld" id="3_7foso"]
 
-[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_gamhf"]
-sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
-ground_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
-
-[sub_resource type="Sky" id="Sky_iph5d"]
-sky_material = SubResource("ProceduralSkyMaterial_gamhf")
-
-[sub_resource type="Environment" id="Environment_gumxf"]
-background_mode = 2
-sky = SubResource("Sky_iph5d")
-tonemap_mode = 2
-glow_enabled = true
+[sub_resource type="Compositor" id="Compositor_n6o5t"]
+compositor_effects = Array[CompositorEffect]([null])
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_nu74g"]
 albedo_texture = ExtResource("2_fdva1")
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_ptmnv"]
-size = Vector2(50, 50)
+size = Vector2(500, 500)
+
+[sub_resource type="MultiMesh" id="MultiMesh_g048c"]
 
 [node name="main" type="Node3D"]
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
-environment = SubResource("Environment_gumxf")
+environment = ExtResource("1_ekqa4")
+compositor = SubResource("Compositor_n6o5t")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(-0.866025, -0.433013, 0.25, 0, 0.5, 0.866025, -0.5, 0.75, -0.433013, 0, 0, 0)
+visible = false
 shadow_enabled = true
 
 [node name="character" parent="." instance=ExtResource("2_3sgbv")]
-transform = Transform3D(-0.0258978, 0, 0.999665, 0, 1, 0, -0.999665, 0, -0.0258978, -4, 0, -5)
+transform = Transform3D(-0.0258978, 0, 0.999665, 0, 1, 0, -0.999665, 0, -0.0258978, -3.34704, 0, -5)
 
 [node name="CSGMesh3D" type="CSGMesh3D" parent="."]
 material_override = SubResource("StandardMaterial3D_nu74g")
 mesh = SubResource("PlaneMesh_ptmnv")
 
-[node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(0.939776, 0.129198, -0.316431, 5.167e-10, 0.925805, 0.378002, 0.341791, -0.355238, 0.870049, 0, 7.33582, 11.9801)
-current = true
-
 [node name="DKWorld" parent="." node_paths=PackedStringArray("initial_camera", "initial_camera_path") instance=ExtResource("3_7foso")]
 initial_camera = NodePath("camera_001/camera_001_cam")
-initial_camera_path = NodePath("camera_001/@Path3D@18364")
+initial_camera_path = NodePath("camera_001/@Path3D@19575")
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.921328, 0.388786, 0, -0.388786, 0.921328, 0.528366, 5.52796, 5.79716)
+current = true
+
+[node name="MultiMeshInstance3D" type="MultiMeshInstance3D" parent="."]
+multimesh = SubResource("MultiMesh_g048c")

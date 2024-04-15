@@ -23,6 +23,21 @@ Global="*res://global.gd"
 
 shapes/paths/geometry_width=10.0
 
+[display]
+
+window/size/viewport_width=960
+window/size/viewport_height=720
+window/stretch/mode="viewport"
+window/stretch/aspect="keep_height"
+
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/dkworld/plugin.cfg")
+enabled=PackedStringArray("res://addons/dkworld/plugin.cfg", "res://addons/eibriel_terrain/plugin.cfg")
+
+[rendering]
+
+textures/canvas_textures/default_texture_filter=0
+anti_aliasing/screen_space_roughness_limiter/enabled=false
+textures/decals/filter=0
+textures/light_projectors/filter=0
+occlusion_culling/use_occlusion_culling=true

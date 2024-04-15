@@ -1,0 +1,15 @@
+[gd_resource type="ArrayMesh" load_steps=2 format=3 uid="uid://b8qq62h0bc6ks"]
+
+[ext_resource type="Script" path="res://addons/eibriel_terrain/terrain_plugin.gd" id="1_gohpk"]
+
+[resource]
+_surfaces = [{
+"aabb": AABB(0, 0, 0, 1, 1e-05, 1),
+"format": 34359738369,
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 3,
+"vertex_data": PackedByteArray(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 63)
+}]
+script = ExtResource("1_gohpk")
+resolution = 16

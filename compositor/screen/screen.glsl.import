@@ -1,0 +1,14 @@
+[remap]
+
+importer="glsl"
+type="RDShaderFile"
+uid="uid://bkc3cy2y84h8p"
+path="res://.godot/imported/screen.glsl-9a6107af460d598f231b564ffe78959e.res"
+
+[deps]
+
+source_file="res://compositor/screen/screen.glsl"
+dest_files=["res://.godot/imported/screen.glsl-9a6107af460d598f231b564ffe78959e.res"]
+
+[params]
+
