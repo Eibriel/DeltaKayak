@@ -1,18 +1,12 @@
-[gd_scene load_steps=9 format=3 uid="uid://ce6e8v1saxjr5"]
+[gd_scene load_steps=7 format=3 uid="uid://ce6e8v1saxjr5"]
 
 [ext_resource type="Environment" uid="uid://xpf4ng2ym0n4" path="res://environments/main_environment.tres" id="1_ekqa4"]
 [ext_resource type="PackedScene" uid="uid://r0o1qsmlq84u" path="res://character.tscn" id="2_3sgbv"]
-[ext_resource type="Texture2D" uid="uid://dvix2u8rr6fnc" path="res://icon.svg" id="2_fdva1"]
+[ext_resource type="CompositorEffect" uid="uid://o01yk1gb130b" path="res://compositor/screen/screen_compositor_effect.tres" id="2_f4rcp"]
 [ext_resource type="PackedScene" uid="uid://b7nhlhkoykc4c" path="res://world_definition.dkworld" id="3_7foso"]
 
-[sub_resource type="Compositor" id="Compositor_n6o5t"]
-compositor_effects = Array[CompositorEffect]([null])
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_nu74g"]
-albedo_texture = ExtResource("2_fdva1")
-
-[sub_resource type="PlaneMesh" id="PlaneMesh_ptmnv"]
-size = Vector2(500, 500)
+[sub_resource type="Compositor" id="Compositor_lm6bj"]
+compositor_effects = Array[CompositorEffect]([ExtResource("2_f4rcp")])
 
 [sub_resource type="MultiMesh" id="MultiMesh_g048c"]
 
@@ -20,7 +14,7 @@ size = Vector2(500, 500)
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = ExtResource("1_ekqa4")
-compositor = SubResource("Compositor_n6o5t")
+compositor = SubResource("Compositor_lm6bj")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(-0.866025, -0.433013, 0.25, 0, 0.5, 0.866025, -0.5, 0.75, -0.433013, 0, 0, 0)
@@ -30,13 +24,9 @@ shadow_enabled = true
 [node name="character" parent="." instance=ExtResource("2_3sgbv")]
 transform = Transform3D(-0.0258978, 0, 0.999665, 0, 1, 0, -0.999665, 0, -0.0258978, -3.34704, 0, -5)
 
-[node name="CSGMesh3D" type="CSGMesh3D" parent="."]
-material_override = SubResource("StandardMaterial3D_nu74g")
-mesh = SubResource("PlaneMesh_ptmnv")
-
 [node name="DKWorld" parent="." node_paths=PackedStringArray("initial_camera", "initial_camera_path") instance=ExtResource("3_7foso")]
 initial_camera = NodePath("camera_001/camera_001_cam")
-initial_camera_path = NodePath("camera_001/@Path3D@19575")
+initial_camera_path = NodePath("camera_001/@Path3D@18920")
 
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.921328, 0.388786, 0, -0.388786, 0.921328, 0.528366, 5.52796, 5.79716)

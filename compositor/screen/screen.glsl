@@ -5,8 +5,6 @@
 layout(local_size_x = 8, local_size_y = 8, local_size_z = 1) in;
 
 layout(rgba16f, set = 0, binding = 0) uniform image2D color_image;
-layout(rg16, set = 1, binding = 0) uniform image2D velocity_image;
-layout(rgba16f, set = 2, binding = 0) uniform image2D previous_image;
 
 // Our push PushConstant
 layout(push_constant, std430) uniform Params {
@@ -14,8 +12,57 @@ layout(push_constant, std430) uniform Params {
 	int time;
 } params;
 
-float nrand(float x, float y) {
-    return fract(sin(dot(vec2(x, y), vec2(12.9898, 78.233))) * 43758.5453);
+// YPbPr tools
+const mat3 mat_rgb709_to_ycbcr = mat3(
+     vec3(0.2215,  0.7154,  0.0721),
+     vec3(-0.1145, -0.3855,  0.5000),
+     vec3(0.5016, -0.4556, -0.0459)
+);
+
+float rgb709_unlinear(float s) {
+    return mix(4.5*s, 1.099*pow(s, 1.0/2.2) - 0.099, step(0.018, s));
+}
+
+vec3 unlinearize_rgb709_from_rgb(vec3 color) {
+    return vec3(
+        rgb709_unlinear(color.r),
+        rgb709_unlinear(color.g),
+        rgb709_unlinear(color.b));
+}
+
+vec3 ycbcr_from_rgbp(vec3 color) {
+    vec3 yuv = transpose(mat_rgb709_to_ycbcr)*color;
+    vec3 quantized = vec3(
+        (219.0*yuv.x + 16.0)/256.0,
+        (224.0*yuv.y + 128.0)/256.0,
+        (224.0*yuv.z + 128.0)/256.0);
+    return quantized;
+}
+
+vec3 sRGB_to_yuv(vec3 color) {
+    return ycbcr_from_rgbp(unlinearize_rgb709_from_rgb(color));
+}
+
+//  YPbPr SDTV
+
+const mat3 mat_rgb_to_ypbpr = mat3(
+     vec3(0.299,  0.587,  0.114),
+     vec3(-0.169, -0.331,  0.5000),
+     vec3(0.5, -0.419, -0.081)
+);
+
+const mat3 mat_ypbpr_to_rgb = mat3(
+     vec3(1.0,  0.0,  1.402),
+     vec3(1.0, -0.344,  -0.714),
+     vec3(1.0, 1.772, 0.0)
+);
+
+vec3 simple_RGB_to_yuv(vec3 color) {
+	return mat_rgb_to_ypbpr * color;
+}
+
+vec3 simple_yuv_to_RGB(vec3 color) {
+	return mat_ypbpr_to_rgb * color;
 }
 
 // The code we want to execute in each invocation
@@ -24,30 +71,20 @@ void main() {
 	ivec2 size = params.size;
 
 	ivec2 uv = ivec2(gl_GlobalInvocationID.xy);
+	ivec2 uvp = ivec2(gl_GlobalInvocationID.xy / 2.0) * 2;
 
-	ivec2 uvr=ivec2(vec2(uv)/10.0)*10;
+	vec4 color = imageLoad(color_image, uv);
+	vec4 colorb = imageLoad(color_image, uvp+ivec2(2,2));
 
-	float n = nrand(time,uvr.x*uvr.y);
 
-	vec4 color_vel = imageLoad(velocity_image, uvr);
-	color_vel=max(abs(color_vel)-round(n/1.4),0)*sign(color_vel);
+	vec3 color_yuv = simple_RGB_to_yuv(color.rgb);
+	vec3 colorb_yuv = simple_RGB_to_yuv(colorb.rgb);
 
-	ivec2 uv2 = ivec2(gl_GlobalInvocationID.xy + (color_vel.rg*size));
-	uv2 = min(uv2, size-10);
-	uv2 = max(uv2, 0);
+	vec3 mix_yuv = vec3(color_yuv.x, color_yuv.y, colorb_yuv.z);
 
-	if (n > 0.1) {
-		if (n < 0.95) {
-			vec4 color = imageLoad(previous_image, uv2) * 1.0;
-			color += imageLoad(color_image, uv) * 0.0;
-			imageStore(color_image, uv, color);
-		}
-	} else {
-		vec4 color = imageLoad(previous_image, uv);
-		imageStore(color_image, uv, color);
-	}
+	color = vec4(simple_yuv_to_RGB(mix_yuv), color.a);
 
-	//imageStore(color_image, uv, color_vel * -10.0);
+	//color = vec4(color_yuv.r, color_yuv.g, color_yuv.b, color.a);
 
-	//imageStore(color_image, uv, vec4(vec2(uv2)*0.001, 0.0, 1.0));
+	imageStore(color_image, uv, color);
 }

@@ -5,3 +5,5 @@
 *.blend3
 *.blend4
 *.blend5
+
+__pycache__/

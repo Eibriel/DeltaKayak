@@ -5,6 +5,8 @@ extends EditorImportPlugin
 
 const gltf_document_extension_class = preload("./gltf_extension.gd")
 
+const WATER_PATCH = preload("res://scenes/water_patch.tscn")
+
 enum Presets { DEFAULT }
 
 var packed_scenes: Dictionary
@@ -90,6 +92,8 @@ func _import(source_file, save_path, options, r_platform_variants, r_gen_files):
 			add_camera(camera, camera_id, main_node)
 		add_trees(sector.trees, sector_id, main_node)
 	
+	add_water(main_node)
+	
 	packed_scenes = {}
 	var result = scene.pack(main_node)
 	if result == OK:
@@ -99,6 +103,11 @@ func _import(source_file, save_path, options, r_platform_variants, r_gen_files):
 	else:
 		return result
 		#return null
+
+func add_water(main_node:Node3D):
+	var water = WATER_PATCH.instantiate()
+	main_node.add_child(water)
+	water.set_owner(main_node)
 
 func add_trees(trees: Dictionary, sector_id:String, main_node:Node3D):
 	var amount_trees: int = trees.keys().size()

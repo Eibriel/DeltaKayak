@@ -9,6 +9,7 @@ ground_bottom_color = Color(0, 0, 0, 1)
 ground_horizon_color = Color(0.365, 0.367, 0.365, 1)
 ground_curve = 0.144201
 sun_angle_max = 0.0
+use_debanding = false
 
 [sub_resource type="Sky" id="Sky_iph5d"]
 sky_material = SubResource("ProceduralSkyMaterial_gamhf")
@@ -28,6 +29,7 @@ glow_levels/5 = 0.0
 glow_bloom = 0.08
 fog_enabled = true
 fog_light_color = Color(0.188, 0.188, 0.188, 1)
+fog_light_energy = 0.73
 fog_density = 0.0293
 adjustment_enabled = true
 adjustment_brightness = 1.33

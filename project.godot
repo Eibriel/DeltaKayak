@@ -41,3 +41,4 @@ anti_aliasing/screen_space_roughness_limiter/enabled=false
 textures/decals/filter=0
 textures/light_projectors/filter=0
 occlusion_culling/use_occlusion_culling=true
+vrs/mode=2

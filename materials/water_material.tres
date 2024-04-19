@@ -1,0 +1,35 @@
+[gd_resource type="ShaderMaterial" load_steps=8 format=3 uid="uid://bqrgrjybi8wyw"]
+
+[ext_resource type="Shader" path="res://shaders/water.gdshader" id="1_oh05p"]
+
+[sub_resource type="Gradient" id="Gradient_is5jk"]
+offsets = PackedFloat32Array(0.73, 0.81)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_d0k0b"]
+noise_type = 3
+frequency = 0.02
+fractal_type = 2
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_fenou"]
+color_ramp = SubResource("Gradient_is5jk")
+noise = SubResource("FastNoiseLite_d0k0b")
+
+[sub_resource type="Gradient" id="Gradient_0eb2r"]
+offsets = PackedFloat32Array(0.74, 0.82)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_m8djf"]
+noise_type = 3
+seed = 1
+frequency = 0.02
+fractal_type = 2
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_7dcxt"]
+color_ramp = SubResource("Gradient_0eb2r")
+noise = SubResource("FastNoiseLite_m8djf")
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_oh05p")
+shader_parameter/albedo = Color(0.69, 0.39, 0.074, 1)
+shader_parameter/texture_1 = SubResource("NoiseTexture2D_fenou")
+shader_parameter/texture_2 = SubResource("NoiseTexture2D_7dcxt")
