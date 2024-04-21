@@ -1,7 +1,8 @@
-[gd_scene load_steps=4 format=3 uid="uid://r0o1qsmlq84u"]
+[gd_scene load_steps=5 format=3 uid="uid://r0o1qsmlq84u"]
 
 [ext_resource type="Script" path="res://character.gd" id="1_mnv7b"]
 [ext_resource type="PackedScene" uid="uid://b5n8cpa2p23cu" path="res://models/kayak_detailed.glb" id="2_qknmv"]
+[ext_resource type="Texture2D" uid="uid://cdex8bqdmulf8" path="res://textures/flashlight.jpg" id="3_xitmn"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_ogamo"]
 radius = 0.459692
@@ -39,10 +40,12 @@ top_level = true
 visible = false
 
 [node name="kayak_detailed" parent="." instance=ExtResource("2_qknmv")]
-transform = Transform3D(0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, 0.0386806, 0.21268)
+transform = Transform3D(-0.4, 0, -3.49691e-08, 0, 0.4, 0, 3.49691e-08, 0, -0.4, 0, 0.0386806, -0.20732)
 
 [node name="SpotLight3D" type="SpotLight3D" parent="."]
-transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0.789039, 0)
+transform = Transform3D(-1, 0, -8.74228e-08, 1.4164e-08, 0.986788, -0.162017, 8.62678e-08, -0.162017, -0.986788, 0, 0.340073, 0.644484)
+light_energy = 5.0
+light_projector = ExtResource("3_xitmn")
 shadow_enabled = true
-spot_range = 7.7868
+spot_range = 13.9665
 spot_angle = 41.0167

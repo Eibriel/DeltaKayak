@@ -10,6 +10,7 @@ ground_horizon_color = Color(0.365, 0.367, 0.365, 1)
 ground_curve = 0.144201
 sun_angle_max = 0.0
 use_debanding = false
+energy_multiplier = 0.5
 
 [sub_resource type="Sky" id="Sky_iph5d"]
 sky_material = SubResource("ProceduralSkyMaterial_gamhf")

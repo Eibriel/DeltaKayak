@@ -14,6 +14,6 @@ func _ready() -> void:
 			add_child(c)
 			c.position.x = (x-10) * 20
 			c.position.z = (z-10) * 20
-			c.visibility_range_end = 50
-			c.visibility_range_end_margin = 5
+			c.visibility_range_end = 100
+			c.visibility_range_end_margin = 10
 			c.material_override = WATER_MATERIAL

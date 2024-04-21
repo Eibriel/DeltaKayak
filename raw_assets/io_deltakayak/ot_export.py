@@ -318,8 +318,11 @@ class DKT_PT_ExportItems(bpy.types.Panel):
         #col.prop(gltfs_export_setup, "export_path_3dmodels")
 
         col.operator("dktools.export_gltfs", text="Export GLTFs", icon='MESH_MONKEY')
+        active_object: Object = context.active_object
 
         col.label(text="LOD:")
+        col.prop(active_object.dkt_properties, "range_begin")
+        col.prop(active_object.dkt_properties, "range_end")
         for obj in context.selected_objects:
             range_begin = obj.dkt_properties.range_begin
             range_end = obj.dkt_properties.range_end
@@ -327,18 +330,14 @@ class DKT_PT_ExportItems(bpy.types.Panel):
         col.operator("dktools.set_lod", text="Set LOD", icon='MESH_ICOSPHERE')
 
         col.label(text="Stencils:")
-        active_object: Object = context.active_object
         # composition_mode opacity normal_masking mask_image diffuse_image emission_image alpha_image
         if active_object:
             col.prop(active_object.dkt_stencil, "is_stencil")
             if active_object.dkt_stencil.is_stencil:
-                col.prop(active_object.dkt_stencil, "diffuse_image")
                 col.prop(active_object.dkt_stencil, "opacity")
                 col.prop(active_object.dkt_stencil, "composition_mode")
                 col.prop(active_object.dkt_stencil, "normal_masking")
-                col.prop(active_object.dkt_stencil, "emission_image")
-                col.prop(active_object.dkt_stencil, "alpha_image")
-                col.prop(active_object.dkt_stencil, "mask_image")
+                col.prop(active_object.dkt_stencil, "stop_coloring")
             else:
 
                 col.operator("dktools.apply_stencils", text="Apply Stencils", icon='IMAGE_RGB_ALPHA')
@@ -381,12 +380,50 @@ class DKT_OT_ApplyStencils(bpy.types.Operator):
     
     # Operator execution
     def execute(self, context):
-        C = bpy.context
+        C = context
         D = bpy.data
 
         self.source_images_cache = {}
 
-        self.paint()
+        obj = C.active_object
+        mesh: bpy.types.Mesh = C.active_object.data # type: ignore
+        bm: BMesh = bmesh.new()
+        bm.from_mesh(mesh)
+        bmesh.ops.triangulate(bm, faces=bm.faces[:]) # type: ignore
+
+        target_images = self.get_images_from_obj(obj)
+
+        print("target_images", target_images)
+
+        if target_images["base"] is None:
+            self.report({'ERROR'}, "Target image not found")
+            return{'CANCELLED'}
+
+        # TODO check if images have alpha
+        # TODO check if images are the same size
+        
+        img_target = D.images[target_images["base"]]
+
+        # we need to know the image dimensions
+        width = img_target.size[0]
+        height = img_target.size[1]
+
+        triangles = self.bmesh_to_triangles(obj, bm)
+
+        paint_pixels = list(img_target.pixels)
+        if True:
+            for x in range(0, width):
+                for y in range(0, height):
+                    p = self.get_pixel_color(img_target, triangles, x, y)
+                    self.set_pixel(img_target, paint_pixels, x, y, p[0], p[1], p[2], p[3])
+        else:
+            x = 2
+            y = 2
+            p = self.get_pixel_color(img_target, triangles, x, y)
+            print(p)
+            self.set_pixel(img_target, paint_pixels, x, y, p[0], p[1], p[2], p[3])
+
+        img_target.pixels[:] = paint_pixels
 
         self.report({'INFO'}, "Stencils applied")
         return{'FINISHED'}
@@ -424,12 +461,12 @@ class DKT_OT_ApplyStencils(bpy.types.Operator):
         ]
         return pixel
 
-    def pixel_to_uv(self, img, x, y) -> list[int]:
-        width: int = img.size[0]
+    def pixel_to_uv(self, img, x:float, y:float) -> list[float]:
+        width: int = img.size[0] # 0.008431 0.008431
         height:int = img.size[1]
-        uv:list[int] = [
-            x/width,
-            y/height
+        uv:list[float] = [
+            (x+0.5)/width,
+            (y+0.5)/height
         ]
         return uv
 
@@ -626,20 +663,20 @@ class DKT_OT_ApplyStencils(bpy.types.Operator):
         return None
 
 
-    def test_ray(self, point:mathutils.Vector, normal:mathutils.Vector, collected=[])->list:
+    def test_ray(self, point:mathutils.Vector, normal:mathutils.Vector, collected=[], depth=0)->list:
         C = bpy.context
         D = bpy.data
 
-        if len(collected) > 3:
+        if depth > 3:
             print("Max Depth")
             return collected
-        bias_amount:float = 0.001
-        bias: mathutils.Vector = normal * bias_amount
+        bias:float = 0.001
+        shift: mathutils.Vector = normal * bias
         ray: tuple[bool, mathutils.Vector|None, mathutils.Vector|None, int|None, bpy.types.Object|None, mathutils.Matrix|None] = C.scene.ray_cast(
             bpy.context.view_layer.depsgraph,
-            point+bias,
+            point+shift,
             normal,
-            distance=10
+            distance=60
         ) # type: ignore
         
         #D.objects["Empty"].location= point
@@ -647,25 +684,81 @@ class DKT_OT_ApplyStencils(bpy.types.Operator):
 
         result, location, normal_b, index, object, matrix = ray
         if not result:
+            del ray
             return collected
-        if len(collected) == 0 or collected[-1][1]!=object:
-            collected.append([location, object, index, normal_b])
-        self.test_ray(location, normal_b, collected) # type: ignore
+        if object.dkt_stencil.is_stencil:
+            if len(collected) == 0 or collected[-1][1]!=object:
+                collected.append([location, object, index, normal_b])
+            if object.dkt_stencil.stop_coloring:
+                del ray
+                return collected
+        # Continue ray from new point in original direction
+        self.test_ray(location+shift, normal, collected, depth+1) # type: ignore
         del ray
         return collected
 
-    def get_source_from_obj(self, obj_hit)-> tuple[bpy.types.Image, list[float]]:
+    def get_image_data(self, image_name):
         D = bpy.data
-        if not (obj_hit.name in self.source_images_cache.keys()):
-            image_name: str = obj_hit.dkt_stencil.diffuse_image
-            
+
+        if not (image_name in self.source_images_cache.keys()):
             img_source: bpy.types.Image = D.images[image_name]
-            
+            previous_colorspace = img_source.colorspace_settings.name
+            img_source.colorspace_settings.name = "Non-Color"
             source_pixels: list[float] = list(img_source.pixels) # type: ignore
-            
-            self.source_images_cache[obj_hit.name] = (img_source, source_pixels)
+            img_source.colorspace_settings.name = previous_colorspace
+            self.source_images_cache[image_name] = (img_source, source_pixels)
         
-        return self.source_images_cache[obj_hit.name]
+        return self.source_images_cache[image_name]
+
+
+    # def get_source_from_obj(self, obj_hit)-> tuple[bpy.types.Image, list[float]]:
+    #     D = bpy.data
+
+    #     self.get_images_from_obj(obj_hit)
+
+    #     if not (obj_hit.name in self.source_images_cache.keys()):
+
+    #         img_source: bpy.types.Image = D.images[image_name]
+            
+    #         source_pixels: list[float] = list(img_source.pixels) # type: ignore
+            
+    #         self.source_images_cache[obj_hit.name] = (img_source, source_pixels)
+        
+    #     return self.source_images_cache[obj_hit.name]
+
+
+    def get_images(self, output, images) -> None:
+        surface = output.inputs["Surface"]
+        if not surface.is_linked: return
+        principled = surface.links[0].from_node
+        if principled.type != "BSDF_PRINCIPLED": return
+        base_color = principled.inputs["Base Color"]
+        emission_color = principled.inputs["Emission Color"]
+        if base_color.is_linked:
+            image_base = base_color.links[0].from_node
+            if image_base.type == "TEX_IMAGE":
+                if not(image_base.image is None):
+                    images["base"] = image_base.image.name
+        if emission_color.is_linked:
+            image_emission = emission_color.links[0].from_node
+            if image_emission.type == "TEX_IMAGE":
+                if not(image_emission.image is None):
+                    images["emission"] = image_emission.image.name
+        
+
+    def get_images_from_obj(self, obj) -> dict[str, str | None]:
+        mat = obj.material_slots[0].material
+        imgs: dict[str, str | None] = {
+            "base": None,
+            "emission": None
+        }
+        if mat is None: return imgs
+        nodes = mat.node_tree.nodes
+        for n in nodes:
+            if n.type == "OUTPUT_MATERIAL":
+                self.get_images(n, imgs)
+                break
+        return imgs
 
     def color_mix(self, color_bg:list[float], color_fg:list[float]) -> list[float]:
         
@@ -711,7 +804,7 @@ class DKT_OT_ApplyStencils(bpy.types.Operator):
 
     def get_pixel_color(self, img_target:bpy.types.Image, triangles, x:int, y:int) -> list[float]:
         uv: list[int] = self.pixel_to_uv(img_target, x, y)
-            
+        #print(uv)
         sel_triangles = self.get_triangles_in_uv(uv, triangles)
         p: list[float] = [0.0, 0.0, 0.0, 0.0]
         #print("Triangles in UV:", len(sel_triangles))
@@ -726,16 +819,13 @@ class DKT_OT_ApplyStencils(bpy.types.Operator):
                     obj_point.z,
                     1.0
                 ]
-            r = self.test_ray(obj_point, normal, [])
+            r = self.test_ray(obj_point, normal, [], 0)
             #print("Hits:", len(r))
             for hit in r:
                 obj_hit = hit[1]
                 point_hit = hit[0]
                 face_hit = hit[2]
                 normal_b = hit[3]
-                
-                if not obj_hit.dkt_stencil.is_stencil:
-                    continue
 
                 dotp = mathutils.Vector(normal).dot( mathutils.Vector(normal_b) )
                 dotp = max(0.0, dotp)
@@ -747,7 +837,14 @@ class DKT_OT_ApplyStencils(bpy.types.Operator):
                 if uv_source is None:
                     print("Missing UV Source")
                     continue
-                img_source, source_pixels = self.get_source_from_obj(obj_hit)
+                
+                images_source = self.get_images_from_obj(obj_hit)
+
+                if images_source["base"] is None:
+                    print("Missing Base image")
+                    continue
+
+                img_source, source_pixels = self.get_image_data(images_source["base"])
                 
                 pixel = self.uv_to_pixel(img_source, uv_source[0], uv_source[1])
                 offsets = [
@@ -762,50 +859,13 @@ class DKT_OT_ApplyStencils(bpy.types.Operator):
                 this_p = [0.0, 0.0, 0.0, 0.0]
                 for offset in offsets:
                     value = self.get_pixel(img_source, source_pixels, pixel[0]+offset[0], pixel[1]+offset[1])
+
                     this_p = self.add_colors(value, this_p)
                 this_p = self.mult_color(this_p, 1.0/len(offsets))
                 p = self.color_mix(p, this_p)
                 
             break
         return p
-
-
-
-    def paint(self):
-        C = bpy.context
-        D = bpy.data
-
-        obj = C.active_object
-        mesh: bpy.types.Mesh = C.active_object.data # type: ignore
-        bm: BMesh = bmesh.new()
-        bm.from_mesh(mesh)
-        bmesh.ops.triangulate(bm, faces=bm.faces[:]) # type: ignore
-
-        img_target = D.images['PEPA_house']
-
-        # we need to know the image dimensions
-        width = img_target.size[0]
-        height = img_target.size[1]
-
-        triangles = self.bmesh_to_triangles(obj, bm)
-
-        positions = []
-        hits = []
-
-        paint_pixels = list(img_target.pixels)
-        if True:
-            for x in range(0, width):
-                for y in range(0, height):
-                    p = self.get_pixel_color(img_target, triangles, x, y)
-                    self.set_pixel(img_target, paint_pixels, x, y, p[0], p[1], p[2], p[3])
-        else:
-            x = 40
-            y = 60
-            p = self.get_pixel_color(img_target, triangles, x, y)
-            print(p)
-            self.set_pixel(img_target, paint_pixels, x, y, p[0], p[1], p[2], p[3])
-
-        img_target.pixels[:] = paint_pixels
 
 ##
 
@@ -851,6 +911,11 @@ class DKT_PG_StencilProperties(bpy.types.PropertyGroup):
         default=False
     ) # type: ignore
 
+    stop_coloring: BoolProperty(
+        name="Stop Coloring",
+        default=False
+    ) # type: ignore
+
     composition_mode: EnumProperty(
         name="Composition Mode",
         description="Composition Mode",
@@ -859,6 +924,7 @@ class DKT_PG_StencilProperties(bpy.types.PropertyGroup):
             ("add", "Add", "Add composition", "PLUS", 1),
             ("multiply", "Multiply", "Multiply composition", "SORTBYEXT", 2),
             ("overlay", "Overlay", "Overlay composition", "PIVOT_INDIVIDUAL", 3),
+            ("mask", "Mask", "Masks next layer", "PIVOT_INDIVIDUAL", 4),
         ], # type: ignore
         default="normal"
     ) # type: ignore
@@ -877,30 +943,6 @@ class DKT_PG_StencilProperties(bpy.types.PropertyGroup):
         default=1.0,
         min=0.0,
         max=1.0
-    ) # type: ignore
-
-    mask_image: StringProperty(
-        name="Mask Image",
-        description="B&W image as a cutout for next layer",
-        default=""
-    ) # type: ignore
-
-    diffuse_image: StringProperty(
-        name="Diffuse Image",
-        description="Color image",
-        default=""
-    ) # type: ignore
-
-    emission_image: StringProperty(
-        name="Emission Image",
-        description="Emission image",
-        default=""
-    ) # type: ignore
-
-    alpha_image: StringProperty(
-        name="Alpha Image",
-        description="B&W image influencing only the alpha channel",
-        default=""
     ) # type: ignore
 
 

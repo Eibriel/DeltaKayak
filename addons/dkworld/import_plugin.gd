@@ -111,7 +111,7 @@ func add_water(main_node:Node3D):
 
 func add_trees(trees: Dictionary, sector_id:String, main_node:Node3D):
 	var amount_trees: int = trees.keys().size()
-	print(amount_trees)
+	#print(amount_trees)
 	if amount_trees < 1: return
 	var multimesh_instance := MultiMeshInstance3D.new()
 	var multimesh := MultiMesh.new()
@@ -120,11 +120,12 @@ func add_trees(trees: Dictionary, sector_id:String, main_node:Node3D):
 	multimesh_instance.set_owner(main_node)
 	multimesh_instance.multimesh = multimesh
 	multimesh.transform_format = MultiMesh.TRANSFORM_3D
-	multimesh.mesh = preload("res://meshes/tree001.tres")
+	multimesh.mesh = load_tree_meshes()
+	
 	multimesh.instance_count = amount_trees * 4
 	var tree_n := 0
 	for tree_id in trees:
-		print(tree_id)
+		#print(tree_id)
 		var tree:Dictionary = trees[tree_id] as Dictionary
 		var set_position:= Vector3(
 			tree.position[0],
@@ -149,15 +150,43 @@ func add_trees(trees: Dictionary, sector_id:String, main_node:Node3D):
 			set_position + (set_scale_rotated * Vector3(0, 0, 1)),
 			set_position - (set_scale_rotated * Vector3(0, 0, 1))
 		]
+		var points := []
+		for point_id in 4:
+			var point: Vector3 = lerp(corners[0], corners[1], randf())
+			point = lerp(point, corners[2], randf())
+			point = lerp(point, corners[3], randf())
+			points.append(point)
+			
 		#print(corners)
-		for c in corners:
-			var v = c
+		for p in points:
+			var v = p
 			var t := Transform3D(Basis(), v)
-			#t = t.rotated_local(Vector3.UP, juncos[id][1])
+			t = t.rotated_local(Vector3.UP, randf_range(deg_to_rad(-180), deg_to_rad(180)))
 			#t = t.scaled_local(juncos[id][2])
 			multimesh.set_instance_transform(tree_n, t)
 			tree_n += 1
-	
+
+func load_tree_meshes():
+	var gltf_loader := GLTFDocument.new()
+	var convert_mesh_extension := GLTFDocumentExtensionConvertImporterMesh.new()
+	gltf_loader.register_gltf_document_extension(convert_mesh_extension, true)
+	var gltf_state := GLTFState.new()
+	var gltf_path:String = "res://models/world/Tree001.glb"
+	gltf_state.base_path = "res://models/world/"
+	var gltf_error = gltf_loader.append_from_file(gltf_path, gltf_state)
+	var gltf_instance: Node3D
+	if gltf_error == OK:
+		gltf_instance = gltf_loader.generate_scene(gltf_state) as Node3D
+	gltf_loader.unregister_gltf_document_extension(convert_mesh_extension)
+	const TREE_001_DIFFUSE = preload("res://models/world_textures/Tree001_diffuse.png")
+	for c in gltf_instance.get_children():
+		if c is MeshInstance3D:
+			var mat := c.mesh.surface_get_material(0) as StandardMaterial3D
+			mat.albedo_texture = TREE_001_DIFFUSE
+			mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA_HASH
+			mat.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
+			return c.mesh
+	return null
 
 func add_camera(camera:Dictionary, camera_id:String, main_node:Node3D):
 	#print(camera)
@@ -302,15 +331,16 @@ func _configure_lod(gltf_instance:Node, json:Dictionary) -> void:
 		#print(extras)
 	
 		if not extras.has("dkt_properties"): continue
-		if not extras.dkt_properties.has("level_of_detail"): continue
 		var dkt_data: Dictionary = extras.dkt_properties
-		#if dkt_data.level_of_detail == 0: continue
 		var mesh_instance: = node as MeshInstance3D
-		mesh_instance.visibility_range_begin= dkt_data.range_begin
-		mesh_instance.visibility_range_begin_margin = 1.0
-		mesh_instance.visibility_range_end= dkt_data.range_end
-		mesh_instance.visibility_range_end_margin = 1.0
-		mesh_instance.set_meta("dkt_level_of_detail", dkt_data.level_of_detail)
+		if dkt_data.has("range_begin"):
+			mesh_instance.visibility_range_begin= dkt_data.range_begin
+			mesh_instance.visibility_range_begin_margin = 1.0
+			mesh_instance.set_meta("visibility_range_begin", dkt_data.range_begin)
+		if dkt_data.has("range_end"):
+			mesh_instance.visibility_range_end= dkt_data.range_end
+			mesh_instance.visibility_range_end_margin = 1.0
+			mesh_instance.set_meta("visibility_range_end", dkt_data.range_end)
 		#if not dkt_data.is_last_lod:
 			#mesh_instance.visibility_range_begin_margin = 1.0
 			#mesh_instance.visibility_range_end = 10.0 * lod_distances[dkt_data.lod+1]

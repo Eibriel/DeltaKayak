@@ -7,9 +7,22 @@ func _import_post(gstate: GLTFState, node: Node) -> Error:
 func _import_node(state: GLTFState, gltf_node: GLTFNode, json: Dictionary, node: Node) -> Error:
 	#convert_meshinstance(node)
 	#apply_lod(json, node)
+	apply_material(json, node, state.filename)
 	return OK
 
-
+func apply_material(json, node, filename: String):
+	if node is not ImporterMeshInstance3D: return
+	var inode := node as ImporterMeshInstance3D
+	var mat := inode.mesh.get_surface_material(0) as StandardMaterial3D
+	if not inode.name.ends_with("_obj"): return
+	var path := "res://models/world_textures/%s_diffuse.png" % filename
+	prints(inode.name, path)
+	if FileAccess.file_exists(path):
+		prints(path, "exists!")
+	#print(json)
+	var texture := load(path)
+	mat.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
+	mat.albedo_texture = texture
 
 # Unused:
 
