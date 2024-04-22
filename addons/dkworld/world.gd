@@ -63,3 +63,7 @@ func camera_change(area_:Area3D, camera: Camera3D, path:Path3D) -> void:
 	camera.current = true
 	Global.camera = camera
 	Global.camera_path = path
+
+
+func trigger_fired(area_:Area3D, trigger_name:String) -> void:
+	prints("Trigger!", trigger_name)

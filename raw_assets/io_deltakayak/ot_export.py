@@ -47,11 +47,13 @@ class DKT_OT_ExportGltfs(bpy.types.Operator):
             #print(definition)
 
         exported_collections = []
+        #for collection in C.scene.view_layers[0].layer_collection.children:
         for sector_name in definition:
             sector_def = definition[sector_name]
             for obj in sector_def["items"]:
                 collection_name = sector_def["items"][obj]["instance"]
                 if collection_name in exported_collections: continue
+                if context.scene.view_layers[0].layer_collection.children[collection_name].exclude: continue
                 self.export_gltf(D.collections[collection_name])
                 exported_collections.append(collection_name)
 
@@ -130,7 +132,6 @@ class DKT_OT_SetLod(bpy.types.Operator):
         return{'FINISHED'}
 
 
-
 class DKT_OT_ExportWorld(bpy.types.Operator):
     """Export world definition"""
     bl_idname = "dktools.export_dkworld"
@@ -161,6 +162,7 @@ class DKT_OT_ExportWorld(bpy.types.Operator):
             sector_def["cameras"] = self.get_cameras(sector)
             sector_def["items"] = self.get_items(sector)
             sector_def["trees"] = self.get_trees(sector)
+            sector_def["triggers"] = self.get_triggers(sector)
             definition[sector.name] = sector_def
 
         definition_path = context.scene.dkt_gltfsexportsetup.definition_path
@@ -221,6 +223,14 @@ class DKT_OT_ExportWorld(bpy.types.Operator):
             cameras_def["camera_"+camera_id] = camera_def
         return cameras_def
     
+    def get_triggers(self, sector):
+        triggers_def = []
+        triggers_name = "Triggers_" + sector.name.split("_")[1]
+        if not triggers_name in sector.children: return triggers_def
+        for trigger in sector.children[triggers_name].objects:
+            triggers_def.append(self.get_trigger_data(trigger))
+        return triggers_def
+
     def get_camera_data(self, camera_obj):
         camera_def = {
             "position": self.location_to_godot(camera_obj.location),
@@ -260,6 +270,15 @@ class DKT_OT_ExportWorld(bpy.types.Operator):
             "scale": self.scale_to_godot(sensor_obj.scale)
         }
         return sensor_def
+    
+    def get_trigger_data(self, trigger_obj):
+        trigger_def = {
+            "position": self.location_to_godot(trigger_obj.location),
+            "rotation": self.rotation_to_godot(trigger_obj.rotation_euler),
+            "scale": self.scale_to_godot(trigger_obj.scale),
+            "id": trigger_obj.name
+        }
+        return trigger_def
     
     def location_to_godot(self, location):# -> list:
         return [
@@ -321,8 +340,9 @@ class DKT_PT_ExportItems(bpy.types.Panel):
         active_object: Object = context.active_object
 
         col.label(text="LOD:")
-        col.prop(active_object.dkt_properties, "range_begin")
-        col.prop(active_object.dkt_properties, "range_end")
+        if active_object is not None:
+            col.prop(active_object.dkt_properties, "range_begin")
+            col.prop(active_object.dkt_properties, "range_end")
         for obj in context.selected_objects:
             range_begin = obj.dkt_properties.range_begin
             range_end = obj.dkt_properties.range_end
@@ -385,13 +405,7 @@ class DKT_OT_ApplyStencils(bpy.types.Operator):
 
         self.source_images_cache = {}
 
-        obj = C.active_object
-        mesh: bpy.types.Mesh = C.active_object.data # type: ignore
-        bm: BMesh = bmesh.new()
-        bm.from_mesh(mesh)
-        bmesh.ops.triangulate(bm, faces=bm.faces[:]) # type: ignore
-
-        target_images = self.get_images_from_obj(obj)
+        target_images = self.get_images_from_obj(C.active_object)
 
         print("target_images", target_images)
 
@@ -408,23 +422,39 @@ class DKT_OT_ApplyStencils(bpy.types.Operator):
         width = img_target.size[0]
         height = img_target.size[1]
 
-        triangles = self.bmesh_to_triangles(obj, bm)
-
         paint_pixels = list(img_target.pixels)
-        if True:
-            for x in range(0, width):
-                for y in range(0, height):
-                    p = self.get_pixel_color(img_target, triangles, x, y)
-                    self.set_pixel(img_target, paint_pixels, x, y, p[0], p[1], p[2], p[3])
-        else:
-            x = 2
-            y = 2
-            p = self.get_pixel_color(img_target, triangles, x, y)
-            print(p)
-            self.set_pixel(img_target, paint_pixels, x, y, p[0], p[1], p[2], p[3])
+
+        first_obj = True
+        for obj in C.selected_objects:
+            mesh: bpy.types.Mesh = obj.data # type: ignore
+            bm: BMesh = bmesh.new()
+            bm.from_mesh(mesh)
+            bmesh.ops.triangulate(bm, faces=bm.faces[:]) # type: ignore
+
+            triangles = self.bmesh_to_triangles(obj, bm)
+            if True:
+                for x in range(0, width):
+                    for y in range(0, height):
+                        initial_color: list[float]| None = None
+                        if not first_obj:
+                            initial_color = self.get_pixel(img_target, paint_pixels, x, y)
+                        p = self.get_pixel_color(img_target, triangles, x, y, initial_color)
+                        self.set_pixel(img_target, paint_pixels, x, y, p[0], p[1], p[2], p[3])
+            else:
+                x = 73
+                y = 113
+                initial_color: list[float]| None = None
+                print(first_obj, obj.name)
+                if not first_obj:
+                    initial_color = self.get_pixel(img_target, paint_pixels, x, y)
+                    print("initial_color", initial_color)
+                p = self.get_pixel_color(img_target, triangles, x, y, initial_color)
+                print("pixel value", p)
+                self.set_pixel(img_target, paint_pixels, x, y, p[0], p[1], p[2], p[3])
+
+            first_obj = False
 
         img_target.pixels[:] = paint_pixels
-
         self.report({'INFO'}, "Stencils applied")
         return{'FINISHED'}
     
@@ -667,7 +697,7 @@ class DKT_OT_ApplyStencils(bpy.types.Operator):
         C = bpy.context
         D = bpy.data
 
-        if depth > 3:
+        if depth > 30:
             print("Max Depth")
             return collected
         bias:float = 0.001
@@ -802,11 +832,13 @@ class DKT_OT_ApplyStencils(bpy.types.Operator):
             color_c.append(color[id] * value)
         return color_c
 
-    def get_pixel_color(self, img_target:bpy.types.Image, triangles, x:int, y:int) -> list[float]:
+    def get_pixel_color(self, img_target:bpy.types.Image, triangles, x:int, y:int, initial_color: list[float]|None) -> list[float]:
         uv: list[int] = self.pixel_to_uv(img_target, x, y)
         #print(uv)
         sel_triangles = self.get_triangles_in_uv(uv, triangles)
         p: list[float] = [0.0, 0.0, 0.0, 0.0]
+        if not (initial_color is None):
+            p = initial_color
         #print("Triangles in UV:", len(sel_triangles))
         for t in sel_triangles:
             #p = [1.0, 0.0, 0.0, 1.0]
@@ -856,12 +888,17 @@ class DKT_OT_ApplyStencils(bpy.types.Operator):
                     #[-1, 0],
                     #[-1, -1]
                 ]
-                this_p = [0.0, 0.0, 0.0, 0.0]
+                this_p = p
                 for offset in offsets:
                     value = self.get_pixel(img_source, source_pixels, pixel[0]+offset[0], pixel[1]+offset[1])
 
+                    value[3] *= obj_hit.dkt_stencil.opacity
+
                     this_p = self.add_colors(value, this_p)
-                this_p = self.mult_color(this_p, 1.0/len(offsets))
+                layer_count:int = len(offsets)
+                #if not(initial_color is None):
+                #    layer_count += 1
+                this_p = self.mult_color(this_p, 1.0/layer_count)
                 p = self.color_mix(p, this_p)
                 
             break

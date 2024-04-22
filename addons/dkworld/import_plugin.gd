@@ -91,6 +91,7 @@ func _import(source_file, save_path, options, r_platform_variants, r_gen_files):
 			var camera:Dictionary = sector.cameras[camera_id] as Dictionary
 			add_camera(camera, camera_id, main_node)
 		add_trees(sector.trees, sector_id, main_node)
+		add_triggers(sector.triggers, sector_id, main_node)
 	
 	add_water(main_node)
 	
@@ -103,6 +104,28 @@ func _import(source_file, save_path, options, r_platform_variants, r_gen_files):
 	else:
 		return result
 		#return null
+
+func add_triggers(triggers: Array, sector_id:String, main_node:Node3D):
+	for trigger in triggers:
+		# Trigger
+		var trigger_area := Trigger.new()
+		var trigger_collision := CollisionShape3D.new()
+		var box_shape := BoxShape3D.new()
+		main_node.add_child(trigger_area)
+		trigger_area.set_owner(main_node)
+		trigger_area.add_child(trigger_collision)
+		trigger_collision.set_owner(main_node)
+		trigger_collision.shape = box_shape
+		box_shape.size = Vector3(
+			trigger.scale[0]*2,
+			trigger.scale[1]*2,
+			trigger.scale[2]*2
+		)
+		trigger_area.position.x = trigger.position[0]
+		trigger_area.position.y = trigger.position[1]
+		trigger_area.position.z = trigger.position[2]
+		trigger_area.trigger_id = trigger.id
+		trigger_area.world_node = main_node
 
 func add_water(main_node:Node3D):
 	var water = WATER_PATCH.instantiate()
@@ -122,8 +145,23 @@ func add_trees(trees: Dictionary, sector_id:String, main_node:Node3D):
 	multimesh.transform_format = MultiMesh.TRANSFORM_3D
 	multimesh.mesh = load_tree_meshes()
 	
-	multimesh.instance_count = amount_trees * 4
+	var points := get_trees_positions(trees)
+	
+	multimesh.instance_count = points.size()
+	
+	#print(corners)
 	var tree_n := 0
+	for p in points:
+		#var v = p
+		#var t := Transform3D(Basis(), v)
+		#t = t.rotated_local(Vector3.UP, randf_range(deg_to_rad(-180), deg_to_rad(180)))
+		#t = t.scaled_local(Vector3.ONE*((randf()+0.5)*0.5))
+		multimesh.set_instance_transform(tree_n, p)
+		tree_n += 1
+
+func get_trees_positions(trees) -> Array:
+	var tree_n := 0
+	var points := []
 	for tree_id in trees:
 		#print(tree_id)
 		var tree:Dictionary = trees[tree_id] as Dictionary
@@ -142,29 +180,37 @@ func add_trees(trees: Dictionary, sector_id:String, main_node:Node3D):
 			tree.scale[1],
 			tree.scale[2]
 		)
+		var t := Transform3D(Basis(), set_position)
+		t = t.rotated_local(Vector3.RIGHT, set_rotation.x)
+		t = t.rotated_local(Vector3.UP, set_rotation.y)
+		t = t.rotated_local(Vector3.FORWARD, set_rotation.z)
+		t = t.scaled_local(set_scale)
+		
 		# TODO allow rotation in any axis
-		var set_scale_rotated := set_scale.rotated(Vector3.UP, set_rotation.y)
 		var corners: Array[Vector3] = [
-			set_position + (set_scale_rotated * Vector3(1, 0, 0)),
-			set_position - (set_scale_rotated * Vector3(1, 0, 0)),
-			set_position + (set_scale_rotated * Vector3(0, 0, 1)),
-			set_position - (set_scale_rotated * Vector3(0, 0, 1))
+			t * Vector3(-1, 0, -1),
+			t * Vector3(1, 0, -1),
+			t * Vector3(-1, 0, 1),
+			t * Vector3(1, 0, 1)
 		]
-		var points := []
-		for point_id in 4:
-			var point: Vector3 = lerp(corners[0], corners[1], randf())
-			point = lerp(point, corners[2], randf())
-			point = lerp(point, corners[3], randf())
-			points.append(point)
-			
-		#print(corners)
-		for p in points:
-			var v = p
-			var t := Transform3D(Basis(), v)
-			t = t.rotated_local(Vector3.UP, randf_range(deg_to_rad(-180), deg_to_rad(180)))
-			#t = t.scaled_local(juncos[id][2])
-			multimesh.set_instance_transform(tree_n, t)
-			tree_n += 1
+		var length_side1 := corners[0].distance_to(corners[1])
+		var length_side2 := corners[1].distance_to(corners[2])
+		var amount_side1 := length_side1 * 2
+		var amount_side2 := length_side2 * 2
+		for side1 in int(amount_side1):
+			for side2 in int(amount_side2):
+				var point_a: Vector3 = lerp(corners[0], corners[1], side1/amount_side1)
+				var point_b: Vector3 = lerp(corners[2], corners[3], side1/amount_side1)
+				var point:Vector3 = lerp(point_a, point_b, side2/amount_side2)
+				var t_point := Transform3D(Basis(), point)
+				var rand_rotation := randf_range(deg_to_rad(-180), deg_to_rad(180))
+				var rand_scale := Vector3.ONE*randf_range(0.5, 1.0)
+				t_point = t_point.rotated_local(Vector3.RIGHT, set_rotation.x)
+				t_point = t_point.rotated_local(Vector3.UP, set_rotation.y+rand_rotation)
+				t_point = t_point.rotated_local(Vector3.FORWARD, set_rotation.z)
+				t_point = t_point.scaled_local(rand_scale)
+				points.append(t_point)
+	return points
 
 func load_tree_meshes():
 	var gltf_loader := GLTFDocument.new()
