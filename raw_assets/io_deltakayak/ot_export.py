@@ -241,7 +241,12 @@ class DKT_OT_ExportWorld(bpy.types.Operator):
             "position": self.location_to_godot(camera_obj.location),
             "rotation": self.rotation_to_godot(camera_obj.rotation_euler),
             "scale": self.scale_to_godot(camera_obj.scale),
-            "fov": camera_obj.data.angle
+            "fov": camera_obj.data.angle,
+            "transition_type": camera_obj.dkt_worldproperties.camera_transition_type,
+            "transition_speed": camera_obj.dkt_worldproperties.camera_transition_speed,
+            "speed": camera_obj.dkt_worldproperties.camera_speed,
+            "point_of_interest": self.vector_to_list(camera_obj.dkt_worldproperties.camera_poi),
+            "player_offset": self.vector_to_list(camera_obj.dkt_worldproperties.camera_player_offset)
         }
         return camera_def
 
@@ -305,6 +310,9 @@ class DKT_OT_ExportWorld(bpy.types.Operator):
             rotation[2],
             -rotation[1]
         ]
+
+    def vector_to_list(self, vector) -> list:
+        return [vector.x, vector.y, vector.z]
 
 
 class DKT_PT_Setup(bpy.types.Panel):
@@ -381,6 +389,13 @@ class DKT_PT_ExportWorld(bpy.types.Panel):
         col = layout.column(align=True)
         col.label(text="Export World:")
         col.operator("dktools.export_dkworld", text="Export World", icon='WORLD')
+        obj = context.active_object
+        if obj is not None and obj.name.startswith("camera_"):
+            col.prop(obj.dkt_worldproperties, "camera_transition_type")
+            col.prop(obj.dkt_worldproperties, "camera_transition_speed")
+            col.prop(obj.dkt_worldproperties, "camera_speed")
+            col.prop(obj.dkt_worldproperties, "camera_poi")
+            col.prop(obj.dkt_worldproperties, "camera_player_offset")
         
 
 
@@ -961,9 +976,9 @@ class DKT_PG_WorldObjectProperties(bpy.types.PropertyGroup):
         name="Sound Type",
         description="Sound Type",
         items=[
-            ("simple", "Simple", "Plays one time", None, 0),
-            ("loop", "Loop", "Plays on continuous loop", None, 1),
-            ("random", "Random", "Plays at random times", None, 2),
+            ("simple", "Simple", "Plays one time", "", 0),
+            ("loop", "Loop", "Plays on continuous loop", "", 1),
+            ("random", "Random", "Plays at random times", "", 2),
         ], # type: ignore
         default="random"
     ) # type: ignore
@@ -980,8 +995,8 @@ class DKT_PG_WorldObjectProperties(bpy.types.PropertyGroup):
         name="Trigger Type",
         description="What triggers the trigger?",
         items=[
-            ("proximity", "Proximity", "Fires on proximity", None, 0),
-            ("button", "Button", "Fires on button pressed", None, 1),
+            ("proximity", "Proximity", "Fires on proximity", "", 0),
+            ("button", "Button", "Fires on button pressed", "", 1),
         ], # type: ignore
         default="button"
     ) # type: ignore
@@ -997,17 +1012,17 @@ class DKT_PG_WorldObjectProperties(bpy.types.PropertyGroup):
     ## Camera
 
     camera_transition_type: EnumProperty(
-        name="Camera Transition Type",
+        name="Transition Type",
         description="How the transition to this camera must be?",
         items=[
-            ("cut", "Cut", "Hard jump", None, 0),
-            ("smooth", "Smooth", "Smooth transition", None, 1),
+            ("cut", "Cut", "Hard jump", "", 0),
+            ("smooth", "Smooth", "Smooth transition", "", 1),
         ], # type: ignore
         default="smooth"
     ) # type: ignore
 
     camera_transition_speed: FloatProperty(
-        name="Camera Transition Speed",
+        name="Transition Speed",
         description="Camera smooth transition speed",
         default=5.,
         min=0.,
@@ -1015,7 +1030,7 @@ class DKT_PG_WorldObjectProperties(bpy.types.PropertyGroup):
     ) # type: ignore
 
     camera_speed: FloatProperty(
-        name="Camera Speed",
+        name="Speed",
         description="Camera speed",
         default=5.,
         min=0.,
@@ -1023,19 +1038,18 @@ class DKT_PG_WorldObjectProperties(bpy.types.PropertyGroup):
     ) # type: ignore
 
     camera_poi: FloatVectorProperty(
-        name="Camera Point of Interest",
+        name="Point of Interest",
         description="Point relative to player the camera looks at",
         default=mathutils.Vector((0,0,0)),
         subtype="TRANSLATION"
     ) # type: ignore
 
     camera_player_offset: FloatVectorProperty(
-        name="Camera Player Offset",
+        name="Player Offset",
         description="Offsets player position for camera position calculation",
         default=mathutils.Vector((0,0,0)),
         subtype="TRANSLATION"
     ) # type: ignore
-
 
 class DKT_PG_StencilProperties(bpy.types.PropertyGroup):
 
@@ -1092,6 +1106,7 @@ def register():
     bpy.utils.register_class(DKT_PT_ExportWorld)
     bpy.utils.register_class(DKT_PG_GltfsExportSetup)
     bpy.utils.register_class(DKT_PG_ObjectProperties)
+    bpy.utils.register_class(DKT_PG_WorldObjectProperties)
     bpy.utils.register_class(DKT_PG_StencilProperties)
 
     bpy.types.Scene.dkt_gltfsexportsetup = PointerProperty(type=DKT_PG_GltfsExportSetup) # type: ignore
@@ -1109,6 +1124,7 @@ def unregister():
     bpy.utils.unregister_class(DKT_PT_ExportWorld)
     bpy.utils.unregister_class(DKT_PG_GltfsExportSetup)
     bpy.utils.unregister_class(DKT_PG_ObjectProperties)
+    bpy.utils.unregister_class(DKT_PG_WorldObjectProperties)
     bpy.utils.unregister_class(DKT_PG_StencilProperties)
 
     del bpy.types.Scene.dkt_gltfsexportsetup # type: ignore

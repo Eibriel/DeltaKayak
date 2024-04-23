@@ -116,14 +116,12 @@ func add_triggers(triggers: Array, sector_id:String, main_node:Node3D):
 		trigger_area.add_child(trigger_collision)
 		trigger_collision.set_owner(main_node)
 		trigger_collision.shape = box_shape
-		box_shape.size = Vector3(
-			trigger.scale[0]*2,
-			trigger.scale[1]*2,
-			trigger.scale[2]*2
-		)
-		trigger_area.position.x = trigger.position[0]
-		trigger_area.position.y = trigger.position[1]
-		trigger_area.position.z = trigger.position[2]
+		box_shape.size = array_to_vector3(trigger.scale)*2
+		
+		trigger_area.position = array_to_vector3(trigger.position)
+		trigger_area.rotation = array_to_vector3(trigger.rotation)
+		#trigger_area.scale = array_to_vector3(trigger.scale)
+		
 		trigger_area.trigger_id = trigger.id
 		trigger_area.world_node = main_node
 
@@ -195,8 +193,8 @@ func get_trees_positions(trees) -> Array:
 		]
 		var length_side1 := corners[0].distance_to(corners[1])
 		var length_side2 := corners[1].distance_to(corners[2])
-		var amount_side1 := length_side1 * 2
-		var amount_side2 := length_side2 * 2
+		var amount_side1:float = max(1., length_side1 * 0.5)
+		var amount_side2:float = max(1., length_side2 * 0.5)
 		for side1 in int(amount_side1):
 			for side2 in int(amount_side2):
 				var point_a: Vector3 = lerp(corners[0], corners[1], side1/amount_side1)
@@ -247,14 +245,18 @@ func add_camera(camera:Dictionary, camera_id:String, main_node:Node3D):
 	camera_node.add_child(camera3d)
 	camera3d.set_owner(main_node)
 	
-	camera3d.position.x = camera.camera.position[0]
-	camera3d.position.y = camera.camera.position[1]
-	camera3d.position.z = camera.camera.position[2]
+	camera3d.position = array_to_vector3(camera.camera.position)
 	camera3d.rotation_order = EULER_ORDER_ZXY
 	camera3d.rotation.x = camera.camera.rotation[0] - deg_to_rad(90)
 	camera3d.rotation.y = camera.camera.rotation[1]
 	camera3d.rotation.z = camera.camera.rotation[2]
 	camera3d.fov = rad_to_deg(camera.camera.fov)
+	
+	camera3d.set_meta("transition_type", camera.camera.transition_type)
+	camera3d.set_meta("transition_speed", camera.camera.transition_speed)
+	camera3d.set_meta("speed", camera.camera.speed)
+	camera3d.set_meta("point_of_interest", camera.camera.point_of_interest)
+	camera3d.set_meta("player_offset", camera.camera.player_offset)
 	
 	# Curve
 	var path3d := Path3D.new()
@@ -327,16 +329,10 @@ func add_item(item: Dictionary, item_id: String, main_node: Node3D):
 	gltf_instance.name = item_id
 	main_node.add_child(gltf_instance)
 	#print(item)
-	gltf_instance.position.x = item.position[0]
-	gltf_instance.position.y = item.position[1]
-	gltf_instance.position.z = item.position[2]
+	gltf_instance.position = array_to_vector3(item.position)
 	#gltf_instance.rotation_order = EULER_ORDER_ZXY
-	gltf_instance.rotation.x = item.rotation[0]
-	gltf_instance.rotation.y = item.rotation[1]
-	gltf_instance.rotation.z = item.rotation[2]
-	gltf_instance.scale.x = item.scale[0]
-	gltf_instance.scale.y = item.scale[1]
-	gltf_instance.scale.z = item.scale[2]
+	gltf_instance.rotation = array_to_vector3(item.rotation)
+	gltf_instance.scale = array_to_vector3(item.scale)
 	gltf_instance.set_owner(main_node)
 	#print("owner")
 	#prints(gltf_instance.name, gltf_instance.owner.name)
@@ -371,6 +367,10 @@ func scene_from_gltf(item:Dictionary, item_id:String) -> PackedScene:
 		return scene
 	else:
 		return scene
+
+
+func array_to_vector3(array: Array) -> Vector3:
+	return Vector3(array[0], array[1], array[2])
 
 
 func _configure_lod(gltf_instance:Node, json:Dictionary) -> void:
@@ -413,6 +413,9 @@ func _add_colliders(gltf_instance:Node3D) -> void:
 			array_occluder.set_arrays(arrays[Mesh.ARRAY_VERTEX], arrays[Mesh.ARRAY_INDEX])
 			gltf_instance.add_child(occluder)
 			occluder.set_owner(gltf_instance)
+			occluder.position = c.position
+			occluder.rotation = c.rotation
+			occluder.scale = c.scale
 		if c.name.ends_with("_boxcollider"):
 			c.visible = false
 			var static_body := StaticBody3D.new()
@@ -424,6 +427,9 @@ func _add_colliders(gltf_instance:Node3D) -> void:
 			box_shape.size = c.scale * 2
 			static_body.add_child(collider)
 			collider.set_owner(gltf_instance)
+			collider.position = c.position
+			collider.rotation = c.rotation
+			#collider.scale = item.scale
 
 func _recursively_set_owner(root: Node, owner: Node) -> void:
 	for child in root.get_children():

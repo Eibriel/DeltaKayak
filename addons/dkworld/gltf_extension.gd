@@ -18,12 +18,14 @@ func apply_material(json, node, filename: String):
 	var path := "res://models/world_textures/%s_diffuse.png" % filename
 	prints(inode.name, path)
 	if not FileAccess.file_exists(path):
-		#prints(path, "exists!")
+		mat.albedo_color = Color.BLUE_VIOLET
 		return
 	#print(json)
 	var texture := load(path)
 	mat.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
 	mat.albedo_texture = texture
+	mat.metallic_specular = 0.0
+	mat.roughness = 0.0
 
 # Unused:
 

@@ -14,6 +14,9 @@ var integral := 0.0
 #TODO kayak points backwards
 
 func _ready():
+	position = Vector3(-31.8, 0, -5)
+	position = Vector3(34.7, 0, -5)
+	last_rotation = rotation.y
 	Global.character = self
 
 func _process(delta: float) -> void:
@@ -27,7 +30,7 @@ func _process(delta: float) -> void:
 	target_box.global_position = position + local_target_position
 	var target_distance := Vector3.ZERO.distance_to(local_target_position)
 	
-	# TODO mal
+	# TODO the kayak points backwards
 	var target_position_with_rotation := local_target_position.rotated(Vector3.DOWN, rotation.y)
 	var global_target_rotation := Vector3.FORWARD.angle_to(target_position_with_rotation)
 	if target_position_with_rotation.x < 0:
@@ -44,23 +47,22 @@ func _process(delta: float) -> void:
 	torque += get_proportional(global_target_rotation) * delta
 	torque += get_derivative() * delta
 	torque += get_integral(global_target_rotation) * delta
-	#torque = remap(torque, 0.0, 1.0, 0.0, 10.0)
 	#print(torque)
 
 # PID control
 func get_proportional(error) -> float:
 	var proportional = error
-	proportional *= 10.0
+	proportional *= 50.0
 	return proportional
 
 func get_derivative() -> float:
-	var derivative =  angle_difference(rotation.y, last_rotation)#last_rotation - rotation.y
+	var derivative =  angle_difference(rotation.y, last_rotation)
 	last_rotation = rotation.y
-	return derivative * 1000.0
+	return derivative * 5000.0
 
 func get_integral(error) -> float:
 	integral += error
-	return clamp(integral*0.01, -1.0, 1.0)
+	return clamp(integral*0.001, -1.0, 1.0)
 #
 
 func _physics_process(delta):

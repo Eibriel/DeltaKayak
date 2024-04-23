@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://ce6e8v1saxjr5"]
+[gd_scene load_steps=8 format=3 uid="uid://ce6e8v1saxjr5"]
 
 [ext_resource type="Environment" uid="uid://xpf4ng2ym0n4" path="res://environments/main_environment.tres" id="1_ekqa4"]
 [ext_resource type="PackedScene" uid="uid://r0o1qsmlq84u" path="res://character.tscn" id="2_3sgbv"]
@@ -9,6 +9,8 @@
 compositor_effects = Array[CompositorEffect]([ExtResource("2_f4rcp")])
 
 [sub_resource type="MultiMesh" id="MultiMesh_g048c"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_v311q"]
 
 [node name="main" type="Node3D"]
 
@@ -22,11 +24,11 @@ visible = false
 shadow_enabled = true
 
 [node name="character" parent="." instance=ExtResource("2_3sgbv")]
-transform = Transform3D(-0.0258978, 0, 0.999665, 0, 1, 0, -0.999665, 0, -0.0258978, -31.8386, 0, -5)
+transform = Transform3D(-0.0258978, 0, 0.999665, 0, 1, 0, -0.999665, 0, -0.0258978, 34.7934, 0, -5)
 
 [node name="DKWorld" parent="." node_paths=PackedStringArray("initial_camera", "initial_camera_path") instance=ExtResource("3_7foso")]
 initial_camera = NodePath("camera_001/camera_001_cam")
-initial_camera_path = NodePath("camera_001/@Path3D@24004")
+initial_camera_path = NodePath("camera_001/@Path3D@31121")
 
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.921328, 0.388786, 0, -0.388786, 0.921328, 0.528366, 5.52796, 5.79716)
@@ -34,3 +36,8 @@ current = true
 
 [node name="MultiMeshInstance3D" type="MultiMeshInstance3D" parent="."]
 multimesh = SubResource("MultiMesh_g048c")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
+shape = SubResource("BoxShape3D_v311q")
