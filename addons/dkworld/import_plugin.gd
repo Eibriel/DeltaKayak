@@ -256,26 +256,6 @@ func add_camera(camera:Dictionary, camera_id:String, main_node:Node3D):
 	camera3d.rotation.z = camera.camera.rotation[2]
 	camera3d.fov = rad_to_deg(camera.camera.fov)
 	
-	# Sensor
-	var sensor_area := CameraSensor.new()
-	var sensor_collision := CollisionShape3D.new()
-	var box_shape := BoxShape3D.new()
-	camera_node.add_child(sensor_area)
-	sensor_area.set_owner(main_node)
-	sensor_area.add_child(sensor_collision)
-	sensor_collision.set_owner(main_node)
-	sensor_collision.shape = box_shape
-	
-	box_shape.size = Vector3(
-		camera.sensor.scale[0]*2,
-		camera.sensor.scale[1]*2,
-		camera.sensor.scale[2]*2
-	)
-	
-	sensor_area.position.x = camera.sensor.position[0]
-	sensor_area.position.y = camera.sensor.position[1]
-	sensor_area.position.z = camera.sensor.position[2]
-	
 	# Curve
 	var path3d := Path3D.new()
 	var curve3d := Curve3D.new()
@@ -302,10 +282,35 @@ func add_camera(camera:Dictionary, camera_id:String, main_node:Node3D):
 		main_node.initial_camera = camera3d
 		main_node.initial_camera_path = path3d
 	
+	# Sensor
+	for sensor in camera.sensor:
+		var sensor_area := CameraSensor.new()
+		var sensor_collision := CollisionShape3D.new()
+		var box_shape := BoxShape3D.new()
+		camera_node.add_child(sensor_area)
+		sensor_area.set_owner(main_node)
+		sensor_area.add_child(sensor_collision)
+		sensor_collision.set_owner(main_node)
+		sensor_collision.shape = box_shape
+		
+		box_shape.size = Vector3(
+			sensor.scale[0]*2,
+			sensor.scale[1]*2,
+			sensor.scale[2]*2
+		)
+		
+		sensor_area.position.x = sensor.position[0]
+		sensor_area.position.y = sensor.position[1]
+		sensor_area.position.z = sensor.position[2]
+		
+		sensor_area.rotation.x = sensor.rotation[0]
+		sensor_area.rotation.y = sensor.rotation[1]
+		sensor_area.rotation.z = sensor.rotation[2]
+
+		sensor_area.world_node = main_node
+		sensor_area.camera = camera3d
+		sensor_area.path = path3d
 	
-	sensor_area.world_node = main_node
-	sensor_area.camera = camera3d
-	sensor_area.path = path3d
 	#print(main_node.camera_change)
 	#sensor_area.connect("area_entered", main_node.camera_change.bind(camera3d, curve3d))
 	#print(sensor_area.is_connected("area_entered", main_node.camera_change.bind(camera3d)))

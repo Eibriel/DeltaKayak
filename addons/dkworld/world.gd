@@ -41,9 +41,9 @@ func _process(delta: float) -> void:
 	var character:= Global.character
 	
 	var shifted_global_position_look = character.global_position + Vector3(0,0,2).rotated(Vector3.UP, character.rotation.y)
-	lerped_shifted_global_position_look = lerp(lerped_shifted_global_position_look, shifted_global_position_look, 0.01)
+	lerped_shifted_global_position_look = lerp(lerped_shifted_global_position_look, shifted_global_position_look, 0.03)
 	var shifted_global_position_path = character.global_position + Vector3(0,0,8).rotated(Vector3.UP, character.rotation.y)
-	lerped_shifted_global_position_path = lerp(lerped_shifted_global_position_path, shifted_global_position_path, 0.01)
+	lerped_shifted_global_position_path = lerp(lerped_shifted_global_position_path, shifted_global_position_path, 0.03)
 	
 	position_look_sphere.position = lerped_shifted_global_position_look
 	position_path_sphere.position = lerped_shifted_global_position_path
@@ -54,7 +54,7 @@ func _process(delta: float) -> void:
 	var local_closest_point = Global.camera_path.curve.get_closest_point(local_character_pos)
 	#var local_closest_point = Global.camera_curve.get_closest_point(lerped_shifted_global_position_path)
 	target_camera_position = Global.camera_path.to_global(local_closest_point)
-	current_camera.global_position = lerp(current_camera.global_position, target_camera_position, 0.1)
+	current_camera.global_position = lerp(current_camera.global_position, target_camera_position, 0.3)
 	
 	#camera_sphere.position = current_camera.global_position
 

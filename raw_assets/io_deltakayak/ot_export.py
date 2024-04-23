@@ -12,7 +12,8 @@ from bpy.props import (
     BoolProperty,
     IntProperty,
     FloatProperty,
-    EnumProperty
+    EnumProperty,
+    FloatVectorProperty
 )
 
 TO_GLOBAL = True
@@ -210,12 +211,16 @@ class DKT_OT_ExportWorld(bpy.types.Operator):
             # only one curve expected
             curve_obj = camera.objects["curve_"+camera_id]
             # multiple sensors expected
-            sensor_obj = camera.objects["sensor_"+camera_id]
+            sensor_list = []
+            for cobj in camera.objects:
+                if cobj.name.startswith("sensor_"):
+                    #sensor_obj = camera.objects["sensor_"+camera_id]
+                    sensor_list.append(self.get_sensor_data(cobj))
             #
             camera_def = {
                 "camera": self.get_camera_data(camera_obj),
                 "curve": self.get_curve_data(curve_obj),
-                "sensor": self.get_sensor_data(sensor_obj),
+                "sensor": sensor_list,
                 "default": False
             }
             if camera_id == "001":
@@ -940,6 +945,97 @@ class DKT_PG_ObjectProperties(bpy.types.PropertyGroup):
         max=5000
     ) # type: ignore
 
+class DKT_PG_WorldObjectProperties(bpy.types.PropertyGroup):
+
+    ## All
+
+    attach_to: StringProperty(
+        name="Attach to",
+        description="Attach this element to another element",
+        default=""
+    ) # type: ignore
+
+    ## Sound source
+
+    sound_type: EnumProperty(
+        name="Sound Type",
+        description="Sound Type",
+        items=[
+            ("simple", "Simple", "Plays one time", None, 0),
+            ("loop", "Loop", "Plays on continuous loop", None, 1),
+            ("random", "Random", "Plays at random times", None, 2),
+        ], # type: ignore
+        default="random"
+    ) # type: ignore
+
+    sound_source: StringProperty(
+        name="Sound source",
+        description="Sound source",
+        default=""
+    ) # type: ignore
+
+    ## Trigger
+
+    trigger_type: EnumProperty(
+        name="Trigger Type",
+        description="What triggers the trigger?",
+        items=[
+            ("proximity", "Proximity", "Fires on proximity", None, 0),
+            ("button", "Button", "Fires on button pressed", None, 1),
+        ], # type: ignore
+        default="button"
+    ) # type: ignore
+
+    trigger_angle: IntProperty(
+        name="Trigger Angle",
+        description="Direction the player must be facing, relative to Trigger front",
+        default=360,
+        min=0,
+        max=360
+    ) # type: ignore
+
+    ## Camera
+
+    camera_transition_type: EnumProperty(
+        name="Camera Transition Type",
+        description="How the transition to this camera must be?",
+        items=[
+            ("cut", "Cut", "Hard jump", None, 0),
+            ("smooth", "Smooth", "Smooth transition", None, 1),
+        ], # type: ignore
+        default="smooth"
+    ) # type: ignore
+
+    camera_transition_speed: FloatProperty(
+        name="Camera Transition Speed",
+        description="Camera smooth transition speed",
+        default=5.,
+        min=0.,
+        max=10.
+    ) # type: ignore
+
+    camera_speed: FloatProperty(
+        name="Camera Speed",
+        description="Camera speed",
+        default=5.,
+        min=0.,
+        max=10.
+    ) # type: ignore
+
+    camera_poi: FloatVectorProperty(
+        name="Camera Point of Interest",
+        description="Point relative to player the camera looks at",
+        default=mathutils.Vector((0,0,0)),
+        subtype="TRANSLATION"
+    ) # type: ignore
+
+    camera_player_offset: FloatVectorProperty(
+        name="Camera Player Offset",
+        description="Offsets player position for camera position calculation",
+        default=mathutils.Vector((0,0,0)),
+        subtype="TRANSLATION"
+    ) # type: ignore
+
 
 class DKT_PG_StencilProperties(bpy.types.PropertyGroup):
 
@@ -1000,6 +1096,7 @@ def register():
 
     bpy.types.Scene.dkt_gltfsexportsetup = PointerProperty(type=DKT_PG_GltfsExportSetup) # type: ignore
     bpy.types.Object.dkt_properties = PointerProperty(type=DKT_PG_ObjectProperties) # type: ignore
+    bpy.types.Object.dkt_worldproperties = PointerProperty(type=DKT_PG_WorldObjectProperties) # type: ignore
     bpy.types.Object.dkt_stencil = PointerProperty(type=DKT_PG_StencilProperties) # type: ignore
 
 def unregister():
@@ -1016,4 +1113,5 @@ def unregister():
 
     del bpy.types.Scene.dkt_gltfsexportsetup # type: ignore
     del bpy.types.Object.dkt_properties # type: ignore
+    del bpy.types.Object.dkt_worldproperties # type: ignore
     del bpy.types.Object.dkt_stencil # type: ignore

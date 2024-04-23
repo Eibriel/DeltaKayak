@@ -38,12 +38,13 @@ func _process(delta: float) -> void:
 	#prints(global_target_rotation, target_position_with_rotation)
 	#prints(target_global_angle, rotation.y, target_local_angle)
 	
-	speed = max(0, target_position_with_rotation.z) * delta * 20.0
+	speed = max(0, target_position_with_rotation.z) * delta * 50.0
 	#torque = global_target_rotation * 0.1
 	torque = 0.0
 	torque += get_proportional(global_target_rotation) * delta
 	torque += get_derivative() * delta
 	torque += get_integral(global_target_rotation) * delta
+	#torque = remap(torque, 0.0, 1.0, 0.0, 10.0)
 	#print(torque)
 
 # PID control

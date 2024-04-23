@@ -17,8 +17,9 @@ func apply_material(json, node, filename: String):
 	if not inode.name.ends_with("_obj"): return
 	var path := "res://models/world_textures/%s_diffuse.png" % filename
 	prints(inode.name, path)
-	if FileAccess.file_exists(path):
-		prints(path, "exists!")
+	if not FileAccess.file_exists(path):
+		#prints(path, "exists!")
+		return
 	#print(json)
 	var texture := load(path)
 	mat.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
