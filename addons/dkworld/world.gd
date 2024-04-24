@@ -9,12 +9,14 @@ var target_camera_position:Vector3
 var lerped_shifted_global_position_look:Vector3
 var lerped_shifted_global_position_path:Vector3
 
-
 var position_look_sphere
 var position_path_sphere
 var camera_sphere
 var previous_camera: Camera3D
+var next_camera:Camera3D
 var initial_positioning:=true
+
+var camera_queue := []
 
 func _ready():
 	Global.camera = initial_camera
@@ -44,6 +46,7 @@ func _process(delta: float) -> void:
 	var character:= Global.character
 	var new_camera = false
 	if current_camera != previous_camera or initial_positioning:
+		current_camera.current = true
 		new_camera = true
 		initial_positioning = false
 		previous_camera = current_camera
@@ -78,11 +81,30 @@ func _process(delta: float) -> void:
 	current_camera.global_position = lerp(current_camera.global_position, target_camera_position, camera_speed)
 
 
-func camera_change(area_:Area3D, camera: Camera3D, path:Path3D) -> void:
-	camera.current = true
+func camera_entered(area_:Area3D, camera: Camera3D, path:Path3D) -> void:
+	#if area_.has_meta("is_camera_sensor"): pass
+	if not area_.has_meta("is_character_camera"): return
+	camera_queue.append([camera, path])
 	Global.camera = camera
 	Global.camera_path = path
+	#prints("Entering", camera.name)
+	#for c in camera_queue:
+	#	print(c[0].name)
+	#print(camera_queue)
+
+func camera_exited(area_:Area3D, camera_: Camera3D, path_:Path3D) -> void:
+	if not area_.has_meta("is_character_camera"): return
+	if camera_queue.size() < 1: return
+	var previous_camera:=camera_queue.pop_back()
+	var camera: Camera3D = previous_camera[0]
+	var path: Path3D = previous_camera[1]
+	Global.camera = camera
+	Global.camera_path = path
+	#prints("Leaving", camera.name)
+	#for c in camera_queue:
+	#	print(c[0].name)
 
 
 func trigger_fired(area_:Area3D, trigger_name:String) -> void:
+	if not area_.has_meta("is_character_interaction"): return
 	prints("Trigger!", trigger_name)

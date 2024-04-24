@@ -14,8 +14,8 @@ var integral := 0.0
 #TODO kayak points backwards
 
 func _ready():
-	position = Vector3(-31.8, 0, -5)
-	position = Vector3(34.7, 0, -5)
+	#position = Vector3(-31.8, 0, -5)
+	#position = Vector3(34.7, 0, -5)
 	last_rotation = rotation.y
 	Global.character = self
 

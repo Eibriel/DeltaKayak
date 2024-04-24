@@ -163,21 +163,9 @@ func get_trees_positions(trees) -> Array:
 	for tree_id in trees:
 		#print(tree_id)
 		var tree:Dictionary = trees[tree_id] as Dictionary
-		var set_position:= Vector3(
-			tree.position[0],
-			tree.position[1],
-			tree.position[2]
-		)
-		var set_rotation:= Vector3(
-			tree.rotation[0],
-			tree.rotation[1],
-			tree.rotation[2]
-		)
-		var set_scale:= Vector3(
-			tree.scale[0],
-			tree.scale[1],
-			tree.scale[2]
-		)
+		var set_position:= array_to_vector3(tree.position)
+		var set_rotation:= array_to_vector3(tree.rotation)
+		var set_scale:= array_to_vector3(tree.scale)
 		var t := Transform3D(Basis(), set_position)
 		t = t.rotated_local(Vector3.RIGHT, set_rotation.x)
 		t = t.rotated_local(Vector3.UP, set_rotation.y)
@@ -266,13 +254,9 @@ func add_camera(camera:Dictionary, camera_id:String, main_node:Node3D):
 	camera_node.add_child(path3d)
 	path3d.set_owner(main_node)
 	
-	path3d.position.x = camera.curve.position[0]
-	path3d.position.y = camera.curve.position[1]
-	path3d.position.z = camera.curve.position[2]
+	path3d.position = array_to_vector3(camera.curve.position)
 	#path3d.rotation_order = EULER_ORDER_ZXY
-	path3d.rotation.x = camera.curve.rotation[0]
-	path3d.rotation.y = camera.curve.rotation[1]
-	path3d.rotation.z = camera.curve.rotation[2]
+	path3d.rotation = array_to_vector3(camera.curve.rotation)
 	
 	for p in camera.curve.points:
 		var p_position := Vector3(p[0][0], p[0][1], p[0][2])
@@ -296,23 +280,14 @@ func add_camera(camera:Dictionary, camera_id:String, main_node:Node3D):
 		sensor_collision.set_owner(main_node)
 		sensor_collision.shape = box_shape
 		
-		box_shape.size = Vector3(
-			sensor.scale[0]*2,
-			sensor.scale[1]*2,
-			sensor.scale[2]*2
-		)
-		
-		sensor_area.position.x = sensor.position[0]
-		sensor_area.position.y = sensor.position[1]
-		sensor_area.position.z = sensor.position[2]
-		
-		sensor_area.rotation.x = sensor.rotation[0]
-		sensor_area.rotation.y = sensor.rotation[1]
-		sensor_area.rotation.z = sensor.rotation[2]
+		box_shape.size = array_to_vector3(sensor.scale)*2
+		sensor_area.position = array_to_vector3(sensor.position)
+		sensor_area.rotation = array_to_vector3(sensor.rotation)
 
 		sensor_area.world_node = main_node
 		sensor_area.camera = camera3d
 		sensor_area.path = path3d
+		sensor_area.set_meta("is_camera_sensor", true)
 	
 	#print(main_node.camera_change)
 	#sensor_area.connect("area_entered", main_node.camera_change.bind(camera3d, curve3d))

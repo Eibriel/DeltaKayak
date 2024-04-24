@@ -1,12 +1,19 @@
-[gd_scene load_steps=5 format=3 uid="uid://r0o1qsmlq84u"]
+[gd_scene load_steps=7 format=3 uid="uid://r0o1qsmlq84u"]
 
 [ext_resource type="Script" path="res://character.gd" id="1_mnv7b"]
 [ext_resource type="PackedScene" uid="uid://b5n8cpa2p23cu" path="res://models/kayak_detailed.glb" id="2_qknmv"]
 [ext_resource type="Texture2D" uid="uid://cdex8bqdmulf8" path="res://textures/flashlight.jpg" id="3_xitmn"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_ogamo"]
-radius = 0.459692
-height = 3.82348
+radius = 0.271211
+height = 3.53406
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_iqdy3"]
+radius = 0.01
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_b8fg3"]
+radius = 0.794532
+height = 4.48046
 
 [node name="character" type="RigidBody3D"]
 axis_lock_linear_y = true
@@ -26,14 +33,21 @@ height = 0.757899
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0)
-visible = false
 shape = SubResource("CapsuleShape3D_ogamo")
 
-[node name="Area3D" type="Area3D" parent="."]
+[node name="CameraArea" type="Area3D" parent="."]
+metadata/is_character_camera = true
 
-[node name="CollisionShape3D2" type="CollisionShape3D" parent="Area3D"]
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="CameraArea"]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0)
-shape = SubResource("CapsuleShape3D_ogamo")
+shape = SubResource("SphereShape3D_iqdy3")
+
+[node name="InteractionArea" type="Area3D" parent="."]
+metadata/is_character_interaction = true
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="InteractionArea"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0)
+shape = SubResource("CapsuleShape3D_b8fg3")
 
 [node name="CSGBox3D" type="CSGBox3D" parent="."]
 top_level = true
