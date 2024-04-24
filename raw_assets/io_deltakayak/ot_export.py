@@ -362,6 +362,10 @@ class DKT_PT_ExportItems(bpy.types.Panel):
             col.label(text="{}: {} - {}".format(obj.name, range_begin, range_end))
         col.operator("dktools.set_lod", text="Set LOD", icon='MESH_ICOSPHERE')
 
+        col.label(text="Texture:")
+        if active_object is not None:
+            col.prop(active_object.dkt_properties, "override_texture")
+
         col.label(text="Stencils:")
         # composition_mode opacity normal_masking mask_image diffuse_image emission_image alpha_image
         if active_object:
@@ -958,6 +962,12 @@ class DKT_PG_ObjectProperties(bpy.types.PropertyGroup):
         default=0,
         min=0,
         max=5000
+    ) # type: ignore
+
+    override_texture: StringProperty(
+        name="Override Texture",
+        description="Item to get texture from",
+        default=""
     ) # type: ignore
 
 class DKT_PG_WorldObjectProperties(bpy.types.PropertyGroup):

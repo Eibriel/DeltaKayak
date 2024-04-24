@@ -200,6 +200,7 @@ func get_trees_positions(trees) -> Array:
 				var point_a: Vector3 = lerp(corners[0], corners[1], side1/amount_side1)
 				var point_b: Vector3 = lerp(corners[2], corners[3], side1/amount_side1)
 				var point:Vector3 = lerp(point_a, point_b, side2/amount_side2)
+				point += Vector3(randf_range(-0.5, 0.5), 0, randf_range(-0.5, 0.5))
 				var t_point := Transform3D(Basis(), point)
 				var rand_rotation := randf_range(deg_to_rad(-180), deg_to_rad(180))
 				var rand_scale := Vector3.ONE*randf_range(0.5, 1.0)

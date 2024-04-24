@@ -7,7 +7,8 @@ func _import_post(gstate: GLTFState, node: Node) -> Error:
 func _import_node(state: GLTFState, gltf_node: GLTFNode, json: Dictionary, node: Node) -> Error:
 	#convert_meshinstance(node)
 	#apply_lod(json, node)
-	apply_material(json, node, state.filename)
+	var filename := get_texture_override(json, state.filename)
+	apply_material(json, node, filename)
 	return OK
 
 func apply_material(json, node, filename: String):
@@ -16,7 +17,7 @@ func apply_material(json, node, filename: String):
 	var mat := inode.mesh.get_surface_material(0) as StandardMaterial3D
 	if not inode.name.ends_with("_obj"): return
 	var path := "res://models/world_textures/%s_diffuse.png" % filename
-	prints(inode.name, path)
+	#prints(inode.name, path)
 	if not FileAccess.file_exists(path):
 		mat.albedo_color = Color.BLUE_VIOLET
 		return
@@ -26,6 +27,16 @@ func apply_material(json, node, filename: String):
 	mat.albedo_texture = texture
 	mat.metallic_specular = 0.0
 	mat.roughness = 0.0
+	# TODO not all materials need alpha
+	mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA_HASH
+
+func get_texture_override(json:Dictionary, filename:String) -> String:
+	if json.extras.has("dkt_properties"):
+		var dkt_data: Dictionary = json.extras.dkt_properties
+		if dkt_data.has("override_texture"):
+			if dkt_data.override_texture != "":
+				return dkt_data.override_texture
+	return filename
 
 # Unused:
 
