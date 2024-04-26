@@ -39,6 +39,18 @@ offset_right = 241.0
 offset_bottom = 184.0
 texture = ExtResource("1_qydux")
 
+[node name="LabelDemo" type="Label" parent="Control"]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 25.0
+offset_top = -38.0
+offset_right = 134.0
+offset_bottom = -15.0
+grow_vertical = 0
+text = "Demo Version"
+
 [node name="Main3D" type="Node3D" parent="."]
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="Main3D"]
