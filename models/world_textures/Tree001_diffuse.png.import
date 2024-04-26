@@ -4,15 +4,16 @@ importer="texture"
 type="CompressedTexture2D"
 uid="uid://cpq3vrl47de34"
 path.s3tc="res://.godot/imported/Tree001_diffuse.png-7d4f7680f04e8c36664b88b08ea436ed.s3tc.ctex"
+path.etc2="res://.godot/imported/Tree001_diffuse.png-7d4f7680f04e8c36664b88b08ea436ed.etc2.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
 }
 
 [deps]
 
 source_file="res://models/world_textures/Tree001_diffuse.png"
-dest_files=["res://.godot/imported/Tree001_diffuse.png-7d4f7680f04e8c36664b88b08ea436ed.s3tc.ctex"]
+dest_files=["res://.godot/imported/Tree001_diffuse.png-7d4f7680f04e8c36664b88b08ea436ed.s3tc.ctex", "res://.godot/imported/Tree001_diffuse.png-7d4f7680f04e8c36664b88b08ea436ed.etc2.ctex"]
 
 [params]
 

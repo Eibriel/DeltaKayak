@@ -4,15 +4,16 @@ importer="texture"
 type="CompressedTexture2D"
 uid="uid://bpgpjt24jwqy6"
 path.s3tc="res://.godot/imported/PEPA_house_diffuse.png-e6cb1043f8357dc06f037c1692567cae.s3tc.ctex"
+path.etc2="res://.godot/imported/PEPA_house_diffuse.png-e6cb1043f8357dc06f037c1692567cae.etc2.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
 }
 
 [deps]
 
 source_file="res://models/world_textures/PEPA_house_diffuse.png"
-dest_files=["res://.godot/imported/PEPA_house_diffuse.png-e6cb1043f8357dc06f037c1692567cae.s3tc.ctex"]
+dest_files=["res://.godot/imported/PEPA_house_diffuse.png-e6cb1043f8357dc06f037c1692567cae.s3tc.ctex", "res://.godot/imported/PEPA_house_diffuse.png-e6cb1043f8357dc06f037c1692567cae.etc2.ctex"]
 
 [params]
 

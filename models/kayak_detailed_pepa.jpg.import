@@ -4,8 +4,9 @@ importer="texture"
 type="CompressedTexture2D"
 uid="uid://cxasfsqrs37yt"
 path.s3tc="res://.godot/imported/kayak_detailed_pepa.jpg-d6343c5abe91091c6716f56a9fe545cf.s3tc.ctex"
+path.etc2="res://.godot/imported/kayak_detailed_pepa.jpg-d6343c5abe91091c6716f56a9fe545cf.etc2.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
 }
 generator_parameters={
@@ -15,7 +16,7 @@ generator_parameters={
 [deps]
 
 source_file="res://models/kayak_detailed_pepa.jpg"
-dest_files=["res://.godot/imported/kayak_detailed_pepa.jpg-d6343c5abe91091c6716f56a9fe545cf.s3tc.ctex"]
+dest_files=["res://.godot/imported/kayak_detailed_pepa.jpg-d6343c5abe91091c6716f56a9fe545cf.s3tc.ctex", "res://.godot/imported/kayak_detailed_pepa.jpg-d6343c5abe91091c6716f56a9fe545cf.etc2.ctex"]
 
 [params]
 

@@ -1,6 +1,8 @@
-[gd_scene load_steps=8 format=3 uid="uid://ce6e8v1saxjr5"]
+[gd_scene load_steps=10 format=3 uid="uid://ce6e8v1saxjr5"]
 
 [ext_resource type="Environment" uid="uid://xpf4ng2ym0n4" path="res://environments/main_environment.tres" id="1_ekqa4"]
+[ext_resource type="Texture2D" uid="uid://dvix2u8rr6fnc" path="res://icon.svg" id="1_qydux"]
+[ext_resource type="Script" path="res://main.gd" id="1_xxenq"]
 [ext_resource type="PackedScene" uid="uid://r0o1qsmlq84u" path="res://character.tscn" id="2_3sgbv"]
 [ext_resource type="CompositorEffect" uid="uid://o01yk1gb130b" path="res://compositor/screen/screen_compositor_effect.tres" id="2_f4rcp"]
 [ext_resource type="PackedScene" uid="uid://b7nhlhkoykc4c" path="res://world_definition.dkworld" id="3_7foso"]
@@ -12,32 +14,57 @@ compositor_effects = Array[CompositorEffect]([ExtResource("2_f4rcp")])
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_v311q"]
 
-[node name="main" type="Node3D"]
+[node name="Control" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_xxenq")
 
-[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+[node name="Control" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Icon" type="TextureRect" parent="Control"]
+layout_mode = 0
+offset_left = 113.0
+offset_top = 56.0
+offset_right = 241.0
+offset_bottom = 184.0
+texture = ExtResource("1_qydux")
+
+[node name="Main3D" type="Node3D" parent="."]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="Main3D"]
 environment = ExtResource("1_ekqa4")
 compositor = SubResource("Compositor_lm6bj")
 
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="Main3D"]
 transform = Transform3D(-0.866025, -0.433013, 0.25, 0, 0.5, 0.866025, -0.5, 0.75, -0.433013, 0, 0, 0)
 visible = false
 shadow_enabled = true
 
-[node name="character" parent="." instance=ExtResource("2_3sgbv")]
+[node name="character" parent="Main3D" instance=ExtResource("2_3sgbv")]
 transform = Transform3D(-0.0258978, 0, 0.999665, 0, 1, 0, -0.999665, 0, -0.0258978, 34.7934, 0, -5)
 
-[node name="DKWorld" parent="." node_paths=PackedStringArray("initial_camera", "initial_camera_path") instance=ExtResource("3_7foso")]
+[node name="DKWorld" parent="Main3D" node_paths=PackedStringArray("initial_camera") instance=ExtResource("3_7foso")]
+unique_name_in_owner = true
 initial_camera = NodePath("camera_001/camera_001_cam")
-initial_camera_path = NodePath("camera_001/@Path3D@34436")
 
-[node name="Camera3D" type="Camera3D" parent="."]
+[node name="Camera3D" type="Camera3D" parent="Main3D"]
 transform = Transform3D(1, 0, 0, 0, 0.921328, 0.388786, 0, -0.388786, 0.921328, 0.528366, 5.52796, 5.79716)
 current = true
 
-[node name="MultiMeshInstance3D" type="MultiMeshInstance3D" parent="."]
+[node name="MultiMeshInstance3D" type="MultiMeshInstance3D" parent="Main3D"]
 multimesh = SubResource("MultiMesh_g048c")
 
-[node name="StaticBody3D" type="StaticBody3D" parent="."]
+[node name="StaticBody3D" type="StaticBody3D" parent="Main3D"]
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Main3D/StaticBody3D"]
 shape = SubResource("BoxShape3D_v311q")

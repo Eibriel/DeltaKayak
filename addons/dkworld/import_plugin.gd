@@ -124,6 +124,8 @@ func add_triggers(triggers: Array, sector_id:String, main_node:Node3D):
 		
 		trigger_area.trigger_id = trigger.id
 		trigger_area.world_node = main_node
+		
+		main_node.interactive_items.append(trigger_area.position)
 
 func add_water(main_node:Node3D):
 	var water = WATER_PATCH.instantiate()

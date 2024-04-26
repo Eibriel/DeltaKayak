@@ -1,7 +1,6 @@
-extends Node3D
+extends Control
 
-func _process(delta):
-	var camera := get_viewport().get_camera_3d()
-	
-	$"Eibriel Terrain".camera = camera
-	$"Eibriel Terrain".resolution = randi()
+@onready var dk_world: DKWorld = %DKWorld
+
+func _ready() -> void:
+	Global.icon = $Control/Icon

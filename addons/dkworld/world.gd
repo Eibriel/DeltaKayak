@@ -3,6 +3,7 @@ class_name DKWorld
 
 @export var initial_camera: Camera3D
 @export var initial_camera_path: Path3D
+@export var interactive_items: Array = []
 
 var target_movement_direction:Vector3
 var target_camera_position:Vector3
@@ -37,6 +38,20 @@ func _ready():
 	add_child(camera_sphere)
 
 func _process(delta: float) -> void:
+	handle_cameras(delta)
+	handle_intractive(delta)
+
+func handle_intractive(delta):
+	if Global.camera == null: return
+	if Global.icon == null: return
+	Global.icon.visible = false
+	if interactive_items.size() > 0:
+		if Global.camera.is_position_in_frustum(interactive_items[0]):
+			var icon_position = Global.camera.unproject_position(interactive_items[0])
+			Global.icon.position = icon_position
+			Global.icon.visible = true
+
+func handle_cameras(delta) -> void:
 	# TODO Looks like process starts before world is fully initiated
 	if Global.camera == null: return
 	if Global.character == null: return
