@@ -20,7 +20,7 @@ func _ready():
 	Global.character = self
 
 func _process(delta: float) -> void:
-	var input_dir:Vector2 = Input.get_vector("ui_left", "ui_right", "ui_up", "ui_down")
+	var input_dir:Vector2 = Input.get_vector("left", "right", "up", "down")
 	var movement_direction:Vector3 = Vector3(input_dir.x, 0, input_dir.y) * delta * 2.0
 	var current_camera:Camera3D = get_viewport().get_camera_3d()
 	var ration:float = 0.99-(0.1*delta)

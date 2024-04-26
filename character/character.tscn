@@ -1,6 +1,6 @@
 [gd_scene load_steps=7 format=3 uid="uid://r0o1qsmlq84u"]
 
-[ext_resource type="Script" path="res://character.gd" id="1_mnv7b"]
+[ext_resource type="Script" path="res://character/character.gd" id="1_mnv7b"]
 [ext_resource type="PackedScene" uid="uid://b5n8cpa2p23cu" path="res://models/kayak_detailed.glb" id="2_qknmv"]
 [ext_resource type="Texture2D" uid="uid://cdex8bqdmulf8" path="res://textures/flashlight.jpg" id="3_xitmn"]
 

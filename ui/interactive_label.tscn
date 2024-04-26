@@ -1,0 +1,41 @@
+[gd_scene load_steps=3 format=3 uid="uid://rq4uf46bwowh"]
+
+[ext_resource type="Script" path="res://ui/interactive_label.gd" id="1_ixscm"]
+[ext_resource type="Texture2D" uid="uid://dvix2u8rr6fnc" path="res://icon.svg" id="1_jkm7w"]
+
+[node name="InteractiveLabel" type="Control"]
+auto_translate_mode = 1
+layout_mode = 3
+anchors_preset = 0
+offset_top = -15.0
+offset_right = 200.0
+offset_bottom = 15.0
+script = ExtResource("1_ixscm")
+
+[node name="Icon" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_vertical = 2
+texture = ExtResource("1_jkm7w")
+expand_mode = 1
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -11.5
+offset_right = 20.0
+offset_bottom = 11.5
+grow_horizontal = 2
+grow_vertical = 2
+text = "Interactive"

@@ -81,6 +81,7 @@ func _import(source_file, save_path, options, r_platform_variants, r_gen_files):
 	var scene = PackedScene.new()
 	var main_node = DKWorld.new()
 	main_node.name = "DKWorld"
+	main_node.world_definition = world_definition
 	
 	for sector_id in world_definition:
 		var sector:Dictionary = world_definition[sector_id] as Dictionary
@@ -125,7 +126,7 @@ func add_triggers(triggers: Array, sector_id:String, main_node:Node3D):
 		trigger_area.trigger_id = trigger.id
 		trigger_area.world_node = main_node
 		
-		main_node.interactive_items.append(trigger_area.position)
+		#main_node.world_definition.append(trigger_area.position)
 
 func add_water(main_node:Node3D):
 	var water = WATER_PATCH.instantiate()
