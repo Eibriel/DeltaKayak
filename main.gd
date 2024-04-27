@@ -4,6 +4,7 @@ extends Control
 @onready var label_demo: Label = $Control/LabelDemo
 @onready var interactive_labels_control: Control = %InteractiveLabels
 @onready var character: RigidBody3D = %character
+@onready var dialogue_label: RichTextLabel = %DialogueLabel
 
 var interactive_labels:Dictionary
 var in_trigger:Array[String]
@@ -24,6 +25,7 @@ func _ready() -> void:
 	
 	for i in inter:
 		var register_data:Dictionary = i._register_trigger()
+		i._register_main(self)
 		for r in register_data:
 			for t in register_data[r]:
 				var index := "%s:%s" % [t, r]
@@ -75,6 +77,10 @@ func _input(event: InputEvent) -> void:
 		#print("Action")
 		for id in in_trigger:
 			execute_trigger("trigger_action", id)
+	elif event.is_action_pressed("pepa"):
+		set_dialogue("¡¡Pepa!!")
+	elif event.is_action_pressed("compicactus"):
+		set_dialogue("Compicactus...")
 
 func on_trigger_entered(id:String):
 	#prints("Entered", id)
@@ -113,3 +119,9 @@ func is_closest_trigger(id:String) -> bool:
 						min_dist = dist
 						min_trigger = trigger.id
 	return id == min_trigger
+
+func set_dialogue(text:String) -> void:
+	dialogue_label.text = text
+	var tween := create_tween()
+	tween.tween_interval(5)
+	tween.tween_callback(func():dialogue_label.text = "")

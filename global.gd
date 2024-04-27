@@ -6,9 +6,10 @@ var camera_path: Path3D
 
 func is_demo():
 	var is_demo:bool = OS.has_feature("demo")
-	if not is_demo:
-		if not FileAccess.file_exists("res://not_demo.gd"):
-			quit_game()
+	#if not is_demo:
+	#	if not FileAccess.file_exists("res://not_demo.gd"):
+	#		print("Not demo")
+	#		quit_game()
 	return is_demo
 
 func quit_game():

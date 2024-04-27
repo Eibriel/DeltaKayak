@@ -48,6 +48,19 @@ offset_bottom = -15.0
 grow_vertical = 0
 text = "Demo Version"
 
+[node name="DialogueLabel" type="RichTextLabel" parent="Control"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.102083
+anchor_top = 0.744444
+anchor_right = 0.858333
+anchor_bottom = 0.933333
+grow_horizontal = 2
+grow_vertical = 0
+text = "..."
+metadata/_edit_use_anchors_ = true
+
 [node name="Main3D" type="Node3D" parent="."]
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="Main3D"]
