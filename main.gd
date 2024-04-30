@@ -1,5 +1,8 @@
 extends Control
 
+@export var game_preferences:PreferenceResource
+@export var game_state:DKDataResource
+
 @onready var dk_world: DKWorld = %DKWorld
 @onready var label_demo: Label = $Control/LabelDemo
 @onready var interactive_labels_control: Control = %InteractiveLabels
@@ -121,7 +124,7 @@ func is_closest_trigger(id:String) -> bool:
 	return id == min_trigger
 
 func set_dialogue(text:String) -> void:
-	dialogue_label.text = text
+	dialogue_label.text = tr(text)
 	var tween := create_tween()
 	tween.tween_interval(5)
 	tween.tween_callback(func():dialogue_label.text = "")

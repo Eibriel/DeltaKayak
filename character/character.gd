@@ -2,7 +2,6 @@ extends RigidBody3D
 
 @onready var target_box = $CSGBox3D
 
-
 var soft_camera_rotation: float
 #var target_position: Vector3 = Vector3.ZERO
 var speed := 0.0

@@ -1,0 +1,31 @@
+[gd_resource type="Resource" script_class="DKDataResource" load_steps=10 format=3 uid="uid://bi1rugic742u0"]
+
+[ext_resource type="Script" path="res://data_resources/dialogue_resource.gd" id="1_1x3ux"]
+[ext_resource type="Script" path="res://data_resources/dkdata_resource.gd" id="1_mesef"]
+[ext_resource type="Script" path="res://data_resources/exchange_resource.gd" id="2_32hfj"]
+[ext_resource type="Script" path="res://data_resources/action_resource.gd" id="3_mda8i"]
+[ext_resource type="Script" path="res://data_resources/item_resource.gd" id="3_xhkj4"]
+
+[sub_resource type="Resource" id="Resource_nngb1"]
+script = ExtResource("1_1x3ux")
+character = ""
+image = ""
+
+[sub_resource type="Resource" id="Resource_o54fj"]
+script = ExtResource("2_32hfj")
+id = "capybara1"
+dialogues = Array[ExtResource("1_1x3ux")]([SubResource("Resource_nngb1")])
+
+[sub_resource type="Resource" id="Resource_a4mk8"]
+script = ExtResource("3_mda8i")
+id = ""
+
+[sub_resource type="Resource" id="Resource_rmx5s"]
+script = ExtResource("3_xhkj4")
+id = "capybara"
+actions = [SubResource("Resource_a4mk8")]
+
+[resource]
+script = ExtResource("1_mesef")
+exchanges = Array[ExtResource("2_32hfj")]([SubResource("Resource_o54fj")])
+items = Array[ExtResource("3_xhkj4")]([SubResource("Resource_rmx5s")])

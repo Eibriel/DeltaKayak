@@ -1,0 +1,13 @@
+{
+  "test1": [
+    {
+      "character": "capybara",
+      "image": "neutral",
+      "text": {
+        "en": "Hi human",
+        "es": "Hola ser humano",
+        "es_ES": "Hola ser humano"
+      }
+    }
+  ]
+}

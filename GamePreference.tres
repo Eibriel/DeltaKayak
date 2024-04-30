@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="PreferenceResource" load_steps=2 format=3 uid="uid://bcsic7fi7dxee"]
+
+[ext_resource type="Script" path="res://data_resources/preferences_resource.gd" id="1_7hxbx"]
+
+[resource]
+script = ExtResource("1_7hxbx")
+brightness = 0.0
+full_screen = true
+master_volume = 50
+music_volume = 50
+voice_volume = 50
+vfx_volume = 50
+selected_language = 0
+text_to_speech = false
+high_contrast = false
+font_size = 5
