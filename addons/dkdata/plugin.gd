@@ -8,6 +8,7 @@ var menu
 func _enter_tree():
 	menu = LocalizationMenu.instantiate()
 	menu.name = "DK Data"
+	menu.undo_redo = get_undo_redo()
 	get_editor_interface().get_editor_main_screen().add_child(menu)
 	_make_visible(false)
 

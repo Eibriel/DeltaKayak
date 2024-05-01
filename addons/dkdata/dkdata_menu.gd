@@ -1,26 +1,58 @@
 @tool
 extends Control
 
+@onready var items_tree: Tree = %ItemsTree
+@onready var item_name_label: Label = %ItemNameLabel
+
+const DKDATA = preload("res://dkdata/dkdata.tres")
+
+var undo_redo
+
 func _ready() -> void:
-	$Button.connect("button_up", _on_button_button_up)
+	setup_character()
+	setup_items()
 
-func _on_button_button_up() -> void:
-	print("BUTTON")
-	var source_file := "res://dkdata/delta_kayak.dkdata"
-	var file = FileAccess.open(source_file, FileAccess.READ)
-	if file == null:
-		print("File not found")
-		#return FileAccess.get_open_error()
-		return
+func setup_items() -> void:
+	var root = items_tree.create_item()
+	items_tree.hide_root = true
+	for i in DKDATA.items:
+		var child1 = items_tree.create_item(root)
+		child1.set_text(0, i.id)
+		child1.set_metadata(0, i)
 
-	var json_string = file.get_as_text()
+func _on_item_selection() -> void:
+	var selected = items_tree.get_selected()
+	var item:ItemResource = selected.get_metadata(0)
+	item_name_label.text = item.id
 	
-	var json = JSON.new()
-	var error = json.parse(json_string)
-	var world_definition:Dictionary = {}
-	if error == OK:
-		world_definition = json.data
-	else:
-		print("JSON Parse Error: ", json.get_error_message(), " in ", json_string, " at line ", json.get_error_line())
+
+func setup_character() -> void:
+	remove_focus(%CharacterXPosition)
+	remove_focus(%CharacterYPosition)
+	remove_focus(%CharacterZPosition)
+	#
+	remove_focus(%CharacterXRotation)
+	remove_focus(%CharacterYRotation)
+	remove_focus(%CharacterZRotation)
 	
-	print(world_definition)
+	direct_connection(DKDATA, "character_position:x", %CharacterXPosition, "value_changed")
+	direct_connection(DKDATA, "character_position:y", %CharacterYPosition, "value_changed")
+	direct_connection(DKDATA, "character_position:z", %CharacterZPosition, "value_changed")
+	#
+	direct_connection(DKDATA, "character_rotation:x", %CharacterXRotation, "value_changed")
+	direct_connection(DKDATA, "character_rotation:y", %CharacterYRotation, "value_changed")
+	direct_connection(DKDATA, "character_rotation:z", %CharacterZRotation, "value_changed")
+
+func direct_connection(resource:Resource, data: String, object: Object, signal_name: String) -> void:
+	object.value = resource.get_indexed(data)
+	var f = func(new_value):
+		var current_value = resource.get_indexed(data)
+		undo_redo.create_action("Undo generated %d %d" % [new_value, current_value])
+		undo_redo.add_do_method(resource, "set_indexed", data, new_value)
+		undo_redo.add_undo_method(resource, "set_indexed", data, current_value)
+		undo_redo.add_undo_method(object, "set_value_no_signal", current_value)
+		undo_redo.commit_action()
+	object.connect(signal_name, f)
+
+func remove_focus(spinbox: SpinBox):
+	(spinbox.get_line_edit() as LineEdit).focus_mode = Control.FOCUS_NONE

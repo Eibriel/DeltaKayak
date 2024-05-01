@@ -12,11 +12,11 @@ extends Control
 var interactive_labels:Dictionary
 var in_trigger:Array[String]
 
-var inter:Array = [
-	load("res://interactives/capybara.gd").new()
-]
-
-var registered_interactives := {}
+#var inter:Array = [
+	#load("res://interactives/capybara.gd").new()
+#]
+#
+#var registered_interactives := {}
 
 func _ready() -> void:
 	label_demo.visible = false
@@ -26,15 +26,15 @@ func _ready() -> void:
 	dk_world.connect("trigger_entered", on_trigger_entered)
 	dk_world.connect("trigger_exited", on_trigger_exited)
 	
-	for i in inter:
-		var register_data:Dictionary = i._register_trigger()
-		i._register_main(self)
-		for r in register_data:
-			for t in register_data[r]:
-				var index := "%s:%s" % [t, r]
-				if index not in registered_interactives:
-					registered_interactives[index] = []
-				registered_interactives[index].append(i._on_trigger.bind(t))
+	#for i in inter:
+		#var register_data:Dictionary = i._register_trigger()
+		#i._register_main(self)
+		#for r in register_data:
+			#for t in register_data[r]:
+				#var index := "%s:%s" % [t, r]
+				#if index not in registered_interactives:
+					#registered_interactives[index] = []
+				#registered_interactives[index].append(i._on_trigger.bind(t))
 	#print(registered_interactives)
 
 func _process(delta: float) -> void:
@@ -99,10 +99,10 @@ func on_trigger_exited(id:String):
 
 func execute_trigger(type:String, id:String):
 	var index := "%s:%s" % [type, id]
-	if index not in registered_interactives: return
-	#print(registered_interactives[index])
-	for c:Callable in registered_interactives[index]:
-		c.call(id)
+	#if index not in registered_interactives: return
+	##print(registered_interactives[index])
+	#for c:Callable in registered_interactives[index]:
+		#c.call(id)
 
 func is_in_trigger(id:String) -> bool:
 	return id in in_trigger

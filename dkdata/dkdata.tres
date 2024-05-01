@@ -1,10 +1,11 @@
-[gd_resource type="Resource" script_class="DKDataResource" load_steps=10 format=3 uid="uid://bi1rugic742u0"]
+[gd_resource type="Resource" script_class="DKDataResource" load_steps=11 format=3 uid="uid://bi1rugic742u0"]
 
 [ext_resource type="Script" path="res://data_resources/dialogue_resource.gd" id="1_1x3ux"]
 [ext_resource type="Script" path="res://data_resources/dkdata_resource.gd" id="1_mesef"]
 [ext_resource type="Script" path="res://data_resources/exchange_resource.gd" id="2_32hfj"]
 [ext_resource type="Script" path="res://data_resources/action_resource.gd" id="3_mda8i"]
 [ext_resource type="Script" path="res://data_resources/item_resource.gd" id="3_xhkj4"]
+[ext_resource type="Script" path="res://interactives/capybara.gd" id="4_8fac5"]
 
 [sub_resource type="Resource" id="Resource_nngb1"]
 script = ExtResource("1_1x3ux")
@@ -23,9 +24,14 @@ id = ""
 [sub_resource type="Resource" id="Resource_rmx5s"]
 script = ExtResource("3_xhkj4")
 id = "capybara"
+active = true
+trigger_name = "trigger_001_001"
+logic = ExtResource("4_8fac5")
 actions = [SubResource("Resource_a4mk8")]
 
 [resource]
 script = ExtResource("1_mesef")
-exchanges = Array[ExtResource("2_32hfj")]([SubResource("Resource_o54fj")])
+character_position = Vector3(80, 15, 50)
+character_rotation = Vector3(0, 180, 0)
 items = Array[ExtResource("3_xhkj4")]([SubResource("Resource_rmx5s")])
+exchanges = Array[ExtResource("2_32hfj")]([SubResource("Resource_o54fj")])
