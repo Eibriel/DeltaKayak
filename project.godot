@@ -37,7 +37,7 @@ window/stretch/aspect="keep_height"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/dkdata/plugin.cfg", "res://addons/dkworld/plugin.cfg")
+enabled=PackedStringArray("res://addons/dkworld/plugin.cfg")
 
 [input]
 

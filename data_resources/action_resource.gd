@@ -1,5 +1,5 @@
-class_name ActionResource
 extends Resource
+class_name ActionResource
 
-@export var id: String
+@export var action_id: String
 @export var label: IntTextResource

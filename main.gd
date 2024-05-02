@@ -12,11 +12,7 @@ extends Control
 var interactive_labels:Dictionary
 var in_trigger:Array[String]
 
-#var inter:Array = [
-	#load("res://interactives/capybara.gd").new()
-#]
-#
-#var registered_interactives := {}
+const DkdataInitialization = preload("res://dkdata/dkdata_initialization.gd")
 
 func _ready() -> void:
 	label_demo.visible = false
@@ -26,16 +22,8 @@ func _ready() -> void:
 	dk_world.connect("trigger_entered", on_trigger_entered)
 	dk_world.connect("trigger_exited", on_trigger_exited)
 	
-	#for i in inter:
-		#var register_data:Dictionary = i._register_trigger()
-		#i._register_main(self)
-		#for r in register_data:
-			#for t in register_data[r]:
-				#var index := "%s:%s" % [t, r]
-				#if index not in registered_interactives:
-					#registered_interactives[index] = []
-				#registered_interactives[index].append(i._on_trigger.bind(t))
-	#print(registered_interactives)
+	var state_initializer = DkdataInitialization.new()
+	state_initializer.initialize_data(game_state)
 
 func _process(delta: float) -> void:
 	handle_triggers(delta)
@@ -81,9 +69,9 @@ func _input(event: InputEvent) -> void:
 		for id in in_trigger:
 			execute_trigger("trigger_action", id)
 	elif event.is_action_pressed("pepa"):
-		set_dialogue("¡¡Pepa!!")
+		say_dialogue("¡¡Pepa!!")
 	elif event.is_action_pressed("compicactus"):
-		set_dialogue("Compicactus...")
+		say_dialogue("Compicactus...")
 
 func on_trigger_entered(id:String):
 	#prints("Entered", id)
@@ -97,12 +85,14 @@ func on_trigger_exited(id:String):
 		in_trigger.erase(id)
 	execute_trigger("trigger_exited", id)
 
-func execute_trigger(type:String, id:String):
-	var index := "%s:%s" % [type, id]
-	#if index not in registered_interactives: return
-	##print(registered_interactives[index])
-	#for c:Callable in registered_interactives[index]:
-		#c.call(id)
+func execute_trigger(type:String, trigger_id:String):
+	# var index := "%s:%s" % [type, trigger_id]
+	# prints(type, id)
+	for i in game_state.items:
+		for a in i.actions:
+			if a.action_id == type and i.trigger_name == trigger_id:
+				var l_script = i.logic.new()
+				l_script._on_trigger(self, game_state, type, trigger_id)
 
 func is_in_trigger(id:String) -> bool:
 	return id in in_trigger
@@ -123,8 +113,12 @@ func is_closest_trigger(id:String) -> bool:
 						min_trigger = trigger.id
 	return id == min_trigger
 
-func set_dialogue(text:String) -> void:
-	dialogue_label.text = tr(text)
-	var tween := create_tween()
-	tween.tween_interval(5)
-	tween.tween_callback(func():dialogue_label.text = "")
+func say_dialogue(text:String) -> void:
+	for e in game_state.exchanges:
+		if e.id == text:
+			for d in e.dialogues:
+				dialogue_label.text = tr(d.text.english)
+				var tween := create_tween()
+				tween.tween_interval(5)
+				tween.tween_callback(func():dialogue_label.text = "")
+				return

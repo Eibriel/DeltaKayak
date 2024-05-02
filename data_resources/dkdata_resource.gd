@@ -9,6 +9,3 @@ extends Resource
 
 @export_group("Dialogue")
 @export var exchanges: Array[DialogueExchangeResource]
-
-func _init() -> void:
-	pass

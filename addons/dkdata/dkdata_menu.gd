@@ -13,6 +13,7 @@ func _ready() -> void:
 	setup_items()
 
 func setup_items() -> void:
+	items_tree.clear()
 	var root = items_tree.create_item()
 	items_tree.hide_root = true
 	for i in DKDATA.items:
@@ -24,7 +25,12 @@ func _on_item_selection() -> void:
 	var selected = items_tree.get_selected()
 	var item:ItemResource = selected.get_metadata(0)
 	item_name_label.text = item.id
-	
+
+func _on_add_item() -> void:
+	var item := ItemResource.new()
+	item.id = "New Item"
+	DKDATA.items.append(item)
+	setup_items()
 
 func setup_character() -> void:
 	remove_focus(%CharacterXPosition)

@@ -1,0 +1,80 @@
+[gd_scene format=3 uid="uid://bh5lfg6ddvjfn"]
+
+[node name="ItemsEditor" type="Control"]
+clip_contents = true
+custom_minimum_size = Vector2(0, 200)
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="HBoxContainer" parent="VBoxContainer2"]
+layout_mode = 2
+
+[node name="SizeLabel" type="Label" parent="VBoxContainer2/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Items: - test"
+
+[node name="NewItemButton" type="Button" parent="VBoxContainer2/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Add Item"
+
+[node name="RemoveItemButton" type="Button" parent="VBoxContainer2/VBoxContainer"]
+unique_name_in_owner = true
+auto_translate_mode = 1
+layout_mode = 2
+text = "Remove Item"
+
+[node name="HSplitContainer" type="HSplitContainer" parent="VBoxContainer2"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Control" type="Control" parent="VBoxContainer2/HSplitContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ItemsTree" type="Tree" parent="VBoxContainer2/HSplitContainer/Control"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_vertical = 3
+hide_root = true
+
+[node name="Control2" type="Control" parent="VBoxContainer2/HSplitContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer2/HSplitContainer/Control2"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 66.0
+grow_horizontal = 2
+
+[node name="ItemNameLabel" type="Label" parent="VBoxContainer2/HSplitContainer/Control2/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Item Name"
+
+[node name="EditItemButton" type="Button" parent="VBoxContainer2/HSplitContainer/Control2/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Edit Item"
