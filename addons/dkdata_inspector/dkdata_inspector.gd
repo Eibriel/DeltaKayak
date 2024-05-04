@@ -11,15 +11,35 @@ func _can_handle(object):
 		return true
 	elif object is ActionResource:
 		return true
+	elif object is DialogueExchangeResource:
+		return true
 	return false
 
 func _parse_property(object, type, name, hint_type, hint_string, usage_flags, wide):
 	if object is DKDataResource:
 		if name == "items":
-			add_property_editor(name, ItemsEditor.new(), true)
+			var editor := ItemsEditor.new()
+			editor.setup(ItemResource)
+			add_property_editor(name, editor, true)
+			return true
+		if name == "exchanges":
+			var editor := ItemsEditor.new()
+			editor.setup(DialogueExchangeResource)
+			add_property_editor(name, editor, true)
 			return true
 	if object is ItemResource or object is ActionResource:
 		if name == "label":
 			add_property_editor(name, IntTextEditor.new(), true)
 			return false
+		if name == "actions":
+			var editor := ItemsEditor.new()
+			editor.setup(ActionResource)
+			add_property_editor(name, editor, true)
+			return true
+	if object is DialogueExchangeResource:
+		if name == "dialogues":
+			var editor := ItemsEditor.new()
+			editor.setup(DialogueResource)
+			add_property_editor(name, editor, true)
+			return true
 	return false

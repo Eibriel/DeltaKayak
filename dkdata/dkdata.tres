@@ -1,10 +1,104 @@
-[gd_resource type="Resource" script_class="DKDataResource" load_steps=2 format=3 uid="uid://bi1rugic742u0"]
+[gd_resource type="Resource" script_class="DKDataResource" load_steps=21 format=3 uid="uid://bi1rugic742u0"]
 
 [ext_resource type="Script" path="res://data_resources/dkdata_resource.gd" id="1_mesef"]
+[ext_resource type="Script" path="res://data_resources/inttext_resource.gd" id="1_qf51c"]
+[ext_resource type="Script" path="res://data_resources/dialogue_resource.gd" id="1_yf062"]
+[ext_resource type="Script" path="res://interactives/wood_box.gd" id="2_tqfq6"]
+[ext_resource type="Script" path="res://data_resources/exchange_resource.gd" id="2_xdm14"]
+[ext_resource type="Script" path="res://data_resources/action_resource.gd" id="3_0x3yn"]
+[ext_resource type="Script" path="res://data_resources/item_resource.gd" id="3_xhkj4"]
+
+[sub_resource type="Resource" id="Resource_vs6fa"]
+script = ExtResource("1_qf51c")
+english = "Everything looks normal"
+spanish_spain = "Todo parece normal"
+spanish_latam = "Todo parece normal"
+
+[sub_resource type="Resource" id="Resource_176qc"]
+script = ExtResource("1_yf062")
+id = "cmp_all_normal"
+character = 2
+image = ""
+text = SubResource("Resource_vs6fa")
+
+[sub_resource type="Resource" id="Resource_mecvs"]
+script = ExtResource("1_qf51c")
+english = "The capybara looks at you with tender indifference"
+spanish_spain = "El capybara te mira con tierna indiferencia"
+spanish_latam = "El capybara te mira con tierna indiferencia"
+
+[sub_resource type="Resource" id="Resource_gfaki"]
+script = ExtResource("1_yf062")
+id = "capybara_indiferent"
+character = 0
+image = ""
+text = SubResource("Resource_mecvs")
+
+[sub_resource type="Resource" id="Resource_8uc65"]
+script = ExtResource("2_xdm14")
+id = "analice_box"
+dialogues = Array[ExtResource("1_yf062")]([SubResource("Resource_176qc"), SubResource("Resource_gfaki")])
+
+[sub_resource type="Resource" id="Resource_h18tq"]
+script = ExtResource("1_qf51c")
+english = "Analice box"
+spanish_spain = "Analizar cajón"
+spanish_latam = "Analizar cajón"
+
+[sub_resource type="Resource" id="Resource_64kt5"]
+script = ExtResource("3_0x3yn")
+id = "analice_box"
+label = SubResource("Resource_h18tq")
+
+[sub_resource type="Resource" id="Resource_851xs"]
+script = ExtResource("1_qf51c")
+english = "Intimidate box"
+spanish_spain = "Intimidar al cajón"
+spanish_latam = "Intimidar al cajón"
+
+[sub_resource type="Resource" id="Resource_8yblg"]
+script = ExtResource("3_0x3yn")
+id = "intimidate_box"
+label = SubResource("Resource_851xs")
+
+[sub_resource type="Resource" id="Resource_tweyq"]
+script = ExtResource("1_qf51c")
+english = ""
+spanish_spain = ""
+spanish_latam = ""
+
+[sub_resource type="Resource" id="Resource_jag0u"]
+script = ExtResource("3_xhkj4")
+id = "wood_box"
+label = SubResource("Resource_tweyq")
+active = true
+visible = true
+trigger_name = "trigger_001_001"
+logic = ExtResource("2_tqfq6")
+primary_action = "analice_box"
+secondary_action = "intimidate_box"
+actions = Array[ExtResource("3_0x3yn")]([SubResource("Resource_64kt5"), SubResource("Resource_8yblg")])
+
+[sub_resource type="Resource" id="Resource_tlp32"]
+script = ExtResource("1_qf51c")
+english = "Capybara"
+spanish_spain = "Carpincho"
+spanish_latam = "Carpincho"
+
+[sub_resource type="Resource" id="Resource_vdise"]
+script = ExtResource("3_xhkj4")
+id = "capybara"
+label = SubResource("Resource_tlp32")
+active = true
+visible = true
+trigger_name = "trigger_002_001"
+primary_action = 0
+secondary_action = -1
+actions = null
 
 [resource]
 script = ExtResource("1_mesef")
 character_position = Vector3(80, 15, 50)
 character_rotation = Vector3(0, 180, 0)
-items = Array[Resource("res://data_resources/item_resource.gd")]([])
-exchanges = Array[Resource("res://data_resources/exchange_resource.gd")]([])
+items = Array[ExtResource("3_xhkj4")]([SubResource("Resource_jag0u"), SubResource("Resource_vdise")])
+exchanges = Array[ExtResource("2_xdm14")]([SubResource("Resource_8uc65")])

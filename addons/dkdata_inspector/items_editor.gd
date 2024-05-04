@@ -6,7 +6,8 @@ const ITEMS_EDITOR_CONTROL = preload("res://addons/dkdata_inspector/items_editor
 # The main control for editing the property.
 var items_editor: Control
 # An internal value of the property.
-var current_value: Array[ItemResource]
+# var current_value: Array[ItemResource]
+var current_value: Array
 # A guard against internal changes when the property is updated.
 var updating = false
 
@@ -16,6 +17,9 @@ var size_label: Label
 var items_tree: Tree
 var item_name_label: Label
 var edit_item_button: Button
+var reload_array_button: Button
+
+var resource_type
 
 func _init() -> void:
 	items_editor = ITEMS_EDITOR_CONTROL.instantiate()
@@ -31,14 +35,24 @@ func _init() -> void:
 	items_tree = items_editor.get_node("%ItemsTree")
 	item_name_label = items_editor.get_node("%ItemNameLabel")
 	edit_item_button = items_editor.get_node("%EditItemButton")
+	reload_array_button = items_editor.get_node("%ReloadArrayButton")
 	refresh_control_text()
 	connect_signals()
+
+func setup(_resource_type):
+	resource_type = _resource_type
 
 func connect_signals():
 	new_item_button.pressed.connect(_on_new_item_button_pressed)
 	remove_item_button.pressed.connect(_on_remove_item_button_pressed)
 	items_tree.cell_selected.connect(_on_item_selection)
 	edit_item_button.pressed.connect(_on_edit_item_button_pressed)
+	reload_array_button.pressed.connect(_on_reload_array_button_pressed)
+
+func _on_reload_array_button_pressed():
+	if (updating):
+		return
+	update_property()
 
 func _on_edit_item_button_pressed():
 	# Ignore the signal if the property is currently being updated.
@@ -46,14 +60,16 @@ func _on_edit_item_button_pressed():
 		return
 	var selected = items_tree.get_selected()
 	if selected == null: return
-	var item:ItemResource = selected.get_metadata(0)
+	#var item:ItemResource = selected.get_metadata(0)
+	var item = selected.get_metadata(0)
 	emit_signal("resource_selected", item.resource_path, item)
 
 func _on_new_item_button_pressed():
 	# Ignore the signal if the property is currently being updated.
 	if (updating):
 		return
-	var new_item = ItemResource.new()
+	#var new_item = ItemResource.new()
+	var new_item = resource_type.new()
 	new_item.id = "new_item"
 	current_value.append(new_item)
 	refresh_control_text()
@@ -72,8 +88,21 @@ func _on_remove_item_button_pressed():
 func _on_item_selection() -> void:
 	var selected = items_tree.get_selected()
 	if selected == null: return
-	var item:ItemResource = selected.get_metadata(0)
+	#var item:ItemResource = selected.get_metadata(0)
+	var item = selected.get_metadata(0)
 	item_name_label.text = item.id
+	var dkdata = get_edited_object()
+	if item is ItemResource:
+		dkdata.selected_item = item
+	elif item is DialogueExchangeResource:
+		dkdata.selected_exchange = item
+	elif item is DialogueResource:
+		dkdata.selected_dialogue = item
+	elif item is ActionResource:
+		dkdata.selected_action = item
+	refresh_control_text()
+	emit_changed(get_edited_property(), current_value)
+	
 
 func _update_property():
 	# Read the current value from the property.
@@ -95,7 +124,7 @@ func refresh_control_text():
 
 	items_tree.clear()
 	var root = items_tree.create_item()
-	items_tree.hide_root = true
+	# items_tree.hide_root = true
 	var array_id := 0
 	for i in current_value:
 		var element = items_tree.create_item(root)

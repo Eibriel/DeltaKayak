@@ -11,6 +11,7 @@ var current_value: IntTextResource
 var updating = false
 
 var edit_button: Button
+var refresh_button: Button
 var rich_text_label: RichTextLabel
 
 func _init() -> void:
@@ -20,11 +21,18 @@ func _init() -> void:
 	set_bottom_editor(inttext_editor)
 	rich_text_label = inttext_editor.get_node("%RichTextLabel")
 	edit_button = inttext_editor.get_node("%EditButton")
+	refresh_button = inttext_editor.get_node("%RefreshButton")
 	refresh_control_text()
 	connect_signals()
 
 func connect_signals():
 	edit_button.pressed.connect(_on_edit_item_button_pressed)
+	refresh_button.pressed.connect(_on_refresh_button_pressed)
+
+func _on_refresh_button_pressed():
+	if (updating):
+		return
+	update_property()
 
 func _on_edit_item_button_pressed():
 	# Ignore the signal if the property is currently being updated.

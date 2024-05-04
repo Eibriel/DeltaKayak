@@ -12,7 +12,7 @@ extends Control
 var interactive_labels:Dictionary
 var in_trigger:Array[String]
 
-const DkdataInitialization = preload("res://dkdata/dkdata_initialization.gd")
+#const DkdataInitialization = preload("res://dkdata/dkdata_initialization.gd")
 
 func _ready() -> void:
 	label_demo.visible = false
@@ -22,8 +22,8 @@ func _ready() -> void:
 	dk_world.connect("trigger_entered", on_trigger_entered)
 	dk_world.connect("trigger_exited", on_trigger_exited)
 	
-	var state_initializer = DkdataInitialization.new()
-	state_initializer.initialize_data(game_state)
+	#var state_initializer = DkdataInitialization.new()
+	#state_initializer.initialize_data(game_state)
 
 func _process(delta: float) -> void:
 	handle_triggers(delta)
@@ -37,25 +37,43 @@ func handle_triggers(_delta:float) -> void:
 		var sector:Dictionary = dk_world.world_definition[sector_id] as Dictionary
 		for trigger in sector.triggers:
 			var trigger_position = Global.array_to_vector3(trigger.position)
+			var icon_label = "" #trigger.id
+			for i in game_state.items:
+				if i.trigger_name == trigger.id:
+					if i.primary_action != "":
+						var a = get_item_action(i.primary_action, i)
+						if a != null:
+							icon_label += "A: %s" % tr(a.label.english)
+					if i.secondary_action != "":
+						var a = get_item_action(i.secondary_action, i)
+						if a != null:
+							icon_label += "\nX: %s" % tr(a.label.english)
+					break
 			if Global.camera.is_position_in_frustum(trigger_position) and \
 			is_in_trigger(trigger.id):
 				visible_interactives.append(trigger)
-				var icon = get_interactive(trigger.id, true)
+				var icon = get_interactive(trigger.id, icon_label, true)
 				icon.position = Global.camera.unproject_position(trigger_position)
 				icon.visible = true
 				icon.set_active(false)
 				if is_closest_trigger(trigger.id):
 					icon.set_active(true)
 			else:
-				var icon = get_interactive(trigger.id, false)
+				var icon = get_interactive(trigger.id, icon_label, false)
 				if icon != null:
 					icon.visible = false
 
-func get_interactive(id:String, create:bool):
+func get_item_action(id:String, item:ItemResource) -> ActionResource:
+	for a in item.actions:
+		if a.id == id:
+			return a
+	return null
+
+func get_interactive(id:String, label:String, create:bool):
 	if id not in interactive_labels:
 		if create:
 			var icon:Control = preload("res://ui/interactive_label.tscn").instantiate() as Control
-			icon.label_name = id
+			icon.label_name = label
 			interactive_labels[id] = icon
 			interactive_labels_control.add_child(icon)
 		else:
@@ -64,10 +82,12 @@ func get_interactive(id:String, create:bool):
 	return interactive_labels[id]
 
 func _input(event: InputEvent) -> void:
-	if event.is_action_pressed("action"):
-		#print("Action")
+	if event.is_action_pressed("primary_action"):
 		for id in in_trigger:
-			execute_trigger("trigger_action", id)
+			execute_trigger("primary_action", id)
+	elif event.is_action_pressed("secondary_action"):
+		for id in in_trigger:
+			execute_trigger("secondary_action", id)
 	elif event.is_action_pressed("pepa"):
 		say_dialogue("¡¡Pepa!!")
 	elif event.is_action_pressed("compicactus"):
@@ -85,14 +105,31 @@ func on_trigger_exited(id:String):
 		in_trigger.erase(id)
 	execute_trigger("trigger_exited", id)
 
-func execute_trigger(type:String, trigger_id:String):
+func execute_trigger(trigger_type:String, trigger_id:String):
 	# var index := "%s:%s" % [type, trigger_id]
-	# prints(type, id)
+	if not is_closest_trigger(trigger_id): return
 	for i in game_state.items:
-		for a in i.actions:
-			if a.action_id == type and i.trigger_name == trigger_id:
-				var l_script = i.logic.new()
-				l_script._on_trigger(self, game_state, type, trigger_id)
+		if i.trigger_name == trigger_id:
+			if "primary_action" == trigger_type:
+				var a = get_item_action(i.primary_action, i)
+				if a != null:
+					if i.logic != null:
+						var l_script = i.logic.new()
+						l_script._on_trigger(self, game_state, a.id)
+					else:
+						push_error("Item '%s' has no logic" % i.id)
+				else:
+					push_error("Action '%s' not found in item '%s'" % [i.primary_action, i.id])
+			elif "secondary_action" == trigger_type:
+				var a = get_item_action(i.secondary_action, i)
+				if a != null:
+					if i.logic != null:
+						var l_script = i.logic.new()
+						l_script._on_trigger(self, game_state, a.id)
+					else:
+						push_error("Item '%s' has no logic" % i.id)
+				else:
+					push_error("Action '%s' not found in item '%s'" % [i.primary_action, i.id])
 
 func is_in_trigger(id:String) -> bool:
 	return id in in_trigger
@@ -122,3 +159,4 @@ func say_dialogue(text:String) -> void:
 				tween.tween_interval(5)
 				tween.tween_callback(func():dialogue_label.text = "")
 				return
+	push_error("Cant find dialogue %s" % text)

@@ -78,3 +78,9 @@ text = "Item Name"
 unique_name_in_owner = true
 layout_mode = 2
 text = "Edit Item"
+
+[node name="ReloadArrayButton" type="Button" parent="VBoxContainer2/HSplitContainer/Control2/VBoxContainer"]
+unique_name_in_owner = true
+auto_translate_mode = 1
+layout_mode = 2
+text = "Reload Array"

@@ -18,17 +18,18 @@ func initialize_data(_dkdata: DKDataResource):
 	dkdata.character_rotation = Vector3(0, 180, 0)
 	
 	add_item("capybara", "trigger_001_001")
-	set_logic(preload("res://interactives/capybara.gd"))
+	#set_logic(preload("res://interactives/capybara.gd"))
 	set_label(Lang.EN, "Capybara")
 	set_label(Lang.ES, "Carpincho")
-	add_action("trigger_entered")
-	set_label(Lang.EN, "Pet")
-	set_label(Lang.ES, "Acariciar")
+	add_action("trigger_action")
+	set_action_label(Lang.EN, "Pet")
+	set_action_label(Lang.ES, "Acariciar")
 	
 	add_exchange("capybara1")
 	add_dialogue("capybara")
 	set_dl_text(Lang.EN, "Hi there!")
 	set_dl_text(Lang.ES, "Hola!")
+	
 	
 	
 
