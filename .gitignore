@@ -7,3 +7,5 @@
 *.blend5
 
 __pycache__/
+
+*.translation
