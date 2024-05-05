@@ -3,7 +3,7 @@ class_name ItemResource
 extends Resource
 
 @export var id: String
-@export var label: IntTextResource
+@export var label: String
 @export var active: bool = true
 @export var visible: bool = true
 @export var trigger_name:String

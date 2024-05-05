@@ -1,7 +1,7 @@
 class_name PreferenceResource
 extends Resource
 
-enum Language {ENGLISH, ESPANISH_SPAIN, ESPANISH_LATAM}
+enum Language {ENGLISH, SPANISH_SPAIN, SPANISH_LATAM}
 
 @export_group("Video")
 @export_range(-1.0, 1.0) var brightness: float

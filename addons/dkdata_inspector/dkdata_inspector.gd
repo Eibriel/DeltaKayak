@@ -2,7 +2,8 @@
 extends EditorInspectorPlugin
 
 const ItemsEditor = preload("res://addons/dkdata_inspector/items_editor.gd")
-const IntTextEditor = preload("res://addons/dkdata_inspector/inttext_editor.gd")
+const CSVExporter = preload("res://addons/dkdata_inspector/csv_exporter.gd")
+# const IntTextEditor = preload("res://addons/dkdata_inspector/inttext_editor.gd")
 
 func _can_handle(object):
 	if object is DKDataResource:
@@ -14,6 +15,10 @@ func _can_handle(object):
 	elif object is DialogueExchangeResource:
 		return true
 	return false
+
+func _parse_begin(object: Object) -> void:
+	if object is DKDataResource:
+		add_custom_control(CSVExporter.new())
 
 func _parse_property(object, type, name, hint_type, hint_string, usage_flags, wide):
 	if object is DKDataResource:
@@ -28,9 +33,9 @@ func _parse_property(object, type, name, hint_type, hint_string, usage_flags, wi
 			add_property_editor(name, editor, true)
 			return true
 	if object is ItemResource or object is ActionResource:
-		if name == "label":
-			add_property_editor(name, IntTextEditor.new(), true)
-			return false
+		#if name == "label":
+		#	add_property_editor(name, IntTextEditor.new(), true)
+		#	return false
 		if name == "actions":
 			var editor := ItemsEditor.new()
 			editor.setup(ActionResource)

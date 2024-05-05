@@ -27,7 +27,7 @@ func _process(delta: float) -> void:
 	
 	var local_target_position := movement_direction.rotated(Vector3.UP, soft_camera_rotation) * 100.0
 	target_box.global_position = position + local_target_position
-	var target_distance := Vector3.ZERO.distance_to(local_target_position)
+	# var target_distance := Vector3.ZERO.distance_to(local_target_position)
 	
 	# TODO the kayak points backwards
 	var target_position_with_rotation := local_target_position.rotated(Vector3.DOWN, rotation.y)
@@ -64,14 +64,14 @@ func get_integral(error) -> float:
 	return clamp(integral*0.001, -1.0, 1.0)
 #
 
-func _physics_process(delta):
+func _physics_process(_delta: float):
 	apply_torque(Vector3(0, torque, 0))
 	#prints(speed, torque)
 	go_forward(speed)
 
-func go_forward(speed:float):
+func go_forward(_speed:float):
 	var direction := (transform.basis * Vector3.BACK).normalized()
-	apply_central_force(direction * speed)
+	apply_central_force(direction * _speed)
 
 func _integrate_forces(state):
 	if true:#paddle_status !=0 and holding:

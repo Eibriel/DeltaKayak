@@ -44,10 +44,11 @@ func _on_edit_item_button_pressed():
 
 func refresh_control_text():
 	if current_value == null: return
-	var text := "en: %s\n\nes_la: %s\n\nes_es: %s" % [
+	var text := "en: %s\n\nes_la: %s\n\nes_es: %s\n\nid: %s" % [
 		current_value.english,
 		current_value.spanish_latam,
-		current_value.spanish_spain
+		current_value.spanish_spain,
+		get_edited_object().resource_scene_unique_id
 	]
 	rich_text_label.text = text
 

@@ -99,6 +99,10 @@ compicactus={
 ]
 }
 
+[internationalization]
+
+locale/translations=PackedStringArray("res://dkdata_strings.en.translation", "res://dkdata_strings.es_AR.translation", "res://dkdata_strings.es_ES.translation")
+
 [rendering]
 
 textures/canvas_textures/default_texture_filter=0

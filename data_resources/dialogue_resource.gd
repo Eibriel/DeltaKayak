@@ -10,12 +10,12 @@ enum Character {
 
 @export var id: String
 
-@export_group("Character")
+#@export_group("Character")
 @export var character: Character
 @export var image: String
 
-@export_group("Text")
-@export var text: IntTextResource
+#@export_group("Text")
+@export_multiline var text: String
 
 func _init() -> void:
 	pass

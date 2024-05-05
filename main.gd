@@ -12,6 +12,8 @@ extends Control
 var interactive_labels:Dictionary
 var in_trigger:Array[String]
 
+var dialogue_queue: Array[DialogueResource]
+var dialogue_time: float
 #const DkdataInitialization = preload("res://dkdata/dkdata_initialization.gd")
 
 func _ready() -> void:
@@ -27,6 +29,19 @@ func _ready() -> void:
 
 func _process(delta: float) -> void:
 	handle_triggers(delta)
+	handle_dialogue(delta)
+
+func handle_dialogue(delta:float) -> void:
+	dialogue_time -= delta
+	if dialogue_time > 0: return
+	if dialogue_queue.size() < 1: return
+	var d: DialogueResource = dialogue_queue.pop_front()
+	var key: String = "%s_dialogue_text" % d.resource_scene_unique_id
+	dialogue_label.text = tr(key)
+	dialogue_label.visible_ratio = 0
+	var tween := create_tween()
+	tween.tween_property(dialogue_label, "visible_ratio", 1., 1)
+	dialogue_time = 5.
 
 func handle_triggers(_delta:float) -> void:
 	if Global.camera == null: return
@@ -43,11 +58,13 @@ func handle_triggers(_delta:float) -> void:
 					if i.primary_action != "":
 						var a = get_item_action(i.primary_action, i)
 						if a != null:
-							icon_label += "A: %s" % tr(a.label.english)
+							var key: String = "%s_action_label" % a.resource_scene_unique_id
+							icon_label += "A: %s" % tr(key)
 					if i.secondary_action != "":
 						var a = get_item_action(i.secondary_action, i)
 						if a != null:
-							icon_label += "\nX: %s" % tr(a.label.english)
+							var key: String = "%s_action_label" % a.resource_scene_unique_id
+							icon_label += "\nX: %s" % tr(key)
 					break
 			if Global.camera.is_position_in_frustum(trigger_position) and \
 			is_in_trigger(trigger.id):
@@ -154,9 +171,6 @@ func say_dialogue(text:String) -> void:
 	for e in game_state.exchanges:
 		if e.id == text:
 			for d in e.dialogues:
-				dialogue_label.text = tr(d.text.english)
-				var tween := create_tween()
-				tween.tween_interval(5)
-				tween.tween_callback(func():dialogue_label.text = "")
-				return
+				dialogue_queue.append(d)
+			return
 	push_error("Cant find dialogue %s" % text)
