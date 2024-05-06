@@ -7,6 +7,7 @@ signal trigger_exited
 @export var initial_camera: Camera3D
 @export var initial_camera_path: Path3D
 @export var world_definition: Dictionary = {}
+@export var nodes_dic: Dictionary = {}
 
 var target_movement_direction:Vector3
 var target_camera_position:Vector3
@@ -21,6 +22,8 @@ var next_camera:Camera3D
 var initial_positioning:=true
 
 var camera_queue := []
+
+
 
 func _ready():
 	Global.camera = initial_camera

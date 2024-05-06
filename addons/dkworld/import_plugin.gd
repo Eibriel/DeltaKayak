@@ -317,6 +317,7 @@ func add_item(item: Dictionary, item_id: String, main_node: Node3D):
 	#prints(gltf_instance.name, gltf_instance.owner.name)
 	_recursively_set_owner(gltf_instance, main_node)
 	#gltf_instance.propagate_call("set_owner", [main_node], true)
+	#main_node.nodes_dic[item_id] = gltf_instance.get_path()
 
 func scene_from_gltf(item:Dictionary, item_id:String) -> PackedScene:
 	var gltf_loader := GLTFDocument.new()

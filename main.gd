@@ -53,8 +53,12 @@ func handle_triggers(_delta:float) -> void:
 		for trigger in sector.triggers:
 			var trigger_position = Global.array_to_vector3(trigger.position)
 			var icon_label = "" #trigger.id
+			var trigger_visible := true
 			for i in game_state.items:
 				if i.trigger_name == trigger.id:
+					if not i.visible:
+						trigger_visible = false
+						break
 					if i.primary_action != "":
 						var a = get_item_action(i.primary_action, i)
 						if a != null:
@@ -67,7 +71,7 @@ func handle_triggers(_delta:float) -> void:
 							icon_label += "\nX: %s" % tr(key)
 					break
 			if Global.camera.is_position_in_frustum(trigger_position) and \
-			is_in_trigger(trigger.id):
+					is_in_trigger(trigger.id) and trigger_visible:
 				visible_interactives.append(trigger)
 				var icon = get_interactive(trigger.id, icon_label, true)
 				icon.position = Global.camera.unproject_position(trigger_position)
@@ -126,8 +130,9 @@ func execute_trigger(trigger_type:String, trigger_id:String):
 	# var index := "%s:%s" % [type, trigger_id]
 	if not is_closest_trigger(trigger_id): return
 	for i in game_state.items:
+		if not i.active: continue
 		if i.trigger_name == trigger_id:
-			if "primary_action" == trigger_type:
+			if "primary_action" == trigger_type and i.primary_action != "":
 				var a = get_item_action(i.primary_action, i)
 				if a != null:
 					if i.logic != null:
@@ -137,7 +142,7 @@ func execute_trigger(trigger_type:String, trigger_id:String):
 						push_error("Item '%s' has no logic" % i.id)
 				else:
 					push_error("Action '%s' not found in item '%s'" % [i.primary_action, i.id])
-			elif "secondary_action" == trigger_type:
+			elif "secondary_action" == trigger_type and i.secondary_action != "":
 				var a = get_item_action(i.secondary_action, i)
 				if a != null:
 					if i.logic != null:
@@ -174,3 +179,39 @@ func say_dialogue(text:String) -> void:
 				dialogue_queue.append(d)
 			return
 	push_error("Cant find dialogue %s" % text)
+
+func sync_misc_data() -> void:
+	# NOTE
+	# dots (.) in blender object names
+	# are turned into lowscores (_) in godot node names
+	node_visible("Muelle1_006", not game_state.misc_data.house_door_open)
+	node_collide("Muelle1_006", not game_state.misc_data.house_door_open)
+	item_active("character_house_door", not game_state.misc_data.house_door_open)
+	item_visible("character_house_door", not game_state.misc_data.house_door_open)
+
+func node_collide(node_path: NodePath, active: bool):
+	var node = dk_world.get_node(node_path)
+	for static_body in node.get_children():
+		if static_body is StaticBody3D:
+			for collision_shape in static_body.get_children():
+				if collision_shape is CollisionShape3D:
+					collision_shape.disabled = not active
+
+func node_visible(node_path: NodePath, active: bool):
+	dk_world.get_node(node_path).visible = active
+
+func item_active(item_id: String, active: bool):
+	var item := get_item(item_id)
+	if item == null: return
+	item.active = active
+
+func item_visible(item_id: String, visible: bool):
+	var item := get_item(item_id)
+	if item == null: return
+	item.visible = visible
+
+func get_item(item_id: String) -> ItemResource:
+	for i in game_state.items:
+		if i.id == item_id:
+			return i
+	return null

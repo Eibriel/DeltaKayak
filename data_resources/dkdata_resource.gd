@@ -11,6 +11,9 @@ extends Resource
 @export_group("Dialogue")
 @export var exchanges: Array[DialogueExchangeResource]
 
+@export_group("Misc Data")
+@export var misc_data: MiscDataResource
+
 @export_group("Selected")
 var selected_item: ItemResource
 var selected_exchange: DialogueExchangeResource

@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="DKDataResource" load_steps=14 format=3 uid="uid://bi1rugic742u0"]
+[gd_resource type="Resource" script_class="DKDataResource" load_steps=26 format=3 uid="uid://bi1rugic742u0"]
 
 [ext_resource type="Script" path="res://data_resources/dkdata_resource.gd" id="1_mesef"]
 [ext_resource type="Script" path="res://data_resources/dialogue_resource.gd" id="1_yf062"]
@@ -6,6 +6,9 @@
 [ext_resource type="Script" path="res://data_resources/exchange_resource.gd" id="2_xdm14"]
 [ext_resource type="Script" path="res://data_resources/action_resource.gd" id="3_0x3yn"]
 [ext_resource type="Script" path="res://data_resources/item_resource.gd" id="3_xhkj4"]
+[ext_resource type="Script" path="res://interactives/capybara.gd" id="6_rtniw"]
+[ext_resource type="Script" path="res://data_resources/misc_data_resource.gd" id="7_bypjw"]
+[ext_resource type="Script" path="res://interactives/character_house_door.gd" id="7_ltxs3"]
 
 [sub_resource type="Resource" id="Resource_176qc"]
 script = ExtResource("1_yf062")
@@ -14,6 +17,23 @@ character = 2
 image = ""
 text = "Todo está en órden"
 
+[sub_resource type="Resource" id="Resource_8uc65"]
+script = ExtResource("2_xdm14")
+id = "analice_box"
+dialogues = Array[ExtResource("1_yf062")]([SubResource("Resource_176qc")])
+
+[sub_resource type="Resource" id="Resource_fdisl"]
+script = ExtResource("1_yf062")
+id = "open_house_door"
+character = 0
+image = ""
+text = "La puerta está abierta"
+
+[sub_resource type="Resource" id="Resource_8fu57"]
+script = ExtResource("2_xdm14")
+id = "open_house_door"
+dialogues = Array[ExtResource("1_yf062")]([SubResource("Resource_fdisl")])
+
 [sub_resource type="Resource" id="Resource_gfaki"]
 script = ExtResource("1_yf062")
 id = "capybara_indiferent"
@@ -21,10 +41,22 @@ character = 0
 image = ""
 text = "El carpincho te mira indiferente"
 
-[sub_resource type="Resource" id="Resource_8uc65"]
+[sub_resource type="Resource" id="Resource_wnrtd"]
 script = ExtResource("2_xdm14")
-id = "analice_box"
-dialogues = Array[ExtResource("1_yf062")]([SubResource("Resource_176qc"), SubResource("Resource_gfaki")])
+id = "pet_capybara"
+dialogues = Array[ExtResource("1_yf062")]([SubResource("Resource_gfaki")])
+
+[sub_resource type="Resource" id="Resource_gl7t3"]
+script = ExtResource("1_yf062")
+id = "box_turns_around"
+character = 0
+image = ""
+text = "El cajón te da la espalda"
+
+[sub_resource type="Resource" id="Resource_xpeud"]
+script = ExtResource("2_xdm14")
+id = "intimidate_box"
+dialogues = Array[ExtResource("1_yf062")]([SubResource("Resource_gl7t3")])
 
 [sub_resource type="Resource" id="Resource_64kt5"]
 script = ExtResource("3_0x3yn")
@@ -48,6 +80,11 @@ primary_action = "analice_box"
 secondary_action = "intimidate_box"
 actions = Array[ExtResource("3_0x3yn")]([SubResource("Resource_64kt5"), SubResource("Resource_8yblg")])
 
+[sub_resource type="Resource" id="Resource_xd37o"]
+script = ExtResource("3_0x3yn")
+id = "pet_capybara"
+label = "Acariciar al carpincho"
+
 [sub_resource type="Resource" id="Resource_vdise"]
 script = ExtResource("3_xhkj4")
 id = "capybara"
@@ -55,13 +92,36 @@ label = "Carpincho"
 active = true
 visible = true
 trigger_name = "trigger_002_001"
-primary_action = ""
+logic = ExtResource("6_rtniw")
+primary_action = "pet_capybara"
 secondary_action = ""
-actions = Array[ExtResource("3_0x3yn")]([])
+actions = Array[ExtResource("3_0x3yn")]([SubResource("Resource_xd37o")])
+
+[sub_resource type="Resource" id="Resource_hhpcu"]
+script = ExtResource("3_0x3yn")
+id = "open_house_door"
+label = "Abrir reja"
+
+[sub_resource type="Resource" id="Resource_lqalm"]
+script = ExtResource("3_xhkj4")
+id = "character_house_door"
+label = "Reja"
+active = true
+visible = true
+trigger_name = "trigger_004_001"
+logic = ExtResource("7_ltxs3")
+primary_action = "open_house_door"
+secondary_action = ""
+actions = Array[ExtResource("3_0x3yn")]([SubResource("Resource_hhpcu")])
+
+[sub_resource type="Resource" id="Resource_b1bh4"]
+script = ExtResource("7_bypjw")
+house_door_open = false
 
 [resource]
 script = ExtResource("1_mesef")
 character_position = Vector3(80, 15, 50)
 character_rotation = Vector3(0, 180, 0)
-items = Array[ExtResource("3_xhkj4")]([SubResource("Resource_jag0u"), SubResource("Resource_vdise")])
-exchanges = Array[ExtResource("2_xdm14")]([SubResource("Resource_8uc65")])
+items = Array[ExtResource("3_xhkj4")]([SubResource("Resource_jag0u"), SubResource("Resource_vdise"), SubResource("Resource_lqalm")])
+exchanges = Array[ExtResource("2_xdm14")]([SubResource("Resource_8uc65"), SubResource("Resource_8fu57"), SubResource("Resource_wnrtd"), SubResource("Resource_xpeud")])
+misc_data = SubResource("Resource_b1bh4")

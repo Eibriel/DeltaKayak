@@ -78,12 +78,12 @@ shadow_enabled = true
 
 [node name="character" parent="Main3D" instance=ExtResource("2_3sgbv")]
 unique_name_in_owner = true
-transform = Transform3D(-0.0258978, 0, 0.999665, 0, 1, 0, -0.999665, 0, -0.0258978, 34.7934, 0, -5)
+transform = Transform3D(-0.0258978, 0, 0.999665, 0, 1, 0, -0.999665, 0, -0.0258978, -32.903, 0, -5)
 
 [node name="DKWorld" parent="Main3D" node_paths=PackedStringArray("initial_camera", "initial_camera_path") instance=ExtResource("3_7foso")]
 unique_name_in_owner = true
 initial_camera = NodePath("camera_001/camera_001_cam")
-initial_camera_path = NodePath("camera_001/@Path3D@21222")
+initial_camera_path = NodePath("camera_001/@Path3D@32726")
 
 [node name="Camera3D" type="Camera3D" parent="Main3D"]
 transform = Transform3D(1, 0, 0, 0, 0.921328, 0.388786, 0, -0.388786, 0.921328, 0.528366, 5.52796, 5.79716)
