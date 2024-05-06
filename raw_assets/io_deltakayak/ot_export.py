@@ -1001,6 +1001,23 @@ class DKT_PG_WorldObjectProperties(bpy.types.PropertyGroup):
 
     ## Trigger
 
+    trigger_primary_action: StringProperty(
+        name="Primary Action",
+        description="Trigger Primary Action",
+        default=""
+    ) # type: ignore
+
+    trigger_secondary_action: StringProperty(
+        name="Secondary Action",
+        description="Trigger Secondary Action",
+        default=""
+    ) # type: ignore
+
+    trigger_always_visible: BoolProperty(
+        name="Always Visible",
+        default=False
+    ) # type: ignore
+
     trigger_type: EnumProperty(
         name="Trigger Type",
         description="What triggers the trigger?",

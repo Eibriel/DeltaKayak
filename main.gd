@@ -46,14 +46,14 @@ func handle_dialogue(delta:float) -> void:
 func handle_triggers(_delta:float) -> void:
 	if Global.camera == null: return
 	
-	var visible_interactives := []
-	
 	for sector_id in dk_world.world_definition:
 		var sector:Dictionary = dk_world.world_definition[sector_id] as Dictionary
 		for trigger in sector.triggers:
 			var trigger_position = Global.array_to_vector3(trigger.position)
-			var icon_label = "" #trigger.id
+			var primary_label := ""
+			var secondary_label := ""
 			var trigger_visible := true
+			var always_visible := false
 			for i in game_state.items:
 				if i.trigger_name == trigger.id:
 					if not i.visible:
@@ -63,24 +63,27 @@ func handle_triggers(_delta:float) -> void:
 						var a = get_item_action(i.primary_action, i)
 						if a != null:
 							var key: String = "%s_action_label" % a.resource_scene_unique_id
-							icon_label += "A: %s" % tr(key)
+							primary_label = tr(key)
 					if i.secondary_action != "":
 						var a = get_item_action(i.secondary_action, i)
 						if a != null:
 							var key: String = "%s_action_label" % a.resource_scene_unique_id
-							icon_label += "\nX: %s" % tr(key)
+							secondary_label = tr(key)
+					always_visible = i.always_visible
 					break
-			if Global.camera.is_position_in_frustum(trigger_position) and \
-					is_in_trigger(trigger.id) and trigger_visible:
-				visible_interactives.append(trigger)
-				var icon = get_interactive(trigger.id, icon_label, true)
-				icon.position = Global.camera.unproject_position(trigger_position)
+			if is_in_trigger(trigger.id) and trigger_visible and \
+					(Global.camera.is_position_in_frustum(trigger_position) or always_visible):
+				var icon = get_interactive(trigger.id, primary_label, secondary_label, true)
+				if Global.camera.is_position_in_frustum(trigger_position):
+					icon.position = Global.camera.unproject_position(trigger_position)
+				elif always_visible:
+					icon.position = get_viewport_rect().size * 0.5
 				icon.visible = true
 				icon.set_active(false)
 				if is_closest_trigger(trigger.id):
 					icon.set_active(true)
 			else:
-				var icon = get_interactive(trigger.id, icon_label, false)
+				var icon = get_interactive(trigger.id, primary_label, secondary_label, false)
 				if icon != null:
 					icon.visible = false
 
@@ -90,11 +93,12 @@ func get_item_action(id:String, item:ItemResource) -> ActionResource:
 			return a
 	return null
 
-func get_interactive(id:String, label:String, create:bool):
+func get_interactive(id:String, primary_label:String, secondary_label:String, create:bool):
 	if id not in interactive_labels:
 		if create:
 			var icon:Control = preload("res://ui/interactive_label.tscn").instantiate() as Control
-			icon.label_name = label
+			icon.primary_text = primary_label
+			icon.secondary_text = secondary_label
 			interactive_labels[id] = icon
 			interactive_labels_control.add_child(icon)
 		else:
@@ -205,10 +209,10 @@ func item_active(item_id: String, active: bool):
 	if item == null: return
 	item.active = active
 
-func item_visible(item_id: String, visible: bool):
+func item_visible(item_id: String, _visible: bool):
 	var item := get_item(item_id)
 	if item == null: return
-	item.visible = visible
+	item.visible = _visible
 
 func get_item(item_id: String) -> ItemResource:
 	for i in game_state.items:

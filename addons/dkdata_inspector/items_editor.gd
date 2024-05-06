@@ -128,6 +128,7 @@ func refresh_control_text():
 	var array_id := 0
 	for i in current_value:
 		var element = items_tree.create_item(root)
+		if element == null: continue
 		element.set_text(0, i.id)
 		element.set_metadata(0, i)
 		element.set_meta("array_id", array_id)

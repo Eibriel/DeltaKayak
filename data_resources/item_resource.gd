@@ -6,6 +6,7 @@ extends Resource
 @export var label: String
 @export var active: bool = true
 @export var visible: bool = true
+@export var always_visible: bool = false
 @export var trigger_name:String
 @export var logic: GDScript
 
