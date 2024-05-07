@@ -32,11 +32,11 @@ anchors_preset = 4
 anchor_top = 0.5
 anchor_bottom = 0.5
 offset_left = 23.0
-offset_top = -31.0
+offset_top = 4.0
 offset_right = 107.0
-offset_bottom = -8.0
+offset_bottom = 27.0
 grow_vertical = 2
-text = "Interactive"
+text = "Interactive Primary"
 
 [node name="SecondayLabel" type="Label" parent="."]
 unique_name_in_owner = true
@@ -46,8 +46,8 @@ anchors_preset = 4
 anchor_top = 0.5
 anchor_bottom = 0.5
 offset_left = 23.0
-offset_top = 4.0
+offset_top = -28.0
 offset_right = 107.0
-offset_bottom = 27.0
+offset_bottom = -5.0
 grow_vertical = 2
-text = "Interactive"
+text = "Interactive Secondary"

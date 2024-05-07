@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="DKDataResource" load_steps=31 format=3 uid="uid://bi1rugic742u0"]
+[gd_resource type="Resource" script_class="DKDataResource" load_steps=57 format=3 uid="uid://bi1rugic742u0"]
 
 [ext_resource type="Script" path="res://data_resources/dkdata_resource.gd" id="1_mesef"]
 [ext_resource type="Script" path="res://data_resources/dialogue_resource.gd" id="1_yf062"]
@@ -10,6 +10,9 @@
 [ext_resource type="Script" path="res://data_resources/misc_data_resource.gd" id="7_bypjw"]
 [ext_resource type="Script" path="res://interactives/character_house_door.gd" id="7_ltxs3"]
 [ext_resource type="Script" path="res://interactives/fallen_tree.gd" id="8_ukavx"]
+[ext_resource type="Script" path="res://interactives/pepa_house.gd" id="9_l4ry2"]
+[ext_resource type="Script" path="res://interactives/next_door.gd" id="10_l6k10"]
+[ext_resource type="Script" path="res://interactives/next_door_key.gd" id="11_fmkbw"]
 
 [sub_resource type="Resource" id="Resource_176qc"]
 script = ExtResource("1_yf062")
@@ -71,6 +74,97 @@ script = ExtResource("2_xdm14")
 id = "this_is_a_big_tree"
 dialogues = Array[ExtResource("1_yf062")]([SubResource("Resource_qpxgi")])
 
+[sub_resource type="Resource" id="Resource_7fy7g"]
+script = ExtResource("1_yf062")
+id = "new_item"
+character = 1
+image = ""
+text = "¿Por qué se fue Pepa?"
+
+[sub_resource type="Resource" id="Resource_kky8g"]
+script = ExtResource("1_yf062")
+id = "new_item"
+character = 1
+image = ""
+text = "No lo entiendo."
+
+[sub_resource type="Resource" id="Resource_gh248"]
+script = ExtResource("2_xdm14")
+id = "why_pepa_left"
+dialogues = Array[ExtResource("1_yf062")]([SubResource("Resource_7fy7g"), SubResource("Resource_kky8g")])
+
+[sub_resource type="Resource" id="Resource_q2ov1"]
+script = ExtResource("1_yf062")
+id = "new_item"
+character = 2
+image = ""
+text = "¡Acá estoy!"
+
+[sub_resource type="Resource" id="Resource_1yf32"]
+script = ExtResource("2_xdm14")
+id = "compi_im_here"
+dialogues = Array[ExtResource("1_yf062")]([SubResource("Resource_q2ov1")])
+
+[sub_resource type="Resource" id="Resource_1g1kk"]
+script = ExtResource("1_yf062")
+id = "new_item"
+character = 1
+image = ""
+text = "La reja está cerrada con un candado"
+
+[sub_resource type="Resource" id="Resource_sv6t1"]
+script = ExtResource("2_xdm14")
+id = "look_next_door"
+dialogues = Array[ExtResource("1_yf062")]([SubResource("Resource_1g1kk")])
+
+[sub_resource type="Resource" id="Resource_lng21"]
+script = ExtResource("1_yf062")
+id = "new_item"
+character = 0
+image = ""
+text = "Usas la llave en el candado, y abres la reja"
+
+[sub_resource type="Resource" id="Resource_hqga7"]
+script = ExtResource("2_xdm14")
+id = "open_next_door"
+dialogues = Array[ExtResource("1_yf062")]([SubResource("Resource_lng21")])
+
+[sub_resource type="Resource" id="Resource_nd0p3"]
+script = ExtResource("1_yf062")
+id = "new_item"
+character = 1
+image = ""
+text = "No tengo la llave del candado"
+
+[sub_resource type="Resource" id="Resource_irurm"]
+script = ExtResource("2_xdm14")
+id = "need_next_door_key"
+dialogues = Array[ExtResource("1_yf062")]([SubResource("Resource_nd0p3")])
+
+[sub_resource type="Resource" id="Resource_h7jak"]
+script = ExtResource("1_yf062")
+id = "new_item"
+character = 1
+image = ""
+text = "Yo diría que es la llave de un candado"
+
+[sub_resource type="Resource" id="Resource_as33y"]
+script = ExtResource("2_xdm14")
+id = "look_next_door_key"
+dialogues = Array[ExtResource("1_yf062")]([SubResource("Resource_h7jak")])
+
+[sub_resource type="Resource" id="Resource_12oih"]
+script = ExtResource("1_yf062")
+id = "new_item"
+character = 1
+image = ""
+text = "¡Matanga dijo la changa!"
+
+[sub_resource type="Resource" id="Resource_7y1op"]
+script = ExtResource("2_xdm14")
+id = "take_next_door_key"
+dialogues = Array[ExtResource("1_yf062")]([SubResource("Resource_12oih")])
+
 [sub_resource type="Resource" id="Resource_64kt5"]
 script = ExtResource("3_0x3yn")
 id = "analice_box"
@@ -87,7 +181,7 @@ id = "wood_box"
 label = "Cajón de Madera"
 active = true
 visible = true
-always_visible = null
+always_visible = false
 trigger_name = "trigger_wood_box_001"
 logic = ExtResource("2_tqfq6")
 primary_action = "analice_box"
@@ -123,7 +217,7 @@ id = "character_house_door"
 label = "Reja"
 active = true
 visible = true
-always_visible = null
+always_visible = false
 trigger_name = "trigger_home_door_001"
 logic = ExtResource("7_ltxs3")
 primary_action = "open_house_door"
@@ -148,14 +242,80 @@ primary_action = "this_is_a_big_tree"
 secondary_action = ""
 actions = Array[ExtResource("3_0x3yn")]([SubResource("Resource_c03lr")])
 
+[sub_resource type="Resource" id="Resource_7n8tn"]
+script = ExtResource("3_0x3yn")
+id = "i_miss_pepa"
+label = "Extraño a Pepa"
+
+[sub_resource type="Resource" id="Resource_lr86x"]
+script = ExtResource("3_xhkj4")
+id = "pepa_house"
+label = "Casa de Pepa"
+active = true
+visible = true
+always_visible = true
+trigger_name = "trigger_dog_house_001"
+logic = ExtResource("9_l4ry2")
+primary_action = "i_miss_pepa"
+secondary_action = ""
+actions = Array[ExtResource("3_0x3yn")]([SubResource("Resource_7n8tn")])
+
+[sub_resource type="Resource" id="Resource_75rd5"]
+script = ExtResource("3_0x3yn")
+id = "look_door"
+label = "Revisar reja"
+
+[sub_resource type="Resource" id="Resource_02404"]
+script = ExtResource("3_0x3yn")
+id = "open_door"
+label = "Abrir reja"
+
+[sub_resource type="Resource" id="Resource_5v8s1"]
+script = ExtResource("3_xhkj4")
+id = "next_door"
+label = "Reja metálica"
+active = true
+visible = true
+always_visible = false
+trigger_name = "trigger_next_door_001"
+logic = ExtResource("10_l6k10")
+primary_action = "look_door"
+secondary_action = "open_door"
+actions = Array[ExtResource("3_0x3yn")]([SubResource("Resource_75rd5"), SubResource("Resource_02404")])
+
+[sub_resource type="Resource" id="Resource_1i8xu"]
+script = ExtResource("3_0x3yn")
+id = "look_key"
+label = "Hay una llave"
+
+[sub_resource type="Resource" id="Resource_l6vvj"]
+script = ExtResource("3_0x3yn")
+id = "take_key"
+label = "Tomar la llave"
+
+[sub_resource type="Resource" id="Resource_ivmsk"]
+script = ExtResource("3_xhkj4")
+id = "next_door_key"
+label = "Llave de candado"
+active = true
+visible = true
+always_visible = false
+trigger_name = "trigger_next_door_key_001"
+logic = ExtResource("11_fmkbw")
+primary_action = "look_key"
+secondary_action = "take_key"
+actions = Array[ExtResource("3_0x3yn")]([SubResource("Resource_1i8xu"), SubResource("Resource_l6vvj")])
+
 [sub_resource type="Resource" id="Resource_b1bh4"]
 script = ExtResource("7_bypjw")
 house_door_open = false
+next_door_open = false
+has_next_door_key = false
 
 [resource]
 script = ExtResource("1_mesef")
 character_position = Vector3(80, 15, 50)
 character_rotation = Vector3(0, 180, 0)
-items = Array[ExtResource("3_xhkj4")]([SubResource("Resource_jag0u"), SubResource("Resource_vdise"), SubResource("Resource_lqalm"), SubResource("Resource_7g6lq")])
-exchanges = Array[ExtResource("2_xdm14")]([SubResource("Resource_8uc65"), SubResource("Resource_8fu57"), SubResource("Resource_wnrtd"), SubResource("Resource_xpeud"), SubResource("Resource_b6dbv")])
+items = Array[ExtResource("3_xhkj4")]([SubResource("Resource_jag0u"), SubResource("Resource_vdise"), SubResource("Resource_lqalm"), SubResource("Resource_7g6lq"), SubResource("Resource_lr86x"), SubResource("Resource_5v8s1"), SubResource("Resource_ivmsk")])
+exchanges = Array[ExtResource("2_xdm14")]([SubResource("Resource_8uc65"), SubResource("Resource_8fu57"), SubResource("Resource_wnrtd"), SubResource("Resource_xpeud"), SubResource("Resource_b6dbv"), SubResource("Resource_gh248"), SubResource("Resource_1yf32"), SubResource("Resource_sv6t1"), SubResource("Resource_hqga7"), SubResource("Resource_irurm"), SubResource("Resource_as33y"), SubResource("Resource_7y1op")])
 misc_data = SubResource("Resource_b1bh4")

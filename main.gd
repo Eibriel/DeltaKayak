@@ -14,7 +14,7 @@ var in_trigger:Array[String]
 
 var dialogue_queue: Array[DialogueResource]
 var dialogue_time: float
-#const DkdataInitialization = preload("res://dkdata/dkdata_initialization.gd")
+var dialogue_tween: Tween
 
 func _ready() -> void:
 	label_demo.visible = false
@@ -34,13 +34,16 @@ func _process(delta: float) -> void:
 func handle_dialogue(delta:float) -> void:
 	dialogue_time -= delta
 	if dialogue_time > 0: return
+	dialogue_label.text = ""
 	if dialogue_queue.size() < 1: return
 	var d: DialogueResource = dialogue_queue.pop_front()
 	var key: String = "%s_dialogue_text" % d.resource_scene_unique_id
 	dialogue_label.text = tr(key)
 	dialogue_label.visible_ratio = 0
-	var tween := create_tween()
-	tween.tween_property(dialogue_label, "visible_ratio", 1., 1)
+	if dialogue_tween != null and dialogue_tween.is_running():
+		dialogue_tween.stop()
+	dialogue_tween = create_tween()
+	dialogue_tween.tween_property(dialogue_label, "visible_ratio", 1., 1)
 	dialogue_time = 5.
 
 func handle_triggers(_delta:float) -> void:
@@ -116,7 +119,10 @@ func _input(event: InputEvent) -> void:
 	elif event.is_action_pressed("pepa"):
 		say_dialogue("¡¡Pepa!!")
 	elif event.is_action_pressed("compicactus"):
-		say_dialogue("Compicactus...")
+		on_compicactus()
+
+func on_compicactus():
+	say_dialogue("compi_im_here")
 
 func on_trigger_entered(id:String):
 	#prints("Entered", id)
@@ -176,9 +182,12 @@ func is_closest_trigger(id:String) -> bool:
 						min_trigger = trigger.id
 	return id == min_trigger
 
-func say_dialogue(text:String) -> void:
+func say_dialogue(text:String, force: bool = true) -> void:
 	for e in game_state.exchanges:
 		if e.id == text:
+			if force:
+				dialogue_queue.resize(0)
+				dialogue_time = -1.0
 			for d in e.dialogues:
 				dialogue_queue.append(d)
 			return
@@ -188,10 +197,18 @@ func sync_misc_data() -> void:
 	# NOTE
 	# dots (.) in blender object names
 	# are turned into lowscores (_) in godot node names
-	node_visible("Muelle1_006", not game_state.misc_data.house_door_open)
-	node_collide("Muelle1_006", not game_state.misc_data.house_door_open)
-	item_active("character_house_door", not game_state.misc_data.house_door_open)
-	item_visible("character_house_door", not game_state.misc_data.house_door_open)
+	var misc: MiscDataResource = game_state.misc_data
+	node_visible("Muelle1_006", not misc.house_door_open)
+	node_collide("Muelle1_006", not misc.house_door_open)
+	item_active("character_house_door", not misc.house_door_open)
+	item_visible("character_house_door", not misc.house_door_open)
+	
+	node_visible("Muelle1_007", not misc.next_door_open)
+	node_collide("Muelle1_007", not misc.next_door_open)
+	
+	item_active("next_door_key", not misc.has_next_door_key)
+	item_visible("next_door_key", not misc.has_next_door_key)
+	
 
 func node_collide(node_path: NodePath, active: bool):
 	var node = dk_world.get_node(node_path)
