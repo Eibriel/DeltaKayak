@@ -53,7 +53,7 @@ shape = SubResource("CapsuleShape3D_b8fg3")
 
 [node name="CSGBox3D" type="CSGBox3D" parent="."]
 top_level = true
-visible = false
+size = Vector3(0.5, 0.5, 0.5)
 
 [node name="pillow" parent="." instance=ExtResource("4_81u6e")]
 transform = Transform3D(-2, 0, 1.74845e-07, 0, 2, 0, -1.74845e-07, 0, -2, 0.0136361, 0.200965, -1.04693)

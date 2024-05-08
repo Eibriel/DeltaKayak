@@ -4,15 +4,11 @@ extends RigidBody3D
 @onready var pepa: Node3D = $pepa
 
 var soft_camera_rotation: float
-#var target_position: Vector3 = Vector3.ZERO
 var speed := 0.0
 var torque := 0.0
 
 var last_rotation := 0.0
-#var derivative := 0.0
 var target_direction := 0.0
-
-#TODO kayak points backwards
 
 func _ready():
 	#position = Vector3(-31.8, 0, -5)
@@ -31,24 +27,14 @@ func _process(delta: float) -> void:
 	var local_target_position := movement_direction.rotated(-soft_camera_rotation) * 100.0
 	target_box.global_position = position + Vector3(local_target_position.x, 0.0, local_target_position.y)
 	
-	# TODO rotation target should exists
-	# even if the speed is 0.0
-	# TODO the kayak points backwards
 	var target_position_with_rotation := local_target_position.rotated(rotation.y)
-	#if input_dir.length() > 0:
 	var global_target_rotation := -Vector2.UP.angle_to(target_position_with_rotation)
-	#var global_target_rotation := -Vector2.UP.angle_to(local_target_position)
-	#print(target_position_with_rotation.x)
-	#Global.log_text += "\ntarget_position_with_rotation.x: %f" % (target_position_with_rotation.x)
-	#if target_position_with_rotation.x < 0:
-	#	global_target_rotation *= -1
 	target_direction = global_target_rotation
 	
 	Global.log_text += "\ntarget_direction: %f" % target_direction
 	Global.log_text += "\nrotation.y: %f" % (rotation.y)
 	
 	speed = -max(0, -target_position_with_rotation.y) * delta * 20.0
-	#var error := target_direction - rotation.y
 	var error := target_direction
 	Global.log_text += "\nerror: %f" % error
 	Global.log_text += "\nproportional: %f" % get_proportional(error)
@@ -60,29 +46,25 @@ func _process(delta: float) -> void:
 		torque += get_integral(error) * delta
 		torque += get_derivative(error) * delta
 	Global.log_text += "\ntorque: %f" % torque
-	#print(torque)
-	#torque = 0
-	#speed = 0
 	last_rotation = rotation.y
 
 # PID control
 func get_proportional(error) -> float:
-	# Minimiza error
-	# Suma
+	# Minimizes error
+	# Adds
 	var proportional = error
 	proportional *= 20.0
 	return proportional
 
 func get_integral(_error) -> float:
-	# Perturvaciones externas (viento). Cámara?
-	# Compensa
+	# External perturvations (inertia)
+	# Compensates
 	var integral = angular_velocity.y
 	return integral
 
 func get_derivative(error) -> float:
-	# Velocidad del cambio de error
-	# Resta
-	# derivative += error
+	# Error change speed
+	# Substracts
 	var derivative = last_rotation - rotation.y
 	if absf(derivative) > PI:
 		print(last_rotation)
@@ -99,7 +81,6 @@ func get_derivative(error) -> float:
 
 func _physics_process(_delta: float):
 	apply_torque(Vector3(0, torque, 0))
-	#prints(speed, torque)
 	go_forward(speed)
 
 func go_forward(_speed:float):
