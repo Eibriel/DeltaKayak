@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="DKDataResource" load_steps=57 format=3 uid="uid://bi1rugic742u0"]
+[gd_resource type="Resource" script_class="DKDataResource" load_steps=60 format=3 uid="uid://bi1rugic742u0"]
 
 [ext_resource type="Script" path="res://data_resources/dkdata_resource.gd" id="1_mesef"]
 [ext_resource type="Script" path="res://data_resources/dialogue_resource.gd" id="1_yf062"]
@@ -165,6 +165,18 @@ script = ExtResource("2_xdm14")
 id = "take_next_door_key"
 dialogues = Array[ExtResource("1_yf062")]([SubResource("Resource_12oih")])
 
+[sub_resource type="Resource" id="Resource_eboy4"]
+script = ExtResource("1_yf062")
+id = "new_item"
+character = 1
+image = ""
+text = "Tengo que agregarte más comida"
+
+[sub_resource type="Resource" id="Resource_ykdst"]
+script = ExtResource("2_xdm14")
+id = "i_must_add_food"
+dialogues = Array[ExtResource("1_yf062")]([SubResource("Resource_eboy4")])
+
 [sub_resource type="Resource" id="Resource_64kt5"]
 script = ExtResource("3_0x3yn")
 id = "analice_box"
@@ -247,6 +259,11 @@ script = ExtResource("3_0x3yn")
 id = "i_miss_pepa"
 label = "Extraño a Pepa"
 
+[sub_resource type="Resource" id="Resource_xlwb5"]
+script = ExtResource("3_0x3yn")
+id = "this_is_pepas_home"
+label = "Cucha de Pepa"
+
 [sub_resource type="Resource" id="Resource_lr86x"]
 script = ExtResource("3_xhkj4")
 id = "pepa_house"
@@ -256,9 +273,9 @@ visible = true
 always_visible = true
 trigger_name = "trigger_dog_house_001"
 logic = ExtResource("9_l4ry2")
-primary_action = "i_miss_pepa"
+primary_action = "this_is_pepas_home"
 secondary_action = ""
-actions = Array[ExtResource("3_0x3yn")]([SubResource("Resource_7n8tn")])
+actions = Array[ExtResource("3_0x3yn")]([SubResource("Resource_7n8tn"), SubResource("Resource_xlwb5")])
 
 [sub_resource type="Resource" id="Resource_75rd5"]
 script = ExtResource("3_0x3yn")
@@ -317,5 +334,5 @@ script = ExtResource("1_mesef")
 character_position = Vector3(80, 15, 50)
 character_rotation = Vector3(0, 180, 0)
 items = Array[ExtResource("3_xhkj4")]([SubResource("Resource_jag0u"), SubResource("Resource_vdise"), SubResource("Resource_lqalm"), SubResource("Resource_7g6lq"), SubResource("Resource_lr86x"), SubResource("Resource_5v8s1"), SubResource("Resource_ivmsk")])
-exchanges = Array[ExtResource("2_xdm14")]([SubResource("Resource_8uc65"), SubResource("Resource_8fu57"), SubResource("Resource_wnrtd"), SubResource("Resource_xpeud"), SubResource("Resource_b6dbv"), SubResource("Resource_gh248"), SubResource("Resource_1yf32"), SubResource("Resource_sv6t1"), SubResource("Resource_hqga7"), SubResource("Resource_irurm"), SubResource("Resource_as33y"), SubResource("Resource_7y1op")])
+exchanges = Array[ExtResource("2_xdm14")]([SubResource("Resource_8uc65"), SubResource("Resource_8fu57"), SubResource("Resource_wnrtd"), SubResource("Resource_xpeud"), SubResource("Resource_b6dbv"), SubResource("Resource_gh248"), SubResource("Resource_1yf32"), SubResource("Resource_sv6t1"), SubResource("Resource_hqga7"), SubResource("Resource_irurm"), SubResource("Resource_as33y"), SubResource("Resource_7y1op"), SubResource("Resource_ykdst")])
 misc_data = SubResource("Resource_b1bh4")

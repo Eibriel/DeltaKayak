@@ -8,6 +8,7 @@ extends Control
 @onready var interactive_labels_control: Control = %InteractiveLabels
 @onready var character: RigidBody3D = %character
 @onready var dialogue_label: RichTextLabel = %DialogueLabel
+@onready var log_label: RichTextLabel = %LogLabel
 
 var interactive_labels:Dictionary
 var in_trigger:Array[String]
@@ -30,6 +31,8 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	handle_triggers(delta)
 	handle_dialogue(delta)
+	log_label.text = Global.log_text
+	Global.log_text = ""
 
 func handle_dialogue(delta:float) -> void:
 	dialogue_time -= delta

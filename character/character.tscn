@@ -1,8 +1,10 @@
-[gd_scene load_steps=7 format=3 uid="uid://r0o1qsmlq84u"]
+[gd_scene load_steps=9 format=3 uid="uid://r0o1qsmlq84u"]
 
 [ext_resource type="Script" path="res://character/character.gd" id="1_mnv7b"]
 [ext_resource type="PackedScene" uid="uid://b5n8cpa2p23cu" path="res://models/kayak_detailed.glb" id="2_qknmv"]
 [ext_resource type="Texture2D" uid="uid://cdex8bqdmulf8" path="res://textures/flashlight.jpg" id="3_xitmn"]
+[ext_resource type="PackedScene" uid="uid://ds44csvhmqggb" path="res://models/pepa/pillow.glb" id="4_81u6e"]
+[ext_resource type="PackedScene" uid="uid://dnempkm0ot1g4" path="res://models/pepa/pepa.glb" id="4_bo5nj"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_ogamo"]
 radius = 0.271211
@@ -51,13 +53,24 @@ shape = SubResource("CapsuleShape3D_b8fg3")
 
 [node name="CSGBox3D" type="CSGBox3D" parent="."]
 top_level = true
-visible = false
+
+[node name="pillow" parent="." instance=ExtResource("4_81u6e")]
+transform = Transform3D(-2, 0, 1.74845e-07, 0, 2, 0, -1.74845e-07, 0, -2, 0.0136361, 0.200965, -1.04693)
+
+[node name="pepa" parent="." instance=ExtResource("4_bo5nj")]
+transform = Transform3D(1.69991, 0, -0.0178913, 0, 1.7, 0, 0.0178913, 0, 1.69991, -0.099682, 0.452791, -1.09754)
 
 [node name="kayak_detailed" parent="." instance=ExtResource("2_qknmv")]
-transform = Transform3D(-0.4, 0, -3.49691e-08, 0, 0.4, 0, 3.49691e-08, 0, -0.4, 0, 0.0386806, -0.20732)
+transform = Transform3D(0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, 0.0386806, 0.312028)
+
+[node name="OmniLight3D" type="OmniLight3D" parent="."]
+transform = Transform3D(-1, 0, 8.74227e-08, 0, 1, 0, -8.74227e-08, 0, -1, 1.81245e-08, 1.35318, 0.104708)
+light_energy = 0.3
+omni_range = 4.0
+omni_attenuation = 2.395
 
 [node name="SpotLight3D" type="SpotLight3D" parent="."]
-transform = Transform3D(-1, 0, -8.74228e-08, 1.4164e-08, 0.986788, -0.162017, 8.62678e-08, -0.162017, -0.986788, 0, 0.340073, 0.644484)
+transform = Transform3D(1, -1.4164e-08, 1.15512e-09, 1.4164e-08, 0.986788, -0.162017, 1.15495e-09, 0.162017, 0.986788, 1.50834e-07, 0.397435, -1.41331)
 light_energy = 5.0
 light_projector = ExtResource("3_xitmn")
 shadow_enabled = true

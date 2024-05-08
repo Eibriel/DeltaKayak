@@ -4,6 +4,8 @@ var character: Node3D
 var camera: Camera3D
 var camera_path: Path3D
 
+var log_text: String = ""
+
 func is_demo():
 	var _is_demo:bool = OS.has_feature("demo")
 	#if not is_demo:
