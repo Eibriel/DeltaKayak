@@ -47,7 +47,7 @@ func _process(delta: float) -> void:
 	Global.log_text += "\ntarget_direction: %f" % target_direction
 	Global.log_text += "\nrotation.y: %f" % (rotation.y)
 	
-	speed = -max(0, -target_position_with_rotation.y) * delta * 50.0
+	speed = -max(0, -target_position_with_rotation.y) * delta * 20.0
 	#var error := target_direction - rotation.y
 	var error := target_direction
 	Global.log_text += "\nerror: %f" % error
@@ -70,7 +70,7 @@ func get_proportional(error) -> float:
 	# Minimiza error
 	# Suma
 	var proportional = error
-	proportional *= 10.0
+	proportional *= 20.0
 	return proportional
 
 func get_integral(_error) -> float:
@@ -108,7 +108,7 @@ func go_forward(_speed:float):
 
 func _integrate_forces(state):
 	if true:#paddle_status !=0 and holding:
-		state.linear_velocity *= 0.99
+		state.linear_velocity *= 0.999
 		state.angular_velocity *= 0.999
 	else:
 		state.linear_velocity *= 0.999
