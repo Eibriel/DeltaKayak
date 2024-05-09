@@ -8,7 +8,8 @@ enum Character {
 	PEPA,
 	CAROLINA,
 	MARTA,
-	MIGUEL
+	MIGUEL,
+	DON_PANCHO
 }
 
 @export var id: String

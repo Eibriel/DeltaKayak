@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="DKDataResource" load_steps=92 format=3 uid="uid://bi1rugic742u0"]
+[gd_resource type="Resource" script_class="DKDataResource" load_steps=98 format=3 uid="uid://bi1rugic742u0"]
 
 [ext_resource type="Script" path="res://data_resources/dkdata_resource.gd" id="1_mesef"]
 [ext_resource type="Script" path="res://data_resources/dialogue_resource.gd" id="1_yf062"]
@@ -18,6 +18,7 @@
 [ext_resource type="Script" path="res://interactives/miguel.gd" id="14_r2wy6"]
 [ext_resource type="Script" path="res://interactives/marta.gd" id="15_qi4qn"]
 [ext_resource type="Script" path="res://interactives/lancha_almacen.gd" id="16_2wko6"]
+[ext_resource type="Script" path="res://interactives/don_pancho.gd" id="17_vyx3y"]
 
 [sub_resource type="Resource" id="Resource_176qc"]
 script = ExtResource("1_yf062")
@@ -291,6 +292,25 @@ script = ExtResource("2_xdm14")
 id = "prices_are_up"
 dialogues = Array[ExtResource("1_yf062")]([SubResource("Resource_5dp5c")])
 
+[sub_resource type="Resource" id="Resource_nit86"]
+script = ExtResource("1_yf062")
+id = "new_item"
+character = 1
+image = ""
+text = "Hola Don Pancho"
+
+[sub_resource type="Resource" id="Resource_rvmsr"]
+script = ExtResource("1_yf062")
+id = "new_item"
+character = 7
+image = ""
+text = "Otra vez esos empresarios, haciendo de las suyas"
+
+[sub_resource type="Resource" id="Resource_xbw2o"]
+script = ExtResource("2_xdm14")
+id = "say_hi_don_pancho"
+dialogues = Array[ExtResource("1_yf062")]([SubResource("Resource_nit86"), SubResource("Resource_rvmsr")])
+
 [sub_resource type="Resource" id="Resource_64kt5"]
 script = ExtResource("3_0x3yn")
 id = "analice_box"
@@ -527,6 +547,24 @@ primary_action = "prices_are_up"
 secondary_action = ""
 actions = Array[ExtResource("3_0x3yn")]([SubResource("Resource_r8tih")])
 
+[sub_resource type="Resource" id="Resource_t0tk1"]
+script = ExtResource("3_0x3yn")
+id = "say_hi_don_pancho"
+label = "Hola Don Pancho"
+
+[sub_resource type="Resource" id="Resource_fp67t"]
+script = ExtResource("3_xhkj4")
+id = "don_pancho"
+label = "Don Pancho"
+active = true
+visible = true
+always_visible = false
+trigger_name = "trigger_don_pancho_001"
+logic = ExtResource("17_vyx3y")
+primary_action = "say_hi_don_pancho"
+secondary_action = ""
+actions = Array[ExtResource("3_0x3yn")]([SubResource("Resource_t0tk1")])
+
 [sub_resource type="Resource" id="Resource_b1bh4"]
 script = ExtResource("7_bypjw")
 house_door_open = false
@@ -537,6 +575,6 @@ has_next_door_key = false
 script = ExtResource("1_mesef")
 character_position = Vector3(80, 15, 50)
 character_rotation = Vector3(0, 180, 0)
-items = Array[ExtResource("3_xhkj4")]([SubResource("Resource_jag0u"), SubResource("Resource_vdise"), SubResource("Resource_lqalm"), SubResource("Resource_7g6lq"), SubResource("Resource_lr86x"), SubResource("Resource_5v8s1"), SubResource("Resource_ivmsk"), SubResource("Resource_renmg"), SubResource("Resource_jq2xb"), SubResource("Resource_x10mo"), SubResource("Resource_blufb"), SubResource("Resource_84rch")])
-exchanges = Array[ExtResource("2_xdm14")]([SubResource("Resource_8uc65"), SubResource("Resource_8fu57"), SubResource("Resource_wnrtd"), SubResource("Resource_xpeud"), SubResource("Resource_b6dbv"), SubResource("Resource_gh248"), SubResource("Resource_1yf32"), SubResource("Resource_sv6t1"), SubResource("Resource_hqga7"), SubResource("Resource_irurm"), SubResource("Resource_as33y"), SubResource("Resource_7y1op"), SubResource("Resource_ykdst"), SubResource("Resource_usyjl"), SubResource("Resource_ohekx"), SubResource("Resource_iitwq"), SubResource("Resource_1w7af"), SubResource("Resource_kd01q")])
+items = Array[ExtResource("3_xhkj4")]([SubResource("Resource_jag0u"), SubResource("Resource_vdise"), SubResource("Resource_lqalm"), SubResource("Resource_7g6lq"), SubResource("Resource_lr86x"), SubResource("Resource_5v8s1"), SubResource("Resource_ivmsk"), SubResource("Resource_renmg"), SubResource("Resource_jq2xb"), SubResource("Resource_x10mo"), SubResource("Resource_blufb"), SubResource("Resource_84rch"), SubResource("Resource_fp67t")])
+exchanges = Array[ExtResource("2_xdm14")]([SubResource("Resource_8uc65"), SubResource("Resource_8fu57"), SubResource("Resource_wnrtd"), SubResource("Resource_xpeud"), SubResource("Resource_b6dbv"), SubResource("Resource_gh248"), SubResource("Resource_1yf32"), SubResource("Resource_sv6t1"), SubResource("Resource_hqga7"), SubResource("Resource_irurm"), SubResource("Resource_as33y"), SubResource("Resource_7y1op"), SubResource("Resource_ykdst"), SubResource("Resource_usyjl"), SubResource("Resource_ohekx"), SubResource("Resource_iitwq"), SubResource("Resource_1w7af"), SubResource("Resource_kd01q"), SubResource("Resource_xbw2o")])
 misc_data = SubResource("Resource_b1bh4")
