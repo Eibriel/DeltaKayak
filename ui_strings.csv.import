@@ -1,0 +1,17 @@
+[remap]
+
+importer="csv_translation"
+type="Translation"
+uid="uid://b6soiccavim22"
+
+[deps]
+
+files=["res://ui_strings.es_AR.translation", "res://ui_strings.es_ES.translation", "res://ui_strings.en.translation"]
+
+source_file="res://ui_strings.csv"
+dest_files=["res://ui_strings.es_AR.translation", "res://ui_strings.es_ES.translation", "res://ui_strings.en.translation"]
+
+[params]
+
+compress=true
+delimiter=0

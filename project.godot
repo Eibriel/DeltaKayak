@@ -23,6 +23,7 @@ general/text_to_speech=true
 
 Global="*res://global.gd"
 GlobalSteam="*res://steam.gd"
+GamePlatform="*res://game_platform.gd"
 
 [debug]
 
@@ -118,7 +119,7 @@ compicactus={
 
 [internationalization]
 
-locale/translations=PackedStringArray("res://dkdata_strings.en.translation", "res://dkdata_strings.es_AR.translation", "res://dkdata_strings.es_ES.translation")
+locale/translations=PackedStringArray("res://dkdata_strings.en.translation", "res://dkdata_strings.es_AR.translation", "res://dkdata_strings.es_ES.translation", "res://ui_strings.en.translation", "res://ui_strings.es_AR.translation", "res://ui_strings.es_ES.translation")
 
 [rendering]
 

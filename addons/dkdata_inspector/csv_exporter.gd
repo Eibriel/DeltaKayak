@@ -14,7 +14,7 @@ func _on_export_csv():
 	
 	var csv_text = "key,es_AR,es_ES,en"
 	for s in strings:
-		csv_text += "\n%s,%s,," % [s, strings[s]]
+		csv_text += "\n%s,\"%s\",," % [s, strings[s].replace("\"", "\"\"")]
 	
 	var file = FileAccess.open("res://dkdata_strings.csv", FileAccess.WRITE)
 	file.store_string(csv_text)

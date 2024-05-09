@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="DKDataResource" load_steps=60 format=3 uid="uid://bi1rugic742u0"]
+[gd_resource type="Resource" script_class="DKDataResource" load_steps=92 format=3 uid="uid://bi1rugic742u0"]
 
 [ext_resource type="Script" path="res://data_resources/dkdata_resource.gd" id="1_mesef"]
 [ext_resource type="Script" path="res://data_resources/dialogue_resource.gd" id="1_yf062"]
@@ -13,6 +13,11 @@
 [ext_resource type="Script" path="res://interactives/pepa_house.gd" id="9_l4ry2"]
 [ext_resource type="Script" path="res://interactives/next_door.gd" id="10_l6k10"]
 [ext_resource type="Script" path="res://interactives/next_door_key.gd" id="11_fmkbw"]
+[ext_resource type="Script" path="res://interactives/carolina.gd" id="12_jnjc7"]
+[ext_resource type="Script" path="res://interactives/los_gomez.gd" id="13_hxw6v"]
+[ext_resource type="Script" path="res://interactives/miguel.gd" id="14_r2wy6"]
+[ext_resource type="Script" path="res://interactives/marta.gd" id="15_qi4qn"]
+[ext_resource type="Script" path="res://interactives/lancha_almacen.gd" id="16_2wko6"]
 
 [sub_resource type="Resource" id="Resource_176qc"]
 script = ExtResource("1_yf062")
@@ -29,9 +34,9 @@ dialogues = Array[ExtResource("1_yf062")]([SubResource("Resource_176qc")])
 [sub_resource type="Resource" id="Resource_fdisl"]
 script = ExtResource("1_yf062")
 id = "open_house_door"
-character = 0
+character = 1
 image = ""
-text = "La puerta está abierta"
+text = "Hora de repartir miel"
 
 [sub_resource type="Resource" id="Resource_8fu57"]
 script = ExtResource("2_xdm14")
@@ -41,7 +46,7 @@ dialogues = Array[ExtResource("1_yf062")]([SubResource("Resource_fdisl")])
 [sub_resource type="Resource" id="Resource_gfaki"]
 script = ExtResource("1_yf062")
 id = "capybara_indiferent"
-character = 0
+character = 1
 image = ""
 text = "El carpincho te mira indiferente"
 
@@ -53,7 +58,7 @@ dialogues = Array[ExtResource("1_yf062")]([SubResource("Resource_gfaki")])
 [sub_resource type="Resource" id="Resource_gl7t3"]
 script = ExtResource("1_yf062")
 id = "box_turns_around"
-character = 0
+character = 1
 image = ""
 text = "El cajón te da la espalda"
 
@@ -107,20 +112,27 @@ dialogues = Array[ExtResource("1_yf062")]([SubResource("Resource_q2ov1")])
 
 [sub_resource type="Resource" id="Resource_1g1kk"]
 script = ExtResource("1_yf062")
-id = "new_item"
+id = "its_closed_note"
 character = 1
 image = ""
-text = "La reja está cerrada con un candado"
+text = "La reja está cerrada con un candado, y hay una nota:"
+
+[sub_resource type="Resource" id="Resource_rroe6"]
+script = ExtResource("1_yf062")
+id = "note"
+character = 1
+image = ""
+text = "\"Pedile la llave a Juan, en la lancha colectivo\""
 
 [sub_resource type="Resource" id="Resource_sv6t1"]
 script = ExtResource("2_xdm14")
 id = "look_next_door"
-dialogues = Array[ExtResource("1_yf062")]([SubResource("Resource_1g1kk")])
+dialogues = Array[ExtResource("1_yf062")]([SubResource("Resource_1g1kk"), SubResource("Resource_rroe6")])
 
 [sub_resource type="Resource" id="Resource_lng21"]
 script = ExtResource("1_yf062")
 id = "new_item"
-character = 0
+character = 1
 image = ""
 text = "Usas la llave en el candado, y abres la reja"
 
@@ -176,6 +188,108 @@ text = "Tengo que agregarte más comida"
 script = ExtResource("2_xdm14")
 id = "i_must_add_food"
 dialogues = Array[ExtResource("1_yf062")]([SubResource("Resource_eboy4")])
+
+[sub_resource type="Resource" id="Resource_8mf5t"]
+script = ExtResource("1_yf062")
+id = "hi"
+character = 1
+image = ""
+text = "Hola vecina"
+
+[sub_resource type="Resource" id="Resource_u6hsf"]
+script = ExtResource("1_yf062")
+id = "new_item"
+character = 4
+image = ""
+text = "..."
+
+[sub_resource type="Resource" id="Resource_mxktp"]
+script = ExtResource("1_yf062")
+id = "new_item"
+character = 1
+image = ""
+text = "¿Tenés idea que son esas luces?"
+
+[sub_resource type="Resource" id="Resource_pxnea"]
+script = ExtResource("1_yf062")
+id = "new_item"
+character = 4
+image = ""
+text = "¿Por qué debería saberlo? Pero parecen venir del cielo"
+
+[sub_resource type="Resource" id="Resource_usyjl"]
+script = ExtResource("2_xdm14")
+id = "say_hi_carolina"
+dialogues = Array[ExtResource("1_yf062")]([SubResource("Resource_8mf5t"), SubResource("Resource_u6hsf"), SubResource("Resource_mxktp"), SubResource("Resource_pxnea")])
+
+[sub_resource type="Resource" id="Resource_ncm7s"]
+script = ExtResource("1_yf062")
+id = "new_item"
+character = 1
+image = ""
+text = "La casa de los Gómez siempre parece vacía..."
+
+[sub_resource type="Resource" id="Resource_a5bwe"]
+script = ExtResource("1_yf062")
+id = "new_item"
+character = 1
+image = ""
+text = "Seguro están adentro, encerrados"
+
+[sub_resource type="Resource" id="Resource_ohekx"]
+script = ExtResource("2_xdm14")
+id = "describe_gomez_house"
+dialogues = Array[ExtResource("1_yf062")]([SubResource("Resource_ncm7s"), SubResource("Resource_a5bwe")])
+
+[sub_resource type="Resource" id="Resource_1qm2p"]
+script = ExtResource("1_yf062")
+id = "new_item"
+character = 1
+image = ""
+text = "¿Viste las luces?"
+
+[sub_resource type="Resource" id="Resource_x8k2n"]
+script = ExtResource("1_yf062")
+id = "new_item"
+character = 5
+image = ""
+text = "Si, muy raro, y muy preocupante"
+
+[sub_resource type="Resource" id="Resource_iitwq"]
+script = ExtResource("2_xdm14")
+id = "say_hi_marta"
+dialogues = Array[ExtResource("1_yf062")]([SubResource("Resource_1qm2p"), SubResource("Resource_x8k2n")])
+
+[sub_resource type="Resource" id="Resource_v0ujp"]
+script = ExtResource("1_yf062")
+id = "new_item"
+character = 1
+image = ""
+text = "Buen día"
+
+[sub_resource type="Resource" id="Resource_b1ul0"]
+script = ExtResource("1_yf062")
+id = "new_item"
+character = 6
+image = ""
+text = "¡Nada de buenos! Mirá que desastre lo que pasó con el árbol caído. Así no voy a poder salir con la lancha!"
+
+[sub_resource type="Resource" id="Resource_1w7af"]
+script = ExtResource("2_xdm14")
+id = "say_hi_miguel"
+dialogues = Array[ExtResource("1_yf062")]([SubResource("Resource_v0ujp"), SubResource("Resource_b1ul0")])
+
+[sub_resource type="Resource" id="Resource_5dp5c"]
+script = ExtResource("1_yf062")
+id = "new_item"
+character = 1
+image = ""
+text = "Volvieron a subir los precios. A este ritmo la fruta va a terminar siendo un lujo."
+
+[sub_resource type="Resource" id="Resource_kd01q"]
+script = ExtResource("2_xdm14")
+id = "prices_are_up"
+dialogues = Array[ExtResource("1_yf062")]([SubResource("Resource_5dp5c")])
 
 [sub_resource type="Resource" id="Resource_64kt5"]
 script = ExtResource("3_0x3yn")
@@ -323,6 +437,96 @@ primary_action = "look_key"
 secondary_action = "take_key"
 actions = Array[ExtResource("3_0x3yn")]([SubResource("Resource_1i8xu"), SubResource("Resource_l6vvj")])
 
+[sub_resource type="Resource" id="Resource_xoij5"]
+script = ExtResource("3_0x3yn")
+id = "say_hi"
+label = "Hola vecina"
+
+[sub_resource type="Resource" id="Resource_renmg"]
+script = ExtResource("3_xhkj4")
+id = "carolina"
+label = "Carolina"
+active = true
+visible = true
+always_visible = false
+trigger_name = "trigger_carolina_001"
+logic = ExtResource("12_jnjc7")
+primary_action = "say_hi"
+secondary_action = ""
+actions = Array[ExtResource("3_0x3yn")]([SubResource("Resource_xoij5")])
+
+[sub_resource type="Resource" id="Resource_mogfw"]
+script = ExtResource("3_0x3yn")
+id = "look_gomez_house"
+label = "La mansión de los Gómez"
+
+[sub_resource type="Resource" id="Resource_jq2xb"]
+script = ExtResource("3_xhkj4")
+id = "los_gomez"
+label = "Los Gómez"
+active = true
+visible = true
+always_visible = false
+trigger_name = "trigger_los_gomez_001"
+logic = ExtResource("13_hxw6v")
+primary_action = "look_gomez_house"
+secondary_action = ""
+actions = Array[ExtResource("3_0x3yn")]([SubResource("Resource_mogfw")])
+
+[sub_resource type="Resource" id="Resource_o8tut"]
+script = ExtResource("3_0x3yn")
+id = "say_hi_miguel"
+label = "Hola Miguel"
+
+[sub_resource type="Resource" id="Resource_x10mo"]
+script = ExtResource("3_xhkj4")
+id = "miguel"
+label = "Miguel"
+active = true
+visible = true
+always_visible = false
+trigger_name = "trigger_miguel_001"
+logic = ExtResource("14_r2wy6")
+primary_action = "say_hi_miguel"
+secondary_action = ""
+actions = Array[ExtResource("3_0x3yn")]([SubResource("Resource_o8tut")])
+
+[sub_resource type="Resource" id="Resource_x4wlg"]
+script = ExtResource("3_0x3yn")
+id = "say_hi_marta"
+label = "Hola Marta"
+
+[sub_resource type="Resource" id="Resource_blufb"]
+script = ExtResource("3_xhkj4")
+id = "marta"
+label = "Marta"
+active = true
+visible = true
+always_visible = false
+trigger_name = "trigger_marta_001"
+logic = ExtResource("15_qi4qn")
+primary_action = "say_hi_marta"
+secondary_action = ""
+actions = Array[ExtResource("3_0x3yn")]([SubResource("Resource_x4wlg")])
+
+[sub_resource type="Resource" id="Resource_r8tih"]
+script = ExtResource("3_0x3yn")
+id = "prices_are_up"
+label = "Subieron los precios"
+
+[sub_resource type="Resource" id="Resource_84rch"]
+script = ExtResource("3_xhkj4")
+id = "lancha_almacen"
+label = "Lancha almacén"
+active = true
+visible = true
+always_visible = false
+trigger_name = "trigger_lancha_almacen_001"
+logic = ExtResource("16_2wko6")
+primary_action = "prices_are_up"
+secondary_action = ""
+actions = Array[ExtResource("3_0x3yn")]([SubResource("Resource_r8tih")])
+
 [sub_resource type="Resource" id="Resource_b1bh4"]
 script = ExtResource("7_bypjw")
 house_door_open = false
@@ -333,6 +537,6 @@ has_next_door_key = false
 script = ExtResource("1_mesef")
 character_position = Vector3(80, 15, 50)
 character_rotation = Vector3(0, 180, 0)
-items = Array[ExtResource("3_xhkj4")]([SubResource("Resource_jag0u"), SubResource("Resource_vdise"), SubResource("Resource_lqalm"), SubResource("Resource_7g6lq"), SubResource("Resource_lr86x"), SubResource("Resource_5v8s1"), SubResource("Resource_ivmsk")])
-exchanges = Array[ExtResource("2_xdm14")]([SubResource("Resource_8uc65"), SubResource("Resource_8fu57"), SubResource("Resource_wnrtd"), SubResource("Resource_xpeud"), SubResource("Resource_b6dbv"), SubResource("Resource_gh248"), SubResource("Resource_1yf32"), SubResource("Resource_sv6t1"), SubResource("Resource_hqga7"), SubResource("Resource_irurm"), SubResource("Resource_as33y"), SubResource("Resource_7y1op"), SubResource("Resource_ykdst")])
+items = Array[ExtResource("3_xhkj4")]([SubResource("Resource_jag0u"), SubResource("Resource_vdise"), SubResource("Resource_lqalm"), SubResource("Resource_7g6lq"), SubResource("Resource_lr86x"), SubResource("Resource_5v8s1"), SubResource("Resource_ivmsk"), SubResource("Resource_renmg"), SubResource("Resource_jq2xb"), SubResource("Resource_x10mo"), SubResource("Resource_blufb"), SubResource("Resource_84rch")])
+exchanges = Array[ExtResource("2_xdm14")]([SubResource("Resource_8uc65"), SubResource("Resource_8fu57"), SubResource("Resource_wnrtd"), SubResource("Resource_xpeud"), SubResource("Resource_b6dbv"), SubResource("Resource_gh248"), SubResource("Resource_1yf32"), SubResource("Resource_sv6t1"), SubResource("Resource_hqga7"), SubResource("Resource_irurm"), SubResource("Resource_as33y"), SubResource("Resource_7y1op"), SubResource("Resource_ykdst"), SubResource("Resource_usyjl"), SubResource("Resource_ohekx"), SubResource("Resource_iitwq"), SubResource("Resource_1w7af"), SubResource("Resource_kd01q")])
 misc_data = SubResource("Resource_b1bh4")

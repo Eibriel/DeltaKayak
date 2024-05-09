@@ -16,6 +16,7 @@ var in_trigger:Array[String]
 var dialogue_queue: Array[DialogueResource]
 var dialogue_time: float
 var dialogue_tween: Tween
+var write_speed: float
 
 func _ready() -> void:
 	label_demo.visible = false
@@ -31,23 +32,40 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	handle_triggers(delta)
 	handle_dialogue(delta)
+	handle_stats(delta)
 	log_label.text = Global.log_text
 	Global.log_text = ""
+
+func handle_stats(delta):
+	#
+	if GamePlatform.stats_support["last_player_position"] == null:
+		GamePlatform.stats_support["last_player_position"] = Global.character.position
+	var character_distance = Global.character.position.distance_to(GamePlatform.stats_support["last_player_position"])
+	character_distance *= 0.001 # Meters to Kilometers
+	GamePlatform.stats_support["last_player_position"] = Global.character.position
+	
+	GamePlatform.stats["distance_traveled"] += character_distance 
+		
 
 func handle_dialogue(delta:float) -> void:
 	dialogue_time -= delta
 	if dialogue_time > 0: return
 	dialogue_label.text = ""
 	if dialogue_queue.size() < 1: return
-	var d: DialogueResource = dialogue_queue.pop_front()
+	var d: DialogueResource = dialogue_queue.pop_front() as DialogueResource
 	var key: String = "%s_dialogue_text" % d.resource_scene_unique_id
-	dialogue_label.text = tr(key)
+	var character_string:String = d.Character.keys()[d.character]
+	dialogue_label.text = "%s: %s" % [tr(character_string), tr(key)]
 	dialogue_label.visible_ratio = 0
-	if dialogue_tween != null and dialogue_tween.is_running():
+	if is_dialogue_animating():
 		dialogue_tween.stop()
 	dialogue_tween = create_tween()
+	write_speed = dialogue_label.text.length() * 0.08
 	dialogue_tween.tween_property(dialogue_label, "visible_ratio", 1., 1)
-	dialogue_time = 5.
+	dialogue_time = write_speed + (dialogue_label.text.length() * 0.08)
+	# TODO
+	# - Skip animation
+	# - Skip text
 
 func handle_triggers(_delta:float) -> void:
 	if Global.camera == null: return
@@ -114,9 +132,15 @@ func get_interactive(id:String, primary_label:String, secondary_label:String, cr
 
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("primary_action"):
+		if is_saying_dialogue():
+			skip_dialogue()
+			return
 		for id in in_trigger:
 			execute_trigger("primary_action", id)
 	elif event.is_action_pressed("secondary_action"):
+		if is_saying_dialogue():
+			skip_dialogue()
+			return
 		for id in in_trigger:
 			execute_trigger("secondary_action", id)
 	elif event.is_action_pressed("pepa"):
@@ -190,11 +214,28 @@ func say_dialogue(text:String, force: bool = true) -> void:
 		if e.id == text:
 			if force:
 				dialogue_queue.resize(0)
-				dialogue_time = -1.0
+				skip_dialogue()
 			for d in e.dialogues:
 				dialogue_queue.append(d)
 			return
 	push_error("Cant find dialogue %s" % text)
+
+func skip_dialogue() -> void:
+	#dialogue_time = -1.0
+	if is_dialogue_animating():
+		dialogue_tween.stop()
+		dialogue_label.visible_ratio = 1
+		dialogue_time -= write_speed
+	else:
+		dialogue_label.text = ""
+		dialogue_time = -1
+
+func is_saying_dialogue() -> bool:
+	var is_queue_full := dialogue_queue.size() > 0
+	return is_dialogue_animating() or is_queue_full or dialogue_label.text != ""
+
+func is_dialogue_animating() -> bool:
+	return dialogue_tween != null and dialogue_tween.is_running()
 
 func sync_misc_data() -> void:
 	# NOTE
@@ -208,10 +249,11 @@ func sync_misc_data() -> void:
 	
 	node_visible("Muelle1_007", not misc.next_door_open)
 	node_collide("Muelle1_007", not misc.next_door_open)
+	item_active("next_door", not misc.next_door_open)
+	item_visible("next_door", not misc.next_door_open)
 	
 	item_active("next_door_key", not misc.has_next_door_key)
 	item_visible("next_door_key", not misc.has_next_door_key)
-	
 
 func node_collide(node_path: NodePath, active: bool):
 	var node = dk_world.get_node(node_path)

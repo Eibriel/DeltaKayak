@@ -67,14 +67,10 @@ func get_derivative(error) -> float:
 	# Substracts
 	var derivative = last_rotation - rotation.y
 	if absf(derivative) > PI:
-		print(last_rotation)
-		print(rotation.y)
-		prints("LOOP", derivative)
 		if rotation.y > last_rotation:
 			derivative = -(last_rotation + rotation.y)
 		else:
 			derivative = -(rotation.y + last_rotation)
-		prints("NEW", derivative)
 	
 	return derivative*1000.0
 #

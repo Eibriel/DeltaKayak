@@ -5,13 +5,16 @@ enum Character {
 	NARRATOR,
 	PROTAGONIST,
 	COMPICACTUS,
-	PEPA
+	PEPA,
+	CAROLINA,
+	MARTA,
+	MIGUEL
 }
 
 @export var id: String
 
 #@export_group("Character")
-@export var character: Character
+@export var character: Character = 1
 @export var image: String
 
 #@export_group("Text")

@@ -13,8 +13,10 @@ var is_owned: bool = false
 var steam_id: int = 0
 var steam_username: String = ""
 
+var stats_ready := false
+
 var stats = {
-	"distance_traveled": 0
+	"distance_traveled": 0 #Kilometers
 }
 
 func _init() -> void:
@@ -24,11 +26,9 @@ func _init() -> void:
 
 func _ready() -> void:
 	initialize_steam()
-	set_test_stats()
 
-func set_test_stats():
-	print("set_test_stats")
-	Steam.setStatInt("distance_traveled", 10)
+func set_stat(stat_name:String, value: Variant):
+	Steam.setStatInt(stat_name, value)
 	Steam.storeStats()
 
 func _process(_delta: float) -> void:
@@ -58,6 +58,7 @@ func initialize_steam() -> void:
 	Steam.current_stats_received.connect(_on_steam_stats_ready)
 
 func _on_steam_stats_ready(game: int, result: int, user: int) -> void:
+	stats_ready = true
 	print("This game's ID: %s" % game)
 	print("Call result: %s" % result)
 	print("This user's Steam ID: %s" % user)
