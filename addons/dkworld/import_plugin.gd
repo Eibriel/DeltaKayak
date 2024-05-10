@@ -307,17 +307,11 @@ func add_item(item: Dictionary, item_id: String, main_node: Node3D):
 	var gltf_instance = gltf_scene.instantiate()
 	gltf_instance.name = item_id
 	main_node.add_child(gltf_instance)
-	#print(item)
 	gltf_instance.position = array_to_vector3(item.position)
-	#gltf_instance.rotation_order = EULER_ORDER_ZXY
-	gltf_instance.rotation = array_to_vector3(item.rotation)
 	gltf_instance.scale = array_to_vector3(item.scale)
+	gltf_instance.quaternion = array_to_quaternion(item.quaternion)
 	gltf_instance.set_owner(main_node)
-	#print("owner")
-	#prints(gltf_instance.name, gltf_instance.owner.name)
 	_recursively_set_owner(gltf_instance, main_node)
-	#gltf_instance.propagate_call("set_owner", [main_node], true)
-	#main_node.nodes_dic[item_id] = gltf_instance.get_path()
 
 func scene_from_gltf(item:Dictionary, item_id:String) -> PackedScene:
 	var gltf_loader := GLTFDocument.new()
@@ -352,6 +346,8 @@ func scene_from_gltf(item:Dictionary, item_id:String) -> PackedScene:
 func array_to_vector3(array: Array) -> Vector3:
 	return Vector3(array[0], array[1], array[2])
 
+func array_to_quaternion(array: Array) -> Quaternion:
+	return Quaternion(array[0], array[2], -array[1], array[3])
 
 func _configure_lod(gltf_instance:Node, json:Dictionary) -> void:
 	for node in gltf_instance.get_children():

@@ -2,6 +2,7 @@ import os
 from bmesh.types import BMesh
 import bpy
 import json
+import math
 import bmesh
 from bpy.types import Object
 import mathutils
@@ -195,7 +196,9 @@ class DKT_OT_ExportWorld(bpy.types.Operator):
                 "instance": item_obj.instance_collection.name,
                 "position": self.location_to_godot(item_obj.location),
                 "rotation": self.rotation_to_godot(item_obj.rotation_euler),
-                "scale": self.scale_to_godot(item_obj.scale)
+                "scale": self.scale_to_godot(item_obj.scale),
+                "transformation": self.transform_to_godot(item_obj.matrix_world),
+                "quaternion": self.quaternion_to_godot(item_obj.matrix_world)
             }
         return items_def
 
@@ -290,29 +293,53 @@ class DKT_OT_ExportWorld(bpy.types.Operator):
         }
         return trigger_def
     
-    def location_to_godot(self, location):# -> list:
+    def location_to_godot(self, location) -> list:
         return [
             location[0],
             location[2],
             -location[1]
         ]
 
-    def scale_to_godot(self, scale):# -> list:
+    def scale_to_godot(self, scale) -> list:
         return [
             scale[0],
             scale[2],
             scale[1]
         ]
 
-    def rotation_to_godot(self, rotation):# -> list:
+    def rotation_to_godot(self, rotation) -> list:
+        #eul = mathutils.Euler((rotation[0]-math.radians(90), rotation[2], -rotation[1]))
         return [
             rotation[0],
             rotation[2],
             -rotation[1]
         ]
 
+    def transform_to_godot(self, matrix) -> list:
+        mat: list = [
+            self.matrix_to_list(matrix[0]),
+            self.matrix_to_list(matrix[1]),
+            self.matrix_to_list(matrix[2]),
+            self.matrix_to_list(matrix[3])
+        ]
+        return mat
+
+    def quaternion_to_godot(self, matrix) -> list:
+        quat = matrix.to_quaternion()
+        #eul = mathutils.Euler((math.radians(-90), math.radians(0), math.radians(0)))
+        #quat.rotate(eul)
+        return [
+            quat.x,
+            quat.y,
+            quat.z,
+            quat.w
+        ]
+
     def vector_to_list(self, vector) -> list:
         return [vector.x, vector.y, vector.z]
+
+    def matrix_to_list(self, matrix) -> list:
+        return [matrix[0],matrix[1],matrix[2],matrix[3]]
 
 
 class DKT_PT_Setup(bpy.types.Panel):

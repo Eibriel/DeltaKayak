@@ -16,6 +16,9 @@ func _ready():
 	last_rotation = rotation.y
 	Global.character = self
 	pepa.get_node("AnimationPlayer").play("Sitting")
+	print("Transform")
+	print($CSGCylinder3D3.transform)
+	print($CSGCylinder3D3.global_transform)
 
 func _process(delta: float) -> void:
 	var input_dir:Vector2 = Input.get_vector("left", "right", "up", "down")

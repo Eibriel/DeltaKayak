@@ -78,3 +78,7 @@ light_projector = ExtResource("3_xitmn")
 shadow_enabled = true
 spot_range = 13.9665
 spot_angle = 41.0167
+
+[node name="CSGCylinder3D3" type="CSGCylinder3D" parent="."]
+transform = Transform3D(-1, 8.74228e-08, 3.82137e-15, 0, -4.37114e-08, 1, 8.74228e-08, 1, 4.37114e-08, 0, 0, 0)
+visible = false
