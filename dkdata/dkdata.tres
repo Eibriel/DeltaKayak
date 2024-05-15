@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="DKDataResource" load_steps=103 format=3 uid="uid://bi1rugic742u0"]
+[gd_resource type="Resource" script_class="DKDataResource" load_steps=123 format=3 uid="uid://bi1rugic742u0"]
 
 [ext_resource type="Script" path="res://data_resources/dkdata_resource.gd" id="1_mesef"]
 [ext_resource type="Script" path="res://data_resources/dialogue_resource.gd" id="1_yf062"]
@@ -20,6 +20,11 @@
 [ext_resource type="Script" path="res://interactives/lancha_almacen.gd" id="16_2wko6"]
 [ext_resource type="Script" path="res://interactives/don_pancho.gd" id="17_vyx3y"]
 [ext_resource type="Script" path="res://interactives/plant_fence.gd" id="18_bjus4"]
+[ext_resource type="Script" path="res://interactives/dream_start.gd" id="19_v4e2c"]
+[ext_resource type="Script" path="res://interactives/dream_bye_pepa.gd" id="20_dy2tl"]
+[ext_resource type="Script" path="res://interactives/dream_start_a.gd" id="21_g3p1q"]
+[ext_resource type="Script" path="res://interactives/dream_start_b.gd" id="21_ijc21"]
+[ext_resource type="Script" path="res://interactives/dream_start_c.gd" id="23_gg3lw"]
 
 [sub_resource type="Resource" id="Resource_176qc"]
 script = ExtResource("1_yf062")
@@ -38,7 +43,7 @@ script = ExtResource("1_yf062")
 id = "open_house_door"
 character = 1
 image = ""
-text = "Hora de repartir miel"
+text = "Hora de repartir la mercancía"
 
 [sub_resource type="Resource" id="Resource_8fu57"]
 script = ExtResource("2_xdm14")
@@ -324,6 +329,68 @@ script = ExtResource("2_xdm14")
 id = "look_plant_fence"
 dialogues = Array[ExtResource("1_yf062")]([SubResource("Resource_hnvru")])
 
+[sub_resource type="Resource" id="Resource_fesov"]
+script = ExtResource("1_yf062")
+id = "here_again"
+character = 1
+image = ""
+text = "Otra vez acá"
+
+[sub_resource type="Resource" id="Resource_cxx6y"]
+script = ExtResource("2_xdm14")
+id = "dream_start_point"
+dialogues = Array[ExtResource("1_yf062")]([SubResource("Resource_fesov")])
+
+[sub_resource type="Resource" id="Resource_xbhoq"]
+script = ExtResource("1_yf062")
+id = "new_item"
+character = 1
+image = ""
+text = "Odio revivir este momento"
+
+[sub_resource type="Resource" id="Resource_3oy44"]
+script = ExtResource("2_xdm14")
+id = "dream_start_a"
+dialogues = Array[ExtResource("1_yf062")]([SubResource("Resource_xbhoq")])
+
+[sub_resource type="Resource" id="Resource_ulecs"]
+script = ExtResource("1_yf062")
+id = "new_item"
+character = 1
+image = ""
+text = "Se lo que va a pasar ..."
+
+[sub_resource type="Resource" id="Resource_wljw0"]
+script = ExtResource("1_yf062")
+id = "new_item"
+character = 1
+image = ""
+text = "pero no hay nada que pueda hacer para evitarlo."
+
+[sub_resource type="Resource" id="Resource_0daq8"]
+script = ExtResource("2_xdm14")
+id = "dream_start_b"
+dialogues = Array[ExtResource("1_yf062")]([SubResource("Resource_ulecs"), SubResource("Resource_wljw0")])
+
+[sub_resource type="Resource" id="Resource_0duwt"]
+script = ExtResource("1_yf062")
+id = "new_item"
+character = 1
+image = ""
+text = "¡Pepa!"
+
+[sub_resource type="Resource" id="Resource_dmlht"]
+script = ExtResource("1_yf062")
+id = "new_item"
+character = 1
+image = ""
+text = "¡No!"
+
+[sub_resource type="Resource" id="Resource_3time"]
+script = ExtResource("2_xdm14")
+id = "dream_start_c"
+dialogues = Array[ExtResource("1_yf062")]([SubResource("Resource_0duwt"), SubResource("Resource_dmlht")])
+
 [sub_resource type="Resource" id="Resource_64kt5"]
 script = ExtResource("3_0x3yn")
 id = "analice_box"
@@ -420,7 +487,7 @@ visible = true
 always_visible = true
 trigger_name = "trigger_dog_house_001"
 logic = ExtResource("9_l4ry2")
-primary_action = "this_is_pepas_home"
+primary_action = "i_miss_pepa"
 secondary_action = ""
 actions = Array[ExtResource("3_0x3yn")]([SubResource("Resource_7n8tn"), SubResource("Resource_xlwb5")])
 
@@ -596,16 +663,82 @@ primary_action = "look_fence"
 secondary_action = ""
 actions = Array[ExtResource("3_0x3yn")]([SubResource("Resource_pnmdi")])
 
+[sub_resource type="Resource" id="Resource_m5ihe"]
+script = ExtResource("3_xhkj4")
+id = "dream_start_point"
+label = ""
+active = true
+visible = false
+always_visible = false
+trigger_name = "trigger_start_002"
+logic = ExtResource("19_v4e2c")
+primary_action = ""
+secondary_action = ""
+actions = Array[ExtResource("3_0x3yn")]([])
+
+[sub_resource type="Resource" id="Resource_7dqsu"]
+script = ExtResource("3_xhkj4")
+id = "dream_bye_pepa"
+label = ""
+active = true
+visible = false
+always_visible = false
+trigger_name = "trigger_bye_pepa_002"
+logic = ExtResource("20_dy2tl")
+primary_action = ""
+secondary_action = ""
+actions = Array[ExtResource("3_0x3yn")]([])
+
+[sub_resource type="Resource" id="Resource_1l5tq"]
+script = ExtResource("3_xhkj4")
+id = "dream_start_a"
+label = ""
+active = true
+visible = false
+always_visible = false
+trigger_name = "trigger_start_a_002"
+logic = ExtResource("21_g3p1q")
+primary_action = ""
+secondary_action = ""
+actions = Array[ExtResource("3_0x3yn")]([])
+
+[sub_resource type="Resource" id="Resource_ryjcu"]
+script = ExtResource("3_xhkj4")
+id = "dream_start_b"
+label = ""
+active = true
+visible = false
+always_visible = false
+trigger_name = "trigger_start_b_002"
+logic = ExtResource("21_ijc21")
+primary_action = ""
+secondary_action = ""
+actions = Array[ExtResource("3_0x3yn")]([])
+
+[sub_resource type="Resource" id="Resource_p4db1"]
+script = ExtResource("3_xhkj4")
+id = "dream_start_c"
+label = ""
+active = true
+visible = false
+always_visible = false
+trigger_name = "trigger_start_c_002"
+logic = ExtResource("23_gg3lw")
+primary_action = ""
+secondary_action = ""
+actions = Array[ExtResource("3_0x3yn")]([])
+
 [sub_resource type="Resource" id="Resource_b1bh4"]
 script = ExtResource("7_bypjw")
 house_door_open = false
 next_door_open = false
 has_next_door_key = false
+pepa_visible = true
 
 [resource]
 script = ExtResource("1_mesef")
 character_position = Vector3(80, 15, 50)
 character_rotation = Vector3(0, 180, 0)
-items = Array[ExtResource("3_xhkj4")]([SubResource("Resource_jag0u"), SubResource("Resource_vdise"), SubResource("Resource_lqalm"), SubResource("Resource_7g6lq"), SubResource("Resource_lr86x"), SubResource("Resource_5v8s1"), SubResource("Resource_ivmsk"), SubResource("Resource_renmg"), SubResource("Resource_jq2xb"), SubResource("Resource_x10mo"), SubResource("Resource_blufb"), SubResource("Resource_84rch"), SubResource("Resource_fp67t"), SubResource("Resource_oenel")])
-exchanges = Array[ExtResource("2_xdm14")]([SubResource("Resource_8uc65"), SubResource("Resource_8fu57"), SubResource("Resource_wnrtd"), SubResource("Resource_xpeud"), SubResource("Resource_b6dbv"), SubResource("Resource_gh248"), SubResource("Resource_1yf32"), SubResource("Resource_sv6t1"), SubResource("Resource_hqga7"), SubResource("Resource_irurm"), SubResource("Resource_as33y"), SubResource("Resource_7y1op"), SubResource("Resource_ykdst"), SubResource("Resource_usyjl"), SubResource("Resource_ohekx"), SubResource("Resource_iitwq"), SubResource("Resource_1w7af"), SubResource("Resource_kd01q"), SubResource("Resource_xbw2o"), SubResource("Resource_iy5km")])
+items = Array[ExtResource("3_xhkj4")]([SubResource("Resource_jag0u"), SubResource("Resource_vdise"), SubResource("Resource_lqalm"), SubResource("Resource_7g6lq"), SubResource("Resource_lr86x"), SubResource("Resource_5v8s1"), SubResource("Resource_ivmsk"), SubResource("Resource_renmg"), SubResource("Resource_jq2xb"), SubResource("Resource_x10mo"), SubResource("Resource_blufb"), SubResource("Resource_84rch"), SubResource("Resource_fp67t"), SubResource("Resource_oenel"), SubResource("Resource_m5ihe"), SubResource("Resource_7dqsu"), SubResource("Resource_1l5tq"), SubResource("Resource_ryjcu"), SubResource("Resource_p4db1")])
+exchanges = Array[ExtResource("2_xdm14")]([SubResource("Resource_8uc65"), SubResource("Resource_8fu57"), SubResource("Resource_wnrtd"), SubResource("Resource_xpeud"), SubResource("Resource_b6dbv"), SubResource("Resource_gh248"), SubResource("Resource_1yf32"), SubResource("Resource_sv6t1"), SubResource("Resource_hqga7"), SubResource("Resource_irurm"), SubResource("Resource_as33y"), SubResource("Resource_7y1op"), SubResource("Resource_ykdst"), SubResource("Resource_usyjl"), SubResource("Resource_ohekx"), SubResource("Resource_iitwq"), SubResource("Resource_1w7af"), SubResource("Resource_kd01q"), SubResource("Resource_xbw2o"), SubResource("Resource_iy5km"), SubResource("Resource_cxx6y"), SubResource("Resource_3oy44"), SubResource("Resource_0daq8"), SubResource("Resource_3time")])
 misc_data = SubResource("Resource_b1bh4")

@@ -65,7 +65,7 @@ func get_integral(_error) -> float:
 	var integral = angular_velocity.y
 	return integral
 
-func get_derivative(error) -> float:
+func get_derivative(_error) -> float:
 	# Error change speed
 	# Substracts
 	var derivative = last_rotation - rotation.y
@@ -93,8 +93,9 @@ func _integrate_forces(state):
 	else:
 		state.linear_velocity *= 0.999
 		state.angular_velocity *= 0.99
-	var forward_direction := (transform.basis * Vector3.FORWARD).normalized()
-	var forward_component: Vector3 = forward_direction * state.linear_velocity.dot(forward_direction)
-	if forward_component.length() > 0:
-		forward_component *= state.linear_velocity.length() / forward_component.length()
-	state.linear_velocity = forward_component
+	if state.linear_velocity.length() > 1.0:
+		var forward_direction := (transform.basis * Vector3.FORWARD).normalized()
+		var forward_component: Vector3 = forward_direction * state.linear_velocity.dot(forward_direction)
+		if forward_component.length() > 0:
+			forward_component *= state.linear_velocity.length() / forward_component.length()
+		state.linear_velocity = forward_component

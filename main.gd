@@ -28,6 +28,9 @@ func _ready() -> void:
 	
 	#var state_initializer = DkdataInitialization.new()
 	#state_initializer.initialize_data(game_state)
+	
+	character.position = Vector3(333.815, 0, 212.126)
+	character.rotation = Vector3(0, 0, 0)
 
 func _process(delta: float) -> void:
 	handle_triggers(delta)
@@ -36,7 +39,7 @@ func _process(delta: float) -> void:
 	log_label.text = Global.log_text
 	Global.log_text = ""
 
-func handle_stats(delta):
+func handle_stats(_delta):
 	#
 	if GamePlatform.stats_support["last_player_position"] == null:
 		GamePlatform.stats_support["last_player_position"] = Global.character.position
@@ -189,6 +192,10 @@ func execute_trigger(trigger_type:String, trigger_id:String):
 						push_error("Item '%s' has no logic" % i.id)
 				else:
 					push_error("Action '%s' not found in item '%s'" % [i.primary_action, i.id])
+			else:
+				if i.logic != null:
+					var l_script = i.logic.new()
+					l_script._on_trigger(self, game_state, trigger_type)
 
 func is_in_trigger(id:String) -> bool:
 	return id in in_trigger
@@ -254,6 +261,8 @@ func sync_misc_data() -> void:
 	
 	item_active("next_door_key", not misc.has_next_door_key)
 	item_visible("next_door_key", not misc.has_next_door_key)
+	
+	Global.character.pepa.visible = misc.pepa_visible
 
 func node_collide(node_path: NodePath, active: bool):
 	var node = dk_world.get_node(node_path)

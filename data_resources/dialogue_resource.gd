@@ -15,7 +15,7 @@ enum Character {
 @export var id: String
 
 #@export_group("Character")
-@export var character: Character = 1
+@export var character: Character = Character.PROTAGONIST
 @export var image: String
 
 #@export_group("Text")

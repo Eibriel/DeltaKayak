@@ -72,6 +72,8 @@ func handle_cameras(delta) -> void:
 		player_offset = Vector3(value[0], value[1], value[2])
 	
 	var camera_speed := 0.03
+	if current_camera.has_meta("speed"):
+		camera_speed = float(current_camera.get_meta("speed")) / 10
 	if new_camera:
 		camera_speed = 1.0
 		

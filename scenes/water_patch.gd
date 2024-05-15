@@ -4,8 +4,8 @@ extends Node3D
 const WATER_MATERIAL = preload("res://materials/water_material.tres")
 
 func _ready() -> void:
-	for x in 20:
-		for z in 20:
+	for x in 60:
+		for z in 60:
 			var c := CSGMesh3D.new()
 			var q := PlaneMesh.new()
 			q.size = Vector2i(20, 20)
