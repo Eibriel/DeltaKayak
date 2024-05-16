@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="DKDataResource" load_steps=123 format=3 uid="uid://bi1rugic742u0"]
+[gd_resource type="Resource" script_class="DKDataResource" load_steps=124 format=3 uid="uid://bi1rugic742u0"]
 
 [ext_resource type="Script" path="res://data_resources/dkdata_resource.gd" id="1_mesef"]
 [ext_resource type="Script" path="res://data_resources/dialogue_resource.gd" id="1_yf062"]
@@ -43,7 +43,7 @@ script = ExtResource("1_yf062")
 id = "open_house_door"
 character = 1
 image = ""
-text = "Hora de repartir la mercancía"
+text = "¡A buscar a Pepa!"
 
 [sub_resource type="Resource" id="Resource_8fu57"]
 script = ExtResource("2_xdm14")
@@ -322,12 +322,19 @@ script = ExtResource("1_yf062")
 id = "new_item"
 character = 1
 image = ""
-text = "No se puede pasar para ese lado"
+text = "La planta ..."
+
+[sub_resource type="Resource" id="Resource_o1gwv"]
+script = ExtResource("1_yf062")
+id = "new_item"
+character = 1
+image = ""
+text = "Tengo que encontrar la manera de entrar."
 
 [sub_resource type="Resource" id="Resource_iy5km"]
 script = ExtResource("2_xdm14")
 id = "look_plant_fence"
-dialogues = Array[ExtResource("1_yf062")]([SubResource("Resource_hnvru")])
+dialogues = Array[ExtResource("1_yf062")]([SubResource("Resource_hnvru"), SubResource("Resource_o1gwv")])
 
 [sub_resource type="Resource" id="Resource_fesov"]
 script = ExtResource("1_yf062")
@@ -734,6 +741,7 @@ house_door_open = false
 next_door_open = false
 has_next_door_key = false
 pepa_visible = true
+pepa_position = Vector3(0, 0, 0)
 
 [resource]
 script = ExtResource("1_mesef")

@@ -29,8 +29,12 @@ func _ready() -> void:
 	#var state_initializer = DkdataInitialization.new()
 	#state_initializer.initialize_data(game_state)
 	
+	#Start
 	character.position = Vector3(333.815, 0, 212.126)
 	character.rotation = Vector3(0, 0, 0)
+	
+	#Skip start
+	character.position = Vector3(333.815, 0, -72)
 
 func _process(delta: float) -> void:
 	handle_triggers(delta)

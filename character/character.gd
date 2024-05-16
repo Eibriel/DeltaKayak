@@ -37,7 +37,7 @@ func _process(delta: float) -> void:
 	Global.log_text += "\ntarget_direction: %f" % target_direction
 	Global.log_text += "\nrotation.y: %f" % (rotation.y)
 	
-	speed = -max(0, -target_position_with_rotation.y) * delta * 20.0
+	speed = -max(0, -target_position_with_rotation.y) * delta * 10.0
 	var error := target_direction
 	Global.log_text += "\nerror: %f" % error
 	Global.log_text += "\nproportional: %f" % get_proportional(error)
@@ -93,6 +93,7 @@ func _integrate_forces(state):
 	else:
 		state.linear_velocity *= 0.999
 		state.angular_velocity *= 0.99
+	# TODO make it smooth intead of step
 	if state.linear_velocity.length() > 1.0:
 		var forward_direction := (transform.basis * Vector3.FORWARD).normalized()
 		var forward_component: Vector3 = forward_direction * state.linear_velocity.dot(forward_direction)
