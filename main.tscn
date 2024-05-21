@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://ce6e8v1saxjr5"]
+[gd_scene load_steps=12 format=3 uid="uid://ce6e8v1saxjr5"]
 
 [ext_resource type="Environment" uid="uid://xpf4ng2ym0n4" path="res://environments/main_environment.tres" id="1_ekqa4"]
 [ext_resource type="Script" path="res://main.gd" id="1_xxenq"]
@@ -7,6 +7,7 @@
 [ext_resource type="Resource" uid="uid://bcsic7fi7dxee" path="res://GamePreference.tres" id="2_wexnt"]
 [ext_resource type="PackedScene" uid="uid://b7nhlhkoykc4c" path="res://world_definition.dkworld" id="3_7foso"]
 [ext_resource type="Resource" uid="uid://bi1rugic742u0" path="res://dkdata/dkdata.tres" id="3_nh3h6"]
+[ext_resource type="Texture2D" uid="uid://31mrm2ajeyll" path="res://textures/dialogue_box.png" id="4_kkvku"]
 
 [sub_resource type="Compositor" id="Compositor_lm6bj"]
 compositor_effects = Array[CompositorEffect]([ExtResource("2_f4rcp")])
@@ -41,6 +42,7 @@ offset_right = 40.0
 offset_bottom = 40.0
 
 [node name="LabelDemo" type="Label" parent="Control"]
+visible = false
 layout_mode = 1
 anchors_preset = 2
 anchor_top = 1.0
@@ -52,23 +54,9 @@ offset_bottom = -15.0
 grow_vertical = 0
 text = "Demo Version"
 
-[node name="DialogueLabel" type="RichTextLabel" parent="Control"]
-unique_name_in_owner = true
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.265
-anchor_top = 0.71875
-anchor_right = 0.728333
-anchor_bottom = 0.93375
-grow_horizontal = 2
-grow_vertical = 0
-text = "..."
-metadata/_edit_use_anchors_ = true
-
 [node name="LogLabel" type="RichTextLabel" parent="Control"]
 unique_name_in_owner = true
 auto_translate_mode = 1
-visible = false
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.101667
@@ -78,6 +66,50 @@ anchor_bottom = 0.61125
 grow_horizontal = 2
 grow_vertical = 0
 text = "..."
+metadata/_edit_use_anchors_ = true
+
+[node name="DialogueControl" type="Control" parent="Control"]
+unique_name_in_owner = true
+layout_mode = 1
+anchor_left = 0.1025
+anchor_top = 0.63625
+anchor_right = 0.885833
+anchor_bottom = 0.91375
+metadata/_edit_use_anchors_ = true
+
+[node name="NinePatchRect" type="NinePatchRect" parent="Control/DialogueControl"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("4_kkvku")
+patch_margin_left = 57
+patch_margin_top = 53
+patch_margin_right = 52
+patch_margin_bottom = 55
+
+[node name="MarginContainer" type="Control" parent="Control/DialogueControl"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="DialogueLabel" type="RichTextLabel" parent="Control/DialogueControl/MarginContainer"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.0478723
+anchor_top = 0.18018
+anchor_right = 0.952128
+anchor_bottom = 0.810811
+grow_horizontal = 2
+grow_vertical = 2
+text = "Narrator:
+	This is a sample text"
 metadata/_edit_use_anchors_ = true
 
 [node name="Main3D" type="Node3D" parent="."]
@@ -94,11 +126,12 @@ shadow_enabled = true
 
 [node name="character" parent="Main3D" instance=ExtResource("2_3sgbv")]
 unique_name_in_owner = true
-transform = Transform3D(0.00204205, 0, -0.999998, 0, 1, 0, 0.999998, 0, 0.00204205, 11.89, 0, -4.53801)
+transform = Transform3D(0.00204205, 0, -0.999998, 0, 1, 0, 0.999998, 0, 0.00204205, 333.44, 0, 36.1147)
 
-[node name="DKWorld" parent="Main3D" node_paths=PackedStringArray("initial_camera") instance=ExtResource("3_7foso")]
+[node name="DKWorld" parent="Main3D" node_paths=PackedStringArray("initial_camera", "initial_camera_path") instance=ExtResource("3_7foso")]
 unique_name_in_owner = true
 initial_camera = NodePath("camera_001/camera_001_cam")
+initial_camera_path = NodePath("camera_001/@Path3D@27005")
 
 [node name="Camera3D" type="Camera3D" parent="Main3D"]
 transform = Transform3D(1, 0, 0, 0, 0.921328, 0.388786, 0, -0.388786, 0.921328, 0.528366, 5.52796, 5.79716)
@@ -107,7 +140,20 @@ current = true
 [node name="MultiMeshInstance3D" type="MultiMeshInstance3D" parent="Main3D"]
 multimesh = SubResource("MultiMesh_g048c")
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Main3D"]
+[node name="StaticBody3D" type="RigidBody3D" parent="Main3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 332.525, 0, 180.751)
+axis_lock_linear_y = true
+mass = 9.425
+gravity_scale = 0.0
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Main3D/StaticBody3D"]
 shape = SubResource("BoxShape3D_v311q")
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="Main3D/StaticBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.60751, 0)
+shape = SubResource("BoxShape3D_v311q")
+
+[node name="CSGBox3D" type="CSGBox3D" parent="Main3D/StaticBody3D"]
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="Main3D/StaticBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.59971, 0)

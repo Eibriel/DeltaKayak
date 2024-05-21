@@ -67,9 +67,9 @@ transform = Transform3D(0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, 0.0386806, 0.312028)
 
 [node name="OmniLight3D" type="OmniLight3D" parent="."]
 transform = Transform3D(-1, 0, 8.74227e-08, 0, 1, 0, -8.74227e-08, 0, -1, 1.81245e-08, 1.35318, 0.104708)
-light_energy = 0.3
+light_energy = 0.05
 omni_range = 4.0
-omni_attenuation = 2.395
+omni_attenuation = 0.0
 
 [node name="SpotLight3D" type="SpotLight3D" parent="."]
 transform = Transform3D(1, -1.4164e-08, 1.15512e-09, 1.4164e-08, 0.986788, -0.162017, 1.15495e-09, 0.162017, 0.986788, 1.50834e-07, 0.397435, -1.41331)

@@ -31,13 +31,13 @@ shapes/paths/geometry_width=10.0
 
 [display]
 
-window/size/viewport_width=1200
-window/size/viewport_height=800
+window/size/viewport_width=800
+window/size/viewport_height=600
+window/size/mode=3
 window/size/window_width_override=1200
 window/size/window_height_override=800
 window/stretch/mode="viewport"
 window/stretch/aspect="keep_height"
-window/stretch/scale=2.0
 
 [editor_plugins]
 

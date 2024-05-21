@@ -6,8 +6,14 @@
 Label/colors/font_color = Color(0.92, 0.885653, 0.7912, 0.862745)
 Label/colors/font_shadow_color = Color(0.0941176, 0.129412, 0.113725, 0.635294)
 Label/constants/shadow_outline_size = 2
+Label/font_sizes/font_size = 24
 Label/fonts/font = ExtResource("1_adaq6")
+MarginContainer/constants/margin_bottom = 50
+MarginContainer/constants/margin_left = 50
+MarginContainer/constants/margin_right = 50
+MarginContainer/constants/margin_top = 60
 RichTextLabel/colors/default_color = Color(0.921569, 0.886275, 0.792157, 0.862745)
 RichTextLabel/colors/font_shadow_color = Color(0.0936, 0.13, 0.113013, 0.635294)
 RichTextLabel/constants/shadow_outline_size = 2
+RichTextLabel/font_sizes/normal_font_size = 24
 RichTextLabel/fonts/normal_font = ExtResource("1_adaq6")

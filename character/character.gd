@@ -10,6 +10,10 @@ var torque := 0.0
 var last_rotation := 0.0
 var target_direction := 0.0
 
+var current := Vector3.ZERO
+var current_direction = Vector3.FORWARD
+var current_speed := 0.2
+
 func _ready():
 	#position = Vector3(-31.8, 0, -5)
 	#position = Vector3(34.7, 0, -5)
@@ -78,25 +82,32 @@ func get_derivative(_error) -> float:
 	return derivative*1000.0
 #
 
-func _physics_process(_delta: float):
+func _physics_process(delta: float):
 	apply_torque(Vector3(0, torque, 0))
 	go_forward(speed)
+	# Current
+	#current *= 0.999
+	current = current_direction * current_speed * delta
+	Global.log_text += "\ncurrent: %f" % current.length()
 
 func go_forward(_speed:float):
 	var direction := (transform.basis * Vector3.BACK).normalized()
 	apply_central_force(direction * _speed)
 
-func _integrate_forces(state):
+func _integrate_forces(state:PhysicsDirectBodyState3D):
 	if true:#paddle_status !=0 and holding:
 		state.linear_velocity *= 0.999
 		state.angular_velocity *= 0.999
 	else:
 		state.linear_velocity *= 0.999
 		state.angular_velocity *= 0.99
+	Global.log_text += "\nvelocity: %f" % state.linear_velocity.length()
 	# TODO make it smooth intead of step
 	if state.linear_velocity.length() > 1.0:
 		var forward_direction := (transform.basis * Vector3.FORWARD).normalized()
 		var forward_component: Vector3 = forward_direction * state.linear_velocity.dot(forward_direction)
-		if forward_component.length() > 0:
-			forward_component *= state.linear_velocity.length() / forward_component.length()
-		state.linear_velocity = forward_component
+		var side_component: Vector3 = state.linear_velocity - forward_component
+		var side_drag := 0.99
+		state.linear_velocity = (side_component * side_drag) + forward_component + current
+	else:
+		state.linear_velocity += current

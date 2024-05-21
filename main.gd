@@ -9,6 +9,7 @@ extends Control
 @onready var character: RigidBody3D = %character
 @onready var dialogue_label: RichTextLabel = %DialogueLabel
 @onready var log_label: RichTextLabel = %LogLabel
+@onready var dialogue_control: Control = %DialogueControl
 
 var interactive_labels:Dictionary
 var in_trigger:Array[String]
@@ -26,6 +27,8 @@ func _ready() -> void:
 	dk_world.connect("trigger_entered", on_trigger_entered)
 	dk_world.connect("trigger_exited", on_trigger_exited)
 	
+	dialogue_label.text = ""
+	
 	#var state_initializer = DkdataInitialization.new()
 	#state_initializer.initialize_data(game_state)
 	
@@ -34,7 +37,7 @@ func _ready() -> void:
 	character.rotation = Vector3(0, 0, 0)
 	
 	#Skip start
-	character.position = Vector3(333.815, 0, -72)
+	#character.position = Vector3(333.815, 0, 36)
 
 func _process(delta: float) -> void:
 	handle_triggers(delta)
@@ -56,13 +59,17 @@ func handle_stats(_delta):
 
 func handle_dialogue(delta:float) -> void:
 	dialogue_time -= delta
+	if dialogue_label.text == "":
+		dialogue_control.visible = false
+	else:
+		dialogue_control.visible = true
 	if dialogue_time > 0: return
 	dialogue_label.text = ""
 	if dialogue_queue.size() < 1: return
 	var d: DialogueResource = dialogue_queue.pop_front() as DialogueResource
 	var key: String = "%s_dialogue_text" % d.resource_scene_unique_id
 	var character_string:String = d.Character.keys()[d.character]
-	dialogue_label.text = "%s: %s" % [tr(character_string), tr(key)]
+	dialogue_label.text = "%s:\n\t%s" % [tr(character_string), tr(key)]
 	dialogue_label.visible_ratio = 0
 	if is_dialogue_animating():
 		dialogue_tween.stop()
@@ -154,6 +161,8 @@ func _input(event: InputEvent) -> void:
 		say_dialogue("¡¡Pepa!!")
 	elif event.is_action_pressed("compicactus"):
 		on_compicactus()
+	elif event.is_action_pressed("ui_cancel"):
+		get_tree().quit()
 
 func on_compicactus():
 	say_dialogue("compi_im_here")
