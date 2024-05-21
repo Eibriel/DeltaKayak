@@ -20,6 +20,7 @@ var dialogue_tween: Tween
 var write_speed: float
 
 func _ready() -> void:
+	Global.main_scene = self
 	label_demo.visible = false
 	if Global.is_demo():
 		label_demo.visible = true

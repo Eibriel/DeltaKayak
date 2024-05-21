@@ -4,7 +4,7 @@ import bpy
 import json
 import math
 import bmesh
-from bpy.types import Object
+#from bpy.types import Object, Camera
 import mathutils
 
 from bpy.props import (
@@ -165,6 +165,7 @@ class DKT_OT_ExportWorld(bpy.types.Operator):
             sector_def["items"] = self.get_items(sector)
             sector_def["trees"] = self.get_trees(sector)
             sector_def["triggers"] = self.get_triggers(sector)
+            sector_def["current"] = self.get_current(sector)
             definition[sector.name] = sector_def
 
         definition_path = context.scene.dkt_gltfsexportsetup.definition_path
@@ -207,12 +208,20 @@ class DKT_OT_ExportWorld(bpy.types.Operator):
         cameras_name = "Cameras_" + sector.name.split("_")[1]
         if not cameras_name in sector.children: return cameras_def
         for camera in sector.children[cameras_name].children:
-            # only one camera expected
-            camera_id = camera.name.split("_")[1]
-            camera_obj = camera.objects["camera_"+camera_id]
+            camera_obj: bpy.types.Camera = None
+            curve_obj: bpy.types.Curve = None
+            camera_id: str = camera.name.split("_")[-1]
+            for cobj in camera.objects:
+                # only one camera expected
+                #if type(cobj) == bpy.types.Camera:
+                if cobj.name.startswith("camera_"):
+                    camera_obj = cobj
+                    break
             #
             # only one curve expected
-            curve_obj = camera.objects["curve_"+camera_id]
+            for cobj in camera.objects:
+                if cobj.name.startswith("curve_"):
+                    curve_obj = cobj
             # multiple sensors expected
             sensor_list = []
             for cobj in camera.objects:
@@ -237,6 +246,14 @@ class DKT_OT_ExportWorld(bpy.types.Operator):
         if not triggers_name in sector.children: return triggers_def
         for trigger in sector.children[triggers_name].objects:
             triggers_def.append(self.get_trigger_data(trigger))
+        return triggers_def
+
+    def get_current(self, sector):
+        triggers_def = []
+        triggers_name = "Current_" + sector.name.split("_")[1]
+        if not triggers_name in sector.children: return triggers_def
+        for trigger in sector.children[triggers_name].objects:
+            triggers_def.append(self.get_current_data(trigger))
         return triggers_def
 
     def get_camera_data(self, camera_obj):
@@ -288,11 +305,21 @@ class DKT_OT_ExportWorld(bpy.types.Operator):
         trigger_def = {
             "position": self.location_to_godot(trigger_obj.location),
             "rotation": self.rotation_to_godot(trigger_obj.rotation_euler),
+            "quaternion": self.quaternion_to_godot(trigger_obj.matrix_world),
             "scale": self.scale_to_godot(trigger_obj.scale),
             "id": trigger_obj.name
         }
         return trigger_def
-    
+
+    def get_current_data(self, current_obj):
+        current_def = {
+            "position": self.location_to_godot(current_obj.location),
+            "rotation": self.rotation_to_godot(current_obj.rotation_euler),
+            "quaternion": self.quaternion_to_godot(current_obj.matrix_world),
+            "scale": self.scale_to_godot(current_obj.scale),
+        }
+        return current_def
+
     def location_to_godot(self, location) -> list:
         return [
             location[0],
@@ -330,8 +357,8 @@ class DKT_OT_ExportWorld(bpy.types.Operator):
         #quat.rotate(eul)
         return [
             quat.x,
-            quat.y,
             quat.z,
+            -quat.y,
             quat.w
         ]
 

@@ -347,7 +347,7 @@ func array_to_vector3(array: Array) -> Vector3:
 	return Vector3(array[0], array[1], array[2])
 
 func array_to_quaternion(array: Array) -> Quaternion:
-	return Quaternion(array[0], array[2], -array[1], array[3])
+	return Quaternion(array[0], array[1], array[2], array[3])
 
 func _configure_lod(gltf_instance:Node, json:Dictionary) -> void:
 	for node in gltf_instance.get_children():

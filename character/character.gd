@@ -38,21 +38,21 @@ func _process(delta: float) -> void:
 	var global_target_rotation := -Vector2.UP.angle_to(target_position_with_rotation)
 	target_direction = global_target_rotation
 	
-	Global.log_text += "\ntarget_direction: %f" % target_direction
-	Global.log_text += "\nrotation.y: %f" % (rotation.y)
+	#Global.log_text += "\ntarget_direction: %f" % target_direction
+	#Global.log_text += "\nrotation.y: %f" % (rotation.y)
 	
 	speed = -max(0, -target_position_with_rotation.y) * delta * 10.0
 	var error := target_direction
-	Global.log_text += "\nerror: %f" % error
-	Global.log_text += "\nproportional: %f" % get_proportional(error)
-	Global.log_text += "\nintegral: %f" % get_integral(error)
-	Global.log_text += "\nderivative: %f" % get_derivative(error)
+	#Global.log_text += "\nerror: %f" % error
+	#Global.log_text += "\nproportional: %f" % get_proportional(error)
+	#Global.log_text += "\nintegral: %f" % get_integral(error)
+	#Global.log_text += "\nderivative: %f" % get_derivative(error)
 	torque = 0.0
 	if input_dir.length() > 0:
 		torque += get_proportional(error) * delta
 		torque += get_integral(error) * delta
 		torque += get_derivative(error) * delta
-	Global.log_text += "\ntorque: %f" % torque
+	#Global.log_text += "\ntorque: %f" % torque
 	last_rotation = rotation.y
 
 # PID control
@@ -85,10 +85,13 @@ func get_derivative(_error) -> float:
 func _physics_process(delta: float):
 	apply_torque(Vector3(0, torque, 0))
 	go_forward(speed)
+	get_current()
 	# Current
 	#current *= 0.999
 	current = current_direction * current_speed * delta
-	Global.log_text += "\ncurrent: %f" % current.length()
+	Global.log_text += "\ncurrent.x: %f" % current.x
+	Global.log_text += "\ncurrent.y: %f" % current.y
+	Global.log_text += "\ncurrent.z: %f" % current.z
 
 func go_forward(_speed:float):
 	var direction := (transform.basis * Vector3.BACK).normalized()
@@ -101,7 +104,8 @@ func _integrate_forces(state:PhysicsDirectBodyState3D):
 	else:
 		state.linear_velocity *= 0.999
 		state.angular_velocity *= 0.99
-	Global.log_text += "\nvelocity: %f" % state.linear_velocity.length()
+	Global.log_text += "\nvelocity.x: %f" % state.linear_velocity.x
+	Global.log_text += "\nvelocity.z: %f" % state.linear_velocity.z
 	# TODO make it smooth intead of step
 	if state.linear_velocity.length() > 1.0:
 		var forward_direction := (transform.basis * Vector3.FORWARD).normalized()
@@ -111,3 +115,28 @@ func _integrate_forces(state:PhysicsDirectBodyState3D):
 		state.linear_velocity = (side_component * side_drag) + forward_component + current
 	else:
 		state.linear_velocity += current
+
+func get_current() -> void:
+	current_direction = Vector3.FORWARD
+	current_speed = 0.2
+	var world_definition = Global.main_scene.dk_world.world_definition
+	var min_dist = null
+	var min_rotation: Vector3
+	var min_scale: Vector3
+	for s in world_definition:
+		for c in world_definition[s].current:
+			var dist := position.distance_squared_to(array_to_vector3(c.position))
+			if min_dist == null:
+				min_dist = dist
+			if dist < min_dist:
+				min_dist = dist
+				min_rotation = array_to_vector3(c.rotation)
+				min_scale = array_to_vector3(c.scale)
+	current_direction = Vector3.FORWARD.rotated(Vector3.UP, min_rotation.y)
+	current_speed = min_scale.length()
+
+func array_to_vector3(array: Array) -> Vector3:
+	return Vector3(array[0], array[1], array[2])
+
+func array_to_quaternion(array: Array) -> Quaternion:
+	return Quaternion(array[0], array[1], array[2], array[3])
