@@ -1,11 +1,15 @@
 extends RigidBody3D
 
 @onready var target_box = $CSGBox3D
-@onready var pepa: Node3D = $pepa
+@onready var pepa: Node3D = %pepa
+@onready var camera: Camera3D = %CharacterCamera3D
+@onready var marker_3d: Marker3D = $Marker3D
 
 var soft_camera_rotation: float
 var speed := 0.0
 var torque := 0.0
+
+var kayak_speed := 30.0
 
 var last_rotation := 0.0
 var target_direction := 0.0
@@ -25,9 +29,11 @@ func _ready():
 	print($CSGCylinder3D3.global_transform)
 
 func _process(delta: float) -> void:
+	marker_3d.position = position
 	var input_dir:Vector2 = Input.get_vector("left", "right", "up", "down")
 	var movement_direction:Vector2 = input_dir * delta * 2.0
 	var current_camera:Camera3D = get_viewport().get_camera_3d()
+	
 	var ration:float = 0.99-(0.1*delta)
 	soft_camera_rotation = lerp_angle(current_camera.rotation.y, soft_camera_rotation, ration)
 	
@@ -41,7 +47,7 @@ func _process(delta: float) -> void:
 	#Global.log_text += "\ntarget_direction: %f" % target_direction
 	#Global.log_text += "\nrotation.y: %f" % (rotation.y)
 	
-	speed = -max(0, -target_position_with_rotation.y) * delta * 10.0
+	speed = -max(0, -target_position_with_rotation.y) * delta * kayak_speed
 	var error := target_direction
 	#Global.log_text += "\nerror: %f" % error
 	#Global.log_text += "\nproportional: %f" % get_proportional(error)
@@ -128,12 +134,15 @@ func get_current() -> void:
 			var dist := position.distance_squared_to(array_to_vector3(c.position))
 			if min_dist == null:
 				min_dist = dist
+				min_rotation = array_to_vector3(c.rotation)
+				min_scale = array_to_vector3(c.scale)
 			if dist < min_dist:
 				min_dist = dist
 				min_rotation = array_to_vector3(c.rotation)
 				min_scale = array_to_vector3(c.scale)
 	current_direction = Vector3.FORWARD.rotated(Vector3.UP, min_rotation.y)
 	current_speed = min_scale.length()
+	current_speed = 0.0
 
 func array_to_vector3(array: Array) -> Vector3:
 	return Vector3(array[0], array[1], array[2])

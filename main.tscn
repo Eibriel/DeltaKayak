@@ -130,7 +130,7 @@ transform = Transform3D(0.00204205, 0, -0.999998, 0, 1, 0, 0.999998, 0, 0.002042
 
 [node name="DKWorld" parent="Main3D" node_paths=PackedStringArray("initial_camera") instance=ExtResource("3_7foso")]
 unique_name_in_owner = true
-initial_camera = NodePath("camera_001/camera_001_cam")
+initial_camera = NodePath("camera_camera_007_001/camera_camera_007_001_cam")
 
 [node name="Camera3D" type="Camera3D" parent="Main3D"]
 transform = Transform3D(1, 0, 0, 0, 0.921328, 0.388786, 0, -0.388786, 0.921328, 0.528366, 5.52796, 5.79716)

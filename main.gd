@@ -38,7 +38,7 @@ func _ready() -> void:
 	character.rotation = Vector3(0, 0, 0)
 	
 	#Skip start
-	#character.position = Vector3(333.815, 0, 36)
+	character.position = Vector3(333.815, 0, 36)
 
 func _process(delta: float) -> void:
 	handle_triggers(delta)

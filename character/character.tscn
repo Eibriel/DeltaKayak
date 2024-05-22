@@ -60,6 +60,7 @@ size = Vector3(0.5, 0.5, 0.5)
 transform = Transform3D(-2, 0, 1.74845e-07, 0, 2, 0, -1.74845e-07, 0, -2, 0.0136361, 0.200965, -1.04693)
 
 [node name="pepa" parent="." instance=ExtResource("4_bo5nj")]
+unique_name_in_owner = true
 transform = Transform3D(1.69991, 0, -0.0178913, 0, 1.7, 0, 0.0178913, 0, 1.69991, -0.099682, 0.452791, -1.09754)
 
 [node name="kayak_detailed" parent="." instance=ExtResource("2_qknmv")]
@@ -67,6 +68,7 @@ transform = Transform3D(0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, 0.0386806, 0.312028)
 
 [node name="OmniLight3D" type="OmniLight3D" parent="."]
 transform = Transform3D(-1, 0, 8.74227e-08, 0, 1, 0, -8.74227e-08, 0, -1, 1.81245e-08, 1.35318, 0.104708)
+visible = false
 light_energy = 0.05
 omni_range = 4.0
 omni_attenuation = 0.0
@@ -82,3 +84,10 @@ spot_angle = 41.0167
 [node name="CSGCylinder3D3" type="CSGCylinder3D" parent="."]
 transform = Transform3D(-1, 8.74228e-08, 3.82137e-15, 0, -4.37114e-08, 1, 8.74228e-08, 1, 4.37114e-08, 0, 0, 0)
 visible = false
+
+[node name="Marker3D" type="Marker3D" parent="."]
+top_level = true
+
+[node name="CharacterCamera3D" type="Camera3D" parent="Marker3D"]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 0.853332, 0.521367, 0, -0.521367, 0.853333, 0, 13.0076, 9.05993)

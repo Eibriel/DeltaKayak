@@ -45,6 +45,7 @@ func _ready():
 
 func _process(delta: float) -> void:
 	handle_cameras(delta)
+	Global.character.camera.current = true
 
 func handle_cameras(delta) -> void:
 	# TODO Looks like process starts before world is fully initiated

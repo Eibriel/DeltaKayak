@@ -237,7 +237,7 @@ class DKT_OT_ExportWorld(bpy.types.Operator):
             }
             if camera_id == "001":
                 camera_def["default"] = True
-            cameras_def["camera_"+camera_id] = camera_def
+            cameras_def["camera_"+camera.name] = camera_def
         return cameras_def
     
     def get_triggers(self, sector):
