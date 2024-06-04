@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://ce6e8v1saxjr5"]
+[gd_scene load_steps=14 format=3 uid="uid://ce6e8v1saxjr5"]
 
 [ext_resource type="Environment" uid="uid://xpf4ng2ym0n4" path="res://environments/main_environment.tres" id="1_ekqa4"]
 [ext_resource type="Script" path="res://main.gd" id="1_xxenq"]
@@ -15,6 +15,12 @@ compositor_effects = Array[CompositorEffect]([ExtResource("2_f4rcp")])
 [sub_resource type="MultiMesh" id="MultiMesh_g048c"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_v311q"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_kp58l"]
+size = Vector3(11.4926, 2.54077, 9.13838)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_0ev4o"]
+size = Vector3(1.96265, 7.51904, 1.8761)
 
 [node name="Control" type="Control"]
 layout_mode = 3
@@ -140,7 +146,7 @@ current = true
 multimesh = SubResource("MultiMesh_g048c")
 
 [node name="StaticBody3D" type="RigidBody3D" parent="Main3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 332.525, 0, 180.751)
+transform = Transform3D(0.368887, 0, -0.929475, 0, 1, 0, 0.929475, 0, 0.368887, 22.419, 0, -27.4939)
 axis_lock_linear_y = true
 mass = 9.425
 gravity_scale = 0.0
@@ -148,11 +154,49 @@ gravity_scale = 0.0
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Main3D/StaticBody3D"]
 shape = SubResource("BoxShape3D_v311q")
 
-[node name="CollisionShape3D2" type="CollisionShape3D" parent="Main3D/StaticBody3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.60751, 0)
-shape = SubResource("BoxShape3D_v311q")
-
 [node name="CSGBox3D" type="CSGBox3D" parent="Main3D/StaticBody3D"]
 
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="Main3D/StaticBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.0528904, 1.45178)
+shape = SubResource("BoxShape3D_v311q")
+
 [node name="CSGBox3D2" type="CSGBox3D" parent="Main3D/StaticBody3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.59971, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.0606904, 1.45178)
+
+[node name="CollisionShape3D3" type="CollisionShape3D" parent="Main3D/StaticBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.0528904, 2.92137)
+shape = SubResource("BoxShape3D_v311q")
+
+[node name="CSGBox3D3" type="CSGBox3D" parent="Main3D/StaticBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.0606904, 2.92137)
+
+[node name="OilSpillArea3D" type="Area3D" parent="Main3D"]
+transform = Transform3D(0.317288, 0, 0.948329, 0, 1, 0, -0.948329, 0, 0.317288, 49.8722, 0, 20.5895)
+metadata/oil_spill = true
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Main3D/OilSpillArea3D"]
+shape = SubResource("BoxShape3D_kp58l")
+
+[node name="StrengthArea3D" type="Area3D" parent="Main3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.58259, 0, -72.6413)
+metadata/strength = true
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Main3D/StrengthArea3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.48492, 0)
+shape = SubResource("BoxShape3D_0ev4o")
+
+[node name="StrengthArea3D2" type="Area3D" parent="Main3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -81.9273, 0, 35.4645)
+metadata/strength = true
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Main3D/StrengthArea3D2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.48492, 0)
+shape = SubResource("BoxShape3D_0ev4o")
+
+[node name="StrengthArea3D3" type="Area3D" parent="Main3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 19.2371, 0, 141.56)
+metadata/strength = true
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Main3D/StrengthArea3D3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.48492, 0)
+shape = SubResource("BoxShape3D_0ev4o")

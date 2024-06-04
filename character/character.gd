@@ -9,7 +9,10 @@ var soft_camera_rotation: float
 var speed := 0.0
 var torque := 0.0
 
-var kayak_speed := 30.0
+var kayak_speed := 15.0
+var temp_speed := 0.0
+var temp_time := 0.0
+var strength := 0
 
 var last_rotation := 0.0
 var target_direction := 0.0
@@ -29,6 +32,10 @@ func _ready():
 	print($CSGCylinder3D3.global_transform)
 
 func _process(delta: float) -> void:
+	if temp_time > 0:
+		temp_time -= delta
+	elif temp_time < 0:
+		temp_time = 0
 	marker_3d.position = position
 	var input_dir:Vector2 = Input.get_vector("left", "right", "up", "down")
 	var movement_direction:Vector2 = input_dir * delta * 2.0
@@ -46,8 +53,9 @@ func _process(delta: float) -> void:
 	
 	#Global.log_text += "\ntarget_direction: %f" % target_direction
 	#Global.log_text += "\nrotation.y: %f" % (rotation.y)
-	
-	speed = -max(0, -target_position_with_rotation.y) * delta * kayak_speed
+	if temp_time == 0:
+		temp_speed = 0.0
+	speed = -max(0, -target_position_with_rotation.y) * delta * (kayak_speed + temp_speed + (strength * 5))
 	var error := target_direction
 	#Global.log_text += "\nerror: %f" % error
 	#Global.log_text += "\nproportional: %f" % get_proportional(error)
@@ -141,11 +149,21 @@ func get_current() -> void:
 				min_rotation = array_to_vector3(c.rotation)
 				min_scale = array_to_vector3(c.scale)
 	current_direction = Vector3.FORWARD.rotated(Vector3.UP, min_rotation.y)
-	current_speed = min_scale.length()
-	current_speed = 0.0
+	current_speed = min_scale.length() * 10
+	if min_dist > 10:
+		current_speed = 0.0
 
 func array_to_vector3(array: Array) -> Vector3:
 	return Vector3(array[0], array[1], array[2])
 
 func array_to_quaternion(array: Array) -> Quaternion:
 	return Quaternion(array[0], array[1], array[2], array[3])
+
+
+func _on_interaction_area_area_entered(area: Area3D) -> void:
+	if area.has_meta("oil_spill"):
+		temp_speed = 10.0
+		temp_time = 3.0
+	elif area.has_meta("strength"):
+		area.free()
+		strength += 1

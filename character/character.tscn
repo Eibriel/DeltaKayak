@@ -90,4 +90,7 @@ top_level = true
 
 [node name="CharacterCamera3D" type="Camera3D" parent="Marker3D"]
 unique_name_in_owner = true
-transform = Transform3D(1, 0, 0, 0, 0.853332, 0.521367, 0, -0.521367, 0.853333, 0, 13.0076, 9.05993)
+transform = Transform3D(1, 0, 0, 0, 0.853332, 0.521367, 0, -0.521367, 0.853332, 0, 13.0076, 11.27)
+fov = 90.0
+
+[connection signal="area_entered" from="InteractionArea" to="." method="_on_interaction_area_area_entered"]
