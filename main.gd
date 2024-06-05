@@ -34,11 +34,8 @@ func _ready() -> void:
 	#state_initializer.initialize_data(game_state)
 	
 	#Start
-	character.position = Vector3(333.815, 0, 212.126)
+	character.position = Vector3(0, 0, 0)
 	character.rotation = Vector3(0, 0, 0)
-	
-	#Skip start
-	character.position = Vector3(333.815, 0, 36)
 
 func _process(delta: float) -> void:
 	handle_triggers(delta)
@@ -55,8 +52,7 @@ func handle_stats(_delta):
 	character_distance *= 0.001 # Meters to Kilometers
 	GamePlatform.stats_support["last_player_position"] = Global.character.position
 	
-	GamePlatform.stats["distance_traveled"] += character_distance 
-		
+	GamePlatform.stats["distance_traveled"] += character_distance
 
 func handle_dialogue(delta:float) -> void:
 	dialogue_time -= delta

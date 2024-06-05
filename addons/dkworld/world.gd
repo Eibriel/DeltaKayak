@@ -21,9 +21,11 @@ var previous_camera: Camera3D
 var next_camera:Camera3D
 var initial_positioning:=true
 
-var camera_queue := []
+#var camera_queue := []
+var character_in_camera := {}
+var camera_to_path := {}
 
-
+var camera_switch_delta := 90.0
 
 func _ready():
 	Global.camera = initial_camera
@@ -45,13 +47,22 @@ func _ready():
 
 func _process(delta: float) -> void:
 	handle_cameras(delta)
-	Global.character.camera.current = true
+	switch_camera(delta)
+	#Global.character.camera.current = true
+
+func switch_camera(delta):
+	camera_switch_delta += delta
+	if camera_switch_delta < 1: return
+	camera_switch_delta = 0.0
+	
+	Global.camera = next_camera
+	Global.camera_path = camera_to_path[next_camera]
 
 func handle_cameras(delta) -> void:
 	# TODO Looks like process starts before world is fully initiated
 	if Global.camera == null: return
 	if Global.character == null: return
-	if Global.camera_path == null: return
+	#if Global.camera_path == null: return
 	#
 	var current_camera:= Global.camera
 	var character:= Global.character
@@ -86,37 +97,51 @@ func handle_cameras(delta) -> void:
 	position_look_sphere.position = lerped_shifted_global_position_look
 	position_path_sphere.position = lerped_shifted_global_position_path
 	
-	current_camera.look_at(lerped_shifted_global_position_look)
+	if camera_speed != 0 and ! new_camera:
+		current_camera.look_at(lerped_shifted_global_position_look)
 	
-	var local_character_pos = Global.camera_path.to_local(lerped_shifted_global_position_path)
-	var local_closest_point = Global.camera_path.curve.get_closest_point(local_character_pos)
-	target_camera_position = Global.camera_path.to_global(local_closest_point)
-	current_camera.global_position = lerp(current_camera.global_position, target_camera_position, camera_speed)
+	if Global.camera_path != null:
+		var local_character_pos = Global.camera_path.to_local(lerped_shifted_global_position_path)
+		var local_closest_point = Global.camera_path.curve.get_closest_point(local_character_pos)
+		target_camera_position = Global.camera_path.to_global(local_closest_point)
+		current_camera.global_position = lerp(current_camera.global_position, target_camera_position, camera_speed)
 
+func select_best_camera():
+	var area_amount := [null, null, null, null]
+	var selected_camera
+	for cam in character_in_camera:
+		var camera_array := character_in_camera[cam] as Array
+		if area_amount[camera_array.size()] == null or \
+		 area_amount[camera_array.size()].get_meta("weight") < cam.get_meta("weight"):
+			area_amount[camera_array.size()] = cam
+	
+	for n in range(3, -1, -1):
+		if area_amount[n] != null:
+			selected_camera = area_amount[n]
+	
+	if selected_camera != null:
+		#Global.camera = selected_camera
+		#Global.camera_path = camera_to_path[selected_camera]
+		next_camera = selected_camera
 
-func camera_entered(area_:Area3D, camera: Camera3D, path:Path3D) -> void:
-	#if area_.has_meta("is_camera_sensor"): pass
-	if not area_.has_meta("is_character_camera"): return
-	camera_queue.append([camera, path])
-	Global.camera = camera
-	Global.camera_path = path
-	#prints("Entering", camera.name)
-	#for c in camera_queue:
-	#	print(c[0].name)
-	#print(camera_queue)
+func camera_entered(area:Area3D, camera: Camera3D, path:Path3D) -> void:
+	if not area.has_meta("is_character_camera"): return
+	if not character_in_camera.has(camera):
+		character_in_camera[camera] = []
+	if not character_in_camera[camera].has(area):
+		character_in_camera[camera].append(area)
+	camera_to_path[camera] = path
+	select_best_camera()
 
-func camera_exited(area_:Area3D, camera_: Camera3D, path_:Path3D) -> void:
-	if not area_.has_meta("is_character_camera"): return
-	if camera_queue.size() < 1: return
-	var previous_camera:=camera_queue.pop_back()
-	var camera: Camera3D = previous_camera[0]
-	var path: Path3D = previous_camera[1]
-	Global.camera = camera
-	Global.camera_path = path
-	#prints("Leaving", camera.name)
-	#for c in camera_queue:
-	#	print(c[0].name)
-
+func camera_exited(area:Area3D, camera: Camera3D, path_:Path3D) -> void:
+	if not area.has_meta("is_character_camera"): return
+	if not character_in_camera.has(camera): return
+	var camera_array := character_in_camera[camera] as Array
+	if not camera_array.has(area): return
+	camera_array.erase(area)
+	if camera_array.size() == 0:
+		character_in_camera.erase(camera)
+	select_best_camera()
 
 func on_trigger_entered(area_:Area3D, trigger_name:String) -> void:
 	if not area_.has_meta("is_character_interaction"): return

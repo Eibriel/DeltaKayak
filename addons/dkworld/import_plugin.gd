@@ -238,10 +238,17 @@ func add_camera(camera:Dictionary, camera_id:String, main_node:Node3D):
 	camera3d.set_owner(main_node)
 	
 	camera3d.position = array_to_vector3(camera.camera.position)
-	camera3d.rotation_order = EULER_ORDER_ZXY
-	camera3d.rotation.x = camera.camera.rotation[0] - deg_to_rad(90)
-	camera3d.rotation.y = camera.camera.rotation[1]
-	camera3d.rotation.z = camera.camera.rotation[2]
+	var camera_quaternion := array_to_quaternion(camera.camera.quaternion)
+	#camera_quaternion *= Quaternion.from_euler(Vector3(deg_to_rad(-90), 0, 0))
+	camera3d.quaternion = camera_quaternion
+	#camera3d.rotate_object_local(Vector3.RIGHT, 90)
+	#camera3d.rotate_x(deg_to_rad(90))
+	#camera3d.rotate(Vector3.LEFT, deg_to_rad(-90))
+	#camera3d.rotation_order = EULER_ORDER_ZXY
+	#camera3d.rotation.x = camera.camera.rotation[0] - deg_to_rad(90)
+	#camera3d.rotation.y = camera.camera.rotation[1]
+	#camera3d.rotation.z = camera.camera.rotation[2]
+	
 	camera3d.fov = rad_to_deg(camera.camera.fov)
 	
 	camera3d.set_meta("transition_type", camera.camera.transition_type)
@@ -249,23 +256,25 @@ func add_camera(camera:Dictionary, camera_id:String, main_node:Node3D):
 	camera3d.set_meta("speed", camera.camera.speed)
 	camera3d.set_meta("point_of_interest", camera.camera.point_of_interest)
 	camera3d.set_meta("player_offset", camera.camera.player_offset)
+	camera3d.set_meta("weight", camera.camera.weight)
 	
 	# Curve
-	var path3d := Path3D.new()
-	var curve3d := Curve3D.new()
-	path3d.curve = curve3d
-	camera_node.add_child(path3d)
-	path3d.set_owner(main_node)
-	
-	path3d.position = array_to_vector3(camera.curve.position)
-	#path3d.rotation_order = EULER_ORDER_ZXY
-	path3d.rotation = array_to_vector3(camera.curve.rotation)
-	
-	for p in camera.curve.points:
-		var p_position := Vector3(p[0][0], p[0][1], p[0][2])
-		var p_in := Vector3(p[1][0], p[1][1], p[1][2]) - p_position
-		var p_out := Vector3(p[2][0], p[2][1], p[2][2]) - p_position
-		curve3d.add_point(p_position, p_in, p_out)
+	var path3d
+	if camera.curve != null:
+		path3d = Path3D.new()
+		var curve3d := Curve3D.new()
+		path3d.curve = curve3d
+		camera_node.add_child(path3d)
+		path3d.set_owner(main_node)
+		
+		path3d.position = array_to_vector3(camera.curve.position)
+		path3d.rotation = array_to_vector3(camera.curve.rotation)
+		
+		for p in camera.curve.points:
+			var p_position := Vector3(p[0][0], p[0][1], p[0][2])
+			var p_in := Vector3(p[1][0], p[1][1], p[1][2]) - p_position
+			var p_out := Vector3(p[2][0], p[2][1], p[2][2]) - p_position
+			curve3d.add_point(p_position, p_in, p_out)
 		
 	if camera.default:
 		#print("Default")
@@ -283,14 +292,43 @@ func add_camera(camera:Dictionary, camera_id:String, main_node:Node3D):
 		sensor_collision.set_owner(main_node)
 		sensor_collision.shape = box_shape
 		
+		#Do not scale!
 		box_shape.size = array_to_vector3(sensor.scale)*2
 		sensor_area.position = array_to_vector3(sensor.position)
-		sensor_area.rotation = array_to_vector3(sensor.rotation)
+		sensor_area.quaternion = array_to_quaternion(sensor.quaternion)
 
 		sensor_area.world_node = main_node
 		sensor_area.camera = camera3d
 		sensor_area.path = path3d
 		sensor_area.set_meta("is_camera_sensor", true)
+	
+	# Sensorpath
+	for sensorpath in camera.sensorpath:
+		var sensorpath_area := CameraSensor.new()
+		var sensorpath_collision := CollisionPolygon3D.new()
+		camera_node.add_child(sensorpath_area)
+		sensorpath_area.set_owner(main_node)
+		sensorpath_area.add_child(sensorpath_collision)
+		sensorpath_collision.set_owner(main_node)
+		
+		#Do not scale!
+		sensorpath_area.position = array_to_vector3(sensorpath.position)
+		sensorpath_area.quaternion = array_to_quaternion(sensorpath.quaternion)
+		
+		#Do not scale!
+		sensorpath_collision.rotate_x(deg_to_rad(90))
+		
+		var points: PackedVector2Array
+		for p in sensorpath.points:
+			var p_position := Vector2(p[0][0], p[0][2])
+			points.append(p_position)
+		sensorpath_collision.polygon = points
+		sensorpath_collision.depth = 6
+		
+		sensorpath_area.world_node = main_node
+		sensorpath_area.camera = camera3d
+		sensorpath_area.path = path3d
+		sensorpath_area.set_meta("is_camera_sensor", true)
 	
 	#print(main_node.camera_change)
 	#sensor_area.connect("area_entered", main_node.camera_change.bind(camera3d, curve3d))

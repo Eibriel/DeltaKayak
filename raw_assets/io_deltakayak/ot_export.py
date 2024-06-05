@@ -207,6 +207,7 @@ class DKT_OT_ExportWorld(bpy.types.Operator):
         cameras_def = {}
         cameras_name = "Cameras_" + sector.name.split("_")[1]
         if not cameras_name in sector.children: return cameras_def
+        first_camera = True
         for camera in sector.children[cameras_name].children:
             camera_obj: bpy.types.Camera = None
             curve_obj: bpy.types.Curve = None
@@ -224,19 +225,26 @@ class DKT_OT_ExportWorld(bpy.types.Operator):
                     curve_obj = cobj
             # multiple sensors expected
             sensor_list = []
-            for cobj in camera.objects:
-                if cobj.name.startswith("sensor_"):
-                    #sensor_obj = camera.objects["sensor_"+camera_id]
-                    sensor_list.append(self.get_sensor_data(cobj))
+            for sobj in camera.objects:
+                if sobj.name.startswith("sensor_"):
+                    sensor_list.append(self.get_sensor_data(sobj))
+            # multiple sensorpaths expected
+            sensorpath_list = []
+            for spobj in camera.objects:
+                if spobj.name.startswith("sensorpath_"):
+                    # TODO cleanup curve data, only needs 2d point positions
+                    sensorpath_list.append(self.get_curve_data(spobj))
             #
             camera_def = {
                 "camera": self.get_camera_data(camera_obj),
                 "curve": self.get_curve_data(curve_obj),
                 "sensor": sensor_list,
+                "sensorpath": sensorpath_list,
                 "default": False
             }
-            if camera_id == "001":
+            if first_camera:
                 camera_def["default"] = True
+                first_camera = False
             cameras_def["camera_"+camera.name] = camera_def
         return cameras_def
     
@@ -257,17 +265,23 @@ class DKT_OT_ExportWorld(bpy.types.Operator):
         return triggers_def
 
     def get_camera_data(self, camera_obj):
+        camera_obj.rotation_euler[0] -= math.radians(90.0)
+        bpy.context.view_layer.update()
         camera_def = {
             "position": self.location_to_godot(camera_obj.location),
             "rotation": self.rotation_to_godot(camera_obj.rotation_euler),
+            "quaternion": self.quaternion_to_godot(camera_obj.matrix_world),
             "scale": self.scale_to_godot(camera_obj.scale),
             "fov": camera_obj.data.angle,
             "transition_type": camera_obj.dkt_worldproperties.camera_transition_type,
             "transition_speed": camera_obj.dkt_worldproperties.camera_transition_speed,
             "speed": camera_obj.dkt_worldproperties.camera_speed,
             "point_of_interest": self.vector_to_list(camera_obj.dkt_worldproperties.camera_poi),
-            "player_offset": self.vector_to_list(camera_obj.dkt_worldproperties.camera_player_offset)
+            "player_offset": self.vector_to_list(camera_obj.dkt_worldproperties.camera_player_offset),
+            "weight": camera_obj.dkt_worldproperties.camera_weight
         }
+        camera_obj.rotation_euler[0] += math.radians(90.0)
+        bpy.context.view_layer.update()
         return camera_def
 
 
@@ -284,19 +298,21 @@ class DKT_OT_ExportWorld(bpy.types.Operator):
 
 
     def get_curve_data(self, curve_obj):
+        if curve_obj == None: return None
         curve_def = {
             "position": self.location_to_godot(curve_obj.location),
             "rotation": self.rotation_to_godot(curve_obj.rotation_euler),
+            "quaternion": self.quaternion_to_godot(curve_obj.matrix_world),
             "scale": self.scale_to_godot(curve_obj.scale),
             "points": self.get_curve_points(curve_obj)
         }
         return curve_def
 
-
     def get_sensor_data(self, sensor_obj):
         sensor_def = {
             "position": self.location_to_godot(sensor_obj.location),
             "rotation": self.rotation_to_godot(sensor_obj.rotation_euler),
+            "quaternion": self.quaternion_to_godot(sensor_obj.matrix_world),
             "scale": self.scale_to_godot(sensor_obj.scale)
         }
         return sensor_def
@@ -454,6 +470,7 @@ class DKT_PT_ExportWorld(bpy.types.Panel):
             col.prop(obj.dkt_worldproperties, "camera_speed")
             col.prop(obj.dkt_worldproperties, "camera_poi")
             col.prop(obj.dkt_worldproperties, "camera_player_offset")
+            col.prop(obj.dkt_worldproperties, "camera_weight")
         
 
 
@@ -1130,6 +1147,14 @@ class DKT_PG_WorldObjectProperties(bpy.types.PropertyGroup):
         description="Offsets player position for camera position calculation",
         default=mathutils.Vector((0,0,0)),
         subtype="TRANSLATION"
+    ) # type: ignore
+
+    camera_weight: IntProperty(
+        name="Camera Weight",
+        description="Helps prioritize cameras",
+        default=0,
+        min=0,
+        max=360
     ) # type: ignore
 
 class DKT_PG_StencilProperties(bpy.types.PropertyGroup):

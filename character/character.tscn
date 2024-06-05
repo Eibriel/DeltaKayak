@@ -10,8 +10,8 @@
 radius = 0.271211
 height = 3.53406
 
-[sub_resource type="SphereShape3D" id="SphereShape3D_iqdy3"]
-radius = 0.01
+[sub_resource type="BoxShape3D" id="BoxShape3D_pwt6l"]
+size = Vector3(1.50659, 0.711199, 0.599609)
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_b8fg3"]
 radius = 0.794532
@@ -37,12 +37,28 @@ height = 0.757899
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0)
 shape = SubResource("CapsuleShape3D_ogamo")
 
-[node name="CameraArea" type="Area3D" parent="."]
+[node name="CameraArea_middle" type="Area3D" parent="."]
 metadata/is_character_camera = true
 
-[node name="CollisionShape3D2" type="CollisionShape3D" parent="CameraArea"]
-transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0)
-shape = SubResource("SphereShape3D_iqdy3")
+[node name="CollisionShape3D4" type="CollisionShape3D" parent="CameraArea_middle"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0.00109863, -1.01714e-11, 0.0178658)
+shape = SubResource("BoxShape3D_pwt6l")
+
+[node name="CameraArea_front" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1.57245)
+metadata/is_character_camera = true
+
+[node name="CollisionShape3D4" type="CollisionShape3D" parent="CameraArea_front"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0.00109863, -1.01714e-11, 0.0178658)
+shape = SubResource("BoxShape3D_pwt6l")
+
+[node name="CameraArea_back" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.53079)
+metadata/is_character_camera = true
+
+[node name="CollisionShape3D4" type="CollisionShape3D" parent="CameraArea_back"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0.00109863, -1.01714e-11, 0.0178658)
+shape = SubResource("BoxShape3D_pwt6l")
 
 [node name="InteractionArea" type="Area3D" parent="."]
 metadata/is_character_interaction = true
