@@ -88,7 +88,12 @@ func handle_cameras(delta) -> void:
 		camera_speed = float(current_camera.get_meta("speed")) / 10
 	if new_camera:
 		camera_speed = 1.0
-		
+	
+	#TODO split rotation lock on XYZ
+	var lock_rotation := false
+	if current_camera.has_meta("lock_rotation_x"):
+		lock_rotation = current_camera.get_meta("lock_rotation_x")
+	
 	var shifted_global_position_look = character.global_position + point_of_interest.rotated(Vector3.UP, character.rotation.y)
 	lerped_shifted_global_position_look = lerp(lerped_shifted_global_position_look, shifted_global_position_look, camera_speed)
 	var shifted_global_position_path = character.global_position + player_offset.rotated(Vector3.UP, character.rotation.y)
@@ -97,8 +102,9 @@ func handle_cameras(delta) -> void:
 	position_look_sphere.position = lerped_shifted_global_position_look
 	position_path_sphere.position = lerped_shifted_global_position_path
 	
-	if camera_speed != 0 and ! new_camera:
-		current_camera.look_at(lerped_shifted_global_position_look)
+	if camera_speed != 0 and !new_camera:
+		if not lock_rotation:
+			current_camera.look_at(lerped_shifted_global_position_look)
 	
 	if Global.camera_path != null:
 		var local_character_pos = Global.camera_path.to_local(lerped_shifted_global_position_path)

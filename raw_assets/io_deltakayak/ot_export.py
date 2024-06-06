@@ -287,7 +287,10 @@ class DKT_OT_ExportWorld(bpy.types.Operator):
             "speed": camera_obj.dkt_worldproperties.camera_speed,
             "point_of_interest": self.vector_to_list(camera_obj.dkt_worldproperties.camera_poi),
             "player_offset": self.vector_to_list(camera_obj.dkt_worldproperties.camera_player_offset),
-            "weight": camera_obj.dkt_worldproperties.camera_weight
+            "weight": camera_obj.dkt_worldproperties.camera_weight,
+            "lock_rotation_x": camera_obj.dkt_worldproperties.camera_lock_rotation_x,
+            "lock_rotation_y": camera_obj.dkt_worldproperties.camera_lock_rotation_y,
+            "lock_rotation_z": camera_obj.dkt_worldproperties.camera_lock_rotation_z
         }
         camera_obj.rotation_euler[0] += math.radians(90.0)
         bpy.context.view_layer.update()
@@ -480,6 +483,9 @@ class DKT_PT_ExportWorld(bpy.types.Panel):
             col.prop(obj.dkt_worldproperties, "camera_poi")
             col.prop(obj.dkt_worldproperties, "camera_player_offset")
             col.prop(obj.dkt_worldproperties, "camera_weight")
+            col.prop(obj.dkt_worldproperties, "camera_lock_rotation_x")
+            col.prop(obj.dkt_worldproperties, "camera_lock_rotation_y")
+            col.prop(obj.dkt_worldproperties, "camera_lock_rotation_z")
         
 
 
@@ -1164,6 +1170,21 @@ class DKT_PG_WorldObjectProperties(bpy.types.PropertyGroup):
         default=0,
         min=0,
         max=360
+    ) # type: ignore
+
+    camera_lock_rotation_x: BoolProperty(
+        name="Lock camera rotation X",
+        default=False
+    ) # type: ignore
+
+    camera_lock_rotation_y: BoolProperty(
+        name="Lock camera rotation Y",
+        default=False
+    ) # type: ignore
+
+    camera_lock_rotation_z: BoolProperty(
+        name="Lock camera rotation Z",
+        default=False
     ) # type: ignore
 
 class DKT_PG_StencilProperties(bpy.types.PropertyGroup):

@@ -282,6 +282,9 @@ func add_camera(camera:Dictionary, camera_id:String, main_node:Node3D):
 	camera3d.set_meta("point_of_interest", camera.camera.point_of_interest)
 	camera3d.set_meta("player_offset", camera.camera.player_offset)
 	camera3d.set_meta("weight", camera.camera.weight)
+	camera3d.set_meta("lock_rotation_x", camera.camera.lock_rotation_x)
+	camera3d.set_meta("lock_rotation_y", camera.camera.lock_rotation_y)
+	camera3d.set_meta("lock_rotation_z", camera.camera.lock_rotation_z)
 	
 	# Curve
 	var path3d
