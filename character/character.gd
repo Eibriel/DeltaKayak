@@ -103,9 +103,9 @@ func _physics_process(delta: float):
 	# Current
 	#current *= 0.999
 	current = current_direction * current_speed * delta
-	Global.log_text += "\ncurrent.x: %f" % current.x
-	Global.log_text += "\ncurrent.y: %f" % current.y
-	Global.log_text += "\ncurrent.z: %f" % current.z
+	#Global.log_text += "\ncurrent.x: %f" % current.x
+	#Global.log_text += "\ncurrent.y: %f" % current.y
+	#Global.log_text += "\ncurrent.z: %f" % current.z
 
 func go_forward(_speed:float):
 	var direction := (transform.basis * Vector3.BACK).normalized()
@@ -118,8 +118,8 @@ func _integrate_forces(state:PhysicsDirectBodyState3D):
 	else:
 		state.linear_velocity *= 0.999
 		state.angular_velocity *= 0.99
-	Global.log_text += "\nvelocity.x: %f" % state.linear_velocity.x
-	Global.log_text += "\nvelocity.z: %f" % state.linear_velocity.z
+	#Global.log_text += "\nvelocity.x: %f" % state.linear_velocity.x
+	#Global.log_text += "\nvelocity.z: %f" % state.linear_velocity.z
 	# TODO make it smooth intead of step
 	if state.linear_velocity.length() > 1.0:
 		var forward_direction := (transform.basis * Vector3.FORWARD).normalized()

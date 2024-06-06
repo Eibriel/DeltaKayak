@@ -93,6 +93,7 @@ func _import(source_file, save_path, options, r_platform_variants, r_gen_files):
 			add_camera(camera, camera_id, main_node)
 		add_trees(sector.trees, sector_id, main_node)
 		add_triggers(sector.triggers, sector_id, main_node)
+		add_colliders(sector.colliders, sector_id, main_node)
 	
 	add_water(main_node)
 	
@@ -105,6 +106,30 @@ func _import(source_file, save_path, options, r_platform_variants, r_gen_files):
 	else:
 		return result
 		#return null
+
+func add_colliders(colliders: Array, sector_id:String, main_node:Node3D):
+	# Sensorpath
+	for collider in colliders:
+		var static_body := StaticBody3D.new()
+		var collision_polygon := CollisionPolygon3D.new()
+		main_node.add_child(static_body)
+		static_body.set_owner(main_node)
+		static_body.add_child(collision_polygon)
+		collision_polygon.set_owner(main_node)
+		
+		#Do not scale!
+		static_body.position = array_to_vector3(collider.position)
+		static_body.quaternion = array_to_quaternion(collider.quaternion)
+		
+		#Do not scale!
+		collision_polygon.rotate_x(deg_to_rad(90))
+		
+		var points: PackedVector2Array
+		for p in collider.points:
+			var p_position := Vector2(p[0][0], p[0][2])
+			points.append(p_position)
+		collision_polygon.polygon = points
+		collision_polygon.depth = 6
 
 func add_triggers(triggers: Array, sector_id:String, main_node:Node3D):
 	for trigger in triggers:

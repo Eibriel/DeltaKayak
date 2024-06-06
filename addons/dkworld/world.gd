@@ -118,10 +118,9 @@ func select_best_camera():
 	for n in range(3, -1, -1):
 		if area_amount[n] != null:
 			selected_camera = area_amount[n]
+			break
 	
 	if selected_camera != null:
-		#Global.camera = selected_camera
-		#Global.camera_path = camera_to_path[selected_camera]
 		next_camera = selected_camera
 
 func camera_entered(area:Area3D, camera: Camera3D, path:Path3D) -> void:

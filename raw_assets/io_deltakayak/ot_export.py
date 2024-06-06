@@ -166,6 +166,7 @@ class DKT_OT_ExportWorld(bpy.types.Operator):
             sector_def["trees"] = self.get_trees(sector)
             sector_def["triggers"] = self.get_triggers(sector)
             sector_def["current"] = self.get_current(sector)
+            sector_def["colliders"] = self.get_colliders(sector)
             definition[sector.name] = sector_def
 
         definition_path = context.scene.dkt_gltfsexportsetup.definition_path
@@ -263,6 +264,14 @@ class DKT_OT_ExportWorld(bpy.types.Operator):
         for trigger in sector.children[triggers_name].objects:
             triggers_def.append(self.get_current_data(trigger))
         return triggers_def
+
+    def get_colliders(self, sector):
+        colliders_def = []
+        colliders_name = "Colliders_" + sector.name.split("_")[1]
+        if not colliders_name in sector.children: return colliders_def
+        for collider in sector.children[colliders_name].objects:
+            colliders_def.append(self.get_curve_data(collider))
+        return colliders_def
 
     def get_camera_data(self, camera_obj):
         camera_obj.rotation_euler[0] -= math.radians(90.0)
