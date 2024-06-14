@@ -94,6 +94,7 @@ func _import(source_file, save_path, options, r_platform_variants, r_gen_files):
 		add_trees(sector.trees, sector_id, main_node)
 		add_triggers(sector.triggers, sector_id, main_node)
 		add_colliders(sector.colliders, sector_id, main_node)
+		add_navmesh(sector.navmesh, sector_id, main_node)
 	
 	add_water(main_node)
 	
@@ -107,6 +108,20 @@ func _import(source_file, save_path, options, r_platform_variants, r_gen_files):
 		return result
 		#return null
 
+func add_navmesh(navmesh: Dictionary, sector_id:String, main_node:Node3D):
+	#polygons, vertices
+	var navigation_region := NavigationRegion3D.new()
+	var navigation_mesh := NavigationMesh.new()
+	main_node.add_child(navigation_region)
+	navigation_region.set_owner(main_node)
+	navigation_region.navigation_mesh = navigation_mesh
+	var packed_vertices: PackedVector3Array
+	for v in navmesh.vertices:
+		packed_vertices.append(Vector3(v[0], 0.0, v[1]))
+	navigation_mesh.set_vertices(packed_vertices)
+	for v in navmesh.polygons:
+		navigation_mesh.add_polygon(PackedInt32Array(v))
+
 func add_colliders(colliders: Array, sector_id:String, main_node:Node3D):
 	# Sensorpath
 	for collider in colliders:
@@ -116,6 +131,9 @@ func add_colliders(colliders: Array, sector_id:String, main_node:Node3D):
 		static_body.set_owner(main_node)
 		static_body.add_child(collision_polygon)
 		collision_polygon.set_owner(main_node)
+		
+		static_body.set_collision_layer_value(2, true)
+		static_body.set_collision_mask_value(2, true)
 		
 		#Do not scale!
 		static_body.position = array_to_vector3(collider.position)
@@ -134,24 +152,48 @@ func add_colliders(colliders: Array, sector_id:String, main_node:Node3D):
 func add_triggers(triggers: Array, sector_id:String, main_node:Node3D):
 	for trigger in triggers:
 		# Trigger
-		var trigger_area := Trigger.new()
-		var trigger_collision := CollisionShape3D.new()
-		var box_shape := BoxShape3D.new()
-		main_node.add_child(trigger_area)
-		trigger_area.set_owner(main_node)
-		trigger_area.add_child(trigger_collision)
-		trigger_collision.set_owner(main_node)
-		trigger_collision.shape = box_shape
-		box_shape.size = array_to_vector3(trigger.scale)*2
-		
-		trigger_area.position = array_to_vector3(trigger.position)
-		trigger_area.rotation = array_to_vector3(trigger.rotation)
-		#trigger_area.scale = array_to_vector3(trigger.scale)
-		
-		trigger_area.trigger_id = trigger.id
-		trigger_area.world_node = main_node
-		
-		#main_node.world_definition.append(trigger_area.position)
+		if trigger.id.begins_with("trigger_"):
+			var trigger_area := Trigger.new()
+			var trigger_collision := CollisionShape3D.new()
+			var box_shape := BoxShape3D.new()
+			main_node.add_child(trigger_area)
+			trigger_area.set_owner(main_node)
+			trigger_area.add_child(trigger_collision)
+			trigger_collision.set_owner(main_node)
+			trigger_collision.shape = box_shape
+			box_shape.size = array_to_vector3(trigger.scale)*2
+			
+			trigger_area.position = array_to_vector3(trigger.position)
+			trigger_area.rotation = array_to_vector3(trigger.rotation)
+			#trigger_area.scale = array_to_vector3(trigger.scale)
+			
+			trigger_area.trigger_id = trigger.id
+			trigger_area.world_node = main_node
+			#main_node.world_definition.append(trigger_area.position)
+		elif trigger.id.begins_with("triggerpath_"):
+			var trigger_area := Trigger.new()
+			var trigger_collision := CollisionPolygon3D.new()
+			main_node.add_child(trigger_area)
+			trigger_area.set_owner(main_node)
+			trigger_area.add_child(trigger_collision)
+			trigger_collision.set_owner(main_node)
+			
+			#Do not scale!
+			trigger_area.position = array_to_vector3(trigger.position)
+			trigger_area.quaternion = array_to_quaternion(trigger.quaternion)
+			
+			#Do not scale!
+			trigger_collision.rotate_x(deg_to_rad(90))
+			
+			var points: PackedVector2Array
+			for p in trigger.points:
+				var p_position := Vector2(p[0][0], p[0][2])
+				points.append(p_position)
+			trigger_collision.polygon = points
+			trigger_collision.depth = 6
+			
+			trigger_area.trigger_id = trigger.id
+			trigger_area.world_node = main_node
 
 func add_water(main_node:Node3D):
 	var water = WATER_PATCH.instantiate()

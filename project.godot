@@ -120,6 +120,10 @@ compicactus={
 
 locale/translations=PackedStringArray("res://dkdata_strings.en.translation", "res://dkdata_strings.es_AR.translation", "res://dkdata_strings.es_ES.translation", "res://ui_strings.en.translation", "res://ui_strings.es_AR.translation", "res://ui_strings.es_ES.translation")
 
+[layer_names]
+
+3d_physics/layer_2="character"
+
 [rendering]
 
 textures/canvas_textures/default_texture_filter=0

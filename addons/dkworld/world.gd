@@ -54,7 +54,7 @@ func switch_camera(delta):
 	camera_switch_delta += delta
 	if camera_switch_delta < 1: return
 	camera_switch_delta = 0.0
-	
+	if next_camera == null: return
 	Global.camera = next_camera
 	Global.camera_path = camera_to_path[next_camera]
 

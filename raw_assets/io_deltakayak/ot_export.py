@@ -167,6 +167,7 @@ class DKT_OT_ExportWorld(bpy.types.Operator):
             sector_def["triggers"] = self.get_triggers(sector)
             sector_def["current"] = self.get_current(sector)
             sector_def["colliders"] = self.get_colliders(sector)
+            sector_def["navmesh"] = self.get_navmesh(sector)
             definition[sector.name] = sector_def
 
         definition_path = context.scene.dkt_gltfsexportsetup.definition_path
@@ -254,7 +255,10 @@ class DKT_OT_ExportWorld(bpy.types.Operator):
         triggers_name = "Triggers_" + sector.name.split("_")[1]
         if not triggers_name in sector.children: return triggers_def
         for trigger in sector.children[triggers_name].objects:
-            triggers_def.append(self.get_trigger_data(trigger))
+            if trigger.name.startswith("trigger_"):
+                triggers_def.append(self.get_trigger_data(trigger))
+            elif trigger.name.startswith("triggerpath_"):
+                triggers_def.append(self.get_triggerpath_data(trigger))
         return triggers_def
 
     def get_current(self, sector):
@@ -272,6 +276,30 @@ class DKT_OT_ExportWorld(bpy.types.Operator):
         for collider in sector.children[colliders_name].objects:
             colliders_def.append(self.get_curve_data(collider))
         return colliders_def
+
+    def get_navmesh(self, sector):
+        navmesh_def = {
+            "vertices": [],
+            "polygons": []
+        }
+        navmesh_name = "NavigationMesh_" + sector.name.split("_")[1]
+        if not navmesh_name in sector.objects: return navmesh_def
+        navmesh_obj = sector.objects[navmesh_name]
+        for v in navmesh_obj.data.vertices:
+            vertice = [
+                v.co.x,
+                -v.co.y
+            ]
+            navmesh_def["vertices"].append(vertice)
+        for p in navmesh_obj.data.polygons:
+            #if len(polygon.vertices) > 3:
+            #    self.report({'ERROR'}, "Make sure the mesh for object \"{}\" uses triangles only".format(navmesh_obj.name))
+            #    return {'CANCELLED'}
+            polygon = []
+            for v in p.vertices:
+                polygon.append(v)
+            navmesh_def["polygons"].append(polygon)
+        return navmesh_def
 
     def get_camera_data(self, camera_obj):
         camera_obj.rotation_euler[0] -= math.radians(90.0)
@@ -337,6 +365,11 @@ class DKT_OT_ExportWorld(bpy.types.Operator):
             "scale": self.scale_to_godot(trigger_obj.scale),
             "id": trigger_obj.name
         }
+        return trigger_def
+
+    def get_triggerpath_data(self, trigger_obj):
+        trigger_def = self.get_curve_data(trigger_obj)
+        trigger_def["id"] = trigger_obj.name
         return trigger_def
 
     def get_current_data(self, current_obj):

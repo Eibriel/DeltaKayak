@@ -19,6 +19,8 @@ var dialogue_time: float
 var dialogue_tween: Tween
 var write_speed: float
 
+const UnhandledTriggers = preload("res://interactives/unhandled_triggers.gd")
+
 func _ready() -> void:
 	Global.main_scene = self
 	label_demo.visible = false
@@ -91,7 +93,7 @@ func handle_triggers(_delta:float) -> void:
 			var always_visible := false
 			for i in game_state.items:
 				if i.trigger_name == trigger.id:
-					if not i.visible:
+					if true: #not i.visible:
 						trigger_visible = false
 						break
 					if i.primary_action != "":
@@ -113,7 +115,8 @@ func handle_triggers(_delta:float) -> void:
 					icon.position = Global.camera.unproject_position(trigger_position)
 				elif always_visible:
 					icon.position = get_viewport_rect().size * 0.5
-				icon.visible = true
+				#icon.visible = true
+				icon.visible = false
 				icon.set_active(false)
 				if is_closest_trigger(trigger.id):
 					icon.set_active(true)
@@ -179,9 +182,11 @@ func on_trigger_exited(id:String):
 func execute_trigger(trigger_type:String, trigger_id:String):
 	# var index := "%s:%s" % [type, trigger_id]
 	if not is_closest_trigger(trigger_id): return
+	var handled := false
 	for i in game_state.items:
 		if not i.active: continue
 		if i.trigger_name == trigger_id:
+			handled = true
 			if "primary_action" == trigger_type and i.primary_action != "":
 				var a = get_item_action(i.primary_action, i)
 				if a != null:
@@ -206,6 +211,9 @@ func execute_trigger(trigger_type:String, trigger_id:String):
 				if i.logic != null:
 					var l_script = i.logic.new()
 					l_script._on_trigger(self, game_state, trigger_type)
+	if not handled and trigger_type == "primary_action":
+		var unhandled_logic := UnhandledTriggers.new()
+		unhandled_logic._on_unhandled_trigger(self, game_state, trigger_id)
 
 func is_in_trigger(id:String) -> bool:
 	return id in in_trigger

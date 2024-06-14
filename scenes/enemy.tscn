@@ -1,0 +1,32 @@
+[gd_scene load_steps=3 format=3 uid="uid://mvc5qr5igrlq"]
+
+[ext_resource type="Script" path="res://scenes/enemy.gd" id="1_ht45k"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_c8bgx"]
+radius = 0.551332
+height = 3.71641
+
+[node name="Enemy" type="RigidBody3D"]
+axis_lock_linear_y = true
+axis_lock_angular_x = true
+axis_lock_angular_z = true
+script = ExtResource("1_ht45k")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 1.10119e-08, -0.251923)
+shape = SubResource("CapsuleShape3D_c8bgx")
+
+[node name="NavigationAgent3D" type="NavigationAgent3D" parent="."]
+debug_enabled = true
+
+[node name="CSGSphere3D" type="CSGSphere3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.61588)
+
+[node name="CSGBox3D" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0239258, -0.10376, -0.0559353)
+size = Vector3(0.952148, 0.79248, 2.61584)
+
+[node name="RayCast3D" type="RayCast3D" parent="."]
+collision_mask = 2
+collide_with_areas = true
+debug_shape_thickness = 5

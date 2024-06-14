@@ -9,7 +9,7 @@ var soft_camera_rotation: float
 var speed := 0.0
 var torque := 0.0
 
-var kayak_speed := 15.0
+var kayak_speed := 15.0 + 5.0
 var temp_speed := 0.0
 var temp_time := 0.0
 var strength := 0
