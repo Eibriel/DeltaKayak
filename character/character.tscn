@@ -18,11 +18,15 @@ radius = 0.794532
 height = 4.48046
 
 [node name="character" type="RigidBody3D"]
-collision_layer = 3
-collision_mask = 3
+collision_layer = 2
+collision_mask = 6
 axis_lock_linear_y = true
 axis_lock_angular_x = true
 axis_lock_angular_z = true
+contact_monitor = true
+max_contacts_reported = 2
+linear_damp = 0.1
+angular_damp = 0.1
 script = ExtResource("1_mnv7b")
 
 [node name="CSGCylinder3D" type="CSGCylinder3D" parent="."]
@@ -93,7 +97,7 @@ omni_attenuation = 0.0
 
 [node name="SpotLight3D" type="SpotLight3D" parent="."]
 transform = Transform3D(1, -1.4164e-08, 1.15512e-09, 1.4164e-08, 0.986788, -0.162017, 1.15495e-09, 0.162017, 0.986788, 1.50834e-07, 0.397435, -1.41331)
-light_energy = 5.0
+light_energy = 2.0
 light_projector = ExtResource("3_xitmn")
 shadow_enabled = true
 spot_range = 13.9665
@@ -110,5 +114,8 @@ top_level = true
 unique_name_in_owner = true
 transform = Transform3D(1, 0, 0, 0, 0.853332, 0.521367, 0, -0.521367, 0.853332, 0, 13.0076, 11.27)
 fov = 90.0
+
+[node name="GrabbingPosition" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -2.39013)
 
 [connection signal="area_entered" from="InteractionArea" to="." method="_on_interaction_area_area_entered"]

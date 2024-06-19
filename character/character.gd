@@ -4,6 +4,8 @@ extends RigidBody3D
 @onready var pepa: Node3D = %pepa
 @onready var camera: Camera3D = %CharacterCamera3D
 @onready var marker_3d: Marker3D = $Marker3D
+@onready var grabbing_position: Marker3D = $GrabbingPosition
+
 
 var soft_camera_rotation: float
 var speed := 0.0
@@ -20,6 +22,16 @@ var target_direction := 0.0
 var current := Vector3.ZERO
 var current_direction = Vector3.FORWARD
 var current_speed := 0.2
+
+var grabbing_object: RigidBody3D
+var grabbing_object_position: Vector3
+var grabbing_state = GRABBING.NO
+
+enum GRABBING {
+	WANTS_TO,
+	YES,
+	NO
+}
 
 func _ready():
 	#position = Vector3(-31.8, 0, -5)
@@ -68,6 +80,8 @@ func _process(delta: float) -> void:
 		torque += get_derivative(error) * delta
 	#Global.log_text += "\ntorque: %f" % torque
 	last_rotation = rotation.y
+	
+	handle_grabbing()
 
 # PID control
 func get_proportional(error) -> float:
@@ -96,6 +110,20 @@ func get_derivative(_error) -> float:
 	return derivative*1000.0
 #
 
+func handle_grabbing():
+	if Input.is_action_pressed("grab"):
+		match grabbing_state:
+			GRABBING.NO:
+				grabbing_state = GRABBING.WANTS_TO
+	else:
+		grabbing_state = GRABBING.NO
+	if grabbing_state != GRABBING.YES: return
+	var a = grabbing_object.to_global(grabbing_object_position)
+	var b = grabbing_position.global_position
+	grabbing_object.set_linear_velocity((b-a)*1)
+	#grabbing_object.apply_force(b-a,grabbing_object_position)
+	
+
 func _physics_process(delta: float):
 	apply_torque(Vector3(0, torque, 0))
 	go_forward(speed)
@@ -111,13 +139,13 @@ func go_forward(_speed:float):
 	var direction := (transform.basis * Vector3.BACK).normalized()
 	apply_central_force(direction * _speed)
 
-func _integrate_forces(state:PhysicsDirectBodyState3D):
-	if true:#paddle_status !=0 and holding:
-		state.linear_velocity *= 0.999
-		state.angular_velocity *= 0.999
-	else:
-		state.linear_velocity *= 0.999
-		state.angular_velocity *= 0.99
+func _integrate_forces_old(state:PhysicsDirectBodyState3D):
+	#if true:#paddle_status !=0 and holding:
+		#state.linear_velocity *= 0.999
+		#state.angular_velocity *= 0.999
+	#else:
+		#state.linear_velocity *= 0.999
+		#state.angular_velocity *= 0.99
 	#Global.log_text += "\nvelocity.x: %f" % state.linear_velocity.x
 	#Global.log_text += "\nvelocity.z: %f" % state.linear_velocity.z
 	# TODO make it smooth intead of step
@@ -129,6 +157,37 @@ func _integrate_forces(state:PhysicsDirectBodyState3D):
 		state.linear_velocity = (side_component * side_drag) + forward_component + current
 	else:
 		state.linear_velocity += current
+
+# TODO duplicated in boat_class.gd
+func _integrate_forces(state: PhysicsDirectBodyState3D) -> void:
+	handle_contacts(state)
+	var forward_direction := (transform.basis * Vector3.FORWARD).normalized()
+	# Gets only the energy going forward
+	var forward_component: Vector3 = forward_direction * state.linear_velocity.dot(forward_direction)
+	# Gets only the energy not going forward
+	var side_component: Vector3 = state.linear_velocity - forward_component
+	# Transfers the energy not going forward to going forward
+	var transferred_energy: Vector3 = forward_direction * side_component.length()
+	var side_drag := 0.99 # TODO depends on velocity
+	var calculated_velocity := Vector3.ZERO
+	calculated_velocity += side_component * side_drag
+	calculated_velocity += forward_component
+	calculated_velocity += transferred_energy * (1.0 - side_drag)
+	calculated_velocity += current
+	state.linear_velocity = calculated_velocity
+
+func handle_contacts(state: PhysicsDirectBodyState3D):
+	if state.get_contact_count() > 0:
+		var body = state.get_contact_collider_object(0)
+		if body.has_meta("grabbable"):
+			if grabbing_state == GRABBING.WANTS_TO:
+				grabbing_object = body
+				grabbing_position.global_position = body.global_position
+				grabbing_object_position = body.to_local(state.get_contact_collider_position(0))
+				grabbing_state = GRABBING.YES
+				print("GRAB")
+			if grabbing_state == GRABBING.YES and grabbing_object == body:
+				grabbing_position.global_position = body.global_position
 
 func get_current() -> void:
 	current_direction = Vector3.FORWARD
@@ -167,3 +226,4 @@ func _on_interaction_area_area_entered(area: Area3D) -> void:
 	elif area.has_meta("strength"):
 		area.free()
 		strength += 1
+

@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://ce6e8v1saxjr5"]
+[gd_scene load_steps=19 format=3 uid="uid://ce6e8v1saxjr5"]
 
 [ext_resource type="Environment" uid="uid://xpf4ng2ym0n4" path="res://environments/main_environment.tres" id="1_ekqa4"]
 [ext_resource type="Script" path="res://main.gd" id="1_xxenq"]
@@ -9,13 +9,16 @@
 [ext_resource type="Resource" uid="uid://bi1rugic742u0" path="res://dkdata/dkdata.tres" id="3_nh3h6"]
 [ext_resource type="Texture2D" uid="uid://31mrm2ajeyll" path="res://textures/dialogue_box.png" id="4_kkvku"]
 [ext_resource type="PackedScene" uid="uid://mvc5qr5igrlq" path="res://scenes/enemy.tscn" id="9_biwko"]
+[ext_resource type="PackedScene" uid="uid://t23rsw74uei8" path="res://scenes/floating_box.tscn" id="9_kolyd"]
+[ext_resource type="PackedScene" uid="uid://ccwbpjnygckmy" path="res://scenes/door.tscn" id="11_mh163"]
+[ext_resource type="PackedScene" uid="uid://cq7dkdx262hcs" path="res://scenes/switch.tscn" id="12_uwfp4"]
+[ext_resource type="PackedScene" uid="uid://b1dpqormd2sea" path="res://scenes/chain.tscn" id="13_60n28"]
+[ext_resource type="PackedScene" uid="uid://budwwb6cj1obm" path="res://scenes/pendulum.tscn" id="14_80ibj"]
 
 [sub_resource type="Compositor" id="Compositor_lm6bj"]
 compositor_effects = Array[CompositorEffect]([ExtResource("2_f4rcp")])
 
 [sub_resource type="MultiMesh" id="MultiMesh_g048c"]
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_v311q"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_kp58l"]
 size = Vector3(11.4926, 2.54077, 9.13838)
@@ -138,7 +141,7 @@ transform = Transform3D(0.00204205, 0, -0.999998, 0, 1, 0, 0.999998, 0, 0.002042
 [node name="DKWorld" parent="Main3D" node_paths=PackedStringArray("initial_camera", "initial_camera_path") instance=ExtResource("3_7foso")]
 unique_name_in_owner = true
 initial_camera = NodePath("camera_camera_001_003/camera_camera_001_003_cam")
-initial_camera_path = NodePath("camera_camera_001_003/@Path3D@31231")
+initial_camera_path = NodePath("camera_camera_001_003/@Path3D@22159")
 
 [node name="Camera3D" type="Camera3D" parent="Main3D"]
 transform = Transform3D(1, 0, 0, 0, 0.921328, 0.388786, 0, -0.388786, 0.921328, 0.528366, 5.52796, 5.79716)
@@ -147,63 +150,70 @@ current = true
 [node name="MultiMeshInstance3D" type="MultiMeshInstance3D" parent="Main3D"]
 multimesh = SubResource("MultiMesh_g048c")
 
-[node name="StaticBody3D" type="RigidBody3D" parent="Main3D"]
-transform = Transform3D(0.368887, 0, -0.929475, 0, 1, 0, 0.929475, 0, 0.368887, 22.419, 0, -27.4939)
-collision_layer = 3
-collision_mask = 3
-axis_lock_linear_y = true
-mass = 9.425
-gravity_scale = 0.0
+[node name="Node3D2" type="Node3D" parent="Main3D"]
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Main3D/StaticBody3D"]
-shape = SubResource("BoxShape3D_v311q")
-
-[node name="CSGBox3D" type="CSGBox3D" parent="Main3D/StaticBody3D"]
-
-[node name="CollisionShape3D2" type="CollisionShape3D" parent="Main3D/StaticBody3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.0528904, 1.45178)
-shape = SubResource("BoxShape3D_v311q")
-
-[node name="CSGBox3D2" type="CSGBox3D" parent="Main3D/StaticBody3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.0606904, 1.45178)
-
-[node name="CollisionShape3D3" type="CollisionShape3D" parent="Main3D/StaticBody3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.0528904, 2.92137)
-shape = SubResource("BoxShape3D_v311q")
-
-[node name="CSGBox3D3" type="CSGBox3D" parent="Main3D/StaticBody3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.0606904, 2.92137)
-
-[node name="OilSpillArea3D" type="Area3D" parent="Main3D"]
+[node name="OilSpillArea3D" type="Area3D" parent="Main3D/Node3D2"]
 transform = Transform3D(0.317288, 0, 0.948329, 0, 1, 0, -0.948329, 0, 0.317288, 49.8722, 0, 20.5895)
 metadata/oil_spill = true
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Main3D/OilSpillArea3D"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Main3D/Node3D2/OilSpillArea3D"]
 shape = SubResource("BoxShape3D_kp58l")
 
-[node name="StrengthArea3D" type="Area3D" parent="Main3D"]
+[node name="StrengthArea3D" type="Area3D" parent="Main3D/Node3D2"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.58259, 0, -72.6413)
 metadata/strength = true
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Main3D/StrengthArea3D"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Main3D/Node3D2/StrengthArea3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.48492, 0)
 shape = SubResource("BoxShape3D_0ev4o")
 
-[node name="StrengthArea3D2" type="Area3D" parent="Main3D"]
+[node name="StrengthArea3D2" type="Area3D" parent="Main3D/Node3D2"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -81.9273, 0, 35.4645)
 metadata/strength = true
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Main3D/StrengthArea3D2"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Main3D/Node3D2/StrengthArea3D2"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.48492, 0)
 shape = SubResource("BoxShape3D_0ev4o")
 
-[node name="StrengthArea3D3" type="Area3D" parent="Main3D"]
+[node name="StrengthArea3D3" type="Area3D" parent="Main3D/Node3D2"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 19.2371, 0, 141.56)
 metadata/strength = true
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Main3D/StrengthArea3D3"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Main3D/Node3D2/StrengthArea3D3"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.48492, 0)
 shape = SubResource("BoxShape3D_0ev4o")
 
-[node name="Enemy" parent="Main3D" instance=ExtResource("9_biwko")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.03116, 0, 4.51865)
+[node name="PysicsObjects" type="Node3D" parent="Main3D"]
+
+[node name="FloatingBox" parent="Main3D/PysicsObjects" instance=ExtResource("9_kolyd")]
+transform = Transform3D(-0.21879, 0, -0.975772, 0, 1, 0, 0.975772, 0, -0.21879, -15.028, 3.7883, 64.9066)
+
+[node name="FloatingBox2" parent="Main3D/PysicsObjects" instance=ExtResource("9_kolyd")]
+transform = Transform3D(0.0233155, 0, 0.999728, 0, 1, 0, -0.999728, 0, 0.0233155, -30.8095, 0, 34.486)
+
+[node name="FloatingBox3" parent="Main3D/PysicsObjects" instance=ExtResource("9_kolyd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.52979, 0, 12.679)
+
+[node name="Enemy" parent="Main3D/PysicsObjects" instance=ExtResource("9_biwko")]
+transform = Transform3D(-0.0228793, 0, -0.999738, 0, 1, 0, 0.999738, 0, -0.0228793, -34.3477, 0, 34.5692)
+linear_damp = 0.1
+angular_damp = 0.1
+home_position = Vector3(-34.3, 0, 34.5)
+
+[node name="Enemy2" parent="Main3D/PysicsObjects" instance=ExtResource("9_biwko")]
+transform = Transform3D(0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, 0.707107, 54.9059, 0, 22.1485)
+linear_damp = 0.1
+angular_damp = 0.1
+home_position = Vector3(55, 0, 22)
+
+[node name="Switch" parent="Main3D/PysicsObjects" instance=ExtResource("12_uwfp4")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 38.3983, 0, 74.7083)
+
+[node name="Door" parent="Main3D/PysicsObjects" instance=ExtResource("11_mh163")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.93888, 0, 74.2271)
+
+[node name="Chain" parent="Main3D/PysicsObjects" instance=ExtResource("13_60n28")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 50.0222, 0, 83.3839)
+
+[node name="Pendulum" parent="Main3D/PysicsObjects" instance=ExtResource("14_80ibj")]
+transform = Transform3D(-0.160157, 0, -0.987092, 0, 1, 0, 0.987092, 0, -0.160157, -14.166, 0, 60.2022)

@@ -1,0 +1,44 @@
+[gd_scene load_steps=3 format=3 uid="uid://budwwb6cj1obm"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_kthpn"]
+size = Vector3(0.5, 4.13232, 1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_6mawm"]
+size = Vector3(0.682129, 0.855957, 1.15875)
+
+[node name="Pendulum" type="Node3D"]
+
+[node name="HingeJoint3D" type="HingeJoint3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5, 0)
+node_a = NodePath("../RigidBody3D")
+
+[node name="RigidBody3D" type="RigidBody3D" parent="."]
+collision_layer = 4
+collision_mask = 7
+metadata/grabbable = true
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="RigidBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.93384, 0)
+shape = SubResource("BoxShape3D_kthpn")
+
+[node name="CSGBox3D" type="CSGBox3D" parent="RigidBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.91382, 0)
+size = Vector3(0.5, 4.17236, 1)
+
+[node name="HingeJoint3D2" type="HingeJoint3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.870515, 0)
+node_a = NodePath("../RigidBody3D")
+node_b = NodePath("../RigidBody3D2")
+
+[node name="RigidBody3D2" type="RigidBody3D" parent="."]
+collision_layer = 3
+collision_mask = 3
+metadata/grabbable = true
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="RigidBody3D2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00756836, 0.427979, -0.0108948)
+shape = SubResource("BoxShape3D_6mawm")
+
+[node name="CSGBox3D" type="CSGBox3D" parent="RigidBody3D2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0223083, 0.427246, -0.00747681)
+size = Vector3(0.693909, 0.854492, 1.15192)

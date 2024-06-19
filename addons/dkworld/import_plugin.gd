@@ -132,8 +132,10 @@ func add_colliders(colliders: Array, sector_id:String, main_node:Node3D):
 		static_body.add_child(collision_polygon)
 		collision_polygon.set_owner(main_node)
 		
-		static_body.set_collision_layer_value(2, true)
-		static_body.set_collision_mask_value(2, true)
+		#static_body.set_collision_layer_value(2, true)
+		static_body.set_collision_mask_value(1, true) # Walls
+		static_body.set_collision_mask_value(2, true) # Character
+		static_body.set_collision_mask_value(3, true) # Grabbable
 		
 		#Do not scale!
 		static_body.position = array_to_vector3(collider.position)
