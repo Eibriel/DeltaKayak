@@ -1,0 +1,15 @@
+[gd_scene load_steps=2 format=3 uid="uid://badyxdgafc2js"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_m3bi3"]
+
+[node name="SphereKey" type="RigidBody3D"]
+collision_layer = 4
+collision_mask = 15
+axis_lock_linear_y = true
+axis_lock_angular_x = true
+axis_lock_angular_z = true
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("SphereShape3D_m3bi3")
+
+[node name="CSGSphere3D" type="CSGSphere3D" parent="."]

@@ -136,5 +136,6 @@ func is_character_visible() -> bool:
 	ray_cast_3d.force_raycast_update()
 	if not ray_cast_3d.is_colliding(): return false
 	var collider = ray_cast_3d.get_collider()
+	Global.log_text += "\ncollider: %s" % collider.name
 	if not collider.name == "character": return false
 	return true

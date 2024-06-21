@@ -163,10 +163,12 @@ class DKT_OT_ExportWorld(bpy.types.Operator):
             sector_def = {}
             sector_def["cameras"] = self.get_cameras(sector)
             sector_def["items"] = self.get_items(sector)
+            sector_def["physicsitems"] = self.get_physicsitems(sector)
             sector_def["trees"] = self.get_trees(sector)
             sector_def["triggers"] = self.get_triggers(sector)
             sector_def["current"] = self.get_current(sector)
             sector_def["colliders"] = self.get_colliders(sector)
+            sector_def["lands"] = self.get_lands(sector)
             sector_def["navmesh"] = self.get_navmesh(sector)
             definition[sector.name] = sector_def
 
@@ -197,6 +199,21 @@ class DKT_OT_ExportWorld(bpy.types.Operator):
         for item_obj in sector.children[items_name].objects:
             items_def[item_obj.name] = {
                 "instance": item_obj.instance_collection.name,
+                "position": self.location_to_godot(item_obj.location),
+                "rotation": self.rotation_to_godot(item_obj.rotation_euler),
+                "scale": self.scale_to_godot(item_obj.scale),
+                "transformation": self.transform_to_godot(item_obj.matrix_world),
+                "quaternion": self.quaternion_to_godot(item_obj.matrix_world)
+            }
+        return items_def
+
+    def get_physicsitems(self, sector):# -> dict:
+        items_def = {}
+        items_name = "PhysicsItems_" + sector.name.split("_")[1]
+        if not items_name in sector.children: return items_def
+        for item_obj in sector.children[items_name].objects:
+            items_def[item_obj.name] = {
+                "instance": item_obj.name.split("_")[0],
                 "position": self.location_to_godot(item_obj.location),
                 "rotation": self.rotation_to_godot(item_obj.rotation_euler),
                 "scale": self.scale_to_godot(item_obj.scale),
@@ -276,6 +293,14 @@ class DKT_OT_ExportWorld(bpy.types.Operator):
         for collider in sector.children[colliders_name].objects:
             colliders_def.append(self.get_curve_data(collider))
         return colliders_def
+
+    def get_lands(self, sector):
+        lands_def = []
+        land_name = "Land_" + sector.name.split("_")[1]
+        if not land_name in sector.children: return lands_def
+        for land in sector.children[land_name].objects:
+            lands_def.append(self.get_curve_data(land))
+        return lands_def
 
     def get_navmesh(self, sector):
         navmesh_def = {

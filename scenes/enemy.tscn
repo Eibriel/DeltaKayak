@@ -9,8 +9,8 @@ radius = 0.551332
 height = 3.71641
 
 [node name="Enemy" type="RigidBody3D"]
-collision_layer = 2
-collision_mask = 7
+collision_layer = 8
+collision_mask = 31
 axis_lock_linear_y = true
 axis_lock_angular_x = true
 axis_lock_angular_z = true
@@ -34,7 +34,7 @@ size = Vector3(0.952148, 0.79248, 2.61584)
 
 [node name="RayCast3D" type="RayCast3D" parent="."]
 collision_mask = 7
-collide_with_areas = true
+hit_back_faces = false
 debug_shape_thickness = 5
 
 [node name="SpotLight3D" type="SpotLight3D" parent="."]

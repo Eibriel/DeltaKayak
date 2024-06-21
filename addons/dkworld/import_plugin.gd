@@ -91,9 +91,13 @@ func _import(source_file, save_path, options, r_platform_variants, r_gen_files):
 		for camera_id in sector.cameras:
 			var camera:Dictionary = sector.cameras[camera_id] as Dictionary
 			add_camera(camera, camera_id, main_node)
+		for physicsitem_id in sector.physicsitems:
+			var physicsitem:Dictionary = sector.physicsitems[physicsitem_id] as Dictionary
+			add_physicsitem(physicsitem, physicsitem_id, main_node)
 		add_trees(sector.trees, sector_id, main_node)
 		add_triggers(sector.triggers, sector_id, main_node)
 		add_colliders(sector.colliders, sector_id, main_node)
+		add_lands(sector.lands, sector_id, main_node)
 		add_navmesh(sector.navmesh, sector_id, main_node)
 	
 	add_water(main_node)
@@ -123,7 +127,7 @@ func add_navmesh(navmesh: Dictionary, sector_id:String, main_node:Node3D):
 		navigation_mesh.add_polygon(PackedInt32Array(v))
 
 func add_colliders(colliders: Array, sector_id:String, main_node:Node3D):
-	# Sensorpath
+	# Collider
 	for collider in colliders:
 		var static_body := StaticBody3D.new()
 		var collision_polygon := CollisionPolygon3D.new()
@@ -132,10 +136,15 @@ func add_colliders(colliders: Array, sector_id:String, main_node:Node3D):
 		static_body.add_child(collision_polygon)
 		collision_polygon.set_owner(main_node)
 		
+		var physics_material := PhysicsMaterial.new()
+		physics_material.friction = 0
+		static_body.physics_material_override = physics_material
+		
 		#static_body.set_collision_layer_value(2, true)
 		static_body.set_collision_mask_value(1, true) # Walls
 		static_body.set_collision_mask_value(2, true) # Character
 		static_body.set_collision_mask_value(3, true) # Grabbable
+		static_body.set_collision_mask_value(4, true) # Enemies
 		
 		#Do not scale!
 		static_body.position = array_to_vector3(collider.position)
@@ -150,6 +159,41 @@ func add_colliders(colliders: Array, sector_id:String, main_node:Node3D):
 			points.append(p_position)
 		collision_polygon.polygon = points
 		collision_polygon.depth = 6
+
+func add_lands(lands: Array, sector_id:String, main_node:Node3D):
+	# Lands
+	for land in lands:
+		var static_body := Node3D.new()
+		var land_polygon := CSGPolygon3D.new()
+		main_node.add_child(static_body)
+		static_body.set_owner(main_node)
+		static_body.add_child(land_polygon)
+		land_polygon.set_owner(main_node)
+		
+		
+		var material := StandardMaterial3D.new()
+		material.albedo_color = Color.GREEN
+		land_polygon.material = material
+		land_polygon.use_collision = true
+		land_polygon.set_collision_mask_value(1, true) # Walls
+		land_polygon.set_collision_mask_value(2, true) # Character
+		land_polygon.set_collision_mask_value(3, true) # Grabbable
+		land_polygon.set_collision_mask_value(4, true) # Enemies
+		land_polygon.set_collision_mask_value(5, true) # Transparent
+		
+		#Do not scale!
+		static_body.position = array_to_vector3(land.position)
+		static_body.quaternion = array_to_quaternion(land.quaternion)
+		
+		#Do not scale!
+		land_polygon.rotate_x(deg_to_rad(90))
+		
+		var points: PackedVector2Array
+		for p in land.points:
+			var p_position := Vector2(p[0][0], p[0][2])
+			points.append(p_position)
+		land_polygon.polygon = points
+		land_polygon.depth = 0.5
 
 func add_triggers(triggers: Array, sector_id:String, main_node:Node3D):
 	for trigger in triggers:
@@ -407,6 +451,26 @@ func add_camera(camera:Dictionary, camera_id:String, main_node:Node3D):
 	#print(sensor_area.is_connected("area_entered", main_node.camera_change.bind(camera3d)))
 	#main_node.initial_camera_sensor = sensor_area
 
+func add_physicsitem(item: Dictionary, item_id: String, main_node: Node3D):
+	const PHYSICS_ITEMS = {
+		"longbox1": preload("res://scenes/long_box.tscn"),
+		"dogboat1": preload("res://scenes/enemy.tscn"),
+		"box1": preload("res://scenes/box.tscn"),
+		"smallbox1": preload("res://scenes/small_box.tscn")
+	}
+	if not PHYSICS_ITEMS.has(item.instance): return
+	var gltf_instance = PHYSICS_ITEMS[item.instance].instantiate()
+	match item.instance:
+		"dogboat1":
+			gltf_instance.home_position = array_to_vector3(item.position)
+	#gltf_instance.name = item_id
+	main_node.add_child(gltf_instance)
+	gltf_instance.position = array_to_vector3(item.position)
+	gltf_instance.scale = array_to_vector3(item.scale)
+	gltf_instance.quaternion = array_to_quaternion(item.quaternion)
+	gltf_instance.set_owner(main_node)
+	#_recursively_set_owner(gltf_instance, main_node)
+
 func add_item(item: Dictionary, item_id: String, main_node: Node3D):
 	var gltf_scene: PackedScene
 	if item.instance in packed_scenes:
@@ -516,6 +580,14 @@ func _add_colliders(gltf_instance:Node3D) -> void:
 			collider.position = c.position
 			collider.rotation = c.rotation
 			#collider.scale = item.scale
+			
+			static_body.set_collision_layer_value(1, false)
+			static_body.set_collision_layer_value(5, true)
+			static_body.set_collision_mask_value(1, true) # Walls
+			static_body.set_collision_mask_value(2, true) # Character
+			static_body.set_collision_mask_value(3, true) # Grabbable
+			static_body.set_collision_mask_value(4, true) # Enemies
+			static_body.set_collision_mask_value(4, true) # Transparent
 
 func _recursively_set_owner(root: Node, owner: Node) -> void:
 	for child in root.get_children():

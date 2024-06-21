@@ -10,6 +10,7 @@ extends RigidBody3D
 var soft_camera_rotation: float
 var speed := 0.0
 var torque := 0.0
+var going_backwards := false
 
 var kayak_speed := 15.0 + 5.0
 var temp_speed := 0.0
@@ -39,9 +40,10 @@ func _ready():
 	last_rotation = rotation.y
 	Global.character = self
 	pepa.get_node("AnimationPlayer").play("Sitting")
-	print("Transform")
-	print($CSGCylinder3D3.transform)
-	print($CSGCylinder3D3.global_transform)
+	#print("Transform")
+	#print($CSGCylinder3D3.transform)
+	#print($CSGCylinder3D3.global_transform)
+	
 
 func _process(delta: float) -> void:
 	if temp_time > 0:
@@ -62,13 +64,24 @@ func _process(delta: float) -> void:
 	var target_position_with_rotation := local_target_position.rotated(rotation.y)
 	var global_target_rotation := -Vector2.UP.angle_to(target_position_with_rotation)
 	target_direction = global_target_rotation
+	going_backwards = false
+	if PI - abs(target_direction) < 0.5:
+		going_backwards = true
+		Global.log_text += "\nBackwards"
 	
+	if going_backwards:
+		if target_direction > 0:
+			target_direction = target_direction-PI
+		else:
+			target_direction = target_direction+PI
 	#Global.log_text += "\ntarget_direction: %f" % target_direction
 	#Global.log_text += "\nrotation.y: %f" % (rotation.y)
 	if temp_time == 0:
 		temp_speed = 0.0
-	speed = -max(0, -target_position_with_rotation.y) * delta * (kayak_speed + temp_speed + (strength * 5))
+	#speed = -max(0, -target_position_with_rotation.y) * delta * (kayak_speed + temp_speed + (strength * 5))
+	speed = -abs(target_position_with_rotation.y) * delta * (kayak_speed + temp_speed + (strength * 5))
 	var error := target_direction
+	Global.log_text += "\nspeed: %f" % speed
 	#Global.log_text += "\nerror: %f" % error
 	#Global.log_text += "\nproportional: %f" % get_proportional(error)
 	#Global.log_text += "\nintegral: %f" % get_integral(error)
@@ -78,9 +91,11 @@ func _process(delta: float) -> void:
 		torque += get_proportional(error) * delta
 		torque += get_integral(error) * delta
 		torque += get_derivative(error) * delta
+	if grabbing_state == GRABBING.YES:
+		torque *= 5
 	#Global.log_text += "\ntorque: %f" % torque
+
 	last_rotation = rotation.y
-	
 	handle_grabbing()
 
 # PID control
@@ -88,7 +103,7 @@ func get_proportional(error) -> float:
 	# Minimizes error
 	# Adds
 	var proportional = error
-	proportional *= 20.0
+	proportional *= 40.0 #20.0
 	return proportional
 
 func get_integral(_error) -> float:
@@ -107,26 +122,42 @@ func get_derivative(_error) -> float:
 		else:
 			derivative = -(rotation.y + last_rotation)
 	
-	return derivative*1000.0
+	return derivative*2000.0#1000.0
 #
 
 func handle_grabbing():
 	if Input.is_action_pressed("grab"):
 		match grabbing_state:
 			GRABBING.NO:
-				grabbing_state = GRABBING.WANTS_TO
+				#grabbing_state = GRABBING.WANTS_TO
+				grabbing_state = GRABBING.YES
+				$RayCast3D.force_raycast_update()
+				if $RayCast3D.is_colliding():
+					var body = $RayCast3D.get_collider()
+					Global.grab_joint.global_position = $GrabbingPosition.global_position
+					Global.grab_joint.set_node_a(get_path())
+					Global.grab_joint.set_node_b(body.get_path())
+
 	else:
 		grabbing_state = GRABBING.NO
+		Global.grab_joint.set_node_a(NodePath(""))
+		Global.grab_joint.set_node_b(NodePath(""))
+		set_collision_mask_value(3, true)
+	#NOTE grabbing using velocity:
+	"""
 	if grabbing_state != GRABBING.YES: return
 	var a = grabbing_object.to_global(grabbing_object_position)
 	var b = grabbing_position.global_position
 	grabbing_object.set_linear_velocity((b-a)*1)
 	#grabbing_object.apply_force(b-a,grabbing_object_position)
-	
+	"""
 
 func _physics_process(delta: float):
 	apply_torque(Vector3(0, torque, 0))
-	go_forward(speed)
+	if not going_backwards:
+		go_forward(speed)
+	else:
+		go_backward(speed)
 	get_current()
 	# Current
 	#current *= 0.999
@@ -137,6 +168,10 @@ func _physics_process(delta: float):
 
 func go_forward(_speed:float):
 	var direction := (transform.basis * Vector3.BACK).normalized()
+	apply_central_force(direction * _speed)
+
+func go_backward(_speed:float):
+	var direction := (transform.basis * Vector3.FORWARD).normalized()
 	apply_central_force(direction * _speed)
 
 func _integrate_forces_old(state:PhysicsDirectBodyState3D):
@@ -160,10 +195,18 @@ func _integrate_forces_old(state:PhysicsDirectBodyState3D):
 
 # TODO duplicated in boat_class.gd
 func _integrate_forces(state: PhysicsDirectBodyState3D) -> void:
+	return
 	handle_contacts(state)
+	#if grabbing_state == GRABBING.YES:
+	#	state.linear_velocity *= 0.99
+	
 	var forward_direction := (transform.basis * Vector3.FORWARD).normalized()
-	# Gets only the energy going forward
+	var backward_direction := (transform.basis * Vector3.BACK).normalized()
+	#prints(forward_direction, backward_direction)
+	# Gets only the energy going forward and backwards
 	var forward_component: Vector3 = forward_direction * state.linear_velocity.dot(forward_direction)
+	var backward_component: Vector3 = backward_direction * state.linear_velocity.dot(backward_direction)
+	prints(forward_component, backward_component)
 	# Gets only the energy not going forward
 	var side_component: Vector3 = state.linear_velocity - forward_component
 	# Transfers the energy not going forward to going forward
@@ -185,6 +228,11 @@ func handle_contacts(state: PhysicsDirectBodyState3D):
 				grabbing_position.global_position = body.global_position
 				grabbing_object_position = body.to_local(state.get_contact_collider_position(0))
 				grabbing_state = GRABBING.YES
+				#$GrabJoint3D.set_node_b(body.get_path())
+				var vector_to_body = to_local(body.global_position)
+				body.global_position = to_global(vector_to_body*1.2)
+				#set_collision_mask_value(3, false)
+				#body.set_collision_mask_value(1, false)
 				print("GRAB")
 			if grabbing_state == GRABBING.YES and grabbing_object == body:
 				grabbing_position.global_position = body.global_position

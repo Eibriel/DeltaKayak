@@ -14,7 +14,7 @@ node_a = NodePath("../RigidBody3D")
 
 [node name="RigidBody3D" type="RigidBody3D" parent="."]
 collision_layer = 4
-collision_mask = 7
+collision_mask = 15
 metadata/grabbable = true
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="RigidBody3D"]
@@ -31,8 +31,8 @@ node_a = NodePath("../RigidBody3D")
 node_b = NodePath("../RigidBody3D2")
 
 [node name="RigidBody3D2" type="RigidBody3D" parent="."]
-collision_layer = 3
-collision_mask = 3
+collision_layer = 4
+collision_mask = 15
 metadata/grabbable = true
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="RigidBody3D2"]

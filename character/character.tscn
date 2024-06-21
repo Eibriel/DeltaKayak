@@ -1,10 +1,13 @@
-[gd_scene load_steps=9 format=3 uid="uid://r0o1qsmlq84u"]
+[gd_scene load_steps=10 format=3 uid="uid://r0o1qsmlq84u"]
 
 [ext_resource type="Script" path="res://character/character.gd" id="1_mnv7b"]
 [ext_resource type="PackedScene" uid="uid://b5n8cpa2p23cu" path="res://models/kayak_detailed.glb" id="2_qknmv"]
 [ext_resource type="Texture2D" uid="uid://cdex8bqdmulf8" path="res://textures/flashlight.jpg" id="3_xitmn"]
 [ext_resource type="PackedScene" uid="uid://ds44csvhmqggb" path="res://models/pepa/pillow.glb" id="4_81u6e"]
 [ext_resource type="PackedScene" uid="uid://dnempkm0ot1g4" path="res://models/pepa/pepa.glb" id="4_bo5nj"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_p6dmh"]
+friction = 0.0
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_ogamo"]
 radius = 0.271211
@@ -19,10 +22,11 @@ height = 4.48046
 
 [node name="character" type="RigidBody3D"]
 collision_layer = 2
-collision_mask = 6
+collision_mask = 31
 axis_lock_linear_y = true
 axis_lock_angular_x = true
 axis_lock_angular_z = true
+physics_material_override = SubResource("PhysicsMaterial_p6dmh")
 contact_monitor = true
 max_contacts_reported = 2
 linear_damp = 0.1
@@ -90,7 +94,6 @@ transform = Transform3D(0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, 0.0386806, 0.312028)
 
 [node name="OmniLight3D" type="OmniLight3D" parent="."]
 transform = Transform3D(-1, 0, 8.74227e-08, 0, 1, 0, -8.74227e-08, 0, -1, 1.81245e-08, 1.35318, 0.104708)
-visible = false
 light_energy = 0.05
 omni_range = 4.0
 omni_attenuation = 0.0
@@ -117,5 +120,11 @@ fov = 90.0
 
 [node name="GrabbingPosition" type="Marker3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -2.39013)
+
+[node name="RayCast3D" type="RayCast3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.72403)
+enabled = false
+target_position = Vector3(0, 0, -3)
+collision_mask = 15
 
 [connection signal="area_entered" from="InteractionArea" to="." method="_on_interaction_area_area_entered"]

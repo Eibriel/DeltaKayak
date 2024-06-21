@@ -4,6 +4,7 @@ var character: Node3D
 var camera: Camera3D
 var camera_path: Path3D
 var main_scene
+var grab_joint: Generic6DOFJoint3D
 var log_text: String = ""
 
 func is_demo():

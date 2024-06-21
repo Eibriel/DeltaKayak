@@ -6,12 +6,13 @@ size = Vector3(7.90579, 1, 0.695312)
 [node name="Door" type="Node3D"]
 
 [node name="HingeJoint3D" type="HingeJoint3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, -0.522429, 0, 0)
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0)
 node_a = NodePath("../RigidBody3D")
 
 [node name="RigidBody3D" type="RigidBody3D" parent="."]
-collision_layer = 3
-collision_mask = 3
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.519034, 0, 0)
+collision_layer = 4
+collision_mask = 15
 axis_lock_linear_y = true
 axis_lock_angular_x = true
 axis_lock_angular_z = true

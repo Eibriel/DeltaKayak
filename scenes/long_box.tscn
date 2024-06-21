@@ -1,0 +1,20 @@
+[gd_scene load_steps=2 format=3 uid="uid://t23rsw74uei8"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_v311q"]
+size = Vector3(6, 2, 2)
+
+[node name="FloatingBox" type="RigidBody3D"]
+collision_layer = 4
+collision_mask = 31
+axis_lock_linear_y = true
+axis_lock_angular_x = true
+axis_lock_angular_z = true
+mass = 2.0
+gravity_scale = 0.0
+metadata/grabbable = true
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("BoxShape3D_v311q")
+
+[node name="CSGBox3D" type="CSGBox3D" parent="."]
+size = Vector3(6, 2, 2)

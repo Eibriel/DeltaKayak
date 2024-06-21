@@ -23,6 +23,14 @@ const UnhandledTriggers = preload("res://interactives/unhandled_triggers.gd")
 
 func _ready() -> void:
 	Global.main_scene = self
+	Global.grab_joint = %GrabJoint3D
+	Global.grab_joint.set_param_x(Generic6DOFJoint3D.PARAM_LINEAR_LIMIT_SOFTNESS, 0.01)
+	Global.grab_joint.set_param_y(Generic6DOFJoint3D.PARAM_LINEAR_LIMIT_SOFTNESS, 0.01)
+	Global.grab_joint.set_param_z(Generic6DOFJoint3D.PARAM_LINEAR_LIMIT_SOFTNESS, 0.01)
+	Global.grab_joint.set_param_x(Generic6DOFJoint3D.PARAM_ANGULAR_SPRING_STIFFNESS, 0.01)
+	Global.grab_joint.set_param_y(Generic6DOFJoint3D.PARAM_ANGULAR_SPRING_STIFFNESS, 0.01)
+	Global.grab_joint.set_param_z(Generic6DOFJoint3D.PARAM_ANGULAR_SPRING_STIFFNESS, 0.01)
+	
 	label_demo.visible = false
 	if Global.is_demo():
 		label_demo.visible = true
@@ -36,8 +44,8 @@ func _ready() -> void:
 	#state_initializer.initialize_data(game_state)
 	
 	#Start
-	character.position = Vector3(0, 0, 0)
-	character.rotation = Vector3(0, 0, 0)
+	character.position = %InitialPosition.position #Vector3(0, 0, 0)
+	character.rotation = %InitialPosition.rotation #Vector3(0, 0, 0)
 
 func _process(delta: float) -> void:
 	handle_triggers(delta)

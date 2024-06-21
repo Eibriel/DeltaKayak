@@ -1,0 +1,28 @@
+[gd_scene load_steps=2 format=3 uid="uid://dsppfk5r8xdm7"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_v311q"]
+size = Vector3(6, 2, 2)
+
+[node name="LShapedFloatingBox" type="RigidBody3D"]
+collision_layer = 4
+collision_mask = 15
+axis_lock_linear_y = true
+axis_lock_angular_x = true
+axis_lock_angular_z = true
+mass = 2.0
+gravity_scale = 0.0
+metadata/grabbable = true
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("BoxShape3D_v311q")
+
+[node name="CSGBox3D" type="CSGBox3D" parent="."]
+size = Vector3(6, 2, 2)
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="."]
+transform = Transform3D(-0.0057421, 0, 0.999984, 0, 1, 0, -0.999984, 0, -0.0057421, 4.02646, 0, 1.99509)
+shape = SubResource("BoxShape3D_v311q")
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="."]
+transform = Transform3D(-0.0057421, 0, 0.999984, 0, 1, 0, -0.999984, 0, -0.0057421, 4.02646, 0, 1.99509)
+size = Vector3(6, 2, 2)
