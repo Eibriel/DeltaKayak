@@ -1,0 +1,31 @@
+[gd_scene load_steps=3 format=3 uid="uid://13fm0bap5hxi"]
+
+[ext_resource type="Script" path="res://scenes/demo_box.gd" id="1_0hjt7"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_v311q"]
+size = Vector3(2, 2, 2)
+
+[node name="DemoBox" type="RigidBody3D"]
+collision_layer = 4
+collision_mask = 31
+axis_lock_linear_y = true
+axis_lock_angular_x = true
+axis_lock_angular_z = true
+mass = 2.0
+gravity_scale = 0.0
+script = ExtResource("1_0hjt7")
+metadata/grabbable = true
+metadata/puzzle_item = true
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("BoxShape3D_v311q")
+
+[node name="CSGBox3D" type="CSGBox3D" parent="."]
+size = Vector3(2, 2, 2)
+
+[node name="Label3D" type="Label3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.90711, 0)
+pixel_size = 0.02
+billboard = 2
+text = "Texto"
+font_size = 64

@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://r0o1qsmlq84u"]
+[gd_scene load_steps=11 format=3 uid="uid://r0o1qsmlq84u"]
 
 [ext_resource type="Script" path="res://character/character.gd" id="1_mnv7b"]
 [ext_resource type="PackedScene" uid="uid://b5n8cpa2p23cu" path="res://models/kayak_detailed.glb" id="2_qknmv"]
@@ -8,6 +8,10 @@
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_p6dmh"]
 friction = 0.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_e56vi"]
+shading_mode = 0
+albedo_color = Color(0.233438, 0.503591, 0, 1)
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_ogamo"]
 radius = 0.271211
@@ -33,9 +37,12 @@ linear_damp = 0.1
 angular_damp = 0.1
 script = ExtResource("1_mnv7b")
 
-[node name="CSGCylinder3D" type="CSGCylinder3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0)
-visible = false
+[node name="GrabRay" type="CSGCylinder3D" parent="."]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0.173584, -3.23356)
+radius = 0.0680004
+height = 3.0
+material = SubResource("StandardMaterial3D_e56vi")
 
 [node name="CSGCylinder3D2" type="CSGCylinder3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.29791, -0.808935)

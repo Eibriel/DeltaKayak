@@ -81,7 +81,7 @@ func _process(delta: float) -> void:
 	#speed = -max(0, -target_position_with_rotation.y) * delta * (kayak_speed + temp_speed + (strength * 5))
 	speed = -abs(target_position_with_rotation.y) * delta * (kayak_speed + temp_speed + (strength * 5))
 	var error := target_direction
-	Global.log_text += "\nspeed: %f" % speed
+	#Global.log_text += "\nspeed: %f" % speed
 	#Global.log_text += "\nerror: %f" % error
 	#Global.log_text += "\nproportional: %f" % get_proportional(error)
 	#Global.log_text += "\nintegral: %f" % get_integral(error)
@@ -127,6 +127,7 @@ func get_derivative(_error) -> float:
 
 func handle_grabbing():
 	if Input.is_action_pressed("grab"):
+		%GrabRay.visible = true
 		match grabbing_state:
 			GRABBING.NO:
 				#grabbing_state = GRABBING.WANTS_TO
@@ -139,6 +140,7 @@ func handle_grabbing():
 					Global.grab_joint.set_node_b(body.get_path())
 
 	else:
+		%GrabRay.visible = false
 		grabbing_state = GRABBING.NO
 		Global.grab_joint.set_node_a(NodePath(""))
 		Global.grab_joint.set_node_b(NodePath(""))

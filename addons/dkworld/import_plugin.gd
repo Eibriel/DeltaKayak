@@ -183,6 +183,7 @@ func add_lands(lands: Array, sector_id:String, main_node:Node3D):
 		
 		#Do not scale!
 		static_body.position = array_to_vector3(land.position)
+		static_body.position.y -= 0.05
 		static_body.quaternion = array_to_quaternion(land.quaternion)
 		
 		#Do not scale!
@@ -456,13 +457,22 @@ func add_physicsitem(item: Dictionary, item_id: String, main_node: Node3D):
 		"longbox1": preload("res://scenes/long_box.tscn"),
 		"dogboat1": preload("res://scenes/enemy.tscn"),
 		"box1": preload("res://scenes/box.tscn"),
-		"smallbox1": preload("res://scenes/small_box.tscn")
+		"smallbox1": preload("res://scenes/small_box.tscn"),
+		"demobox1": preload("res://scenes/demo_box.tscn"),
+		"demobox2": preload("res://scenes/demo_box.tscn"),
+		"demobox3": preload("res://scenes/demo_box.tscn")
 	}
 	if not PHYSICS_ITEMS.has(item.instance): return
 	var gltf_instance = PHYSICS_ITEMS[item.instance].instantiate()
 	match item.instance:
 		"dogboat1":
 			gltf_instance.home_position = array_to_vector3(item.position)
+		"demobox1":
+			gltf_instance.label_text = "Cáliz"
+		"demobox2":
+			gltf_instance.label_text = "Espada"
+		"demobox3":
+			gltf_instance.label_text = "Sol"
 	#gltf_instance.name = item_id
 	main_node.add_child(gltf_instance)
 	gltf_instance.position = array_to_vector3(item.position)

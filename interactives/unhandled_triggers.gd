@@ -26,6 +26,14 @@ func _on_unhandled_trigger(main_scene, _game_state, trigger_id:String):
 			main_scene.say_dialogue("look_body_prefectura")
 		"triggerpath_gate_003":
 			main_scene.say_dialogue("look_gate")
+		"triggerpath_demo1_003":
+			pass
+		"triggerpath_demo2_003":
+			pass
+		"triggerpath_demo_door_003":
+			pass
+		"triggerpath_demo_exit_003":
+			print("Demo ended")
 		_:
 			handled = false
 	print(handled)

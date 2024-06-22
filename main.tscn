@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3 uid="uid://ce6e8v1saxjr5"]
+[gd_scene load_steps=20 format=3 uid="uid://ce6e8v1saxjr5"]
 
 [ext_resource type="Environment" uid="uid://xpf4ng2ym0n4" path="res://environments/main_environment.tres" id="1_ekqa4"]
 [ext_resource type="Script" path="res://main.gd" id="1_xxenq"]
@@ -25,6 +25,9 @@ size = Vector3(11.4926, 2.54077, 9.13838)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_0ev4o"]
 size = Vector3(1.96265, 7.51904, 1.8761)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_cach1"]
+size = Vector3(1, 1, 6.15552)
 
 [node name="Control" type="Control"]
 layout_mode = 3
@@ -64,9 +67,26 @@ offset_bottom = -15.0
 grow_vertical = 0
 text = "Demo Version"
 
+[node name="LabelDemo2" type="Label" parent="Control"]
+auto_translate_mode = 1
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -211.0
+offset_top = -46.0
+offset_right = -15.0
+offset_bottom = -16.0
+grow_horizontal = 0
+grow_vertical = 0
+text = "Esc: Quit - F1: Help"
+
 [node name="LogLabel" type="RichTextLabel" parent="Control"]
 unique_name_in_owner = true
 auto_translate_mode = 1
+visible = false
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.101667
@@ -76,6 +96,23 @@ anchor_bottom = 0.61125
 grow_horizontal = 2
 grow_vertical = 0
 text = "..."
+metadata/_edit_use_anchors_ = true
+
+[node name="HelpLabel" type="RichTextLabel" parent="Control"]
+unique_name_in_owner = true
+auto_translate_mode = 1
+visible = false
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.101667
+anchor_top = 0.0725
+anchor_right = 0.914167
+anchor_bottom = 0.61125
+grow_horizontal = 2
+grow_vertical = 0
+text = "A,W,S,D (analog): avanzar
+Esc (back): salir
+Space (RB): agarrar"
 metadata/_edit_use_anchors_ = true
 
 [node name="DialogueControl" type="Control" parent="Control"]
@@ -1007,6 +1044,49 @@ transform = Transform3D(0.0861995, 0, -0.996278, 0, 1, 0, 0.996278, 0, 0.0861995
 
 [node name="GrabJoint3D" type="Generic6DOFJoint3D" parent="Main3D/PysicsObjects"]
 unique_name_in_owner = true
+
+[node name="DemoElements" type="Node3D" parent="Main3D"]
+
+[node name="DemoExitDoor" type="StaticBody3D" parent="Main3D/DemoElements"]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 200.935, 0, -207.583)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Main3D/DemoElements/DemoExitDoor"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.479614)
+shape = SubResource("BoxShape3D_cach1")
+
+[node name="CSGBox3D" type="CSGBox3D" parent="Main3D/DemoElements/DemoExitDoor"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.508342, -0.503326)
+size = Vector3(1, 2.01664, 6.10846)
+
+[node name="VinoLabel" type="Label3D" parent="Main3D/DemoElements"]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 170.437, 4.46076, -196.292)
+pixel_size = 0.02
+text = "Vino"
+font_size = 64
+
+[node name="InstruccionLabel" type="Label3D" parent="Main3D/DemoElements"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 104.443, 2.85102, -202.56)
+pixel_size = 0.02
+billboard = 1
+text = "Usa Espacio o RB
+para agarrar un objeto"
+font_size = 64
+
+[node name="CarneLabel" type="Label3D" parent="Main3D/DemoElements"]
+unique_name_in_owner = true
+transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, 171.048, 4.90522, -218.527)
+pixel_size = 0.02
+text = "Carne"
+font_size = 64
+
+[node name="TierraLabel" type="Label3D" parent="Main3D/DemoElements"]
+unique_name_in_owner = true
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 158.802, 4.90522, -208.382)
+pixel_size = 0.02
+text = "Tierra"
+font_size = 64
 
 [node name="InitialPosition" type="Marker3D" parent="Main3D"]
 unique_name_in_owner = true

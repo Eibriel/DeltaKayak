@@ -51,8 +51,37 @@ func _process(delta: float) -> void:
 	handle_triggers(delta)
 	handle_dialogue(delta)
 	handle_stats(delta)
+	handle_demo_puzzle()
 	log_label.text = Global.log_text
 	Global.log_text = ""
+
+func handle_demo_puzzle():
+	var match_count := 0
+	for c in dk_world.get_children():
+		if c.has_meta("puzzle_item"):
+			#prints("Puzzle:", c.label_text)
+			var pos_a := Vector3(c.position.x, 0, c.position.z)
+			match c.label_text:
+				"Sol":
+					var pos_b := Vector3(%TierraLabel.position.x, 0, %TierraLabel.position.z)
+					if pos_a.distance_to(pos_b) < 5:
+						print("Sol y Tierra")
+						match_count += 1
+				"Cáliz":
+					var pos_b := Vector3(%VinoLabel.position.x, 0, %VinoLabel.position.z)
+					if pos_a.distance_to(pos_b) < 5:
+						print("Cáliz y Vino")
+						match_count += 1
+				"Espada":
+					var pos_b := Vector3(%CarneLabel.position.x, 0, %CarneLabel.position.z)
+					if pos_a.distance_to(pos_b) < 5:
+						print("Espada y Carne")
+						match_count += 1
+	if match_count == 3:
+		%DemoExitDoor.position.y = -20
+		print("OpenDoor")
+	else:
+		%DemoExitDoor.position.y = 0
 
 func handle_stats(_delta):
 	#
@@ -169,8 +198,10 @@ func _input(event: InputEvent) -> void:
 		say_dialogue("¡¡Pepa!!")
 	elif event.is_action_pressed("compicactus"):
 		on_compicactus()
-	elif event.is_action_pressed("ui_cancel"):
+	elif event.is_action_pressed("quit"):
 		get_tree().quit()
+	elif event.is_action_pressed("help"):
+		%HelpLabel.visible = !%HelpLabel.visible
 
 func on_compicactus():
 	say_dialogue("compi_im_here")
