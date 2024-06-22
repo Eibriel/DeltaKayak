@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="DKDataResource" load_steps=35 format=3 uid="uid://bi1rugic742u0"]
+[gd_resource type="Resource" script_class="DKDataResource" load_steps=55 format=3 uid="uid://bi1rugic742u0"]
 
 [ext_resource type="Script" path="res://data_resources/dkdata_resource.gd" id="1_mesef"]
 [ext_resource type="Script" path="res://data_resources/dialogue_resource.gd" id="1_yf062"]
@@ -9,6 +9,9 @@
 [ext_resource type="Script" path="res://interactives/mascot.gd" id="6_jodth"]
 [ext_resource type="Script" path="res://interactives/roller_coaster_car.gd" id="7_46nvb"]
 [ext_resource type="Script" path="res://data_resources/misc_data_resource.gd" id="7_bypjw"]
+[ext_resource type="Script" path="res://interactives/dream_start.gd" id="8_owlxg"]
+[ext_resource type="Script" path="res://interactives/demo_exit.gd" id="9_3ea86"]
+[ext_resource type="Script" path="res://interactives/demo_monster.gd" id="10_sv7uc"]
 
 [sub_resource type="Resource" id="Resource_3hrbs"]
 script = ExtResource("1_yf062")
@@ -113,6 +116,90 @@ script = ExtResource("2_xdm14")
 id = "look_prefectura"
 dialogues = Array[ExtResource("1_yf062")]([SubResource("Resource_dfg6u")])
 
+[sub_resource type="Resource" id="Resource_x06et"]
+script = ExtResource("1_yf062")
+id = "new_item"
+character = 1
+image = ""
+text = "¿Donde estará Pepa?"
+
+[sub_resource type="Resource" id="Resource_fharu"]
+script = ExtResource("2_xdm14")
+id = "demo_start_point"
+dialogues = Array[ExtResource("1_yf062")]([SubResource("Resource_x06et")])
+
+[sub_resource type="Resource" id="Resource_kctts"]
+script = ExtResource("1_yf062")
+id = "new_item"
+character = 1
+image = ""
+text = "¡Ese lugar me daba escalofríos!"
+
+[sub_resource type="Resource" id="Resource_uqqxk"]
+script = ExtResource("2_xdm14")
+id = "demo_exit_point"
+dialogues = Array[ExtResource("1_yf062")]([SubResource("Resource_kctts")])
+
+[sub_resource type="Resource" id="Resource_rtasq"]
+script = ExtResource("1_yf062")
+id = "new_item"
+character = 1
+image = ""
+text = "Esta puerta está cerrada por algún tipo de mecanismo"
+
+[sub_resource type="Resource" id="Resource_by1tc"]
+script = ExtResource("2_xdm14")
+id = "demo_door"
+dialogues = Array[ExtResource("1_yf062")]([SubResource("Resource_rtasq")])
+
+[sub_resource type="Resource" id="Resource_mgkwo"]
+script = ExtResource("1_yf062")
+id = "new_item"
+character = 1
+image = ""
+text = "Una estatua muy rara representando a la Tierra"
+
+[sub_resource type="Resource" id="Resource_wq70w"]
+script = ExtResource("2_xdm14")
+id = "demo_tierra"
+dialogues = Array[ExtResource("1_yf062")]([SubResource("Resource_mgkwo")])
+
+[sub_resource type="Resource" id="Resource_f5cul"]
+script = ExtResource("1_yf062")
+id = "new_item"
+character = 1
+image = ""
+text = "Una escultura representando a la Carne. Me revuelve el estómago."
+
+[sub_resource type="Resource" id="Resource_j7v1r"]
+script = ExtResource("2_xdm14")
+id = "demo_carne"
+dialogues = Array[ExtResource("1_yf062")]([SubResource("Resource_f5cul")])
+
+[sub_resource type="Resource" id="Resource_weff2"]
+script = ExtResource("1_yf062")
+id = "new_item"
+character = 1
+image = ""
+text = "Una estatua representando al Vino"
+
+[sub_resource type="Resource" id="Resource_qf5l5"]
+script = ExtResource("2_xdm14")
+id = "demo_vino"
+dialogues = Array[ExtResource("1_yf062")]([SubResource("Resource_weff2")])
+
+[sub_resource type="Resource" id="Resource_g28fn"]
+script = ExtResource("1_yf062")
+id = "new_item"
+character = 1
+image = ""
+text = "¡¿Que es esa cosa horrible?!"
+
+[sub_resource type="Resource" id="Resource_vcg4n"]
+script = ExtResource("2_xdm14")
+id = "demo_monster"
+dialogues = Array[ExtResource("1_yf062")]([SubResource("Resource_g28fn")])
+
 [sub_resource type="Resource" id="Resource_4afsv"]
 script = ExtResource("3_0x3yn")
 id = "weird_tree"
@@ -179,6 +266,45 @@ primary_action = ""
 secondary_action = ""
 actions = Array[ExtResource("3_0x3yn")]([])
 
+[sub_resource type="Resource" id="Resource_1pyr4"]
+script = ExtResource("3_xhkj4")
+id = "demo_start"
+label = ""
+active = true
+visible = false
+always_visible = false
+trigger_name = "triggerpath_demo1_003"
+logic = ExtResource("8_owlxg")
+primary_action = ""
+secondary_action = ""
+actions = Array[ExtResource("3_0x3yn")]([])
+
+[sub_resource type="Resource" id="Resource_dy1ah"]
+script = ExtResource("3_xhkj4")
+id = "demo_exit"
+label = ""
+active = true
+visible = false
+always_visible = false
+trigger_name = "triggerpath_demo_exit_003"
+logic = ExtResource("9_3ea86")
+primary_action = ""
+secondary_action = ""
+actions = Array[ExtResource("3_0x3yn")]([])
+
+[sub_resource type="Resource" id="Resource_5rue2"]
+script = ExtResource("3_xhkj4")
+id = "demo_monster"
+label = ""
+active = true
+visible = false
+always_visible = false
+trigger_name = "triggerpath_demo2_003"
+logic = ExtResource("10_sv7uc")
+primary_action = ""
+secondary_action = ""
+actions = Array[ExtResource("3_0x3yn")]([])
+
 [sub_resource type="Resource" id="Resource_b1bh4"]
 script = ExtResource("7_bypjw")
 house_door_open = false
@@ -191,6 +317,6 @@ pepa_position = Vector3(0, 0, 0)
 script = ExtResource("1_mesef")
 character_position = Vector3(80, 15, 50)
 character_rotation = Vector3(0, 180, 0)
-items = Array[ExtResource("3_xhkj4")]([SubResource("Resource_ga3d1"), SubResource("Resource_e5p6k"), SubResource("Resource_7a2sk"), SubResource("Resource_l8snq")])
-exchanges = Array[ExtResource("2_xdm14")]([SubResource("Resource_crw41"), SubResource("Resource_6vcu1"), SubResource("Resource_k71eb"), SubResource("Resource_sadyd"), SubResource("Resource_cvpa0"), SubResource("Resource_wynqj"), SubResource("Resource_wq0u6"), SubResource("Resource_fjacd")])
+items = Array[ExtResource("3_xhkj4")]([SubResource("Resource_ga3d1"), SubResource("Resource_e5p6k"), SubResource("Resource_7a2sk"), SubResource("Resource_l8snq"), SubResource("Resource_1pyr4"), SubResource("Resource_dy1ah"), SubResource("Resource_5rue2")])
+exchanges = Array[ExtResource("2_xdm14")]([SubResource("Resource_crw41"), SubResource("Resource_6vcu1"), SubResource("Resource_k71eb"), SubResource("Resource_sadyd"), SubResource("Resource_cvpa0"), SubResource("Resource_wynqj"), SubResource("Resource_wq0u6"), SubResource("Resource_fjacd"), SubResource("Resource_fharu"), SubResource("Resource_uqqxk"), SubResource("Resource_by1tc"), SubResource("Resource_wq70w"), SubResource("Resource_j7v1r"), SubResource("Resource_qf5l5"), SubResource("Resource_vcg4n")])
 misc_data = SubResource("Resource_b1bh4")

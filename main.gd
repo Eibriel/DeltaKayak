@@ -19,6 +19,8 @@ var dialogue_time: float
 var dialogue_tween: Tween
 var write_speed: float
 
+var temporizador:= 0.0
+
 const UnhandledTriggers = preload("res://interactives/unhandled_triggers.gd")
 
 func _ready() -> void:
@@ -46,6 +48,9 @@ func _ready() -> void:
 	#Start
 	character.position = %InitialPosition.position #Vector3(0, 0, 0)
 	character.rotation = %InitialPosition.rotation #Vector3(0, 0, 0)
+	
+	Input.set_mouse_mode(Input.MOUSE_MODE_HIDDEN)
+	
 
 func _process(delta: float) -> void:
 	handle_triggers(delta)
@@ -54,9 +59,16 @@ func _process(delta: float) -> void:
 	handle_demo_puzzle()
 	log_label.text = Global.log_text
 	Global.log_text = ""
+	temporizador += delta
+	var min := int(temporizador / 60)
+	var sec := int(temporizador-(min*60))
+	%LabelTemporizador.text = "%02d:%02d" % [min,sec]
 
 func handle_demo_puzzle():
 	var match_count := 0
+	%VinoIndicador.visible = false
+	%CarneIndicador.visible = false
+	%TierraIndicador.visible = false
 	for c in dk_world.get_children():
 		if c.has_meta("puzzle_item"):
 			#prints("Puzzle:", c.label_text)
@@ -65,23 +77,30 @@ func handle_demo_puzzle():
 				"Sol":
 					var pos_b := Vector3(%TierraLabel.position.x, 0, %TierraLabel.position.z)
 					if pos_a.distance_to(pos_b) < 5:
-						print("Sol y Tierra")
+						#print("Sol y Tierra")
+						%TierraIndicador.visible = true
 						match_count += 1
 				"Cáliz":
 					var pos_b := Vector3(%VinoLabel.position.x, 0, %VinoLabel.position.z)
 					if pos_a.distance_to(pos_b) < 5:
-						print("Cáliz y Vino")
+						#print("Cáliz y Vino")
+						%VinoIndicador.visible = true
 						match_count += 1
 				"Espada":
 					var pos_b := Vector3(%CarneLabel.position.x, 0, %CarneLabel.position.z)
 					if pos_a.distance_to(pos_b) < 5:
-						print("Espada y Carne")
+						#print("Espada y Carne")
+						%CarneIndicador.visible = true
 						match_count += 1
 	if match_count == 3:
 		%DemoExitDoor.position.y = -20
-		print("OpenDoor")
+		#print("OpenDoor")
 	else:
 		%DemoExitDoor.position.y = 0
+	if Global.character.position.distance_to(Vector3(213.4,0,-208.5)) < 6 \
+	 and not %LabelThanks.visible:
+		%LabelThanks.visible = true
+		%LabelThanks.text += "\n\n%s" % %LabelTemporizador.text
 
 func handle_stats(_delta):
 	#

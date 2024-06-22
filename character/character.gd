@@ -11,6 +11,8 @@ var soft_camera_rotation: float
 var speed := 0.0
 var torque := 0.0
 var going_backwards := false
+var damage := 0.0
+var damage_timer := 0.0
 
 var kayak_speed := 15.0 + 5.0
 var temp_speed := 0.0
@@ -50,6 +52,13 @@ func _process(delta: float) -> void:
 		temp_time -= delta
 	elif temp_time < 0:
 		temp_time = 0
+	# Damage
+	damage_timer -= delta
+	if damage_timer < 0: damage_timer = 0
+	damage -= delta*0.25
+	if damage < 0: damage = 0
+	%DamageLight.light_energy = damage * 0.1
+	#
 	marker_3d.position = position
 	var input_dir:Vector2 = Input.get_vector("left", "right", "up", "down")
 	var movement_direction:Vector2 = input_dir * delta * 2.0
@@ -268,7 +277,6 @@ func array_to_vector3(array: Array) -> Vector3:
 func array_to_quaternion(array: Array) -> Quaternion:
 	return Quaternion(array[0], array[1], array[2], array[3])
 
-
 func _on_interaction_area_area_entered(area: Area3D) -> void:
 	if area.has_meta("oil_spill"):
 		temp_speed = 10.0
@@ -277,3 +285,13 @@ func _on_interaction_area_area_entered(area: Area3D) -> void:
 		area.free()
 		strength += 1
 
+func set_damage():
+	if damage_timer > 0: return
+	damage += 1.0
+	damage_timer = 1.0
+	var tween := create_tween()
+	tween.tween_property(%DamageIndicator, "scale", Vector3.ZERO, 0.1)
+	tween.tween_property(%DamageIndicator, "scale", Vector3.ONE, 0.1)
+	tween.tween_property(%DamageIndicator, "scale", Vector3.ZERO, 0.1)
+	if damage > 10:
+		get_tree().quit()

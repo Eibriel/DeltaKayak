@@ -35,6 +35,8 @@ func _get_target(delta: float) -> void:
 	change_state()
 	
 	if current_state == STATE.ATTACK:
+		%AttackIndicator.visible = true
+		%SpotLight3D.visible = true
 		change_attack_state()
 		target_position = Global.character.global_position
 		boat_speed = 0.5
@@ -48,7 +50,6 @@ func _get_target(delta: float) -> void:
 				waiting = false
 			else:
 				waiting = true
-				get_tree().quit()
 		if attack_state == ATTACK_STATE.INTIMIDATE:
 			attack_intimidate_time += delta
 			boat_speed = 0.1
@@ -56,6 +57,8 @@ func _get_target(delta: float) -> void:
 		on_alert_time += delta
 		boat_speed = 0.4
 	if current_state == STATE.SLEEPING:
+		%AttackIndicator.visible = false
+		%SpotLight3D.visible = false
 		nav.target_position = home_position
 		target_position = nav.get_next_path_position()
 		boat_speed = 0.2
@@ -139,3 +142,12 @@ func is_character_visible() -> bool:
 	Global.log_text += "\ncollider: %s" % collider.name
 	if not collider.name == "character": return false
 	return true
+
+func _integrate_forces(state: PhysicsDirectBodyState3D) -> void:
+	handle_contacts(state)
+
+func handle_contacts(state: PhysicsDirectBodyState3D):
+	if state.get_contact_count() > 0:
+		var body = state.get_contact_collider_object(0)
+		if body.name == "character":
+			Global.character.set_damage()

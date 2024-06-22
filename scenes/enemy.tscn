@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://mvc5qr5igrlq"]
+[gd_scene load_steps=7 format=3 uid="uid://mvc5qr5igrlq"]
 
 [ext_resource type="Script" path="res://scenes/enemy.gd" id="1_ht45k"]
 [ext_resource type="Texture2D" uid="uid://cdex8bqdmulf8" path="res://textures/flashlight.jpg" id="2_1pota"]
@@ -8,12 +8,21 @@
 radius = 0.551332
 height = 3.71641
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_y8box"]
+shading_mode = 0
+albedo_color = Color(0.730458, 0.118933, 0, 1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_e1wev"]
+size = Vector3(0.863159, 0.916992, 0.196777)
+
 [node name="Enemy" type="RigidBody3D"]
 collision_layer = 8
 collision_mask = 31
 axis_lock_linear_y = true
 axis_lock_angular_x = true
 axis_lock_angular_z = true
+contact_monitor = true
+max_contacts_reported = 2
 script = ExtResource("1_ht45k")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
@@ -22,23 +31,20 @@ shape = SubResource("CapsuleShape3D_c8bgx")
 
 [node name="NavigationAgent3D" type="NavigationAgent3D" parent="."]
 path_postprocessing = 1
-
-[node name="CSGSphere3D" type="CSGSphere3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.61588)
-visible = false
+debug_enabled = true
 
 [node name="CSGBox3D" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0239258, -0.10376, -0.0559353)
-visible = false
-size = Vector3(0.952148, 0.79248, 2.61584)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0114137, 0.0914306, -1.79908)
+size = Vector3(1.02283, 1.18286, 0.600586)
 
-[node name="RayCast3D" type="RayCast3D" parent="."]
-collision_mask = 7
-hit_back_faces = false
-debug_shape_thickness = 5
+[node name="AttackIndicator" type="CSGSphere3D" parent="."]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2876, -0.308995)
+material = SubResource("StandardMaterial3D_y8box")
 
 [node name="SpotLight3D" type="SpotLight3D" parent="."]
-transform = Transform3D(1, -1.4164e-08, 1.15512e-09, 1.4164e-08, 0.986788, -0.162017, 1.15495e-09, 0.162017, 0.986788, 1.44661e-07, 0.82751, -1.3427)
+unique_name_in_owner = true
+transform = Transform3D(1, -1.31355e-08, -5.42334e-09, 1.4164e-08, 0.952273, 0.305247, 1.15495e-09, -0.305247, 0.952273, 1.30783e-07, 1.79436, -1.18396)
 light_color = Color(1, 0.69, 0.69, 1)
 light_energy = 5.0
 light_projector = ExtResource("2_1pota")
@@ -46,5 +52,17 @@ shadow_enabled = true
 spot_range = 13.9665
 spot_angle = 41.0167
 
+[node name="RayCast3D" type="RayCast3D" parent="."]
+collision_mask = 7
+hit_back_faces = false
+debug_shape_thickness = 5
+
 [node name="kayak_detailed" parent="." instance=ExtResource("3_7q3nc")]
 transform = Transform3D(-1.21079, 1.4163e-07, 0, -1.05851e-07, -1.62006, 0, 0, 0, 0.4, 0, 0.0386806, -0.0645284)
+
+[node name="AttackArea" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -2.16439)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="AttackArea"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0180054, 0.0415039, 0.0769043)
+shape = SubResource("BoxShape3D_e1wev")

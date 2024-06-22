@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=3 uid="uid://ce6e8v1saxjr5"]
+[gd_scene load_steps=21 format=3 uid="uid://ce6e8v1saxjr5"]
 
 [ext_resource type="Environment" uid="uid://xpf4ng2ym0n4" path="res://environments/main_environment.tres" id="1_ekqa4"]
 [ext_resource type="Script" path="res://main.gd" id="1_xxenq"]
@@ -28,6 +28,10 @@ size = Vector3(1.96265, 7.51904, 1.8761)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_cach1"]
 size = Vector3(1, 1, 6.15552)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_xingp"]
+shading_mode = 0
+albedo_color = Color(0, 1, 0.133333, 1)
 
 [node name="Control" type="Control"]
 layout_mode = 3
@@ -67,7 +71,7 @@ offset_bottom = -15.0
 grow_vertical = 0
 text = "Demo Version"
 
-[node name="LabelDemo2" type="Label" parent="Control"]
+[node name="LabelHelp" type="Label" parent="Control"]
 auto_translate_mode = 1
 layout_mode = 1
 anchors_preset = 3
@@ -81,7 +85,39 @@ offset_right = -15.0
 offset_bottom = -16.0
 grow_horizontal = 0
 grow_vertical = 0
-text = "Esc: Quit - F1: Help"
+text = "Esc: Salir - F1: Ayuda"
+
+[node name="LabelTemporizador" type="Label" parent="Control"]
+unique_name_in_owner = true
+auto_translate_mode = 1
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -224.0
+offset_top = 9.0
+offset_right = -13.0
+offset_bottom = 39.0
+grow_horizontal = 0
+text = "Esc: Salir - F1: Ayuda"
+
+[node name="LabelThanks" type="Label" parent="Control"]
+unique_name_in_owner = true
+auto_translate_mode = 1
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -98.0
+offset_top = -15.0
+offset_right = 98.0
+offset_bottom = 15.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "¡Gracias por jugar la demo!"
 
 [node name="LogLabel" type="RichTextLabel" parent="Control"]
 unique_name_in_owner = true
@@ -104,15 +140,25 @@ auto_translate_mode = 1
 visible = false
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.101667
-anchor_top = 0.0725
-anchor_right = 0.914167
-anchor_bottom = 0.61125
+anchor_left = 0.10125
+anchor_top = 0.0733333
+anchor_right = 0.91375
+anchor_bottom = 0.816667
 grow_horizontal = 2
 grow_vertical = 0
-text = "A,W,S,D (analog): avanzar
-Esc (back): salir
-Space (RB): agarrar"
+text = "Teclado
+A,W,S,D: avanzar
+Esc: salir
+Space: agarrar
+E: observar
+
+Control
+Analógico: avanzar
+Atrás: salir
+RB: agarrar
+A: observar
+
+Meta: Abrirte camino por el río"
 metadata/_edit_use_anchors_ = true
 
 [node name="DialogueControl" type="Control" parent="Control"]
@@ -1066,13 +1112,10 @@ pixel_size = 0.02
 text = "Vino"
 font_size = 64
 
-[node name="InstruccionLabel" type="Label3D" parent="Main3D/DemoElements"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 104.443, 2.85102, -202.56)
-pixel_size = 0.02
-billboard = 1
-text = "Usa Espacio o RB
-para agarrar un objeto"
-font_size = 64
+[node name="VinoIndicador" type="CSGSphere3D" parent="Main3D/DemoElements/VinoLabel"]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.32227, 0)
+material = SubResource("StandardMaterial3D_xingp")
 
 [node name="CarneLabel" type="Label3D" parent="Main3D/DemoElements"]
 unique_name_in_owner = true
@@ -1081,6 +1124,11 @@ pixel_size = 0.02
 text = "Carne"
 font_size = 64
 
+[node name="CarneIndicador" type="CSGSphere3D" parent="Main3D/DemoElements/CarneLabel"]
+unique_name_in_owner = true
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 1.19067, 0)
+material = SubResource("StandardMaterial3D_xingp")
+
 [node name="TierraLabel" type="Label3D" parent="Main3D/DemoElements"]
 unique_name_in_owner = true
 transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 158.802, 4.90522, -208.382)
@@ -1088,7 +1136,27 @@ pixel_size = 0.02
 text = "Tierra"
 font_size = 64
 
+[node name="TierraIndicador" type="CSGSphere3D" parent="Main3D/DemoElements/TierraLabel"]
+unique_name_in_owner = true
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 1.43262, 0)
+material = SubResource("StandardMaterial3D_xingp")
+
+[node name="InstruccionLabel" type="Label3D" parent="Main3D/DemoElements"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 104.443, 2.85102, -202.56)
+pixel_size = 0.02
+billboard = 1
+text = "Usa Espacio o RB
+para agarrar un objeto"
+font_size = 64
+
+[node name="InstruccionLabel2" type="Label3D" parent="Main3D/DemoElements"]
+transform = Transform3D(-0.476576, 0, -0.879133, 0, 1, 0, 0.879133, 0, -0.476576, 104.422, 1.18638, -191.362)
+pixel_size = 0.02
+double_sided = false
+text = "¡Corré!"
+font_size = 64
+
 [node name="InitialPosition" type="Marker3D" parent="Main3D"]
 unique_name_in_owner = true
-transform = Transform3D(-0.0183423, 0, -0.999832, 0, 1, 0, 0.999832, 0, -0.0183423, -8.24188, 0, -189.923)
+transform = Transform3D(-0.0183423, 0, -0.999832, 0, 1, 0, 0.999832, 0, -0.0183423, -8.4334, 0, -190.124)
 gizmo_extents = 5.0

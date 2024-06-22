@@ -4,6 +4,7 @@ extends Node
 # - Delta Kayak: 2632680
 # - Delta Kayak Demo: 2960790
 const APP_ID := 2632680
+const APP_ID_DEMO := 2960790
 
 # Steam variables
 var is_on_steam_deck: bool = false
@@ -20,9 +21,14 @@ var stats = {
 }
 
 func _init() -> void:
+	var current_app_id:int
+	if Global.is_demo():
+		current_app_id = APP_ID_DEMO
+	else:
+		current_app_id = APP_ID
 	# Set your game's Steam app ID here
-	OS.set_environment("SteamAppId", str(APP_ID))
-	OS.set_environment("SteamGameId", str(APP_ID))
+	OS.set_environment("SteamAppId", str(current_app_id))
+	OS.set_environment("SteamGameId", str(current_app_id))
 
 func _ready() -> void:
 	initialize_steam()
