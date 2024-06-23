@@ -211,11 +211,11 @@ func _integrate_forces(state: PhysicsDirectBodyState3D) -> void:
 	#	state.linear_velocity *= 0.99
 	
 	var forward_direction := (transform.basis * Vector3.FORWARD).normalized()
-	var backward_direction := (transform.basis * Vector3.BACK).normalized()
+	#var backward_direction := (transform.basis * Vector3.BACK).normalized()
 	#prints(forward_direction, backward_direction)
 	# Gets only the energy going forward and backwards
 	var forward_component: Vector3 = forward_direction * state.linear_velocity.dot(forward_direction)
-	var backward_component: Vector3 = backward_direction * state.linear_velocity.dot(backward_direction)
+	#var backward_component: Vector3 = backward_direction * state.linear_velocity.dot(backward_direction)
 	#prints(forward_component, backward_component)
 	# Gets only the energy not going forward
 	var side_component: Vector3 = state.linear_velocity - forward_component

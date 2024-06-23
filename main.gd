@@ -60,9 +60,9 @@ func _process(delta: float) -> void:
 	log_label.text = Global.log_text
 	Global.log_text = ""
 	temporizador += delta
-	var min := int(temporizador / 60)
-	var sec := int(temporizador-(min*60))
-	%LabelTemporizador.text = "%02d:%02d" % [min,sec]
+	var minute := int(temporizador / 60)
+	var sec := int(temporizador-(minute*60))
+	%LabelTemporizador.text = "%02d:%02d" % [minute,sec]
 
 func handle_demo_puzzle():
 	var match_count := 0

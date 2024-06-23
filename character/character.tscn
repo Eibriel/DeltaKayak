@@ -7,7 +7,7 @@
 [ext_resource type="PackedScene" uid="uid://dnempkm0ot1g4" path="res://models/pepa/pepa.glb" id="4_bo5nj"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_p6dmh"]
-friction = 0.0
+friction = 0.2
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_e56vi"]
 shading_mode = 0
@@ -90,6 +90,7 @@ shape = SubResource("CapsuleShape3D_b8fg3")
 
 [node name="CSGBox3D" type="CSGBox3D" parent="."]
 top_level = true
+visible = false
 size = Vector3(0.5, 0.5, 0.5)
 
 [node name="pillow" parent="." instance=ExtResource("4_81u6e")]
