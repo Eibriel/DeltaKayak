@@ -206,7 +206,6 @@ text = "Narrator:
 metadata/_edit_use_anchors_ = true
 
 [node name="Main3D" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.612305)
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="Main3D"]
 environment = ExtResource("1_ekqa4")
@@ -221,9 +220,10 @@ shadow_enabled = true
 unique_name_in_owner = true
 transform = Transform3D(0.00204205, 0, -0.999998, 0, 1, 0, 0.999998, 0, 0.00204205, 333.44, 0, 36.1147)
 
-[node name="DKWorld" parent="Main3D" node_paths=PackedStringArray("initial_camera") instance=ExtResource("3_7foso")]
+[node name="DKWorld" parent="Main3D" node_paths=PackedStringArray("initial_camera", "initial_camera_path") instance=ExtResource("3_7foso")]
 unique_name_in_owner = true
 initial_camera = NodePath("camera_camera_001_003/camera_camera_001_003_cam")
+initial_camera_path = NodePath("camera_camera_001_003/@Path3D@40260")
 world_definition = {
 "Sector_003": {
 "cameras": {

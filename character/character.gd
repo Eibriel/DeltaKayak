@@ -1,6 +1,6 @@
 extends RigidBody3D
 
-@onready var target_box = $CSGBox3D
+@onready var target_box := $CSGBox3D
 @onready var pepa: Node3D = %pepa
 @onready var camera: Camera3D = %CharacterCamera3D
 @onready var marker_3d: Marker3D = $Marker3D
@@ -14,7 +14,7 @@ var going_backwards := false
 var damage := 0.0
 var damage_timer := 0.0
 
-var kayak_speed := 15.0 + 5.0
+var kayak_speed := 15.0
 var temp_speed := 0.0
 var temp_time := 0.0
 var strength := 0
@@ -68,8 +68,8 @@ func _process(delta: float) -> void:
 	soft_camera_rotation = lerp_angle(current_camera.rotation.y, soft_camera_rotation, ration)
 	
 	var local_target_position := movement_direction.rotated(-soft_camera_rotation) * 100.0
-	target_box.global_position = position + Vector3(local_target_position.x, 0.0, local_target_position.y)
 	
+	target_box.global_position = global_position + Vector3(local_target_position.x, 0.0, local_target_position.y)
 	var target_position_with_rotation := local_target_position.rotated(rotation.y)
 	var global_target_rotation := -Vector2.UP.angle_to(target_position_with_rotation)
 	target_direction = global_target_rotation
@@ -206,7 +206,6 @@ func _integrate_forces_old(state:PhysicsDirectBodyState3D):
 
 # TODO duplicated in boat_class.gd
 func _integrate_forces(state: PhysicsDirectBodyState3D) -> void:
-	return
 	handle_contacts(state)
 	#if grabbing_state == GRABBING.YES:
 	#	state.linear_velocity *= 0.99
@@ -217,7 +216,7 @@ func _integrate_forces(state: PhysicsDirectBodyState3D) -> void:
 	# Gets only the energy going forward and backwards
 	var forward_component: Vector3 = forward_direction * state.linear_velocity.dot(forward_direction)
 	var backward_component: Vector3 = backward_direction * state.linear_velocity.dot(backward_direction)
-	prints(forward_component, backward_component)
+	#prints(forward_component, backward_component)
 	# Gets only the energy not going forward
 	var side_component: Vector3 = state.linear_velocity - forward_component
 	# Transfers the energy not going forward to going forward
