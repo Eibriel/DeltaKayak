@@ -205,6 +205,51 @@ text = "Narrator:
 	This is a sample text"
 metadata/_edit_use_anchors_ = true
 
+[node name="Debug" type="Control" parent="Control"]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Control/Debug"]
+auto_translate_mode = 1
+layout_mode = 0
+offset_right = 196.0
+offset_bottom = 112.0
+
+[node name="Label" type="Label" parent="Control/Debug/VBoxContainer"]
+auto_translate_mode = 1
+layout_mode = 2
+text = "Proportional"
+
+[node name="ProportionalSlider" type="HSlider" parent="Control/Debug/VBoxContainer"]
+unique_name_in_owner = true
+auto_translate_mode = 1
+layout_mode = 2
+max_value = 1000.0
+
+[node name="Label2" type="Label" parent="Control/Debug/VBoxContainer"]
+auto_translate_mode = 1
+layout_mode = 2
+text = "Integral"
+
+[node name="IntegralSlider" type="HSlider" parent="Control/Debug/VBoxContainer"]
+unique_name_in_owner = true
+auto_translate_mode = 1
+layout_mode = 2
+max_value = 1000.0
+step = 0.1
+
+[node name="Label3" type="Label" parent="Control/Debug/VBoxContainer"]
+auto_translate_mode = 1
+layout_mode = 2
+text = "Derivative"
+
+[node name="DerivativeSlider" type="HSlider" parent="Control/Debug/VBoxContainer"]
+unique_name_in_owner = true
+auto_translate_mode = 1
+layout_mode = 2
+max_value = 10000.0
+
 [node name="Main3D" type="Node3D" parent="."]
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="Main3D"]
@@ -223,7 +268,7 @@ transform = Transform3D(0.00204205, 0, -0.999998, 0, 1, 0, 0.999998, 0, 0.002042
 [node name="DKWorld" parent="Main3D" node_paths=PackedStringArray("initial_camera", "initial_camera_path") instance=ExtResource("3_7foso")]
 unique_name_in_owner = true
 initial_camera = NodePath("camera_camera_001_003/camera_camera_001_003_cam")
-initial_camera_path = NodePath("camera_camera_001_003/@Path3D@40260")
+initial_camera_path = NodePath("camera_camera_001_003/@Path3D@98965")
 world_definition = {
 "Sector_003": {
 "cameras": {
@@ -1158,5 +1203,11 @@ font_size = 64
 
 [node name="InitialPosition" type="Marker3D" parent="Main3D"]
 unique_name_in_owner = true
-transform = Transform3D(-0.0183423, 0, -0.999832, 0, 1, 0, 0.999832, 0, -0.0183423, -8.4334, 0, -190.124)
+transform = Transform3D(-0.0183423, 0, -0.999832, 0, 1, 0, 0.999832, 0, -0.0183423, 165.019, 0, -183.775)
 gizmo_extents = 5.0
+
+[node name="VehicleBody3D" type="VehicleBody3D" parent="Main3D"]
+
+[connection signal="drag_ended" from="Control/Debug/VBoxContainer/ProportionalSlider" to="." method="_on_slider_drag_ended"]
+[connection signal="drag_ended" from="Control/Debug/VBoxContainer/IntegralSlider" to="." method="_on_slider_drag_ended"]
+[connection signal="drag_ended" from="Control/Debug/VBoxContainer/DerivativeSlider" to="." method="_on_slider_drag_ended"]

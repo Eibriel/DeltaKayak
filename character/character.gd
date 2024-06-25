@@ -24,11 +24,17 @@ var target_direction := 0.0
 
 var current := Vector3.ZERO
 var current_direction = Vector3.FORWARD
-var current_speed := 0.2
+var current_speed := 0.0
 
 var grabbing_object: RigidBody3D
 var grabbing_object_position: Vector3
 var grabbing_state = GRABBING.NO
+
+var pid_proportional_par := 510 #40.0 #20.0
+var pid_integral_par := 251 #1.0
+var pid_derivative_par := 3639 #2000.0 #1000.0
+
+var pid_tunning := 0.0
 
 enum GRABBING {
 	WANTS_TO,
@@ -58,7 +64,27 @@ func _process(delta: float) -> void:
 	damage -= delta*0.25
 	if damage < 0: damage = 0
 	%DamageLight.light_energy = damage * 0.1
-	#
+	if pid_tunning == 0.0:
+		handle_rotation(delta)
+	else:
+		handle_finetunning(delta)
+
+func handle_finetunning(delta:float) -> void:
+	var test_angle := angle_difference(deg_to_rad(90), deg_to_rad(0))
+	#print(test_angle)
+	
+	if pid_tunning == 0.0: return
+	#var angle_to_target := Vector3.BACK.signed_angle_to(Vector3.RIGHT, Vector3.UP)
+	var target_direction := angle_difference(pid_tunning, rotation.y)
+	#print(-target_direction)
+	get_torque(-target_direction, delta, Vector2.ONE)
+	last_rotation = rotation.y
+	
+func reset_rotation()->void:
+	rotation = Vector3.ZERO
+	angular_velocity = Vector3.ZERO
+
+func handle_rotation(delta:float) -> void:
 	marker_3d.position = position
 	var input_dir:Vector2 = Input.get_vector("left", "right", "up", "down")
 	var movement_direction:Vector2 = input_dir * delta * 2.0
@@ -89,7 +115,11 @@ func _process(delta: float) -> void:
 		temp_speed = 0.0
 	#speed = -max(0, -target_position_with_rotation.y) * delta * (kayak_speed + temp_speed + (strength * 5))
 	speed = -abs(target_position_with_rotation.y) * delta * (kayak_speed + temp_speed + (strength * 5))
-	var error := target_direction
+	get_torque(target_direction, delta, input_dir)
+	last_rotation = rotation.y
+	handle_grabbing()
+
+func get_torque(error:float, delta:float, input_dir:Vector2) -> void:
 	#Global.log_text += "\nspeed: %f" % speed
 	#Global.log_text += "\nerror: %f" % error
 	#Global.log_text += "\nproportional: %f" % get_proportional(error)
@@ -104,22 +134,17 @@ func _process(delta: float) -> void:
 		torque *= 5
 	#Global.log_text += "\ntorque: %f" % torque
 
-	last_rotation = rotation.y
-	handle_grabbing()
-
 # PID control
 func get_proportional(error) -> float:
 	# Minimizes error
 	# Adds
-	var proportional = error
-	proportional *= 40.0 #20.0
-	return proportional
+	return error * pid_proportional_par
 
 func get_integral(_error) -> float:
 	# External perturvations (inertia)
 	# Compensates
-	var integral = angular_velocity.y
-	return integral
+	var integral = angular_velocity.y * pid_integral_par
+	return -integral
 
 func get_derivative(_error) -> float:
 	# Error change speed
@@ -130,8 +155,7 @@ func get_derivative(_error) -> float:
 			derivative = -(last_rotation + rotation.y)
 		else:
 			derivative = -(rotation.y + last_rotation)
-	
-	return derivative*2000.0#1000.0
+	return derivative * pid_derivative_par
 #
 
 func handle_grabbing():
@@ -207,6 +231,7 @@ func _integrate_forces_old(state:PhysicsDirectBodyState3D):
 # TODO duplicated in boat_class.gd
 func _integrate_forces(state: PhysicsDirectBodyState3D) -> void:
 	handle_contacts(state)
+	state.angular_velocity *= 0.999
 	#if grabbing_state == GRABBING.YES:
 	#	state.linear_velocity *= 0.99
 	
@@ -248,6 +273,8 @@ func handle_contacts(state: PhysicsDirectBodyState3D):
 				grabbing_position.global_position = body.global_position
 
 func get_current() -> void:
+	# TODO
+	return
 	current_direction = Vector3.FORWARD
 	current_speed = 0.2
 	var world_definition = Global.main_scene.dk_world.world_definition

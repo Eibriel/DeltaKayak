@@ -49,7 +49,11 @@ func _ready() -> void:
 	character.position = %InitialPosition.position #Vector3(0, 0, 0)
 	character.rotation = %InitialPosition.rotation #Vector3(0, 0, 0)
 	
-	Input.set_mouse_mode(Input.MOUSE_MODE_HIDDEN)
+	%ProportionalSlider.value = character.pid_proportional_par
+	%IntegralSlider.value = character.pid_integral_par
+	%DerivativeSlider.value = character.pid_derivative_par
+	
+	#Input.set_mouse_mode(Input.MOUSE_MODE_HIDDEN)
 	
 
 func _process(delta: float) -> void:
@@ -366,3 +370,18 @@ func get_item(item_id: String) -> ItemResource:
 		if i.id == item_id:
 			return i
 	return null
+
+func update_pid_values()->void:
+	print("P: %d I: %.1f D: %d" % [
+		%ProportionalSlider.value,
+		%IntegralSlider.value,
+		%DerivativeSlider.value])
+	character.pid_proportional_par = %ProportionalSlider.value
+	character.pid_integral_par = %IntegralSlider.value
+	character.pid_derivative_par = %DerivativeSlider.value
+
+func _on_slider_value_changed(value: float) -> void:
+	update_pid_values()
+
+func _on_slider_drag_ended(value_changed: bool) -> void:
+	update_pid_values()

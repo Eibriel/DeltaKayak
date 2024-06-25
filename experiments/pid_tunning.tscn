@@ -1,0 +1,65 @@
+[gd_scene load_steps=2 format=3 uid="uid://di1eehvw6xbeq"]
+
+[ext_resource type="Script" path="res://experiments/pid_tunning.gd" id="1_nr46o"]
+
+[node name="PidTunning" type="Node3D"]
+script = ExtResource("1_nr46o")
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 4.67249, -8.60968e-08)
+fov = 54.6
+
+[node name="Generic6DOFJoint3D" type="Generic6DOFJoint3D" parent="."]
+
+[node name="CSGBox3D" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.41473, 0, 0)
+size = Vector3(0.304199, 1, 1)
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Control"]
+layout_mode = 0
+offset_right = 196.0
+offset_bottom = 112.0
+
+[node name="Label" type="Label" parent="Control/VBoxContainer"]
+layout_mode = 2
+text = "Proportional"
+
+[node name="ProportionalSlider" type="HSlider" parent="Control/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+max_value = 1000.0
+
+[node name="Label2" type="Label" parent="Control/VBoxContainer"]
+auto_translate_mode = 1
+layout_mode = 2
+text = "Integral"
+
+[node name="IntegralSlider" type="HSlider" parent="Control/VBoxContainer"]
+unique_name_in_owner = true
+auto_translate_mode = 1
+layout_mode = 2
+max_value = 1000.0
+step = 0.1
+
+[node name="Label3" type="Label" parent="Control/VBoxContainer"]
+auto_translate_mode = 1
+layout_mode = 2
+text = "Derivative"
+
+[node name="DerivativeSlider" type="HSlider" parent="Control/VBoxContainer"]
+unique_name_in_owner = true
+auto_translate_mode = 1
+layout_mode = 2
+max_value = 10000.0
+
+[connection signal="value_changed" from="Control/VBoxContainer/ProportionalSlider" to="." method="_on_slider_value_changed"]
+[connection signal="value_changed" from="Control/VBoxContainer/IntegralSlider" to="." method="_on_slider_value_changed"]
+[connection signal="value_changed" from="Control/VBoxContainer/DerivativeSlider" to="." method="_on_slider_value_changed"]

@@ -1,0 +1,114 @@
+[gd_scene load_steps=4 format=3 uid="uid://ynml06d5de5s"]
+
+[ext_resource type="Script" path="res://experiments/follow_path.gd" id="1_m5q5e"]
+[ext_resource type="PackedScene" uid="uid://mvc5qr5igrlq" path="res://scenes/enemy.tscn" id="1_t8p63"]
+
+[sub_resource type="Curve3D" id="Curve3D_w7w5o"]
+_data = {
+"points": PackedVector3Array(0.0830579, 0, 6.12484, -0.0830579, 0, -6.12484, 0, 0, 0, -2.76637, 0, 6.73829, 2.76637, 0, -6.73829, 9.11946, 0, -23.5872, 6.11032, 4.76837e-07, 0.640835, -6.11032, -4.76837e-07, -0.640835, -29.7244, 6.25476, -40.4389),
+"tilts": PackedFloat32Array(0, 0, 0)
+}
+point_count = 3
+
+[node name="FollowPath" type="Node3D"]
+script = ExtResource("1_m5q5e")
+
+[node name="Enemy" parent="." instance=ExtResource("1_t8p63")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.479557, 0, 0.671204)
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -0.258819, 0.965926, 0, -0.965926, -0.258819, 0, 28.4726, -33.4407)
+fov = 105.1
+
+[node name="Path3D" type="Path3D" parent="."]
+curve = SubResource("Curve3D_w7w5o")
+
+[node name="Control" type="Control" parent="."]
+auto_translate_mode = 1
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Control"]
+auto_translate_mode = 1
+layout_mode = 0
+offset_right = 196.0
+offset_bottom = 112.0
+
+[node name="Label" type="Label" parent="Control/VBoxContainer"]
+auto_translate_mode = 1
+layout_mode = 2
+text = "Proportional"
+
+[node name="ProportionalSlider" type="HSlider" parent="Control/VBoxContainer"]
+unique_name_in_owner = true
+auto_translate_mode = 1
+layout_mode = 2
+max_value = 1000.0
+
+[node name="Label2" type="Label" parent="Control/VBoxContainer"]
+auto_translate_mode = 1
+layout_mode = 2
+text = "Integral"
+
+[node name="IntegralSlider" type="HSlider" parent="Control/VBoxContainer"]
+unique_name_in_owner = true
+auto_translate_mode = 1
+layout_mode = 2
+max_value = 1000.0
+step = 0.1
+
+[node name="Label3" type="Label" parent="Control/VBoxContainer"]
+auto_translate_mode = 1
+layout_mode = 2
+text = "Derivative"
+
+[node name="DerivativeSlider" type="HSlider" parent="Control/VBoxContainer"]
+unique_name_in_owner = true
+auto_translate_mode = 1
+layout_mode = 2
+max_value = 10000.0
+
+[node name="Label4" type="Label" parent="Control/VBoxContainer"]
+auto_translate_mode = 1
+layout_mode = 2
+text = "Proportional Path"
+
+[node name="ProportionalPathSlider" type="HSlider" parent="Control/VBoxContainer"]
+unique_name_in_owner = true
+auto_translate_mode = 1
+layout_mode = 2
+max_value = 1000.0
+
+[node name="Label5" type="Label" parent="Control/VBoxContainer"]
+auto_translate_mode = 1
+layout_mode = 2
+text = "Integral Path"
+
+[node name="IntegralPathSlider" type="HSlider" parent="Control/VBoxContainer"]
+unique_name_in_owner = true
+auto_translate_mode = 1
+layout_mode = 2
+max_value = 1000.0
+step = 0.1
+
+[node name="Label6" type="Label" parent="Control/VBoxContainer"]
+auto_translate_mode = 1
+layout_mode = 2
+text = "Derivative Path"
+
+[node name="DerivativePathSlider" type="HSlider" parent="Control/VBoxContainer"]
+unique_name_in_owner = true
+auto_translate_mode = 1
+layout_mode = 2
+max_value = 10000.0
+
+[connection signal="drag_ended" from="Control/VBoxContainer/ProportionalSlider" to="." method="_on_slider_drag_ended"]
+[connection signal="drag_ended" from="Control/VBoxContainer/IntegralSlider" to="." method="_on_slider_drag_ended"]
+[connection signal="drag_ended" from="Control/VBoxContainer/DerivativeSlider" to="." method="_on_slider_drag_ended"]
+[connection signal="drag_ended" from="Control/VBoxContainer/ProportionalPathSlider" to="." method="_on_slider_drag_ended"]
+[connection signal="drag_ended" from="Control/VBoxContainer/IntegralPathSlider" to="." method="_on_slider_drag_ended"]
+[connection signal="drag_ended" from="Control/VBoxContainer/DerivativePathSlider" to="." method="_on_slider_drag_ended"]

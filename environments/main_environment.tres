@@ -17,6 +17,7 @@ sky_material = SubResource("ProceduralSkyMaterial_gamhf")
 
 [resource]
 background_mode = 2
+background_energy_multiplier = 0.7
 sky = SubResource("Sky_iph5d")
 ambient_light_source = 3
 reflected_light_source = 1

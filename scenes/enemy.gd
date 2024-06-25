@@ -38,7 +38,7 @@ func _get_target(delta: float) -> void:
 		%AttackIndicator.visible = true
 		%SpotLight3D.visible = true
 		change_attack_state()
-		target_position = Global.character.global_position
+		#target_position = Global.character.global_position
 		boat_speed = 0.5
 		if attack_state == ATTACK_STATE.START:
 			attack_start_time += delta
@@ -60,7 +60,7 @@ func _get_target(delta: float) -> void:
 		%AttackIndicator.visible = false
 		%SpotLight3D.visible = false
 		nav.target_position = home_position
-		target_position = nav.get_next_path_position()
+		#target_position = nav.get_next_path_position()
 		boat_speed = 0.2
 		if global_position.distance_to(home_position) > 2.0:
 			waiting = false
@@ -125,6 +125,8 @@ func check_alert_exit():
 		waiting = false
 
 func is_character_visible() -> bool:
+	if Global.character == null:
+		return false
 	var target := to_local(Global.character.global_position)
 	target = target.normalized() * 20
 	

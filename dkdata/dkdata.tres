@@ -312,6 +312,7 @@ next_door_open = false
 has_next_door_key = false
 pepa_visible = true
 pepa_position = Vector3(0, 0, 0)
+met_monster = false
 
 [resource]
 script = ExtResource("1_mesef")
