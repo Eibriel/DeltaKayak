@@ -28,6 +28,8 @@ var camera_to_path := {}
 
 var camera_switch_delta := 90.0
 
+var camera_time := 0.0
+
 func _ready():
 	Global.camera = initial_camera
 	Global.camera_path = initial_camera_path
@@ -78,6 +80,10 @@ func handle_cameras(delta)->void:
 	#print(pathpoints)
 	if pathpoints.size() == 0: return
 	var path_pos := get_path_position(Global.tri_to_bi(character.global_position), pathpoints)
+	if new_camera:
+		camera_time = path_pos
+	else:
+		camera_time = lerpf(camera_time, path_pos, 0.1)
 	for c in get_children():
 		if c.name.begins_with(current_camera.name.substr(0, current_camera.name.length()-4)):
 			for cc in c.get_children():
@@ -85,8 +91,8 @@ func handle_cameras(delta)->void:
 					cc.clear_queue()
 					cc.queue(current_camera.name)
 					cc.pause()
-					cc.seek(path_pos*30.0, true)
-					print(path_pos*30.0)
+					cc.seek(camera_time*30.0, true)
+					#print(time*30.0)
 
 func handle_cameras_old(delta) -> void:
 	# TODO Looks like process starts before world is fully initiated
@@ -219,6 +225,13 @@ func get_path_position(point_pos: Vector2, path_def: Array) -> float:
 		var partial_dist := point_pos.distance_to(proxy_b)
 		var val := remap(total_dist-partial_dist, 0.0, total_dist, 0.0, 1.0)
 		return (val*polygon_weight[line_id]) + added_weight
+	# If not in polygon
+	var dist_first:float = path_def[0][0].distance_to(point_pos)
+	var dist_last: float = path_def[path_def.size()-1][0].distance_to(point_pos)
+	if dist_first > dist_last:
+		return 1
+	else:
+		return 0
 	return 0
 
 func on_trigger_entered(area_:Area3D, trigger_name:String) -> void:

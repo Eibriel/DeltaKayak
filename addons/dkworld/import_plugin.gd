@@ -367,6 +367,9 @@ func add_camera(camera:Dictionary, camera_id:String, main_node:Node3D):
 	#var camera_quaternion := array_to_quaternion(camera.camera.quaternion)
 	#camera_position_node.quaternion = camera_quaternion
 	#camera_position_node.rotation_edit_mode = Node3D.ROTATION_EDIT_MODE_QUATERNION
+	camera_position_b_node.rotation.x = array_to_vector3(camera.camera.rotation).x
+	camera_position_node.rotation.y = array_to_vector3(camera.camera.rotation).y
+	camera3d.rotation.z = array_to_vector3(camera.camera.rotation).z
 	
 	camera3d.rotation.x = deg_to_rad(-90)
 	camera3d.fov = rad_to_deg(camera.camera.fov)
