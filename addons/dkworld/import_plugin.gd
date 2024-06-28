@@ -347,9 +347,14 @@ func add_camera(camera:Dictionary, camera_id:String, main_node:Node3D):
 	main_node.add_child(camera_node)
 	camera_node.set_owner(main_node)
 	
+	var camera_crane_node = Node3D.new()
+	camera_crane_node.set_name("%s_crane" % camera_id)
+	camera_node.add_child(camera_crane_node)
+	camera_crane_node.set_owner(main_node)
+	
 	var camera_position_node = Node3D.new()
 	camera_position_node.set_name("%s_pos" % camera_id)
-	camera_node.add_child(camera_position_node)
+	camera_crane_node.add_child(camera_position_node)
 	camera_position_node.set_owner(main_node)
 	
 	var camera_position_b_node = Node3D.new()
@@ -383,11 +388,11 @@ func add_camera(camera:Dictionary, camera_id:String, main_node:Node3D):
 		var reset_animation := Animation.new()
 		var animation_library := AnimationLibrary.new()
 		for t in camera.camera.animation:
-			var track_path = camera_id+"_pos:"+t.path
+			var track_path = camera_id+"_crane/"+camera_id+"_pos:"+t.path
 			if t.path.begins_with("rotation:x"):
-				track_path = camera_id+"_pos/"+camera_id+"_posb:"+t.path
+				track_path = camera_id+"_crane/"+camera_id+"_pos/"+camera_id+"_posb:"+t.path
 			elif t.path.begins_with("rotation:z"):
-				track_path = camera_id+"_pos/"+camera_id+"_posb/"+camera_id+"_cam:"+t.path
+				track_path = camera_id+"_crane/"+camera_id+"_pos/"+camera_id+"_posb/"+camera_id+"_cam:"+t.path
 			var reset_track_idx = reset_animation.add_track(Animation.TYPE_BEZIER)
 			reset_animation.track_set_path(reset_track_idx, track_path)
 			var value := 0
@@ -423,6 +428,8 @@ func add_camera(camera:Dictionary, camera_id:String, main_node:Node3D):
 	camera3d.set_meta("lock_rotation_y", camera.camera.lock_rotation_y)
 	camera3d.set_meta("lock_rotation_z", camera.camera.lock_rotation_z)
 	camera3d.set_meta("pathpoints", pathpoints_data)
+	camera3d.set_meta("vertical_compensation", camera.camera.vertical_compensation)
+	camera3d.set_meta("horizontal_compensation", camera.camera.horizontal_compensation)
 	
 	# Curve
 	var path3d

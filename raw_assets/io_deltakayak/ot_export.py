@@ -353,7 +353,9 @@ class DKT_OT_ExportWorld(bpy.types.Operator):
             "weight": camera_obj.dkt_worldproperties.camera_weight,
             "lock_rotation_x": camera_obj.dkt_worldproperties.camera_lock_rotation_x,
             "lock_rotation_y": camera_obj.dkt_worldproperties.camera_lock_rotation_y,
-            "lock_rotation_z": camera_obj.dkt_worldproperties.camera_lock_rotation_z
+            "lock_rotation_z": camera_obj.dkt_worldproperties.camera_lock_rotation_z,
+            "vertical_compensation": camera_obj.dkt_worldproperties.camera_vertical_compensation,
+            "horizontal_compensation": camera_obj.dkt_worldproperties.camera_horizontal_compensation
         }
         #camera_obj.rotation_euler[0] += math.radians(90.0)
         #bpy.context.view_layer.update()
@@ -588,15 +590,17 @@ class DKT_PT_ExportWorld(bpy.types.Panel):
         col.operator("dktools.export_dkworld", text="Export World", icon='WORLD')
         obj = context.active_object
         if obj is not None and obj.name.startswith("camera_"):
-            col.prop(obj.dkt_worldproperties, "camera_transition_type")
-            col.prop(obj.dkt_worldproperties, "camera_transition_speed")
+            #col.prop(obj.dkt_worldproperties, "camera_transition_type")
+            #col.prop(obj.dkt_worldproperties, "camera_transition_speed")
             col.prop(obj.dkt_worldproperties, "camera_speed")
             col.prop(obj.dkt_worldproperties, "camera_poi")
-            col.prop(obj.dkt_worldproperties, "camera_player_offset")
+            #col.prop(obj.dkt_worldproperties, "camera_player_offset")
             col.prop(obj.dkt_worldproperties, "camera_weight")
-            col.prop(obj.dkt_worldproperties, "camera_lock_rotation_x")
-            col.prop(obj.dkt_worldproperties, "camera_lock_rotation_y")
-            col.prop(obj.dkt_worldproperties, "camera_lock_rotation_z")
+            #col.prop(obj.dkt_worldproperties, "camera_lock_rotation_x")
+            #col.prop(obj.dkt_worldproperties, "camera_lock_rotation_y")
+            #col.prop(obj.dkt_worldproperties, "camera_lock_rotation_z")
+            col.prop(obj.dkt_worldproperties, "camera_vertical_compensation")
+            col.prop(obj.dkt_worldproperties, "camera_horizontal_compensation")
         
 
 
@@ -1296,6 +1300,28 @@ class DKT_PG_WorldObjectProperties(bpy.types.PropertyGroup):
     camera_lock_rotation_z: BoolProperty(
         name="Lock camera rotation Z",
         default=False
+    ) # type: ignore
+
+    camera_vertical_compensation: EnumProperty(
+        name="Vertical compensation",
+        description="Move the camera in the vertical axis to keep the subject centered",
+        items=[
+            ("none", "None", "No compensation", "", 0),
+            ("rotation", "Rotation", "Rotate camera to keep subject centered", "", 1),
+            ("translation", "Translation", "Translate camera to keep subject centered", "", 2),
+        ], # type: ignore
+        default="none"
+    ) # type: ignore
+
+    camera_horizontal_compensation: EnumProperty(
+        name="Horizontal compensation",
+        description="Move the camera in the horizontal axis to keep the subject centered",
+        items=[
+            ("none", "None", "No compensation", "", 0),
+            ("rotation", "Rotation", "Rotate camera to keep subject centered", "", 1),
+            ("translation", "Translation", "Translate camera to keep subject centered", "", 2),
+        ], # type: ignore
+        default="none"
     ) # type: ignore
 
 class DKT_PG_StencilProperties(bpy.types.PropertyGroup):

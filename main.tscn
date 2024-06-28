@@ -1,4 +1,4 @@
-[gd_scene load_steps=22 format=3 uid="uid://ce6e8v1saxjr5"]
+[gd_scene load_steps=21 format=3 uid="uid://ce6e8v1saxjr5"]
 
 [ext_resource type="Environment" uid="uid://xpf4ng2ym0n4" path="res://environments/main_environment.tres" id="1_ekqa4"]
 [ext_resource type="Script" path="res://main.gd" id="1_xxenq"]
@@ -8,7 +8,6 @@
 [ext_resource type="PackedScene" uid="uid://baucroxjd5o4i" path="res://world_definition.dkworld" id="3_7foso"]
 [ext_resource type="Resource" uid="uid://bi1rugic742u0" path="res://dkdata/dkdata.tres" id="3_nh3h6"]
 [ext_resource type="Texture2D" uid="uid://31mrm2ajeyll" path="res://textures/dialogue_box.png" id="4_kkvku"]
-[ext_resource type="Script" path="res://addons/dkworld/world.gd" id="9_4a7eo"]
 [ext_resource type="PackedScene" uid="uid://t23rsw74uei8" path="res://scenes/long_box.tscn" id="9_kolyd"]
 [ext_resource type="PackedScene" uid="uid://dsppfk5r8xdm7" path="res://scenes/L_floating_box.tscn" id="10_tov8v"]
 [ext_resource type="PackedScene" uid="uid://ccwbpjnygckmy" path="res://scenes/door.tscn" id="11_mh163"]
@@ -213,6 +212,7 @@ offset_bottom = 40.0
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Control/Debug"]
 auto_translate_mode = 1
+visible = false
 layout_mode = 0
 offset_right = 196.0
 offset_bottom = 112.0
@@ -265,10 +265,8 @@ shadow_enabled = true
 [node name="character" parent="Main3D" instance=ExtResource("2_3sgbv")]
 unique_name_in_owner = true
 
-[node name="DKWorld" type="Node3D" parent="Main3D" node_paths=PackedStringArray("initial_camera") instance=ExtResource("3_7foso")]
+[node name="DKWorld" parent="Main3D" instance=ExtResource("3_7foso")]
 unique_name_in_owner = true
-script = ExtResource("9_4a7eo")
-initial_camera = NodePath("camera_camera_001_003/camera_camera_001_003_pos/camera_camera_001_003_posb/camera_camera_001_003_cam")
 world_definition = {
 "Sector_003": {
 "cameras": {

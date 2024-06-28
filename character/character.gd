@@ -14,7 +14,7 @@ var going_backwards := false
 var damage := 0.0
 var damage_timer := 0.0
 
-var kayak_speed := 7.0
+var kayak_speed := 0.15
 var temp_speed := 0.0
 var temp_time := 0.0
 var strength := 0
@@ -71,12 +71,8 @@ func _process(delta: float) -> void:
 	damage -= delta*0.25
 	if damage < 0: damage = 0
 	%DamageLight.light_energy = damage * 0.1
-	if pid_tunning == 0.0:
-		handle_rotation(delta)
-	else:
-		handle_finetunning(delta)
 
-func handle_finetunning(delta:float) -> void:
+func handle_finetunning() -> void:
 	var test_angle := angle_difference(deg_to_rad(90), deg_to_rad(0))
 	#print(test_angle)
 	
@@ -84,20 +80,20 @@ func handle_finetunning(delta:float) -> void:
 	#var angle_to_target := Vector3.BACK.signed_angle_to(Vector3.RIGHT, Vector3.UP)
 	var target_direction := angle_difference(pid_tunning, rotation.y)
 	#print(-target_direction)
-	get_torque(-target_direction, delta, Vector2.ONE)
+	get_torque(-target_direction, Vector2.ONE)
 	last_rotation = rotation.y
 	
 func reset_rotation()->void:
 	rotation = Vector3.ZERO
 	angular_velocity = Vector3.ZERO
 
-func handle_rotation(delta:float) -> void:
+func handle_rotation() -> void:
 	marker_3d.position = position
 	var input_dir:Vector2 = Input.get_vector("left", "right", "up", "down")
-	var movement_direction:Vector2 = input_dir * delta * 2.0
+	var movement_direction:Vector2 = input_dir * 2.0
 	
 	var current_camera:Camera3D = get_viewport().get_camera_3d()
-	var ration:float = 0.99-(0.1*delta)
+	var ration:float = 0.99-(0.1)
 	soft_camera_rotation = lerp_angle(current_camera.rotation.y, soft_camera_rotation, ration)
 	
 	var local_target_position :Vector2
@@ -111,7 +107,7 @@ func handle_rotation(delta:float) -> void:
 	var global_target_rotation := -Vector2.UP.angle_to(target_position_with_rotation)
 	target_direction = global_target_rotation
 	going_backwards = false
-	if PI - abs(target_direction) < 0.5:
+	if PI - abs(target_direction) < 1.0:
 		going_backwards = true
 		Global.log_text += "\nBackwards"
 	
@@ -125,12 +121,12 @@ func handle_rotation(delta:float) -> void:
 	if temp_time == 0:
 		temp_speed = 0.0
 	#speed = -max(0, -target_position_with_rotation.y) * delta * (kayak_speed + temp_speed + (strength * 5))
-	speed = -abs(target_position_with_rotation.y) * delta * (kayak_speed + temp_speed + (strength * 5))
-	get_torque(target_direction, delta, input_dir)
+	speed = -abs(target_position_with_rotation.y) * (kayak_speed + temp_speed + (strength * 5))
+	get_torque(target_direction, input_dir)
 	last_rotation = rotation.y
 	handle_grabbing()
 
-func get_torque(error:float, delta:float, input_dir:Vector2) -> void:
+func get_torque(error:float, input_dir:Vector2) -> void:
 	#Global.log_text += "\nspeed: %f" % speed
 	#Global.log_text += "\nerror: %f" % error
 	#Global.log_text += "\nproportional: %f" % get_proportional(error)
@@ -138,9 +134,9 @@ func get_torque(error:float, delta:float, input_dir:Vector2) -> void:
 	#Global.log_text += "\nderivative: %f" % get_derivative(error)
 	torque = 0.0
 	if input_dir.length() > 0:
-		torque += get_proportional(error) * delta
-		torque += get_integral(error) * delta
-		torque += get_derivative(error) * delta
+		torque += get_proportional(error) #* delta
+		torque += get_integral(error) #* delta
+		torque += get_derivative(error) #* delta
 	if grabbing_state == GRABBING.YES:
 		torque *= 5
 	#Global.log_text += "\ntorque: %f" % torque
@@ -199,11 +195,15 @@ func handle_grabbing():
 	"""
 
 func _physics_process(delta: float):
-	apply_torque(Vector3(0, torque, 0) * remap(linear_velocity.length(), 0, 3, 0.1, 1))
-	if not going_backwards:
-		go_forward(speed)
+	if pid_tunning == 0.0:
+		handle_rotation()
 	else:
-		go_backward(speed)
+		handle_finetunning()
+	apply_torque(Vector3(0, torque, 0) * remap(linear_velocity.length(), 0, 3, 0.1, 1) * delta)
+	if not going_backwards:
+		go_forward(speed * delta)
+	else:
+		go_backward(speed * delta)
 	get_current()
 	# Current
 	#current *= 0.999

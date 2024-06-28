@@ -73,7 +73,31 @@ func handle_cameras(delta)->void:
 		new_camera = true
 		initial_positioning = false
 		previous_camera = current_camera
-	
+	handle_camera_pathpoints(current_camera, character, new_camera, delta)
+	handle_camera_framing(current_camera, character, new_camera, delta)
+
+func handle_camera_framing(current_camera:Camera3D, character, new_camera:bool, delta:float):
+	var screen_pos := current_camera.unproject_position(character.global_position)
+	var screen_size := get_viewport().get_visible_rect().size
+	var screen_center := screen_size*0.5
+	# TODO not sure if it's ok to use delta here
+	# the camera jumps sometimes
+	var vertical_diff := screen_pos.y-screen_center.y
+	var horizontal_diff := screen_pos.x-screen_center.x
+	var inverted_delta := (1.0/delta)*0.0001
+	#print(vertical_diff)
+	#print(vertical_diff*0.1)
+	#return
+	# TODO when delta is small (high FPS) the value should be higer
+	match current_camera.get_meta("vertical_compensation"):
+		"rotation":
+			current_camera.rotation.x -= vertical_diff*0.001
+		"translation":
+			var crane_node := current_camera.get_parent_node_3d().get_parent_node_3d().get_parent_node_3d()
+			#print(crane_node.name)
+			crane_node.position.y -= vertical_diff*0.01*delta
+
+func handle_camera_pathpoints(current_camera:Camera3D, character, new_camera:bool, delta:float):
 	#print(current_camera.name)
 	if not current_camera.has_meta("pathpoints"): return
 	var pathpoints:Array = current_camera.get_meta("pathpoints")
@@ -83,7 +107,7 @@ func handle_cameras(delta)->void:
 	if new_camera:
 		camera_time = path_pos
 	else:
-		camera_time = lerpf(camera_time, path_pos, 0.1)
+		camera_time = lerpf(camera_time, path_pos, 1.0*delta)
 	for c in get_children():
 		if c.name.begins_with(current_camera.name.substr(0, current_camera.name.length()-4)):
 			for cc in c.get_children():

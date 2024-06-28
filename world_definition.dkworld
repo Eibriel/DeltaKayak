@@ -5,6 +5,7 @@
                 "camera": {
                     "animation": null,
                     "fov": 0.5235987901687622,
+                    "horizontal_compensation": "none",
                     "lock_rotation_x": true,
                     "lock_rotation_y": true,
                     "lock_rotation_z": true,
@@ -42,6 +43,7 @@
                     "speed": 5.0,
                     "transition_speed": 5.0,
                     "transition_type": "smooth",
+                    "vertical_compensation": "none",
                     "weight": 1
                 },
                 "curve": {
@@ -342,6 +344,7 @@
                 "camera": {
                     "animation": null,
                     "fov": 0.7225662469863892,
+                    "horizontal_compensation": "none",
                     "lock_rotation_x": false,
                     "lock_rotation_y": false,
                     "lock_rotation_z": false,
@@ -379,6 +382,7 @@
                     "speed": 0.0,
                     "transition_speed": 5.0,
                     "transition_type": "smooth",
+                    "vertical_compensation": "none",
                     "weight": 1
                 },
                 "curve": null,
@@ -485,6 +489,7 @@
                 "camera": {
                     "animation": null,
                     "fov": 0.5811945796012878,
+                    "horizontal_compensation": "none",
                     "lock_rotation_x": false,
                     "lock_rotation_y": false,
                     "lock_rotation_z": false,
@@ -522,6 +527,7 @@
                     "speed": 0.0,
                     "transition_speed": 5.0,
                     "transition_type": "smooth",
+                    "vertical_compensation": "none",
                     "weight": 0
                 },
                 "curve": null,
@@ -679,6 +685,7 @@
                 "camera": {
                     "animation": null,
                     "fov": 0.5811945796012878,
+                    "horizontal_compensation": "none",
                     "lock_rotation_x": true,
                     "lock_rotation_y": true,
                     "lock_rotation_z": true,
@@ -693,19 +700,19 @@
                         -1.0
                     ],
                     "position": [
-                        17.874835968017578,
+                        -50.937156677246094,
                         7.057025909423828,
-                        -93.42052459716797
+                        -93.74207305908203
                     ],
                     "quaternion": [
-                        0.33346956968307495,
-                        0.6267213225364685,
-                        -0.6151978969573975,
-                        0.34285563230514526
+                        0.42926815152168274,
+                        -0.5658558011054993,
+                        0.5526294112205505,
+                        0.436046838760376
                     ],
                     "rotation": [
                         1.5501354932785034,
-                        2.1442067623138428,
+                        4.458483695983887,
                         -0.0038631462957710028
                     ],
                     "scale": [
@@ -716,6 +723,7 @@
                     "speed": 0.0,
                     "transition_speed": 5.0,
                     "transition_type": "smooth",
+                    "vertical_compensation": "rotation",
                     "weight": 0
                 },
                 "curve": null,
@@ -856,6 +864,7 @@
                 "camera": {
                     "animation": null,
                     "fov": 0.5235987901687622,
+                    "horizontal_compensation": "none",
                     "lock_rotation_x": true,
                     "lock_rotation_y": true,
                     "lock_rotation_z": true,
@@ -893,6 +902,7 @@
                     "speed": 5.0,
                     "transition_speed": 5.0,
                     "transition_type": "smooth",
+                    "vertical_compensation": "none",
                     "weight": 1
                 },
                 "curve": {
@@ -1193,6 +1203,7 @@
                 "camera": {
                     "animation": null,
                     "fov": 0.5811945796012878,
+                    "horizontal_compensation": "none",
                     "lock_rotation_x": false,
                     "lock_rotation_y": false,
                     "lock_rotation_z": false,
@@ -1230,6 +1241,7 @@
                     "speed": 0.0,
                     "transition_speed": 5.0,
                     "transition_type": "smooth",
+                    "vertical_compensation": "none",
                     "weight": 0
                 },
                 "curve": null,
@@ -1353,6 +1365,7 @@
                 "camera": {
                     "animation": null,
                     "fov": 0.9529497027397156,
+                    "horizontal_compensation": "none",
                     "lock_rotation_x": false,
                     "lock_rotation_y": false,
                     "lock_rotation_z": false,
@@ -1390,6 +1403,7 @@
                     "speed": 0.0,
                     "transition_speed": 5.0,
                     "transition_type": "smooth",
+                    "vertical_compensation": "none",
                     "weight": 0
                 },
                 "curve": null,
@@ -1715,6 +1729,7 @@
                         }
                     ],
                     "fov": 0.6719517111778259,
+                    "horizontal_compensation": "none",
                     "lock_rotation_x": true,
                     "lock_rotation_y": true,
                     "lock_rotation_z": true,
@@ -1752,6 +1767,7 @@
                     "speed": 0.0,
                     "transition_speed": 5.0,
                     "transition_type": "smooth",
+                    "vertical_compensation": "translation",
                     "weight": 0
                 },
                 "curve": null,
@@ -1923,6 +1939,7 @@
                 "camera": {
                     "animation": null,
                     "fov": 0.5986478328704834,
+                    "horizontal_compensation": "none",
                     "lock_rotation_x": true,
                     "lock_rotation_y": true,
                     "lock_rotation_z": true,
@@ -1960,6 +1977,7 @@
                     "speed": 0.0,
                     "transition_speed": 5.0,
                     "transition_type": "smooth",
+                    "vertical_compensation": "none",
                     "weight": 1
                 },
                 "curve": null,
@@ -2083,6 +2101,7 @@
                 "camera": {
                     "animation": null,
                     "fov": 0.7365288734436035,
+                    "horizontal_compensation": "none",
                     "lock_rotation_x": false,
                     "lock_rotation_y": false,
                     "lock_rotation_z": false,
@@ -2120,6 +2139,7 @@
                     "speed": 0.0,
                     "transition_speed": 5.0,
                     "transition_type": "smooth",
+                    "vertical_compensation": "none",
                     "weight": 1
                 },
                 "curve": null,
@@ -2243,6 +2263,7 @@
                 "camera": {
                     "animation": null,
                     "fov": 1.0471975803375244,
+                    "horizontal_compensation": "none",
                     "lock_rotation_x": false,
                     "lock_rotation_y": false,
                     "lock_rotation_z": false,
@@ -2280,6 +2301,7 @@
                     "speed": 0.0,
                     "transition_speed": 5.0,
                     "transition_type": "smooth",
+                    "vertical_compensation": "none",
                     "weight": 0
                 },
                 "curve": null,
@@ -2420,6 +2442,7 @@
                 "camera": {
                     "animation": null,
                     "fov": 0.76619952917099,
+                    "horizontal_compensation": "none",
                     "lock_rotation_x": true,
                     "lock_rotation_y": true,
                     "lock_rotation_z": true,
@@ -2457,6 +2480,7 @@
                     "speed": 0.0,
                     "transition_speed": 5.0,
                     "transition_type": "smooth",
+                    "vertical_compensation": "none",
                     "weight": 0
                 },
                 "curve": null,
@@ -2563,6 +2587,7 @@
                 "camera": {
                     "animation": null,
                     "fov": 0.5026548504829407,
+                    "horizontal_compensation": "none",
                     "lock_rotation_x": true,
                     "lock_rotation_y": true,
                     "lock_rotation_z": true,
@@ -2600,6 +2625,7 @@
                     "speed": 0.0,
                     "transition_speed": 5.0,
                     "transition_type": "smooth",
+                    "vertical_compensation": "none",
                     "weight": 0
                 },
                 "curve": null,
@@ -2706,6 +2732,7 @@
                 "camera": {
                     "animation": null,
                     "fov": 0.5305801033973694,
+                    "horizontal_compensation": "none",
                     "lock_rotation_x": true,
                     "lock_rotation_y": true,
                     "lock_rotation_z": true,
@@ -2743,6 +2770,7 @@
                     "speed": 0.0,
                     "transition_speed": 5.0,
                     "transition_type": "smooth",
+                    "vertical_compensation": "none",
                     "weight": 1
                 },
                 "curve": null,
@@ -2849,6 +2877,7 @@
                 "camera": {
                     "animation": null,
                     "fov": 0.6178465485572815,
+                    "horizontal_compensation": "none",
                     "lock_rotation_x": true,
                     "lock_rotation_y": true,
                     "lock_rotation_z": true,
@@ -2886,6 +2915,7 @@
                     "speed": 0.0,
                     "transition_speed": 5.0,
                     "transition_type": "smooth",
+                    "vertical_compensation": "none",
                     "weight": 1
                 },
                 "curve": null,
@@ -2992,6 +3022,7 @@
                 "camera": {
                     "animation": null,
                     "fov": 0.6178465485572815,
+                    "horizontal_compensation": "none",
                     "lock_rotation_x": true,
                     "lock_rotation_y": true,
                     "lock_rotation_z": true,
@@ -3029,6 +3060,7 @@
                     "speed": 0.0,
                     "transition_speed": 5.0,
                     "transition_type": "smooth",
+                    "vertical_compensation": "none",
                     "weight": 1
                 },
                 "curve": null,
@@ -3135,6 +3167,7 @@
                 "camera": {
                     "animation": null,
                     "fov": 0.6178465485572815,
+                    "horizontal_compensation": "none",
                     "lock_rotation_x": true,
                     "lock_rotation_y": true,
                     "lock_rotation_z": true,
@@ -3172,6 +3205,7 @@
                     "speed": 0.0,
                     "transition_speed": 5.0,
                     "transition_type": "smooth",
+                    "vertical_compensation": "none",
                     "weight": 1
                 },
                 "curve": null,
@@ -3278,6 +3312,7 @@
                 "camera": {
                     "animation": null,
                     "fov": 0.6824237108230591,
+                    "horizontal_compensation": "none",
                     "lock_rotation_x": true,
                     "lock_rotation_y": true,
                     "lock_rotation_z": true,
@@ -3315,6 +3350,7 @@
                     "speed": 0.0,
                     "transition_speed": 5.0,
                     "transition_type": "smooth",
+                    "vertical_compensation": "none",
                     "weight": 1
                 },
                 "curve": null,
@@ -3421,6 +3457,7 @@
                 "camera": {
                     "animation": null,
                     "fov": 0.9529497027397156,
+                    "horizontal_compensation": "none",
                     "lock_rotation_x": false,
                     "lock_rotation_y": false,
                     "lock_rotation_z": false,
@@ -3458,6 +3495,7 @@
                     "speed": 5.0,
                     "transition_speed": 5.0,
                     "transition_type": "smooth",
+                    "vertical_compensation": "none",
                     "weight": 0
                 },
                 "curve": null,
@@ -3581,6 +3619,7 @@
                 "camera": {
                     "animation": null,
                     "fov": 0.5235987901687622,
+                    "horizontal_compensation": "none",
                     "lock_rotation_x": false,
                     "lock_rotation_y": false,
                     "lock_rotation_z": false,
@@ -3618,6 +3657,7 @@
                     "speed": 5.0,
                     "transition_speed": 5.0,
                     "transition_type": "smooth",
+                    "vertical_compensation": "none",
                     "weight": 0
                 },
                 "curve": null,
@@ -3741,6 +3781,7 @@
                 "camera": {
                     "animation": null,
                     "fov": 1.0471975803375244,
+                    "horizontal_compensation": "none",
                     "lock_rotation_x": true,
                     "lock_rotation_y": true,
                     "lock_rotation_z": true,
@@ -3778,6 +3819,7 @@
                     "speed": 0.0,
                     "transition_speed": 5.0,
                     "transition_type": "smooth",
+                    "vertical_compensation": "none",
                     "weight": 0
                 },
                 "curve": null,
@@ -3901,6 +3943,7 @@
                 "camera": {
                     "animation": null,
                     "fov": 1.0471975803375244,
+                    "horizontal_compensation": "none",
                     "lock_rotation_x": true,
                     "lock_rotation_y": true,
                     "lock_rotation_z": true,
@@ -3938,6 +3981,7 @@
                     "speed": 0.0,
                     "transition_speed": 5.0,
                     "transition_type": "smooth",
+                    "vertical_compensation": "none",
                     "weight": 0
                 },
                 "curve": null,
@@ -4061,6 +4105,7 @@
                 "camera": {
                     "animation": null,
                     "fov": 1.0471975803375244,
+                    "horizontal_compensation": "none",
                     "lock_rotation_x": true,
                     "lock_rotation_y": true,
                     "lock_rotation_z": true,
@@ -4098,6 +4143,7 @@
                     "speed": 0.0,
                     "transition_speed": 5.0,
                     "transition_type": "smooth",
+                    "vertical_compensation": "none",
                     "weight": 1
                 },
                 "curve": null,
@@ -4204,6 +4250,7 @@
                 "camera": {
                     "animation": null,
                     "fov": 0.6736971139907837,
+                    "horizontal_compensation": "none",
                     "lock_rotation_x": true,
                     "lock_rotation_y": true,
                     "lock_rotation_z": true,
@@ -4241,6 +4288,7 @@
                     "speed": 0.0,
                     "transition_speed": 5.0,
                     "transition_type": "smooth",
+                    "vertical_compensation": "none",
                     "weight": 1
                 },
                 "curve": null,
@@ -4347,6 +4395,7 @@
                 "camera": {
                     "animation": null,
                     "fov": 0.5026548504829407,
+                    "horizontal_compensation": "none",
                     "lock_rotation_x": true,
                     "lock_rotation_y": true,
                     "lock_rotation_z": true,
@@ -4384,6 +4433,7 @@
                     "speed": 0.0,
                     "transition_speed": 5.0,
                     "transition_type": "smooth",
+                    "vertical_compensation": "none",
                     "weight": 0
                 },
                 "curve": null,
@@ -4490,6 +4540,7 @@
                 "camera": {
                     "animation": null,
                     "fov": 0.5026548504829407,
+                    "horizontal_compensation": "none",
                     "lock_rotation_x": true,
                     "lock_rotation_y": true,
                     "lock_rotation_z": true,
@@ -4527,6 +4578,7 @@
                     "speed": 0.0,
                     "transition_speed": 5.0,
                     "transition_type": "smooth",
+                    "vertical_compensation": "none",
                     "weight": 0
                 },
                 "curve": null,
@@ -4633,6 +4685,7 @@
                 "camera": {
                     "animation": null,
                     "fov": 0.9529497027397156,
+                    "horizontal_compensation": "none",
                     "lock_rotation_x": false,
                     "lock_rotation_y": false,
                     "lock_rotation_z": false,
@@ -4670,6 +4723,7 @@
                     "speed": 0.0,
                     "transition_speed": 5.0,
                     "transition_type": "smooth",
+                    "vertical_compensation": "none",
                     "weight": 0
                 },
                 "curve": null,
@@ -4793,6 +4847,7 @@
                 "camera": {
                     "animation": null,
                     "fov": 0.9529497027397156,
+                    "horizontal_compensation": "none",
                     "lock_rotation_x": false,
                     "lock_rotation_y": false,
                     "lock_rotation_z": false,
@@ -4830,6 +4885,7 @@
                     "speed": 0.0,
                     "transition_speed": 5.0,
                     "transition_type": "smooth",
+                    "vertical_compensation": "none",
                     "weight": 1
                 },
                 "curve": null,
@@ -4866,6 +4922,7 @@
                 "camera": {
                     "animation": null,
                     "fov": 0.7365288734436035,
+                    "horizontal_compensation": "none",
                     "lock_rotation_x": false,
                     "lock_rotation_y": false,
                     "lock_rotation_z": false,
@@ -4903,6 +4960,7 @@
                     "speed": 0.0,
                     "transition_speed": 5.0,
                     "transition_type": "smooth",
+                    "vertical_compensation": "none",
                     "weight": 0
                 },
                 "curve": null,
@@ -4939,6 +4997,7 @@
                 "camera": {
                     "animation": null,
                     "fov": 0.7365288734436035,
+                    "horizontal_compensation": "none",
                     "lock_rotation_x": false,
                     "lock_rotation_y": false,
                     "lock_rotation_z": false,
@@ -4976,6 +5035,7 @@
                     "speed": 0.0,
                     "transition_speed": 5.0,
                     "transition_type": "smooth",
+                    "vertical_compensation": "none",
                     "weight": 0
                 },
                 "curve": null,
@@ -5116,6 +5176,7 @@
                 "camera": {
                     "animation": null,
                     "fov": 0.9529497027397156,
+                    "horizontal_compensation": "none",
                     "lock_rotation_x": false,
                     "lock_rotation_y": false,
                     "lock_rotation_z": false,
@@ -5153,6 +5214,7 @@
                     "speed": 0.0,
                     "transition_speed": 5.0,
                     "transition_type": "smooth",
+                    "vertical_compensation": "none",
                     "weight": 1
                 },
                 "curve": null,
@@ -14657,14 +14719,14 @@
             },
             "TreeGizmo.016": {
                 "position": [
-                    29.87234878540039,
+                    16.428531646728516,
                     0.7061395645141602,
-                    -98.89979553222656
+                    -94.41851806640625
                 ],
                 "rotation": [
                     2.458187264853251e-10,
-                    -6.206015586853027,
-                    -0.06044481694698334
+                    -6.101478576660156,
+                    -0.060444824397563934
                 ],
                 "scale": [
                     1.4231702089309692,
@@ -14725,13 +14787,13 @@
             },
             "TreeGizmo.020": {
                 "position": [
-                    25.721595764160156,
+                    16.414337158203125,
                     0.7061395645141602,
-                    -4.262626647949219
+                    -5.296766757965088
                 ],
                 "rotation": [
                     2.458187264853251e-10,
-                    -6.541975498199463,
+                    -6.490718841552734,
                     -0.060444824397563934
                 ],
                 "scale": [
