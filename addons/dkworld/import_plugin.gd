@@ -119,6 +119,8 @@ func add_navmesh(navmesh: Dictionary, sector_id:String, main_node:Node3D):
 	main_node.add_child(navigation_region)
 	navigation_region.set_owner(main_node)
 	navigation_region.navigation_mesh = navigation_mesh
+	navigation_region.position = array_to_vector3(navmesh.position)
+	navigation_region.rotation = array_to_vector3(navmesh.rotation)
 	var packed_vertices: PackedVector3Array
 	for v in navmesh.vertices:
 		packed_vertices.append(Vector3(v[0], 0.0, v[1]))
@@ -345,25 +347,68 @@ func add_camera(camera:Dictionary, camera_id:String, main_node:Node3D):
 	main_node.add_child(camera_node)
 	camera_node.set_owner(main_node)
 	
+	var camera_position_node = Node3D.new()
+	camera_position_node.set_name("%s_pos" % camera_id)
+	camera_node.add_child(camera_position_node)
+	camera_position_node.set_owner(main_node)
+	
+	var camera_position_b_node = Node3D.new()
+	camera_position_b_node.set_name("%s_posb" % camera_id)
+	camera_position_node.add_child(camera_position_b_node)
+	camera_position_b_node.set_owner(main_node)
+	
 	# Camera
 	var camera3d := Camera3D.new()
 	camera3d.set_name("%s_cam" % camera_id)
-	camera_node.add_child(camera3d)
+	camera_position_b_node.add_child(camera3d)
 	camera3d.set_owner(main_node)
 	
-	camera3d.position = array_to_vector3(camera.camera.position)
-	var camera_quaternion := array_to_quaternion(camera.camera.quaternion)
-	#camera_quaternion *= Quaternion.from_euler(Vector3(deg_to_rad(-90), 0, 0))
-	camera3d.quaternion = camera_quaternion
-	#camera3d.rotate_object_local(Vector3.RIGHT, 90)
-	#camera3d.rotate_x(deg_to_rad(90))
-	#camera3d.rotate(Vector3.LEFT, deg_to_rad(-90))
-	#camera3d.rotation_order = EULER_ORDER_ZXY
-	#camera3d.rotation.x = camera.camera.rotation[0] - deg_to_rad(90)
-	#camera3d.rotation.y = camera.camera.rotation[1]
-	#camera3d.rotation.z = camera.camera.rotation[2]
+	camera_position_node.position = array_to_vector3(camera.camera.position)
+	#var camera_quaternion := array_to_quaternion(camera.camera.quaternion)
+	#camera_position_node.quaternion = camera_quaternion
+	#camera_position_node.rotation_edit_mode = Node3D.ROTATION_EDIT_MODE_QUATERNION
 	
+	camera3d.rotation.x = deg_to_rad(-90)
 	camera3d.fov = rad_to_deg(camera.camera.fov)
+	
+	if camera.camera.animation != null:
+		var animation_player := AnimationPlayer.new()
+		camera_node.add_child(animation_player)
+		animation_player.set_owner(main_node)
+		var animation := Animation.new()
+		animation.length = 30.0
+		var reset_animation := Animation.new()
+		var animation_library := AnimationLibrary.new()
+		for t in camera.camera.animation:
+			var track_path = camera_id+"_pos:"+t.path
+			if t.path.begins_with("rotation:x"):
+				track_path = camera_id+"_pos/"+camera_id+"_posb:"+t.path
+			elif t.path.begins_with("rotation:z"):
+				track_path = camera_id+"_pos/"+camera_id+"_posb/"+camera_id+"_cam:"+t.path
+			var reset_track_idx = reset_animation.add_track(Animation.TYPE_BEZIER)
+			reset_animation.track_set_path(reset_track_idx, track_path)
+			var value := 0
+			if t.path == "quaternion:w":
+				value = 1
+			reset_animation.bezier_track_insert_key(reset_track_idx, 0, value, Vector2.ZERO, Vector2.ZERO)
+			var track_idx = animation.add_track(Animation.TYPE_BEZIER)
+			animation.track_set_path(track_idx, track_path)
+			for k in t.keys:
+				animation.bezier_track_insert_key(track_idx, k[0], k[1], Vector2(k[2], k[3]), Vector2(k[4], k[5]))
+				#animation.bezier_track_insert_key(track_idx, k[0], k[1], Vector2(0, 0), Vector2(0, 0))
+		animation_library.add_animation("%s_cam" % camera_id, animation)
+		animation_library.add_animation("RESET", reset_animation)
+		#var error := animation_player.add_animation_library("%s_anims" % camera_id, animation_library)
+		var error := animation_player.add_animation_library("", animation_library)
+		#main_node.camera_anim[camera3d] = animation_player
+	
+	var pathpoints_data:Array[Array]
+	var pathpoints=camera.pathpoints
+	for p_id in range(0, pathpoints.size(), 2):
+		pathpoints_data.append([
+			Vector2(pathpoints[p_id][0], pathpoints[p_id][2]),
+			Vector2(pathpoints[p_id+1][0], pathpoints[p_id+1][2]),
+		])
 	
 	camera3d.set_meta("transition_type", camera.camera.transition_type)
 	camera3d.set_meta("transition_speed", camera.camera.transition_speed)
@@ -374,6 +419,7 @@ func add_camera(camera:Dictionary, camera_id:String, main_node:Node3D):
 	camera3d.set_meta("lock_rotation_x", camera.camera.lock_rotation_x)
 	camera3d.set_meta("lock_rotation_y", camera.camera.lock_rotation_y)
 	camera3d.set_meta("lock_rotation_z", camera.camera.lock_rotation_z)
+	camera3d.set_meta("pathpoints", pathpoints_data)
 	
 	# Curve
 	var path3d

@@ -253,12 +253,19 @@ class DKT_OT_ExportWorld(bpy.types.Operator):
                 if spobj.name.startswith("sensorpath_"):
                     # TODO cleanup curve data, only needs 2d point positions
                     sensorpath_list.append(self.get_curve_data(spobj))
+            # pathpoints
+            pathpoints = []
+            for c in camera.children:
+                if c.name.startswith("pathpoints_"):
+                    for point_obj in c.objects:
+                        pathpoints.append(self.location_to_godot(point_obj.location))
             #
             camera_def = {
                 "camera": self.get_camera_data(camera_obj),
                 "curve": self.get_curve_data(curve_obj),
                 "sensor": sensor_list,
                 "sensorpath": sensorpath_list,
+                "pathpoints": pathpoints,
                 "default": False
             }
             if first_camera:
@@ -303,13 +310,15 @@ class DKT_OT_ExportWorld(bpy.types.Operator):
         return lands_def
 
     def get_navmesh(self, sector):
-        navmesh_def = {
-            "vertices": [],
-            "polygons": []
-        }
         navmesh_name = "NavigationMesh_" + sector.name.split("_")[1]
         if not navmesh_name in sector.objects: return navmesh_def
         navmesh_obj = sector.objects[navmesh_name]
+        navmesh_def = {
+            "vertices": [],
+            "polygons": [],
+            "position": self.location_to_godot(navmesh_obj.location),
+            "rotation": self.rotation_to_godot(navmesh_obj.rotation_euler),
+        }
         for v in navmesh_obj.data.vertices:
             vertice = [
                 v.co.x,
@@ -327,14 +336,15 @@ class DKT_OT_ExportWorld(bpy.types.Operator):
         return navmesh_def
 
     def get_camera_data(self, camera_obj):
-        camera_obj.rotation_euler[0] -= math.radians(90.0)
-        bpy.context.view_layer.update()
+        #camera_obj.rotation_euler[0] -= math.radians(90.0)
+        #bpy.context.view_layer.update()
         camera_def = {
             "position": self.location_to_godot(camera_obj.location),
             "rotation": self.rotation_to_godot(camera_obj.rotation_euler),
             "quaternion": self.quaternion_to_godot(camera_obj.matrix_world),
             "scale": self.scale_to_godot(camera_obj.scale),
             "fov": camera_obj.data.angle,
+            "animation": self.get_camera_animation(camera_obj),
             "transition_type": camera_obj.dkt_worldproperties.camera_transition_type,
             "transition_speed": camera_obj.dkt_worldproperties.camera_transition_speed,
             "speed": camera_obj.dkt_worldproperties.camera_speed,
@@ -345,9 +355,52 @@ class DKT_OT_ExportWorld(bpy.types.Operator):
             "lock_rotation_y": camera_obj.dkt_worldproperties.camera_lock_rotation_y,
             "lock_rotation_z": camera_obj.dkt_worldproperties.camera_lock_rotation_z
         }
-        camera_obj.rotation_euler[0] += math.radians(90.0)
-        bpy.context.view_layer.update()
+        #camera_obj.rotation_euler[0] += math.radians(90.0)
+        #bpy.context.view_layer.update()
         return camera_def
+
+
+    def get_camera_animation(self, camera_obj):
+        if camera_obj.animation_data == None: return None
+        if camera_obj.animation_data.action == None: return None
+        if camera_obj.animation_data.action.fcurves == None: return None
+        fcurves = camera_obj.animation_data.action.fcurves
+        position_track_names = ["x", "z", "y"]
+        quaternion_track_names = ["w", "x", "z", "y"]
+        tracks = []
+        for c in fcurves:
+            track = {}
+            value_mult = 1.0
+            time_mult = 1.0 #1.0/30.0
+            if c.data_path == "location":
+                track["path"] = "position:" + position_track_names[c.array_index]
+                if c.array_index == 1:
+                    value_mult = -1
+            elif c.data_path == "rotation_quaternion":
+                track["path"] = "quaternion:" + quaternion_track_names[c.array_index]
+                if c.array_index in [2]:
+                    value_mult = -1
+            elif c.data_path == "rotation_euler":
+                track["path"] = "rotation:" + position_track_names[c.array_index]
+                if c.array_index in [1]:
+                    value_mult = -1
+            else:
+                continue
+            keys = []
+            for p in c.keyframe_points:
+                key = [
+                    p.co[0] * time_mult, # Time
+                    p.co[1] * value_mult, # Value
+                    (p.handle_left[0] * time_mult) - (p.co[0] * time_mult),
+                    (p.handle_left[1] * value_mult) - (p.co[1] * value_mult),
+                    (p.handle_right[0] * time_mult) - (p.co[0] * time_mult),
+                    (p.handle_right[1] * value_mult) - (p.co[1] * value_mult)
+                ]
+                keys.append(key)
+            track["keys"] = keys
+            tracks.append(track)
+        return tracks
+
 
 
     def get_curve_points(self, curve_obj):# -> list:

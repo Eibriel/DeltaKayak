@@ -109,4 +109,3 @@ func _input(event: InputEvent) -> void:
 		char.position.z -= 0.1
 	if event.is_action("ui_down"):
 		char.position.z += 0.1
-

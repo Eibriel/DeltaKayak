@@ -14,7 +14,7 @@ var going_backwards := false
 var damage := 0.0
 var damage_timer := 0.0
 
-var kayak_speed := 15.0
+var kayak_speed := 7.0
 var temp_speed := 0.0
 var temp_time := 0.0
 var strength := 0
@@ -30,16 +30,23 @@ var grabbing_object: RigidBody3D
 var grabbing_object_position: Vector3
 var grabbing_state = GRABBING.NO
 
-var pid_proportional_par := 510 #40.0 #20.0
+var pid_proportional_par := 180 #40.0 #20.0
 var pid_integral_par := 251 #1.0
 var pid_derivative_par := 3639 #2000.0 #1000.0
 
 var pid_tunning := 0.0
 
+var control_type := CONTROL_TYPE.CAR
+
 enum GRABBING {
 	WANTS_TO,
 	YES,
 	NO
+}
+
+enum CONTROL_TYPE {
+	CAR,
+	HAUNTING_GROUND
 }
 
 func _ready():
@@ -88,12 +95,16 @@ func handle_rotation(delta:float) -> void:
 	marker_3d.position = position
 	var input_dir:Vector2 = Input.get_vector("left", "right", "up", "down")
 	var movement_direction:Vector2 = input_dir * delta * 2.0
-	var current_camera:Camera3D = get_viewport().get_camera_3d()
 	
+	var current_camera:Camera3D = get_viewport().get_camera_3d()
 	var ration:float = 0.99-(0.1*delta)
 	soft_camera_rotation = lerp_angle(current_camera.rotation.y, soft_camera_rotation, ration)
 	
-	var local_target_position := movement_direction.rotated(-soft_camera_rotation) * 100.0
+	var local_target_position :Vector2
+	if control_type == CONTROL_TYPE.HAUNTING_GROUND:
+		local_target_position = movement_direction.rotated(-soft_camera_rotation) * 100.0
+	elif control_type == CONTROL_TYPE.CAR:
+		local_target_position = movement_direction.rotated(-rotation.y) * 100.0
 	
 	target_box.global_position = global_position + Vector3(local_target_position.x, 0.0, local_target_position.y)
 	var target_position_with_rotation := local_target_position.rotated(rotation.y)
@@ -188,7 +199,7 @@ func handle_grabbing():
 	"""
 
 func _physics_process(delta: float):
-	apply_torque(Vector3(0, torque, 0))
+	apply_torque(Vector3(0, torque, 0) * remap(linear_velocity.length(), 0, 3, 0.1, 1))
 	if not going_backwards:
 		go_forward(speed)
 	else:

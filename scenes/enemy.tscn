@@ -1,8 +1,10 @@
-[gd_scene load_steps=6 format=3 uid="uid://mvc5qr5igrlq"]
+[gd_scene load_steps=7 format=3 uid="uid://mvc5qr5igrlq"]
 
 [ext_resource type="Script" path="res://scenes/enemy.gd" id="1_ht45k"]
 [ext_resource type="Texture2D" uid="uid://cdex8bqdmulf8" path="res://textures/flashlight.jpg" id="2_1pota"]
 [ext_resource type="PackedScene" uid="uid://b8olueufru4tm" path="res://models/enemy/enemy.glb" id="3_ididr"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_w2uow"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_c8bgx"]
 radius = 1.38489
@@ -18,8 +20,10 @@ collision_mask = 31
 axis_lock_linear_y = true
 axis_lock_angular_x = true
 axis_lock_angular_z = true
+mass = 10.0
+physics_material_override = SubResource("PhysicsMaterial_w2uow")
 center_of_mass_mode = 1
-center_of_mass = Vector3(0, 0, 4.6)
+center_of_mass = Vector3(0, 0, -4)
 contact_monitor = true
 max_contacts_reported = 2
 script = ExtResource("1_ht45k")
@@ -54,3 +58,8 @@ debug_shape_thickness = 5
 
 [node name="enemy" parent="." instance=ExtResource("3_ididr")]
 transform = Transform3D(-1.2, 0, -1.04907e-07, 0, 1.2, 0, 1.04907e-07, 0, -1.2, 0, 0.2, 0)
+
+[node name="RayAhead" type="RayCast3D" parent="."]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0630493, -6.61163)
+target_position = Vector3(0, 0, -3)

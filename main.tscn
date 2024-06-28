@@ -1,13 +1,14 @@
-[gd_scene load_steps=21 format=3 uid="uid://ce6e8v1saxjr5"]
+[gd_scene load_steps=22 format=3 uid="uid://ce6e8v1saxjr5"]
 
 [ext_resource type="Environment" uid="uid://xpf4ng2ym0n4" path="res://environments/main_environment.tres" id="1_ekqa4"]
 [ext_resource type="Script" path="res://main.gd" id="1_xxenq"]
 [ext_resource type="PackedScene" uid="uid://r0o1qsmlq84u" path="res://character/character.tscn" id="2_3sgbv"]
 [ext_resource type="CompositorEffect" uid="uid://o01yk1gb130b" path="res://compositor/screen/screen_compositor_effect.tres" id="2_f4rcp"]
 [ext_resource type="Resource" uid="uid://bcsic7fi7dxee" path="res://GamePreference.tres" id="2_wexnt"]
-[ext_resource type="PackedScene" uid="uid://b7nhlhkoykc4c" path="res://world_definition.dkworld" id="3_7foso"]
+[ext_resource type="PackedScene" uid="uid://baucroxjd5o4i" path="res://world_definition.dkworld" id="3_7foso"]
 [ext_resource type="Resource" uid="uid://bi1rugic742u0" path="res://dkdata/dkdata.tres" id="3_nh3h6"]
 [ext_resource type="Texture2D" uid="uid://31mrm2ajeyll" path="res://textures/dialogue_box.png" id="4_kkvku"]
+[ext_resource type="Script" path="res://addons/dkworld/world.gd" id="9_4a7eo"]
 [ext_resource type="PackedScene" uid="uid://t23rsw74uei8" path="res://scenes/long_box.tscn" id="9_kolyd"]
 [ext_resource type="PackedScene" uid="uid://dsppfk5r8xdm7" path="res://scenes/L_floating_box.tscn" id="10_tov8v"]
 [ext_resource type="PackedScene" uid="uid://ccwbpjnygckmy" path="res://scenes/door.tscn" id="11_mh163"]
@@ -263,12 +264,11 @@ shadow_enabled = true
 
 [node name="character" parent="Main3D" instance=ExtResource("2_3sgbv")]
 unique_name_in_owner = true
-transform = Transform3D(0.00204205, 0, -0.999998, 0, 1, 0, 0.999998, 0, 0.00204205, 333.44, 0, 36.1147)
 
-[node name="DKWorld" parent="Main3D" node_paths=PackedStringArray("initial_camera", "initial_camera_path") instance=ExtResource("3_7foso")]
+[node name="DKWorld" type="Node3D" parent="Main3D" node_paths=PackedStringArray("initial_camera") instance=ExtResource("3_7foso")]
 unique_name_in_owner = true
-initial_camera = NodePath("camera_camera_001_003/camera_camera_001_003_cam")
-initial_camera_path = NodePath("camera_camera_001_003/@Path3D@98965")
+script = ExtResource("9_4a7eo")
+initial_camera = NodePath("camera_camera_001_003/camera_camera_001_003_pos/camera_camera_001_003_posb/camera_camera_001_003_cam")
 world_definition = {
 "Sector_003": {
 "cameras": {
@@ -1068,6 +1068,7 @@ current = true
 multimesh = SubResource("MultiMesh_g048c")
 
 [node name="Node3D2" type="Node3D" parent="Main3D"]
+visible = false
 
 [node name="OilSpillArea3D" type="Area3D" parent="Main3D/Node3D2"]
 transform = Transform3D(0.317288, 0, 0.948329, 0, 1, 0, -0.948329, 0, 0.317288, 88.8843, 0, 82.8589)
@@ -1101,6 +1102,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.48492, 0)
 shape = SubResource("BoxShape3D_0ev4o")
 
 [node name="PysicsObjects" type="Node3D" parent="Main3D"]
+visible = false
 
 [node name="FloatingBox" parent="Main3D/PysicsObjects" instance=ExtResource("9_kolyd")]
 transform = Transform3D(0.0265782, 0, -0.999647, 0, 1, 0, 0.999647, 0, 0.0265782, -14.9052, 3.7883, 53.2051)
@@ -1203,10 +1205,8 @@ font_size = 64
 
 [node name="InitialPosition" type="Marker3D" parent="Main3D"]
 unique_name_in_owner = true
-transform = Transform3D(-0.0183423, 0, -0.999832, 0, 1, 0, 0.999832, 0, -0.0183423, 165.019, 0, -183.775)
+transform = Transform3D(-0.0183423, 0, -0.999832, 0, 1, 0, 0.999832, 0, -0.0183423, -11.4079, 0, -27.3326)
 gizmo_extents = 5.0
-
-[node name="VehicleBody3D" type="VehicleBody3D" parent="Main3D"]
 
 [connection signal="drag_ended" from="Control/Debug/VBoxContainer/ProportionalSlider" to="." method="_on_slider_drag_ended"]
 [connection signal="drag_ended" from="Control/Debug/VBoxContainer/IntegralSlider" to="." method="_on_slider_drag_ended"]

@@ -8,6 +8,7 @@ signal trigger_exited
 @export var initial_camera_path: Path3D
 @export var world_definition: Dictionary = {}
 @export var nodes_dic: Dictionary = {}
+#@export var camera_anim:Dictionary = {}
 
 var target_movement_direction:Vector3
 var target_camera_position:Vector3
@@ -58,7 +59,36 @@ func switch_camera(delta):
 	Global.camera = next_camera
 	Global.camera_path = camera_to_path[next_camera]
 
-func handle_cameras(delta) -> void:
+func handle_cameras(delta)->void:
+	# TODO Looks like process starts before world is fully initiated
+	if Global.camera == null: return
+	if Global.character == null: return
+	var current_camera:= Global.camera
+	var character:= Global.character
+	var new_camera = false
+	if current_camera != previous_camera or initial_positioning:
+		current_camera.current = true
+		new_camera = true
+		initial_positioning = false
+		previous_camera = current_camera
+	
+	#print(current_camera.name)
+	if not current_camera.has_meta("pathpoints"): return
+	var pathpoints:Array = current_camera.get_meta("pathpoints")
+	#print(pathpoints)
+	if pathpoints.size() == 0: return
+	var path_pos := get_path_position(Global.tri_to_bi(character.global_position), pathpoints)
+	for c in get_children():
+		if c.name.begins_with(current_camera.name.substr(0, current_camera.name.length()-4)):
+			for cc in c.get_children():
+				if cc is AnimationPlayer:
+					cc.clear_queue()
+					cc.queue(current_camera.name)
+					cc.pause()
+					cc.seek(path_pos*30.0, true)
+					print(path_pos*30.0)
+
+func handle_cameras_old(delta) -> void:
 	# TODO Looks like process starts before world is fully initiated
 	if Global.camera == null: return
 	if Global.character == null: return
@@ -147,6 +177,49 @@ func camera_exited(area:Area3D, camera: Camera3D, path_:Path3D) -> void:
 	if camera_array.size() == 0:
 		character_in_camera.erase(camera)
 	select_best_camera()
+
+func get_path_position(point_pos: Vector2, path_def: Array) -> float:
+	var c_dist := []
+	var polygon_weight := []
+	var total_weight := 0.0
+	for line_id in range(path_def.size()-1):
+		var pos_a:Vector2 = path_def[line_id][0]
+		var pos_b:Vector2 = path_def[line_id+1][0]
+		var dist := pos_a.distance_to(pos_b)
+		polygon_weight.append(dist)
+		total_weight += dist
+	
+	for n in range(polygon_weight.size()):
+		polygon_weight[n] /= total_weight
+	var added_weight := 0.0
+	for line_id in range(path_def.size()-1):
+		var pos_a:Vector2 = path_def[line_id][0]
+		var pos_b:Vector2 = path_def[line_id][1]
+		var pos_c:Vector2 = path_def[line_id+1][0]
+		var pos_d:Vector2 = path_def[line_id+1][1]
+		var polygon := PackedVector2Array([
+			pos_a,
+			pos_b,
+			pos_d,
+			pos_c
+		])
+		var in_polygon:=Geometry2D.is_point_in_polygon(point_pos, polygon)
+		if not in_polygon:
+			added_weight += polygon_weight[line_id]
+			continue
+		var dist_a:float = pos_a.distance_to(point_pos)
+		var dist_b:float = pos_b.distance_to(point_pos)
+		var dist_c:float = pos_c.distance_to(point_pos)
+		var dist_d:float = pos_d.distance_to(point_pos)
+		var lerp_a:float = remap(dist_a, 0.0, dist_a+dist_b, 0.0, 1.0)
+		var lerp_b:float = remap(dist_c, 0.0, dist_c+dist_d, 0.0, 1.0)
+		var proxy_a:Vector2 = lerp(pos_a, pos_b, lerp_a)
+		var proxy_b:Vector2 = lerp(pos_c, pos_d, lerp_b)
+		var total_dist := proxy_a.distance_to(proxy_b)
+		var partial_dist := point_pos.distance_to(proxy_b)
+		var val := remap(total_dist-partial_dist, 0.0, total_dist, 0.0, 1.0)
+		return (val*polygon_weight[line_id]) + added_weight
+	return 0
 
 func on_trigger_entered(area_:Area3D, trigger_name:String) -> void:
 	if not area_.has_meta("is_character_interaction"): return

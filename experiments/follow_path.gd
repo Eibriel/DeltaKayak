@@ -1,12 +1,13 @@
 extends Node3D
 
-@onready var enemy: RigidBody3D = $Enemy
+@onready var enemy: Boat3D = $Enemy
 @onready var path_3d: Path3D = $Path3D
 
 
 func _ready() -> void:
 	enemy.follow_path = path_3d
-	enemy.home_position = Vector3(100, 0, 100)
+	enemy.home_position = Vector3(50, 0, -50)
+	enemy.target_position = Vector3(50, 0, -50)
 	#
 	%ProportionalSlider.value = enemy.pid_proportional_par
 	%IntegralSlider.value = enemy.pid_integral_par

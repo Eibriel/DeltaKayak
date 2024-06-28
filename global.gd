@@ -22,3 +22,6 @@ func quit_game():
 
 func array_to_vector3(array: Array) -> Vector3:
 	return Vector3(array[0], array[1], array[2])
+
+func tri_to_bi(tri:Vector3) -> Vector2:
+	return Vector2(tri.x, tri.z)
