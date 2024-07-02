@@ -22,6 +22,7 @@ var write_speed: float
 
 var temporizador:= 0.0
 var grabbed := false
+var moved := false
 var is_intro := true
 
 const UnhandledTriggers = preload("res://interactives/unhandled_triggers.gd")
@@ -75,6 +76,7 @@ func intro_animation():
 func end_intro_animation():
 	dk_world.select_cameras = true
 	%IntroChatLabel.visible = false
+	say_dialogue("demo_start_point")
 
 func _process(delta: float) -> void:
 	handle_triggers(delta)
@@ -441,10 +443,34 @@ func grab_kayak():
 	tween.parallel().tween_property(%KayakGrabber, "global_rotation:y", deg_to_rad(-90+45), 0.7)
 	tween.tween_interval(1.0)
 	tween.set_trans(Tween.TRANS_LINEAR)
-	tween.tween_property(%KayakGrabber, "global_position", Vector3(-196.017, 0, -147.396), 6.0)
+	tween.tween_property(%KayakGrabber, "global_position", Vector3(-186.017, 0, -147.396), 6.0)
 	tween.parallel().tween_property(%KayakGrabber, "global_rotation:y", deg_to_rad(-90+60), 6.0)
 	tween.tween_callback(ungrab_kayak)
+	tween.tween_callback(say_dialogue.bind("demo_start_point"))
 
 func ungrab_kayak():
 	Global.grab_kayak.set_node_a(NodePath(""))
 	Global.grab_kayak.set_node_b(NodePath(""))
+
+
+func _on_first_grab_kayak_body_entered(body: Node3D) -> void:
+	if moved: return
+	moved = true
+	var tween := create_tween()
+	tween.tween_callback(Global.character.apply_central_impulse.bind(Vector3(0, 0, 1)))
+	tween.tween_interval(1.0)
+	tween.tween_callback(Global.character.apply_central_impulse.bind(Vector3(-1, 0, 1)))
+	tween.tween_interval(0.3)
+	tween.tween_callback(Global.character.apply_central_impulse.bind(Vector3(1, 0, 1)))
+	tween.tween_interval(0.3)
+	tween.tween_callback(Global.character.apply_central_impulse.bind(Vector3(-1, 0, 1)))
+	tween.tween_callback(say_dialogue.bind("demo2_kayak_movement"))
+	tween.tween_interval(10)
+	tween.tween_callback(Global.character.apply_central_impulse.bind(Vector3(0, 0, 1)))
+	tween.tween_interval(1.0)
+	tween.tween_callback(Global.character.apply_central_impulse.bind(Vector3(-1, 0, 1)))
+	tween.tween_interval(0.3)
+	tween.tween_callback(Global.character.apply_central_impulse.bind(Vector3(1, 0, 1)))
+	tween.tween_interval(0.3)
+	tween.tween_callback(Global.character.apply_central_impulse.bind(Vector3(-1, 0, 1)))
+	tween.tween_callback(say_dialogue.bind("demo2_kayak_movement_2"))

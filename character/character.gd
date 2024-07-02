@@ -14,7 +14,7 @@ var going_backwards := false
 var damage := 0.0
 var damage_timer := 0.0
 
-var kayak_speed := 0.13
+var kayak_speed := 0.17
 var temp_speed := 0.0
 var temp_time := 0.0
 var strength := 0
@@ -166,7 +166,7 @@ func get_derivative(_error) -> float:
 #
 
 func handle_grabbing():
-	if Input.is_action_pressed("grab"):
+	if Input.is_action_just_pressed("grab") and grabbing_state == GRABBING.NO:
 		%GrabRay.visible = true
 		match grabbing_state:
 			GRABBING.NO:
@@ -179,7 +179,7 @@ func handle_grabbing():
 					Global.grab_joint.set_node_a(get_path())
 					Global.grab_joint.set_node_b(body.get_path())
 
-	else:
+	elif Input.is_action_just_pressed("grab") and grabbing_state == GRABBING.YES:
 		%GrabRay.visible = false
 		grabbing_state = GRABBING.NO
 		Global.grab_joint.set_node_a(NodePath(""))

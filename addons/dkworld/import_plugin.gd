@@ -524,7 +524,8 @@ func add_physicsitem(item: Dictionary, item_id: String, main_node: Node3D):
 		"smallbox1": preload("res://scenes/small_box.tscn"),
 		"demobox1": preload("res://scenes/demo_box.tscn"),
 		"demobox2": preload("res://scenes/demo_box.tscn"),
-		"demobox3": preload("res://scenes/demo_box.tscn")
+		"demobox3": preload("res://scenes/demo_box.tscn"),
+		"kayakk1": preload("res://scenes/kayak_k1.tscn")
 	}
 	if not PHYSICS_ITEMS.has(item.instance): return
 	var gltf_instance = PHYSICS_ITEMS[item.instance].instantiate()

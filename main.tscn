@@ -26,9 +26,6 @@ size = Vector3(11.4926, 2.54077, 9.13838)
 [sub_resource type="BoxShape3D" id="BoxShape3D_0ev4o"]
 size = Vector3(1.96265, 7.51904, 1.8761)
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_i81n0"]
-size = Vector3(46.1691, 7.51904, 4.34125)
-
 [sub_resource type="BoxShape3D" id="BoxShape3D_d47b7"]
 size = Vector3(1, 0.831177, 1)
 
@@ -38,6 +35,9 @@ size = Vector3(1, 1, 6.15552)
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_xingp"]
 shading_mode = 0
 albedo_color = Color(0, 1, 0.133333, 1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_i81n0"]
+size = Vector3(53.7158, 7.51904, 4.34125)
 
 [sub_resource type="Animation" id="Animation_w3qoh"]
 resource_name = "intro_animation"
@@ -1203,16 +1203,6 @@ metadata/strength = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.48492, 0)
 shape = SubResource("BoxShape3D_0ev4o")
 
-[node name="StrengthArea3D4" type="Area3D" parent="Main3D/Node3D2"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -17.3393, 0, -135.942)
-collision_layer = 0
-collision_mask = 2
-metadata/strength = true
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Main3D/Node3D2/StrengthArea3D4"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.74502, 1.48492, 1.23257)
-shape = SubResource("BoxShape3D_i81n0")
-
 [node name="PysicsObjects" type="Node3D" parent="Main3D"]
 visible = false
 
@@ -1338,6 +1328,26 @@ light_energy = 9.654
 light_volumetric_fog_energy = 2.61
 omni_range = 7.211
 
+[node name="GrabArea3D" type="Area3D" parent="Main3D/DemoElements"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -17.3393, 0, -135.942)
+collision_layer = 0
+collision_mask = 2
+metadata/strength = true
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Main3D/DemoElements/GrabArea3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.18132, 1.48492, 1.23257)
+shape = SubResource("BoxShape3D_i81n0")
+
+[node name="FirstGrabArea3D" type="Area3D" parent="Main3D/DemoElements"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.48552, 0, -76.1327)
+collision_layer = 0
+collision_mask = 2
+metadata/strength = true
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Main3D/DemoElements/FirstGrabArea3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.18132, 1.48492, 1.23257)
+shape = SubResource("BoxShape3D_i81n0")
+
 [node name="IntroElements" type="Node3D" parent="Main3D"]
 
 [node name="CameraIntro" type="Camera3D" parent="Main3D/IntroElements"]
@@ -1365,4 +1375,5 @@ gizmo_extents = 5.0
 [connection signal="drag_ended" from="Control/Debug/VBoxContainer/ProportionalSlider" to="." method="_on_slider_drag_ended"]
 [connection signal="drag_ended" from="Control/Debug/VBoxContainer/IntegralSlider" to="." method="_on_slider_drag_ended"]
 [connection signal="drag_ended" from="Control/Debug/VBoxContainer/DerivativeSlider" to="." method="_on_slider_drag_ended"]
-[connection signal="body_entered" from="Main3D/Node3D2/StrengthArea3D4" to="." method="_on_grab_kayak_body_entered"]
+[connection signal="body_entered" from="Main3D/DemoElements/GrabArea3D" to="." method="_on_grab_kayak_body_entered"]
+[connection signal="body_entered" from="Main3D/DemoElements/FirstGrabArea3D" to="." method="_on_first_grab_kayak_body_entered"]
