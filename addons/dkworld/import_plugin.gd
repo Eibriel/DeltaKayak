@@ -386,7 +386,14 @@ func add_camera(camera:Dictionary, camera_id:String, main_node:Node3D):
 		var animation := Animation.new()
 		animation.length = 30.0
 		var reset_animation := Animation.new()
-		var animation_library := AnimationLibrary.new()
+		# NOTE: https://github.com/godotengine/godot/pull/93818
+		var animation_library:= AnimationLibrary.new()
+		#var animation_library: AnimationLibrary
+		#animation_library = animation_player.get_animation_library("")
+		#if animation_library == null:
+		#	animation_library = AnimationLibrary.new()
+		#	animation_player.add_animation_library("", animation_library)
+		#
 		for t in camera.camera.animation:
 			var track_path = camera_id+"_crane/"+camera_id+"_pos:"+t.path
 			if t.path.begins_with("rotation:x"):
@@ -430,6 +437,7 @@ func add_camera(camera:Dictionary, camera_id:String, main_node:Node3D):
 	camera3d.set_meta("pathpoints", pathpoints_data)
 	camera3d.set_meta("vertical_compensation", camera.camera.vertical_compensation)
 	camera3d.set_meta("horizontal_compensation", camera.camera.horizontal_compensation)
+	camera3d.set_meta("fog_density", camera.camera.fog_density)
 	
 	# Curve
 	var path3d

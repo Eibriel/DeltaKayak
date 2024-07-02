@@ -14,7 +14,7 @@ var going_backwards := false
 var damage := 0.0
 var damage_timer := 0.0
 
-var kayak_speed := 0.15
+var kayak_speed := 0.13
 var temp_speed := 0.0
 var temp_time := 0.0
 var strength := 0

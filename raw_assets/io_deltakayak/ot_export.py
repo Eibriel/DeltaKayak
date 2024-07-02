@@ -154,6 +154,8 @@ class DKT_OT_ExportWorld(bpy.types.Operator):
         C = bpy.context
         D = bpy.data
 
+        C.scene.frame_set(0)
+
         word_scene = D.scenes["Scene"]
         sectors_collection = word_scene.collection.children["Sectors"]
 
@@ -355,7 +357,8 @@ class DKT_OT_ExportWorld(bpy.types.Operator):
             "lock_rotation_y": camera_obj.dkt_worldproperties.camera_lock_rotation_y,
             "lock_rotation_z": camera_obj.dkt_worldproperties.camera_lock_rotation_z,
             "vertical_compensation": camera_obj.dkt_worldproperties.camera_vertical_compensation,
-            "horizontal_compensation": camera_obj.dkt_worldproperties.camera_horizontal_compensation
+            "horizontal_compensation": camera_obj.dkt_worldproperties.camera_horizontal_compensation,
+            "fog_density": camera_obj.dkt_worldproperties.camera_fog_density
         }
         #camera_obj.rotation_euler[0] += math.radians(90.0)
         #bpy.context.view_layer.update()
@@ -601,6 +604,7 @@ class DKT_PT_ExportWorld(bpy.types.Panel):
             #col.prop(obj.dkt_worldproperties, "camera_lock_rotation_z")
             col.prop(obj.dkt_worldproperties, "camera_vertical_compensation")
             col.prop(obj.dkt_worldproperties, "camera_horizontal_compensation")
+            col.prop(obj.dkt_worldproperties, "camera_fog_density")
         
 
 
@@ -1322,6 +1326,16 @@ class DKT_PG_WorldObjectProperties(bpy.types.PropertyGroup):
             ("translation", "Translation", "Translate camera to keep subject centered", "", 2),
         ], # type: ignore
         default="none"
+    ) # type: ignore
+
+    camera_fog_density: FloatProperty(
+        name="Fog Density",
+        description="Fog Density",
+        default=0.015,
+        min=0.,
+        max=1.,
+        step=0.001,
+        precision=4
     ) # type: ignore
 
 class DKT_PG_StencilProperties(bpy.types.PropertyGroup):

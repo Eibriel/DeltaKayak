@@ -25,10 +25,9 @@ var initial_positioning:=true
 #var camera_queue := []
 var character_in_camera := {}
 var camera_to_path := {}
-
 var camera_switch_delta := 90.0
-
 var camera_time := 0.0
+var select_cameras := false
 
 func _ready():
 	Global.camera = initial_camera
@@ -62,6 +61,7 @@ func switch_camera(delta):
 	Global.camera_path = camera_to_path[next_camera]
 
 func handle_cameras(delta)->void:
+	if not select_cameras: return
 	# TODO Looks like process starts before world is fully initiated
 	if Global.camera == null: return
 	if Global.character == null: return
@@ -77,25 +77,38 @@ func handle_cameras(delta)->void:
 	handle_camera_framing(current_camera, character, new_camera, delta)
 
 func handle_camera_framing(current_camera:Camera3D, character, new_camera:bool, delta:float):
+	if not current_camera.has_meta("vertical_compensation"): return
+	match current_camera.get_meta("vertical_compensation"):
+		"rotation":
+			var vertical_diff := get_camera_diff(current_camera, character).y
+			current_camera.rotation.x -= vertical_diff*0.01*delta
+			if new_camera:
+				# TODO Optimize
+				for _n in 100:
+					vertical_diff = get_camera_diff(current_camera, character).y
+					current_camera.rotation.x -= vertical_diff*0.001
+		"translation":
+			var crane_node := current_camera.get_parent_node_3d().get_parent_node_3d().get_parent_node_3d()
+			var vertical_diff := get_camera_diff(current_camera, character).y
+			crane_node.position.y -= vertical_diff*0.01*delta
+			if new_camera:
+				# TODO Optimize
+				for _n in 100:
+					vertical_diff = get_camera_diff(current_camera, character).y
+					crane_node.position.y -= vertical_diff*0.001
+	match current_camera.get_meta("horizontal_compensation"):
+		"rotation":
+			var horizontal_diff := get_camera_diff(current_camera, character).x
+			var posb_node := current_camera.get_parent_node_3d()
+			posb_node.rotation.z += horizontal_diff*0.001*delta
+
+func get_camera_diff(current_camera: Camera3D, character) -> Vector2:
 	var screen_pos := current_camera.unproject_position(character.global_position)
 	var screen_size := get_viewport().get_visible_rect().size
 	var screen_center := screen_size*0.5
-	# TODO not sure if it's ok to use delta here
-	# the camera jumps sometimes
-	var vertical_diff := screen_pos.y-screen_center.y
-	var horizontal_diff := screen_pos.x-screen_center.x
-	var inverted_delta := (1.0/delta)*0.0001
-	#print(vertical_diff)
-	#print(vertical_diff*0.1)
-	#return
-	# TODO when delta is small (high FPS) the value should be higer
-	match current_camera.get_meta("vertical_compensation"):
-		"rotation":
-			current_camera.rotation.x -= vertical_diff*0.001
-		"translation":
-			var crane_node := current_camera.get_parent_node_3d().get_parent_node_3d().get_parent_node_3d()
-			#print(crane_node.name)
-			crane_node.position.y -= vertical_diff*0.01*delta
+	#var vertical_diff := screen_pos.y-screen_center.y
+	#var horizontal_diff := screen_pos.x-screen_center.x
+	return screen_pos-screen_center
 
 func handle_camera_pathpoints(current_camera:Camera3D, character, new_camera:bool, delta:float):
 	#print(current_camera.name)
@@ -104,10 +117,13 @@ func handle_camera_pathpoints(current_camera:Camera3D, character, new_camera:boo
 	#print(pathpoints)
 	if pathpoints.size() == 0: return
 	var path_pos := get_path_position(Global.tri_to_bi(character.global_position), pathpoints)
+	var camera_speed = 1.0
+	if current_camera.has_meta("speed"):
+		camera_speed = float(current_camera.get_meta("speed"))
 	if new_camera:
 		camera_time = path_pos
 	else:
-		camera_time = lerpf(camera_time, path_pos, 1.0*delta)
+		camera_time = lerpf(camera_time, path_pos, camera_speed*delta)
 	for c in get_children():
 		if c.name.begins_with(current_camera.name.substr(0, current_camera.name.length()-4)):
 			for cc in c.get_children():

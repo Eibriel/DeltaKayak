@@ -2,6 +2,7 @@ extends Control
 
 @export var game_preferences:PreferenceResource
 @export var game_state:DKDataResource
+@export var initial_position: Marker3D
 
 @onready var dk_world: DKWorld = %DKWorld
 @onready var label_demo: Label = $Control/LabelDemo
@@ -20,6 +21,8 @@ var dialogue_tween: Tween
 var write_speed: float
 
 var temporizador:= 0.0
+var grabbed := false
+var is_intro := true
 
 const UnhandledTriggers = preload("res://interactives/unhandled_triggers.gd")
 
@@ -32,6 +35,14 @@ func _ready() -> void:
 	Global.grab_joint.set_param_x(Generic6DOFJoint3D.PARAM_ANGULAR_SPRING_STIFFNESS, 0.01)
 	Global.grab_joint.set_param_y(Generic6DOFJoint3D.PARAM_ANGULAR_SPRING_STIFFNESS, 0.01)
 	Global.grab_joint.set_param_z(Generic6DOFJoint3D.PARAM_ANGULAR_SPRING_STIFFNESS, 0.01)
+	
+	Global.grab_kayak = %GrabKayak
+	#Global.grab_kayak.set_param_x(Generic6DOFJoint3D.PARAM_LINEAR_LIMIT_SOFTNESS, 0.01)
+	#Global.grab_kayak.set_param_y(Generic6DOFJoint3D.PARAM_LINEAR_LIMIT_SOFTNESS, 0.01)
+	#Global.grab_kayak.set_param_z(Generic6DOFJoint3D.PARAM_LINEAR_LIMIT_SOFTNESS, 0.01)
+	#Global.grab_kayak.set_param_x(Generic6DOFJoint3D.PARAM_ANGULAR_SPRING_STIFFNESS, 0.01)
+	#Global.grab_kayak.set_param_y(Generic6DOFJoint3D.PARAM_ANGULAR_SPRING_STIFFNESS, 0.01)
+	#Global.grab_kayak.set_param_z(Generic6DOFJoint3D.PARAM_ANGULAR_SPRING_STIFFNESS, 0.01)
 	
 	label_demo.visible = false
 	if Global.is_demo():
@@ -46,8 +57,8 @@ func _ready() -> void:
 	#state_initializer.initialize_data(game_state)
 	
 	#Start
-	character.position = %InitialPosition.position #Vector3(0, 0, 0)
-	character.rotation = %InitialPosition.rotation #Vector3(0, 0, 0)
+	character.position = initial_position.position #Vector3(0, 0, 0)
+	character.rotation = initial_position.rotation #Vector3(0, 0, 0)
 	
 	%ProportionalSlider.value = character.pid_proportional_par
 	%IntegralSlider.value = character.pid_integral_par
@@ -55,6 +66,15 @@ func _ready() -> void:
 	
 	#Input.set_mouse_mode(Input.MOUSE_MODE_HIDDEN)
 	
+	%IntroChatLabel.visible = true
+	intro_animation()
+
+func intro_animation():
+	%IntroAnimationPlayer.play("intro_animation")
+
+func end_intro_animation():
+	dk_world.select_cameras = true
+	%IntroChatLabel.visible = false
 
 func _process(delta: float) -> void:
 	handle_triggers(delta)
@@ -67,6 +87,10 @@ func _process(delta: float) -> void:
 	var minute := int(temporizador / 60)
 	var sec := int(temporizador-(minute*60))
 	%LabelTemporizador.text = "%02d:%02d" % [minute,sec]
+	if Global.camera != null:
+		if Global.camera.has_meta("fog_density"):
+			%WorldEnvironment.environment.volumetric_fog_density = float(Global.camera.get_meta("fog_density"))
+			Global.log_text = "\nFog:%f" % %WorldEnvironment.environment.volumetric_fog_density
 
 func handle_demo_puzzle():
 	var match_count := 0
@@ -385,3 +409,42 @@ func _on_slider_value_changed(value: float) -> void:
 
 func _on_slider_drag_ended(value_changed: bool) -> void:
 	update_pid_values()
+
+func _on_grab_kayak_body_entered(body: Node3D) -> void:
+	if body.name == "character":
+		grab_kayak()
+
+func grab_kayak():
+	if grabbed: return
+	grabbed = true
+	Global.grab_kayak.global_position = Global.character.global_position
+	%KayakGrabber.global_position = Global.character.global_position
+	Global.grab_kayak.set_node_a(%KayakGrabber.get_path())
+	Global.grab_kayak.set_node_b(Global.character.get_path())
+	
+	var tt := [
+		Vector3(8, 0, 3),
+		Vector3(1, 0, 3),
+		Vector3(10, 0, 6),
+		Vector3(-5, 0, -8),
+	]
+	
+	var tween := create_tween()
+	tween.set_ease(Tween.EASE_IN_OUT)
+	tween.set_trans(Tween.TRANS_CUBIC)
+	tween.tween_property(%KayakGrabber, "global_position", Vector3(-16, 0, -139), 0.3)
+	tween.parallel().tween_property(%KayakGrabber, "global_rotation:y", 0, 0.2)
+	for t in tt:
+		tween.tween_property(%KayakGrabber, "global_position", Vector3(-16, 0, -139)+t, 0.6)
+		tween.parallel().tween_property(%KayakGrabber, "global_rotation:y", deg_to_rad(randi_range(-90, 90)), 0.5)
+	tween.tween_property(%KayakGrabber, "global_position", Vector3(-38.872, 0, -146.022), 0.6)
+	tween.parallel().tween_property(%KayakGrabber, "global_rotation:y", deg_to_rad(-90+45), 0.7)
+	tween.tween_interval(1.0)
+	tween.set_trans(Tween.TRANS_LINEAR)
+	tween.tween_property(%KayakGrabber, "global_position", Vector3(-196.017, 0, -147.396), 6.0)
+	tween.parallel().tween_property(%KayakGrabber, "global_rotation:y", deg_to_rad(-90+60), 6.0)
+	tween.tween_callback(ungrab_kayak)
+
+func ungrab_kayak():
+	Global.grab_kayak.set_node_a(NodePath(""))
+	Global.grab_kayak.set_node_b(NodePath(""))

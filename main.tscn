@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=3 uid="uid://ce6e8v1saxjr5"]
+[gd_scene load_steps=26 format=3 uid="uid://ce6e8v1saxjr5"]
 
 [ext_resource type="Environment" uid="uid://xpf4ng2ym0n4" path="res://environments/main_environment.tres" id="1_ekqa4"]
 [ext_resource type="Script" path="res://main.gd" id="1_xxenq"]
@@ -26,6 +26,12 @@ size = Vector3(11.4926, 2.54077, 9.13838)
 [sub_resource type="BoxShape3D" id="BoxShape3D_0ev4o"]
 size = Vector3(1.96265, 7.51904, 1.8761)
 
+[sub_resource type="BoxShape3D" id="BoxShape3D_i81n0"]
+size = Vector3(46.1691, 7.51904, 4.34125)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_d47b7"]
+size = Vector3(1, 0.831177, 1)
+
 [sub_resource type="BoxShape3D" id="BoxShape3D_cach1"]
 size = Vector3(1, 1, 6.15552)
 
@@ -33,7 +39,82 @@ size = Vector3(1, 1, 6.15552)
 shading_mode = 0
 albedo_color = Color(0, 1, 0.133333, 1)
 
-[node name="Control" type="Control"]
+[sub_resource type="Animation" id="Animation_w3qoh"]
+resource_name = "intro_animation"
+length = 10.0
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("CameraIntro:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 10),
+"transitions": PackedFloat32Array(-2, -2),
+"update": 0,
+"values": [Vector3(0, 95.2315, 0), Vector3(34.1821, 7.70514, -19.4312)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("CameraIntro:rotation")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 10),
+"transitions": PackedFloat32Array(-2, -2),
+"update": 0,
+"values": [Vector3(-1.47047, 0, 0), Vector3(-1.47048, -1.54231, 0)]
+}
+tracks/2/type = "method"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("../..")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(10),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [],
+"method": &"end_intro_animation"
+}]
+}
+
+[sub_resource type="Animation" id="Animation_ddu3q"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("CameraIntro:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0, 95.2315, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("CameraIntro:rotation")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(-1.47047, 0, 0)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_vbxsh"]
+_data = {
+"RESET": SubResource("Animation_ddu3q"),
+"intro_animation": SubResource("Animation_w3qoh")
+}
+
+[node name="Control" type="Control" node_paths=PackedStringArray("initial_position")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -43,6 +124,7 @@ grow_vertical = 2
 script = ExtResource("1_xxenq")
 game_preferences = ExtResource("2_wexnt")
 game_state = ExtResource("3_nh3h6")
+initial_position = NodePath("Main3D/InitialPosition")
 
 [node name="Control" type="Control" parent="."]
 layout_mode = 1
@@ -132,6 +214,26 @@ anchor_bottom = 0.61125
 grow_horizontal = 2
 grow_vertical = 0
 text = "..."
+metadata/_edit_use_anchors_ = true
+
+[node name="IntroChatLabel" type="RichTextLabel" parent="Control"]
+unique_name_in_owner = true
+auto_translate_mode = 1
+visible = false
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.101667
+anchor_top = 0.0725
+anchor_right = 0.914167
+anchor_bottom = 0.61125
+grow_horizontal = 2
+grow_vertical = 0
+text = "Messenger:
+
+Te espero esta noche.
+Traé el kayak de tu hermano.
+Mis viejos casi nos agarran la otra vez, vayamos a otro lugar esta vuelta.
+¡No tardes o se va a calentar la cerveza!"
 metadata/_edit_use_anchors_ = true
 
 [node name="HelpLabel" type="RichTextLabel" parent="Control"]
@@ -254,19 +356,22 @@ max_value = 10000.0
 [node name="Main3D" type="Node3D" parent="."]
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="Main3D"]
+unique_name_in_owner = true
 environment = ExtResource("1_ekqa4")
 compositor = SubResource("Compositor_lm6bj")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="Main3D"]
-transform = Transform3D(-0.866025, -0.433013, 0.25, 0, 0.5, 0.866025, -0.5, 0.75, -0.433013, 0, 0, 0)
-visible = false
+transform = Transform3D(-0.703072, 0.436428, 0.561445, -8.66841e-09, -0.789524, 0.61372, 0.711119, 0.431489, 0.555092, 0, 18.834, 0)
+light_color = Color(0.429084, 0.569185, 0.473505, 1)
+light_energy = 0.2
 shadow_enabled = true
 
 [node name="character" parent="Main3D" instance=ExtResource("2_3sgbv")]
 unique_name_in_owner = true
 
-[node name="DKWorld" parent="Main3D" instance=ExtResource("3_7foso")]
+[node name="DKWorld" parent="Main3D" node_paths=PackedStringArray("initial_camera") instance=ExtResource("3_7foso")]
 unique_name_in_owner = true
+initial_camera = NodePath("../IntroElements/CameraIntro")
 world_definition = {
 "Sector_003": {
 "cameras": {
@@ -1059,14 +1164,13 @@ world_definition = {
 }
 
 [node name="Camera3D" type="Camera3D" parent="Main3D"]
-transform = Transform3D(1, 0, 0, 0, 0.921328, 0.388786, 0, -0.388786, 0.921328, 0.528366, 5.52796, 5.79716)
+transform = Transform3D(1, 0, 0, 0, 0.921185, 0.389124, 0, -0.389124, 0.921185, 0.528366, 5.52796, 5.79716)
 current = true
 
 [node name="MultiMeshInstance3D" type="MultiMeshInstance3D" parent="Main3D"]
 multimesh = SubResource("MultiMesh_g048c")
 
 [node name="Node3D2" type="Node3D" parent="Main3D"]
-visible = false
 
 [node name="OilSpillArea3D" type="Area3D" parent="Main3D/Node3D2"]
 transform = Transform3D(0.317288, 0, 0.948329, 0, 1, 0, -0.948329, 0, 0.317288, 88.8843, 0, 82.8589)
@@ -1076,7 +1180,7 @@ metadata/oil_spill = true
 shape = SubResource("BoxShape3D_kp58l")
 
 [node name="StrengthArea3D" type="Area3D" parent="Main3D/Node3D2"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.58259, 0, -72.6413)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -67.2563, 0, -72.6413)
 metadata/strength = true
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Main3D/Node3D2/StrengthArea3D"]
@@ -1098,6 +1202,16 @@ metadata/strength = true
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Main3D/Node3D2/StrengthArea3D3"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.48492, 0)
 shape = SubResource("BoxShape3D_0ev4o")
+
+[node name="StrengthArea3D4" type="Area3D" parent="Main3D/Node3D2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -17.3393, 0, -135.942)
+collision_layer = 0
+collision_mask = 2
+metadata/strength = true
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Main3D/Node3D2/StrengthArea3D4"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.74502, 1.48492, 1.23257)
+shape = SubResource("BoxShape3D_i81n0")
 
 [node name="PysicsObjects" type="Node3D" parent="Main3D"]
 visible = false
@@ -1135,6 +1249,22 @@ transform = Transform3D(0.0861995, 0, -0.996278, 0, 1, 0, 0.996278, 0, 0.0861995
 
 [node name="GrabJoint3D" type="Generic6DOFJoint3D" parent="Main3D/PysicsObjects"]
 unique_name_in_owner = true
+
+[node name="GrabKayak" type="Generic6DOFJoint3D" parent="Main3D/PysicsObjects"]
+unique_name_in_owner = true
+
+[node name="KayakGrabber" type="StaticBody3D" parent="Main3D/PysicsObjects"]
+unique_name_in_owner = true
+axis_lock_linear_y = true
+axis_lock_angular_x = true
+axis_lock_angular_y = true
+axis_lock_angular_z = true
+
+[node name="CSGBox3D" type="CSGBox3D" parent="Main3D/PysicsObjects/KayakGrabber"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Main3D/PysicsObjects/KayakGrabber"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.06097, 0)
+shape = SubResource("BoxShape3D_d47b7")
 
 [node name="DemoElements" type="Node3D" parent="Main3D"]
 
@@ -1201,11 +1331,38 @@ double_sided = false
 text = "¡Corré!"
 font_size = 64
 
-[node name="InitialPosition" type="Marker3D" parent="Main3D"]
+[node name="OmniLight3D" type="OmniLight3D" parent="Main3D/DemoElements"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -39.8452, 8.96545, -201.684)
+light_color = Color(0.993349, 0.925205, 0.696236, 1)
+light_energy = 9.654
+light_volumetric_fog_energy = 2.61
+omni_range = 7.211
+
+[node name="IntroElements" type="Node3D" parent="Main3D"]
+
+[node name="CameraIntro" type="Camera3D" parent="Main3D/IntroElements"]
+transform = Transform3D(1, 0, 0, 0, 0.100153, 0.994971, 0, -0.994972, 0.100153, 0, 95.2315, 0)
+fov = 77.1
+
+[node name="IntroAnimationPlayer" type="AnimationPlayer" parent="Main3D/IntroElements"]
 unique_name_in_owner = true
-transform = Transform3D(-0.0183423, 0, -0.999832, 0, 1, 0, 0.999832, 0, -0.0183423, -11.4079, 0, -27.3326)
+libraries = {
+"": SubResource("AnimationLibrary_vbxsh")
+}
+
+[node name="InitialPosition" type="Marker3D" parent="Main3D"]
+transform = Transform3D(0.153244, 0, 0.988189, 0, 1, 0, -0.988189, 0, 0.153244, 37.025, 0, -18.4407)
+gizmo_extents = 5.0
+
+[node name="InitialPositionGrab" type="Marker3D" parent="Main3D"]
+transform = Transform3D(0.998732, 0, -0.0503483, 0, 1, 0, 0.0503483, 0, 0.998732, -7.00713, 0, -123.579)
+gizmo_extents = 5.0
+
+[node name="InitialPositionGoingToHome" type="Marker3D" parent="Main3D"]
+transform = Transform3D(0.998732, 0, -0.0503483, 0, 1, 0, 0.0503483, 0, 0.998732, -3.54403, 0, -48.5453)
 gizmo_extents = 5.0
 
 [connection signal="drag_ended" from="Control/Debug/VBoxContainer/ProportionalSlider" to="." method="_on_slider_drag_ended"]
 [connection signal="drag_ended" from="Control/Debug/VBoxContainer/IntegralSlider" to="." method="_on_slider_drag_ended"]
 [connection signal="drag_ended" from="Control/Debug/VBoxContainer/DerivativeSlider" to="." method="_on_slider_drag_ended"]
+[connection signal="body_entered" from="Main3D/Node3D2/StrengthArea3D4" to="." method="_on_grab_kayak_body_entered"]

@@ -2,6 +2,7 @@
 extends Node3D
 
 const WATER_MATERIAL = preload("res://materials/water_material.tres")
+#const WATER_MATERIAL = preload("res://materials/water_ssr_material.tres")
 
 func _ready() -> void:
 	var patch_size := Vector2i(60, 60)
