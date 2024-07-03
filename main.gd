@@ -446,6 +446,7 @@ func grab_kayak():
 	]
 	
 	var tween := create_tween()
+	tween.set_process_mode(Tween.TWEEN_PROCESS_PHYSICS)
 	tween.tween_callback(Global.character.apply_central_impulse.bind(Vector3(0, 0, 1)*3))
 	tween.tween_interval(1.0)
 	tween.tween_callback(Global.character.apply_central_impulse.bind(Vector3(-1, 0, 1)*3))
@@ -463,12 +464,12 @@ func grab_kayak():
 	tween.tween_callback(say_dialogue.bind("demo_scream"))
 	for t in tt:
 		tween.tween_property(%KayakGrabber, "global_position", Vector3(-16, 0, -139)+t, 0.6)
-		tween.parallel().tween_property(%KayakGrabber, "global_rotation:y", deg_to_rad(randi_range(-90, 90)), 0.5)
+		tween.parallel().tween_property(%KayakGrabber, "global_rotation:y", deg_to_rad(randi_range(-90, 90)), 0.8)
 	tween.tween_property(%KayakGrabber, "global_position", Vector3(-38.872, 0, -146.022), 0.6)
 	tween.parallel().tween_property(%KayakGrabber, "global_rotation:y", deg_to_rad(-90+45), 0.7)
 	tween.tween_interval(1.0)
 	tween.set_trans(Tween.TRANS_LINEAR)
-	tween.tween_property(%KayakGrabber, "global_position", Vector3(-186.017, 0, -147.396), 6.0)
+	tween.tween_property(%KayakGrabber, "global_position", Vector3(-196.017, 0, -147.396), 6.0)
 	tween.parallel().tween_property(%KayakGrabber, "global_rotation:y", deg_to_rad(-90+60), 6.0)
 	tween.tween_callback(ungrab_kayak)
 	tween.tween_callback(kayak_k1.queue_free)
@@ -487,6 +488,7 @@ func _on_first_grab_kayak_body_entered(body: Node3D) -> void:
 	if moved: return
 	moved = true
 	var tween := create_tween()
+	tween.set_process_mode(Tween.TWEEN_PROCESS_PHYSICS)
 	tween.tween_callback(Global.character.apply_central_impulse.bind(Vector3(0, 0, 1)*0.5))
 	tween.tween_interval(1.0)
 	tween.tween_callback(Global.character.apply_central_impulse.bind(Vector3(-1, 0, 1)*1))

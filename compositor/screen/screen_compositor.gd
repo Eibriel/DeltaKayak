@@ -79,6 +79,7 @@ func _render_callback(p_effect_callback_type, p_render_data):
 				push_constant.push_back(size.x)
 				push_constant.push_back(size.y)
 				push_constant.push_back(Time.get_ticks_msec())
+				push_constant.push_back(0) # dummy value, array needs to be a multiple of 4
 				
 				# Create a uniform set, this will be cached, the cache will be cleared if our viewports configuration is changed
 				var uniform : RDUniform = get_image_uniform(input_image)
@@ -88,6 +89,6 @@ func _render_callback(p_effect_callback_type, p_render_data):
 				var compute_list := rd.compute_list_begin()
 				rd.compute_list_bind_compute_pipeline(compute_list, screen_pipeline)
 				rd.compute_list_bind_uniform_set(compute_list, input_set, 0)
-				rd.compute_list_set_push_constant(compute_list, push_constant.to_byte_array(), 16)
+				rd.compute_list_set_push_constant(compute_list, push_constant.to_byte_array(), push_constant.size() * 4) #16)
 				rd.compute_list_dispatch(compute_list, x_groups, y_groups, 1)
 				rd.compute_list_end()

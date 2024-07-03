@@ -1374,7 +1374,7 @@ shape = SubResource("BoxShape3D_i81n0")
 [node name="IntroElements" type="Node3D" parent="Main3D"]
 
 [node name="CameraIntro" type="Camera3D" parent="Main3D/IntroElements"]
-transform = Transform3D(1, 0, 0, 0, 0.100153, 0.99497, 0, -0.994972, 0.100153, 0, 95.2315, 0)
+transform = Transform3D(1, 0, 0, 0, 0.100153, 0.994969, 0, -0.994972, 0.100153, 0, 95.2315, 0)
 fov = 77.1
 
 [node name="IntroAnimationPlayer" type="AnimationPlayer" parent="Main3D/IntroElements"]
