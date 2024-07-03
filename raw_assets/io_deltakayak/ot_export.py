@@ -312,29 +312,33 @@ class DKT_OT_ExportWorld(bpy.types.Operator):
         return lands_def
 
     def get_navmesh(self, sector):
+        navmesh_def = []
         navmesh_name = "NavigationMesh_" + sector.name.split("_")[1]
-        if not navmesh_name in sector.objects: return navmesh_def
-        navmesh_obj = sector.objects[navmesh_name]
-        navmesh_def = {
-            "vertices": [],
-            "polygons": [],
-            "position": self.location_to_godot(navmesh_obj.location),
-            "rotation": self.rotation_to_godot(navmesh_obj.rotation_euler),
-        }
-        for v in navmesh_obj.data.vertices:
-            vertice = [
-                v.co.x,
-                -v.co.y
-            ]
-            navmesh_def["vertices"].append(vertice)
-        for p in navmesh_obj.data.polygons:
-            #if len(polygon.vertices) > 3:
-            #    self.report({'ERROR'}, "Make sure the mesh for object \"{}\" uses triangles only".format(navmesh_obj.name))
-            #    return {'CANCELLED'}
-            polygon = []
-            for v in p.vertices:
-                polygon.append(v)
-            navmesh_def["polygons"].append(polygon)
+        if not navmesh_name in sector.children: return navmesh_def
+        for navmesh_obj in sector.children[navmesh_name].objects:
+            #navmesh_obj = sector.objects[navmesh_name]
+            mesh_def = {
+                "name": navmesh_obj.name,
+                "vertices": [],
+                "polygons": [],
+                "position": self.location_to_godot(navmesh_obj.location),
+                "rotation": self.rotation_to_godot(navmesh_obj.rotation_euler),
+            }
+            for v in navmesh_obj.data.vertices:
+                vertice = [
+                    v.co.x,
+                    -v.co.y
+                ]
+                mesh_def["vertices"].append(vertice)
+            for p in navmesh_obj.data.polygons:
+                #if len(polygon.vertices) > 3:
+                #    self.report({'ERROR'}, "Make sure the mesh for object \"{}\" uses triangles only".format(navmesh_obj.name))
+                #    return {'CANCELLED'}
+                polygon = []
+                for v in p.vertices:
+                    polygon.append(v)
+                mesh_def["polygons"].append(polygon)
+            navmesh_def.append(mesh_def)
         return navmesh_def
 
     def get_camera_data(self, camera_obj):

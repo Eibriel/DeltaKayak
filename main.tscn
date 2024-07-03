@@ -1243,6 +1243,9 @@ unique_name_in_owner = true
 [node name="GrabKayak" type="Generic6DOFJoint3D" parent="Main3D/PysicsObjects"]
 unique_name_in_owner = true
 
+[node name="GrabKayak2" type="Generic6DOFJoint3D" parent="Main3D/PysicsObjects"]
+unique_name_in_owner = true
+
 [node name="KayakGrabber" type="StaticBody3D" parent="Main3D/PysicsObjects"]
 unique_name_in_owner = true
 axis_lock_linear_y = true
@@ -1338,8 +1341,18 @@ metadata/strength = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.18132, 1.48492, 1.23257)
 shape = SubResource("BoxShape3D_i81n0")
 
+[node name="ForeshadowingArea3D" type="Area3D" parent="Main3D/DemoElements"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15.9096, 0, -118.5)
+collision_layer = 0
+collision_mask = 2
+metadata/strength = true
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Main3D/DemoElements/ForeshadowingArea3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.18132, 1.48492, 1.23257)
+shape = SubResource("BoxShape3D_i81n0")
+
 [node name="FirstGrabArea3D" type="Area3D" parent="Main3D/DemoElements"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.48552, 0, -76.1327)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.19958, 0, -72.9873)
 collision_layer = 0
 collision_mask = 2
 metadata/strength = true
@@ -1348,10 +1361,20 @@ metadata/strength = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.18132, 1.48492, 1.23257)
 shape = SubResource("BoxShape3D_i81n0")
 
+[node name="HeavyKayakArea3D" type="Area3D" parent="Main3D/DemoElements"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.907349, 0, -44.3934)
+collision_layer = 0
+collision_mask = 2
+metadata/strength = true
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Main3D/DemoElements/HeavyKayakArea3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.18132, 1.48492, 1.23257)
+shape = SubResource("BoxShape3D_i81n0")
+
 [node name="IntroElements" type="Node3D" parent="Main3D"]
 
 [node name="CameraIntro" type="Camera3D" parent="Main3D/IntroElements"]
-transform = Transform3D(1, 0, 0, 0, 0.100153, 0.994971, 0, -0.994972, 0.100153, 0, 95.2315, 0)
+transform = Transform3D(1, 0, 0, 0, 0.100153, 0.99497, 0, -0.994972, 0.100153, 0, 95.2315, 0)
 fov = 77.1
 
 [node name="IntroAnimationPlayer" type="AnimationPlayer" parent="Main3D/IntroElements"]
@@ -1372,8 +1395,14 @@ gizmo_extents = 5.0
 transform = Transform3D(0.998732, 0, -0.0503483, 0, 1, 0, 0.0503483, 0, 0.998732, -3.54403, 0, -48.5453)
 gizmo_extents = 5.0
 
+[node name="InitialPositionOtherSide" type="Marker3D" parent="Main3D"]
+transform = Transform3D(0.998732, 0, -0.0503483, 0, 1, 0, 0.0503483, 0, 0.998732, -206.715, 0, -137.19)
+gizmo_extents = 5.0
+
 [connection signal="drag_ended" from="Control/Debug/VBoxContainer/ProportionalSlider" to="." method="_on_slider_drag_ended"]
 [connection signal="drag_ended" from="Control/Debug/VBoxContainer/IntegralSlider" to="." method="_on_slider_drag_ended"]
 [connection signal="drag_ended" from="Control/Debug/VBoxContainer/DerivativeSlider" to="." method="_on_slider_drag_ended"]
 [connection signal="body_entered" from="Main3D/DemoElements/GrabArea3D" to="." method="_on_grab_kayak_body_entered"]
+[connection signal="body_entered" from="Main3D/DemoElements/ForeshadowingArea3D" to="." method="_on_foreshadowing_body_entered"]
 [connection signal="body_entered" from="Main3D/DemoElements/FirstGrabArea3D" to="." method="_on_first_grab_kayak_body_entered"]
+[connection signal="body_entered" from="Main3D/DemoElements/HeavyKayakArea3D" to="." method="_on_heavy_kayak_body_entered"]

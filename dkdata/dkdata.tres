@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="DKDataResource" load_steps=59 format=3 uid="uid://bi1rugic742u0"]
+[gd_resource type="Resource" script_class="DKDataResource" load_steps=79 format=3 uid="uid://bi1rugic742u0"]
 
 [ext_resource type="Script" path="res://data_resources/dkdata_resource.gd" id="1_mesef"]
 [ext_resource type="Script" path="res://data_resources/dialogue_resource.gd" id="1_yf062"]
@@ -121,12 +121,26 @@ script = ExtResource("1_yf062")
 id = "new_item"
 character = 1
 image = ""
-text = "¿Donde estará Pepa?"
+text = "Tengo que salir sigilosamente. ¡Espero que Pepa no se ponga a ladrar!"
+
+[sub_resource type="Resource" id="Resource_aon3o"]
+script = ExtResource("1_yf062")
+id = "new_item"
+character = 1
+image = ""
+text = "Por suerte estuvo callada este rato. Debe estar durmiendo por ahí."
+
+[sub_resource type="Resource" id="Resource_4w0e7"]
+script = ExtResource("1_yf062")
+id = "new_item"
+character = 1
+image = ""
+text = "Tengo que agarrar el kayak de mi hermano antes de irme."
 
 [sub_resource type="Resource" id="Resource_fharu"]
 script = ExtResource("2_xdm14")
 id = "demo_start_point"
-dialogues = Array[ExtResource("1_yf062")]([SubResource("Resource_x06et")])
+dialogues = Array[ExtResource("1_yf062")]([SubResource("Resource_x06et"), SubResource("Resource_aon3o"), SubResource("Resource_4w0e7")])
 
 [sub_resource type="Resource" id="Resource_kctts"]
 script = ExtResource("1_yf062")
@@ -217,12 +231,126 @@ script = ExtResource("1_yf062")
 id = "new_item"
 character = 1
 image = ""
-text = "¿¡Qué pasa!?"
+text = "¡AAahhhhhhhhhh!"
+
+[sub_resource type="Resource" id="Resource_vjei8"]
+script = ExtResource("1_yf062")
+id = "new_item"
+character = 1
+image = ""
+text = "¡Pepa!"
+
+[sub_resource type="Resource" id="Resource_as2nt"]
+script = ExtResource("1_yf062")
+id = "new_item"
+character = 1
+image = ""
+text = "¿Qué hacías ahí escondida?"
 
 [sub_resource type="Resource" id="Resource_epkml"]
 script = ExtResource("2_xdm14")
 id = "demo2_kayak_movement_2"
-dialogues = Array[ExtResource("1_yf062")]([SubResource("Resource_kaj3s")])
+dialogues = Array[ExtResource("1_yf062")]([SubResource("Resource_kaj3s"), SubResource("Resource_vjei8"), SubResource("Resource_as2nt")])
+
+[sub_resource type="Resource" id="Resource_yfiv7"]
+script = ExtResource("1_yf062")
+id = "new_item"
+character = 1
+image = ""
+text = "¡Pepa, no jodas!"
+
+[sub_resource type="Resource" id="Resource_rjkha"]
+script = ExtResource("2_xdm14")
+id = "demo2_kayak_movement_3"
+dialogues = Array[ExtResource("1_yf062")]([SubResource("Resource_yfiv7")])
+
+[sub_resource type="Resource" id="Resource_mccnv"]
+script = ExtResource("1_yf062")
+id = "new_item"
+character = 1
+image = ""
+text = "¡Mierda! ¡No pudo haber sido Pepa esta vez!"
+
+[sub_resource type="Resource" id="Resource_6mhsj"]
+script = ExtResource("2_xdm14")
+id = "demo_other_side"
+dialogues = Array[ExtResource("1_yf062")]([SubResource("Resource_mccnv")])
+
+[sub_resource type="Resource" id="Resource_kqdnr"]
+script = ExtResource("1_yf062")
+id = "new_item"
+character = 1
+image = ""
+text = "¡Aahhhhhhh!"
+
+[sub_resource type="Resource" id="Resource_yhhpc"]
+script = ExtResource("1_yf062")
+id = "new_item"
+character = 1
+image = ""
+text = "¡Mierdaaaaaaaa!"
+
+[sub_resource type="Resource" id="Resource_5jswg"]
+script = ExtResource("2_xdm14")
+id = "demo_scream"
+dialogues = Array[ExtResource("1_yf062")]([SubResource("Resource_kqdnr"), SubResource("Resource_yhhpc")])
+
+[sub_resource type="Resource" id="Resource_6j43o"]
+script = ExtResource("1_yf062")
+id = "new_item"
+character = 1
+image = ""
+text = "¡Casi me matás de un susto!"
+
+[sub_resource type="Resource" id="Resource_g4lg1"]
+script = ExtResource("1_yf062")
+id = "new_item"
+character = 1
+image = ""
+text = "Vas a tener que venir conmigo también"
+
+[sub_resource type="Resource" id="Resource_7ubm2"]
+script = ExtResource("2_xdm14")
+id = "demo2_kayak_movement_2b"
+dialogues = Array[ExtResource("1_yf062")]([SubResource("Resource_6j43o"), SubResource("Resource_g4lg1")])
+
+[sub_resource type="Resource" id="Resource_gkviw"]
+script = ExtResource("1_yf062")
+id = "new_item"
+character = 1
+image = ""
+text = "Ana me hace señas"
+
+[sub_resource type="Resource" id="Resource_0yl63"]
+script = ExtResource("1_yf062")
+id = "new_item"
+character = 1
+image = ""
+text = "¿Tán emocionada está de verme?"
+
+[sub_resource type="Resource" id="Resource_6tc6t"]
+script = ExtResource("2_xdm14")
+id = "demo_foreshadowing"
+dialogues = Array[ExtResource("1_yf062")]([SubResource("Resource_gkviw"), SubResource("Resource_0yl63")])
+
+[sub_resource type="Resource" id="Resource_wayrf"]
+script = ExtResource("1_yf062")
+id = "new_item"
+character = 1
+image = ""
+text = "Si me agarra mi hermano con su kayak me mata jaja"
+
+[sub_resource type="Resource" id="Resource_l6j2y"]
+script = ExtResource("1_yf062")
+id = "new_item"
+character = 1
+image = ""
+text = "¡Está pesado! ¿Lleva piedras ahí adentro?"
+
+[sub_resource type="Resource" id="Resource_t3vlm"]
+script = ExtResource("2_xdm14")
+id = "demo_heavy_kayak"
+dialogues = Array[ExtResource("1_yf062")]([SubResource("Resource_wayrf"), SubResource("Resource_l6j2y")])
 
 [sub_resource type="Resource" id="Resource_4afsv"]
 script = ExtResource("3_0x3yn")
@@ -343,5 +471,5 @@ script = ExtResource("1_mesef")
 character_position = Vector3(80, 15, 50)
 character_rotation = Vector3(0, 180, 0)
 items = Array[ExtResource("3_xhkj4")]([SubResource("Resource_ga3d1"), SubResource("Resource_e5p6k"), SubResource("Resource_7a2sk"), SubResource("Resource_l8snq"), SubResource("Resource_1pyr4"), SubResource("Resource_dy1ah"), SubResource("Resource_5rue2")])
-exchanges = Array[ExtResource("2_xdm14")]([SubResource("Resource_crw41"), SubResource("Resource_6vcu1"), SubResource("Resource_k71eb"), SubResource("Resource_sadyd"), SubResource("Resource_cvpa0"), SubResource("Resource_wynqj"), SubResource("Resource_wq0u6"), SubResource("Resource_fjacd"), SubResource("Resource_fharu"), SubResource("Resource_uqqxk"), SubResource("Resource_by1tc"), SubResource("Resource_wq70w"), SubResource("Resource_j7v1r"), SubResource("Resource_qf5l5"), SubResource("Resource_vcg4n"), SubResource("Resource_ve10j"), SubResource("Resource_epkml")])
+exchanges = Array[ExtResource("2_xdm14")]([SubResource("Resource_crw41"), SubResource("Resource_6vcu1"), SubResource("Resource_k71eb"), SubResource("Resource_sadyd"), SubResource("Resource_cvpa0"), SubResource("Resource_wynqj"), SubResource("Resource_wq0u6"), SubResource("Resource_fjacd"), SubResource("Resource_fharu"), SubResource("Resource_uqqxk"), SubResource("Resource_by1tc"), SubResource("Resource_wq70w"), SubResource("Resource_j7v1r"), SubResource("Resource_qf5l5"), SubResource("Resource_vcg4n"), SubResource("Resource_ve10j"), SubResource("Resource_epkml"), SubResource("Resource_rjkha"), SubResource("Resource_6mhsj"), SubResource("Resource_5jswg"), SubResource("Resource_7ubm2"), SubResource("Resource_6tc6t"), SubResource("Resource_t3vlm")])
 misc_data = SubResource("Resource_b1bh4")

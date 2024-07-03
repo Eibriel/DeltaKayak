@@ -112,21 +112,23 @@ func _import(source_file, save_path, options, r_platform_variants, r_gen_files):
 		return result
 		#return null
 
-func add_navmesh(navmesh: Dictionary, sector_id:String, main_node:Node3D):
-	#polygons, vertices
-	var navigation_region := NavigationRegion3D.new()
-	var navigation_mesh := NavigationMesh.new()
-	main_node.add_child(navigation_region)
-	navigation_region.set_owner(main_node)
-	navigation_region.navigation_mesh = navigation_mesh
-	navigation_region.position = array_to_vector3(navmesh.position)
-	navigation_region.rotation = array_to_vector3(navmesh.rotation)
-	var packed_vertices: PackedVector3Array
-	for v in navmesh.vertices:
-		packed_vertices.append(Vector3(v[0], 0.0, v[1]))
-	navigation_mesh.set_vertices(packed_vertices)
-	for v in navmesh.polygons:
-		navigation_mesh.add_polygon(PackedInt32Array(v))
+func add_navmesh(navmesh_array: Array, sector_id:String, main_node:Node3D):
+	for navmesh in navmesh_array:
+		#polygons, vertices
+		var navigation_region := NavigationRegion3D.new()
+		navigation_region.name = navmesh.name
+		var navigation_mesh := NavigationMesh.new()
+		main_node.add_child(navigation_region)
+		navigation_region.set_owner(main_node)
+		navigation_region.navigation_mesh = navigation_mesh
+		navigation_region.position = array_to_vector3(navmesh.position)
+		navigation_region.rotation = array_to_vector3(navmesh.rotation)
+		var packed_vertices: PackedVector3Array
+		for v in navmesh.vertices:
+			packed_vertices.append(Vector3(v[0], 0.0, v[1]))
+		navigation_mesh.set_vertices(packed_vertices)
+		for v in navmesh.polygons:
+			navigation_mesh.add_polygon(PackedInt32Array(v))
 
 func add_colliders(colliders: Array, sector_id:String, main_node:Node3D):
 	# Collider
@@ -357,26 +359,35 @@ func add_camera(camera:Dictionary, camera_id:String, main_node:Node3D):
 	camera_crane_node.add_child(camera_position_node)
 	camera_position_node.set_owner(main_node)
 	
-	var camera_position_b_node = Node3D.new()
-	camera_position_b_node.set_name("%s_posb" % camera_id)
-	camera_position_node.add_child(camera_position_b_node)
-	camera_position_b_node.set_owner(main_node)
+	var camera_rotation_y_node = Node3D.new()
+	camera_rotation_y_node.set_name("%s_roty" % camera_id)
+	camera_position_node.add_child(camera_rotation_y_node)
+	camera_rotation_y_node.set_owner(main_node)
+	
+	var camera_rotation_x_node = Node3D.new()
+	camera_rotation_x_node.set_name("%s_rotx" % camera_id)
+	camera_rotation_y_node.add_child(camera_rotation_x_node)
+	camera_rotation_x_node.set_owner(main_node)
+	
+	var camera_rotation_z_node = Node3D.new()
+	camera_rotation_z_node.set_name("%s_rotz" % camera_id)
+	camera_rotation_x_node.add_child(camera_rotation_z_node)
+	camera_rotation_z_node.set_owner(main_node)
 	
 	# Camera
 	var camera3d := Camera3D.new()
 	camera3d.set_name("%s_cam" % camera_id)
-	camera_position_b_node.add_child(camera3d)
+	camera_rotation_z_node.add_child(camera3d)
 	camera3d.set_owner(main_node)
 	
 	camera_position_node.position = array_to_vector3(camera.camera.position)
 	#var camera_quaternion := array_to_quaternion(camera.camera.quaternion)
 	#camera_position_node.quaternion = camera_quaternion
 	#camera_position_node.rotation_edit_mode = Node3D.ROTATION_EDIT_MODE_QUATERNION
-	camera_position_b_node.rotation.x = array_to_vector3(camera.camera.rotation).x
-	camera_position_node.rotation.y = array_to_vector3(camera.camera.rotation).y
-	camera3d.rotation.z = array_to_vector3(camera.camera.rotation).z
-	
-	camera3d.rotation.x = deg_to_rad(-90)
+	camera_rotation_x_node.rotation.x = array_to_vector3(camera.camera.rotation).x
+	camera_rotation_y_node.rotation.y = array_to_vector3(camera.camera.rotation).y
+	camera_rotation_z_node.rotation.z = array_to_vector3(camera.camera.rotation).z
+	camera_rotation_z_node.rotation.x = deg_to_rad(-90)
 	camera3d.fov = rad_to_deg(camera.camera.fov)
 	
 	if camera.camera.animation != null:
@@ -395,11 +406,13 @@ func add_camera(camera:Dictionary, camera_id:String, main_node:Node3D):
 		#	animation_player.add_animation_library("", animation_library)
 		#
 		for t in camera.camera.animation:
-			var track_path = camera_id+"_crane/"+camera_id+"_pos:"+t.path
-			if t.path.begins_with("rotation:x"):
-				track_path = camera_id+"_crane/"+camera_id+"_pos/"+camera_id+"_posb:"+t.path
+			var track_path:String = camera_id+"_crane/"+camera_id+"_pos:"+t.path
+			if t.path.begins_with("rotation:y"):
+				track_path = camera_id+"_crane/"+camera_id+"_pos/"+camera_id+"_roty:"+t.path
+			elif t.path.begins_with("rotation:x"):
+				track_path = camera_id+"_crane/"+camera_id+"_pos/"+camera_id+"_roty/"+camera_id+"_rotx:"+t.path
 			elif t.path.begins_with("rotation:z"):
-				track_path = camera_id+"_crane/"+camera_id+"_pos/"+camera_id+"_posb/"+camera_id+"_cam:"+t.path
+				track_path = camera_id+"_crane/"+camera_id+"_pos/"+camera_id+"_roty/"+camera_id+"_rotx/"+camera_id+"_rotz:"+t.path
 			var reset_track_idx = reset_animation.add_track(Animation.TYPE_BEZIER)
 			reset_animation.track_set_path(reset_track_idx, track_path)
 			var value := 0

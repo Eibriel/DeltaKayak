@@ -24,6 +24,9 @@ var temporizador:= 0.0
 var grabbed := false
 var moved := false
 var is_intro := true
+var foreshadowing := false
+
+var kayak_k1: RigidBody3D
 
 const UnhandledTriggers = preload("res://interactives/unhandled_triggers.gd")
 
@@ -38,6 +41,7 @@ func _ready() -> void:
 	Global.grab_joint.set_param_z(Generic6DOFJoint3D.PARAM_ANGULAR_SPRING_STIFFNESS, 0.01)
 	
 	Global.grab_kayak = %GrabKayak
+	Global.grab_kayak2 = %GrabKayak2
 	#Global.grab_kayak.set_param_x(Generic6DOFJoint3D.PARAM_LINEAR_LIMIT_SOFTNESS, 0.01)
 	#Global.grab_kayak.set_param_y(Generic6DOFJoint3D.PARAM_LINEAR_LIMIT_SOFTNESS, 0.01)
 	#Global.grab_kayak.set_param_z(Generic6DOFJoint3D.PARAM_LINEAR_LIMIT_SOFTNESS, 0.01)
@@ -66,6 +70,10 @@ func _ready() -> void:
 	%DerivativeSlider.value = character.pid_derivative_par
 	
 	#Input.set_mouse_mode(Input.MOUSE_MODE_HIDDEN)
+	
+	for c in dk_world.get_children():
+		if c.has_meta("is_pepa_kayak"):
+			kayak_k1 = c
 	
 	%IntroChatLabel.visible = true
 	intro_animation()
@@ -419,23 +427,40 @@ func _on_grab_kayak_body_entered(body: Node3D) -> void:
 func grab_kayak():
 	if grabbed: return
 	grabbed = true
-	Global.grab_kayak.global_position = Global.character.global_position
-	%KayakGrabber.global_position = Global.character.global_position
-	Global.grab_kayak.set_node_a(%KayakGrabber.get_path())
-	Global.grab_kayak.set_node_b(Global.character.get_path())
+	var connect_grab = func():
+		Global.grab_kayak.global_position = Global.character.global_position
+		%KayakGrabber.global_position = Global.character.global_position
+		Global.grab_kayak.set_node_a(%KayakGrabber.get_path())
+		Global.grab_kayak.set_node_b(Global.character.get_path())
+		#
+		Global.character.release_grab()
+		Global.grab_kayak2.global_position = kayak_k1.global_position
+		Global.grab_kayak2.set_node_a(%KayakGrabber.get_path())
+		Global.grab_kayak2.set_node_b(kayak_k1.get_path())
 	
 	var tt := [
-		Vector3(8, 0, 3),
-		Vector3(1, 0, 3),
-		Vector3(10, 0, 6),
-		Vector3(-5, 0, -8),
+		Vector3(2, 0, 1),
+		Vector3(1, 0, -1),
+		Vector3(0.5, 0, 0),
+		Vector3(-2, 0, -0.5),
 	]
 	
 	var tween := create_tween()
+	tween.tween_callback(Global.character.apply_central_impulse.bind(Vector3(0, 0, 1)*3))
+	tween.tween_interval(1.0)
+	tween.tween_callback(Global.character.apply_central_impulse.bind(Vector3(-1, 0, 1)*3))
+	tween.tween_callback(say_dialogue.bind("demo2_kayak_movement_3"))
+	tween.tween_interval(0.3)
+	tween.tween_callback(Global.character.apply_central_impulse.bind(Vector3(1, 0, 1)*4))
+	tween.tween_interval(0.3)
+	tween.tween_callback(Global.character.apply_central_impulse.bind(Vector3(-1, 0, 1)*3))
+	tween.tween_interval(3)
+	tween.tween_callback(connect_grab)
 	tween.set_ease(Tween.EASE_IN_OUT)
 	tween.set_trans(Tween.TRANS_CUBIC)
-	tween.tween_property(%KayakGrabber, "global_position", Vector3(-16, 0, -139), 0.3)
+	tween.tween_property(%KayakGrabber, "global_position", Vector3(-16, 0, -139), 1.3)
 	tween.parallel().tween_property(%KayakGrabber, "global_rotation:y", 0, 0.2)
+	tween.tween_callback(say_dialogue.bind("demo_scream"))
 	for t in tt:
 		tween.tween_property(%KayakGrabber, "global_position", Vector3(-16, 0, -139)+t, 0.6)
 		tween.parallel().tween_property(%KayakGrabber, "global_rotation:y", deg_to_rad(randi_range(-90, 90)), 0.5)
@@ -446,31 +471,55 @@ func grab_kayak():
 	tween.tween_property(%KayakGrabber, "global_position", Vector3(-186.017, 0, -147.396), 6.0)
 	tween.parallel().tween_property(%KayakGrabber, "global_rotation:y", deg_to_rad(-90+60), 6.0)
 	tween.tween_callback(ungrab_kayak)
-	tween.tween_callback(say_dialogue.bind("demo_start_point"))
+	tween.tween_callback(kayak_k1.queue_free)
+	tween.tween_interval(3.0)
+	tween.tween_callback(say_dialogue.bind("demo_other_side"))
 
 func ungrab_kayak():
 	Global.grab_kayak.set_node_a(NodePath(""))
 	Global.grab_kayak.set_node_b(NodePath(""))
+	#
+	Global.grab_kayak2.set_node_a(NodePath(""))
+	Global.grab_kayak2.set_node_b(NodePath(""))
 
 
 func _on_first_grab_kayak_body_entered(body: Node3D) -> void:
 	if moved: return
 	moved = true
 	var tween := create_tween()
-	tween.tween_callback(Global.character.apply_central_impulse.bind(Vector3(0, 0, 1)))
+	tween.tween_callback(Global.character.apply_central_impulse.bind(Vector3(0, 0, 1)*0.5))
 	tween.tween_interval(1.0)
-	tween.tween_callback(Global.character.apply_central_impulse.bind(Vector3(-1, 0, 1)))
+	tween.tween_callback(Global.character.apply_central_impulse.bind(Vector3(-1, 0, 1)*1))
 	tween.tween_interval(0.3)
-	tween.tween_callback(Global.character.apply_central_impulse.bind(Vector3(1, 0, 1)))
+	tween.tween_callback(Global.character.apply_central_impulse.bind(Vector3(1, 0, 1)*2))
 	tween.tween_interval(0.3)
 	tween.tween_callback(Global.character.apply_central_impulse.bind(Vector3(-1, 0, 1)))
 	tween.tween_callback(say_dialogue.bind("demo2_kayak_movement"))
 	tween.tween_interval(10)
-	tween.tween_callback(Global.character.apply_central_impulse.bind(Vector3(0, 0, 1)))
+	tween.tween_callback(Global.character.apply_central_impulse.bind(Vector3(0, 0, 1)*0.5))
+	tween.tween_interval(1.0)
+	tween.tween_callback(Global.character.apply_central_impulse.bind(Vector3(-1, 0, 1)*1))
+	tween.tween_interval(0.3)
+	tween.tween_callback(Global.character.apply_central_impulse.bind(Vector3(1, 0, 1)*2))
 	tween.tween_interval(1.0)
 	tween.tween_callback(Global.character.apply_central_impulse.bind(Vector3(-1, 0, 1)))
-	tween.tween_interval(0.3)
-	tween.tween_callback(Global.character.apply_central_impulse.bind(Vector3(1, 0, 1)))
-	tween.tween_interval(0.3)
-	tween.tween_callback(Global.character.apply_central_impulse.bind(Vector3(-1, 0, 1)))
 	tween.tween_callback(say_dialogue.bind("demo2_kayak_movement_2"))
+	tween.tween_callback(kayak_k1.set_camera)
+	tween.tween_callback(dk_world.set_select_cameras.bind(false))
+	tween.tween_callback(kayak_k1.pepa_visible.bind(true))
+	tween.tween_interval(3.0)
+	tween.tween_callback(dk_world.set_select_cameras.bind(true))
+	tween.tween_interval(10.0)
+	tween.tween_callback(say_dialogue.bind("demo2_kayak_movement_2b"))
+
+func _on_foreshadowing_body_entered(body: Node3D) -> void:
+	if foreshadowing: return
+	foreshadowing = true
+	say_dialogue("demo_foreshadowing")
+
+
+var heavy_kayak := false
+func _on_heavy_kayak_body_entered(body: Node3D) -> void:
+	if heavy_kayak: return
+	heavy_kayak = true
+	say_dialogue("demo_heavy_kayak")

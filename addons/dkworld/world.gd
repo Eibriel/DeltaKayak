@@ -76,6 +76,11 @@ func handle_cameras(delta)->void:
 	handle_camera_pathpoints(current_camera, character, new_camera, delta)
 	handle_camera_framing(current_camera, character, new_camera, delta)
 
+func set_select_cameras(value:bool) -> void:
+	select_cameras = value
+	if value == true:
+		Global.camera.current = true
+
 func handle_camera_framing(current_camera:Camera3D, character, new_camera:bool, delta:float):
 	if not current_camera.has_meta("vertical_compensation"): return
 	match current_camera.get_meta("vertical_compensation"):
@@ -88,7 +93,7 @@ func handle_camera_framing(current_camera:Camera3D, character, new_camera:bool, 
 					vertical_diff = get_camera_diff(current_camera, character).y
 					current_camera.rotation.x -= vertical_diff*0.001
 		"translation":
-			var crane_node := current_camera.get_parent_node_3d().get_parent_node_3d().get_parent_node_3d()
+			var crane_node := get_camera_parent(current_camera, "crane")
 			var vertical_diff := get_camera_diff(current_camera, character).y
 			crane_node.position.y -= vertical_diff*0.01*delta
 			if new_camera:
@@ -99,8 +104,33 @@ func handle_camera_framing(current_camera:Camera3D, character, new_camera:bool, 
 	match current_camera.get_meta("horizontal_compensation"):
 		"rotation":
 			var horizontal_diff := get_camera_diff(current_camera, character).x
-			var posb_node := current_camera.get_parent_node_3d()
-			posb_node.rotation.z += horizontal_diff*0.001*delta
+			current_camera.rotation.y += horizontal_diff*0.01*delta
+			if new_camera:
+				# TODO Optimize
+				for _n in 100:
+					horizontal_diff = get_camera_diff(current_camera, character).x
+					current_camera.rotation.y += horizontal_diff*0.001
+		"translation":
+			var horizontal_diff := get_camera_diff(current_camera, character).x
+			current_camera.position.x += horizontal_diff*0.01*delta
+			if new_camera:
+				# TODO Optimize
+				for _n in 100:
+					horizontal_diff = get_camera_diff(current_camera, character).x
+					current_camera.position.x += horizontal_diff*0.001
+
+func get_camera_parent(current_camera:Camera3D, _name:String) -> Node3D:
+	var parents := {
+		"rotz": 1,
+		"rotx": 2,
+		"roty": 3,
+		"pos": 4,
+		"crane": 5,
+	}
+	var parent = current_camera
+	for _n in parents[_name]:
+		parent = parent.get_parent_node_3d()
+	return parent
 
 func get_camera_diff(current_camera: Camera3D, character) -> Vector2:
 	var screen_pos := current_camera.unproject_position(character.global_position)
@@ -116,8 +146,11 @@ func handle_camera_pathpoints(current_camera:Camera3D, character, new_camera:boo
 	var pathpoints:Array = current_camera.get_meta("pathpoints")
 	#print(pathpoints)
 	if pathpoints.size() == 0: return
-	var path_pos := get_path_position(Global.tri_to_bi(character.global_position), pathpoints)
-	var camera_speed = 1.0
+	var path_pos_data := get_path_position(Global.tri_to_bi(character.global_position), pathpoints)
+	var path_pos:float = path_pos_data[0]
+	#var side_a:float = path_pos_data[1]
+	#var side_b:float = path_pos_data[2]
+	var camera_speed := 1.0
 	if current_camera.has_meta("speed"):
 		camera_speed = float(current_camera.get_meta("speed"))
 	if new_camera:
@@ -224,7 +257,7 @@ func camera_exited(area:Area3D, camera: Camera3D, path_:Path3D) -> void:
 		character_in_camera.erase(camera)
 	select_best_camera()
 
-func get_path_position(point_pos: Vector2, path_def: Array) -> float:
+func get_path_position(point_pos: Vector2, path_def: Array) -> Array:
 	var c_dist := []
 	var polygon_weight := []
 	var total_weight := 0.0
@@ -264,15 +297,15 @@ func get_path_position(point_pos: Vector2, path_def: Array) -> float:
 		var total_dist := proxy_a.distance_to(proxy_b)
 		var partial_dist := point_pos.distance_to(proxy_b)
 		var val := remap(total_dist-partial_dist, 0.0, total_dist, 0.0, 1.0)
-		return (val*polygon_weight[line_id]) + added_weight
+		var pos:float = (val*polygon_weight[line_id]) + added_weight
+		return [pos, proxy_a, proxy_b]
 	# If not in polygon
 	var dist_first:float = path_def[0][0].distance_to(point_pos)
 	var dist_last: float = path_def[path_def.size()-1][0].distance_to(point_pos)
 	if dist_first > dist_last:
-		return 1
+		return [1, path_def[0][0], path_def[0][1]]
 	else:
-		return 0
-	return 0
+		return [0, path_def[path_def.size()-1][0], path_def[path_def.size()-1][1]]
 
 func on_trigger_entered(area_:Area3D, trigger_name:String) -> void:
 	if not area_.has_meta("is_character_interaction"): return
