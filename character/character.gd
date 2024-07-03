@@ -6,7 +6,6 @@ extends RigidBody3D
 @onready var marker_3d: Marker3D = $Marker3D
 @onready var grabbing_position: Marker3D = $GrabbingPosition
 
-
 var soft_camera_rotation: float
 var speed := 0.0
 var torque := 0.0
@@ -35,8 +34,10 @@ var pid_integral_par := 251 #1.0
 var pid_derivative_par := 3639 #2000.0 #1000.0
 
 var pid_tunning := 0.0
-
 var control_type := CONTROL_TYPE.CAR
+
+var trail := []
+var trail_time := 0.0
 
 enum GRABBING {
 	WANTS_TO,
@@ -61,6 +62,7 @@ func _ready():
 	
 
 func _process(delta: float) -> void:
+	trail_time += delta
 	if temp_time > 0:
 		temp_time -= delta
 	elif temp_time < 0:
@@ -71,6 +73,12 @@ func _process(delta: float) -> void:
 	damage -= delta*0.25
 	if damage < 0: damage = 0
 	%DamageLight.light_energy = damage * 0.1
+	
+	if trail_time > 1.0:
+		trail_time = 0.0
+		trail.push_front(Vector3(global_position))
+		if trail.size() > 10:
+			trail.pop_back()
 
 func handle_finetunning() -> void:
 	var test_angle := angle_difference(deg_to_rad(90), deg_to_rad(0))

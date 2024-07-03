@@ -63,3 +63,6 @@ transform = Transform3D(-1.2, 0, -1.04907e-07, 0, 1.2, 0, 1.04907e-07, 0, -1.2, 
 unique_name_in_owner = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0630493, -6.61163)
 target_position = Vector3(0, 0, -3)
+
+[node name="AttackPositionindicator" type="CSGSphere3D" parent="."]
+unique_name_in_owner = true

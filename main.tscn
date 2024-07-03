@@ -1204,7 +1204,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.48492, 0)
 shape = SubResource("BoxShape3D_0ev4o")
 
 [node name="PysicsObjects" type="Node3D" parent="Main3D"]
-visible = false
 
 [node name="FloatingBox" parent="Main3D/PysicsObjects" instance=ExtResource("9_kolyd")]
 transform = Transform3D(0.0265782, 0, -0.999647, 0, 1, 0, 0.999647, 0, 0.0265782, -14.9052, 3.7883, 53.2051)
@@ -1232,7 +1231,7 @@ transform = Transform3D(0.03319, 0, -0.999449, 0, 1, 0, 0.999449, 0, 0.03319, -1
 transform = Transform3D(-0.112822, 0, -0.993615, 0, 1, 0, 0.993615, 0, -0.112822, -108.615, 0, -165.911)
 
 [node name="Chain" parent="Main3D/PysicsObjects" instance=ExtResource("13_60n28")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13.4676, 0, 11.0213)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13.4676, 0, 59.2215)
 
 [node name="Pendulum" parent="Main3D/PysicsObjects" instance=ExtResource("14_80ibj")]
 transform = Transform3D(0.0861995, 0, -0.996278, 0, 1, 0, 0.996278, 0, 0.0861995, -15.2202, 0, 48.4327)
@@ -1256,14 +1255,14 @@ axis_lock_angular_z = true
 [node name="CSGBox3D" type="CSGBox3D" parent="Main3D/PysicsObjects/KayakGrabber"]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Main3D/PysicsObjects/KayakGrabber"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.06097, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.45584, 0)
 shape = SubResource("BoxShape3D_d47b7")
 
 [node name="DemoElements" type="Node3D" parent="Main3D"]
 
 [node name="DemoExitDoor" type="StaticBody3D" parent="Main3D/DemoElements"]
 unique_name_in_owner = true
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 200.935, 0, -207.583)
+transform = Transform3D(0.772966, 0, 0.634447, 0, 1, 0, -0.634447, 0, 0.772966, -167.312, 0, -412.159)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Main3D/DemoElements/DemoExitDoor"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.479614)
@@ -1275,7 +1274,7 @@ size = Vector3(1, 2.01664, 6.10846)
 
 [node name="VinoLabel" type="Label3D" parent="Main3D/DemoElements"]
 unique_name_in_owner = true
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 170.437, 4.46076, -196.292)
+transform = Transform3D(0.739455, 0, 0.673206, 0, 1, 0, -0.673206, 0, 0.739455, -193.438, 4.46076, -369.809)
 pixel_size = 0.02
 text = "Vino"
 font_size = 64
@@ -1287,7 +1286,7 @@ material = SubResource("StandardMaterial3D_xingp")
 
 [node name="CarneLabel" type="Label3D" parent="Main3D/DemoElements"]
 unique_name_in_owner = true
-transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, 171.048, 4.90522, -218.527)
+transform = Transform3D(-0.739455, 0, -0.673206, 0, 1, 0, 0.673206, 0, -0.739455, -207.955, 4.90522, -386.662)
 pixel_size = 0.02
 text = "Carne"
 font_size = 64
@@ -1299,7 +1298,7 @@ material = SubResource("StandardMaterial3D_xingp")
 
 [node name="TierraLabel" type="Label3D" parent="Main3D/DemoElements"]
 unique_name_in_owner = true
-transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 158.802, 4.90522, -208.382)
+transform = Transform3D(0.673206, 0, -0.739455, 0, 1, 0, 0.739455, 0, 0.673206, -210.181, 4.90522, -370.916)
 pixel_size = 0.02
 text = "Tierra"
 font_size = 64
@@ -1397,6 +1396,15 @@ gizmo_extents = 5.0
 
 [node name="InitialPositionOtherSide" type="Marker3D" parent="Main3D"]
 transform = Transform3D(0.998732, 0, -0.0503483, 0, 1, 0, 0.0503483, 0, 0.998732, -206.715, 0, -137.19)
+gizmo_extents = 5.0
+
+[node name="InitialPositionPuzzle" type="Marker3D" parent="Main3D"]
+transform = Transform3D(0.998732, 0, -0.0503483, 0, 1, 0, 0.0503483, 0, 0.998732, -186.666, 0, -359.256)
+gizmo_extents = 5.0
+
+[node name="FinishPositionDemo" type="Marker3D" parent="Main3D"]
+unique_name_in_owner = true
+transform = Transform3D(0.998732, 0, -0.0503483, 0, 1, 0, 0.0503483, 0, 0.998732, -159.177, 0, -419.987)
 gizmo_extents = 5.0
 
 [connection signal="drag_ended" from="Control/Debug/VBoxContainer/ProportionalSlider" to="." method="_on_slider_drag_ended"]

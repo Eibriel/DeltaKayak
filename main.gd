@@ -28,6 +28,8 @@ var foreshadowing := false
 
 var kayak_k1: RigidBody3D
 
+const SKIP_INTRO = false
+
 const UnhandledTriggers = preload("res://interactives/unhandled_triggers.gd")
 
 func _ready() -> void:
@@ -79,7 +81,10 @@ func _ready() -> void:
 	intro_animation()
 
 func intro_animation():
-	%IntroAnimationPlayer.play("intro_animation")
+	if SKIP_INTRO:
+		end_intro_animation()
+	else:
+		%IntroAnimationPlayer.play("intro_animation")
 
 func end_intro_animation():
 	dk_world.select_cameras = true
@@ -135,7 +140,7 @@ func handle_demo_puzzle():
 		#print("OpenDoor")
 	else:
 		%DemoExitDoor.position.y = 0
-	if Global.character.position.distance_to(Vector3(213.4,0,-208.5)) < 6 \
+	if Global.character.position.distance_to(%FinishPositionDemo.global_position) < 6 \
 	 and not %LabelThanks.visible:
 		%LabelThanks.visible = true
 		%LabelThanks.text += "\n\n%s" % %LabelTemporizador.text
