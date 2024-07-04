@@ -27,3 +27,6 @@ func array_to_vector3(array: Array) -> Vector3:
 
 func tri_to_bi(tri:Vector3) -> Vector2:
 	return Vector2(tri.x, tri.z)
+
+func bi_to_tri(bi:Vector2, z_value:float=0.0) -> Vector3:
+	return Vector3(bi.x, z_value, bi.y)

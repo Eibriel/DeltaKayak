@@ -1,0 +1,17 @@
+[gd_resource type="ShaderMaterial" load_steps=6 format=3 uid="uid://c4xik0byek3pw"]
+
+[ext_resource type="Shader" path="res://shaders/land.gdshader" id="1_e01jc"]
+[ext_resource type="Texture2D" uid="uid://rtmhvk5iwxjr" path="res://textures/Dirt_04-512x512.png" id="2_0gvdi"]
+[ext_resource type="Texture2D" uid="uid://b47qxvqte0vmk" path="res://textures/Grass_12-512x512.png" id="3_akwk0"]
+
+[sub_resource type="Gradient" id="Gradient_dovyq"]
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_uk2lq"]
+gradient = SubResource("Gradient_dovyq")
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_e01jc")
+shader_parameter/texture_up = ExtResource("3_akwk0")
+shader_parameter/texture_side = ExtResource("2_0gvdi")
+shader_parameter/texture_gradient = SubResource("GradientTexture1D_uk2lq")

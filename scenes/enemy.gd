@@ -14,7 +14,7 @@ var attack_charge_time := 0.0
 var attack_intimidate_time := 0.0
 var path_blocked_time := 0.0
 
-var attack_position:Vector3
+#var attack_position:Vector3
 
 enum STATE {
 	SLEEPING,
@@ -33,7 +33,7 @@ enum ATTACK_STATE {
 func _process(_delta: float) -> void:
 	Global.log_text += "\nState: %s" % STATE.find_key(current_state)
 	Global.log_text += "\nAttack: %s" % ATTACK_STATE.find_key(attack_state)
-	%AttackPositionindicator.global_position = attack_position
+	#%AttackPositionindicator.global_position = attack_position
 
 func _get_target(delta: float) -> void:
 	change_state()
@@ -43,7 +43,7 @@ func _get_target(delta: float) -> void:
 		%SpotLight3D.visible = true
 		change_attack_state()
 		is_trail_visible() # TODO line may not be needed
-		target_position = attack_position
+		#target_position = attack_position
 		boat_speed = 0.5
 		if attack_state == ATTACK_STATE.START:
 			attack_start_time += delta
@@ -167,21 +167,26 @@ func direct_sight_character() -> bool:
 	var collider = ray_cast_3d.get_collider()
 	Global.log_text += "\ncollider: %s" % collider.name
 	if not collider.name == "character": return false
-	attack_position = Vector3(Global.character.global_position)
+	target_position = Vector3(Global.character.global_position)
+	target_velocity = Vector3(Global.character.linear_velocity)
 	return true
 
 func is_trail_visible() -> bool:
-	var trail := Vector3.ZERO
-	for t in Global.character.trail:
+	var trail_position := Vector3.ZERO
+	var trail_velocity := Vector3.ZERO
+	var id:=0
+	for t in Global.character.trail_position:
+		id+=1
 		var target := to_local(t)
 		if target.length() > 20: continue
 		ray_cast_3d.target_position = target
 		ray_cast_3d.force_raycast_update()
 		if ray_cast_3d.is_colliding(): continue
-		trail = to_global(target)
+		trail_position = to_global(target)
 		break
-	if trail != Vector3.ZERO:
-		attack_position = trail
+	if trail_position != Vector3.ZERO:
+		target_position = trail_position
+		target_velocity = Global.character.trail_velocity[id-1]
 		return true
 	return false
 

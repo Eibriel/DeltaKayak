@@ -1,14 +1,15 @@
-[gd_scene load_steps=26 format=3 uid="uid://ce6e8v1saxjr5"]
+[gd_scene load_steps=32 format=3 uid="uid://ce6e8v1saxjr5"]
 
 [ext_resource type="Environment" uid="uid://xpf4ng2ym0n4" path="res://environments/main_environment.tres" id="1_ekqa4"]
 [ext_resource type="Script" path="res://main.gd" id="1_xxenq"]
 [ext_resource type="PackedScene" uid="uid://r0o1qsmlq84u" path="res://character/character.tscn" id="2_3sgbv"]
 [ext_resource type="CompositorEffect" uid="uid://o01yk1gb130b" path="res://compositor/screen/screen_compositor_effect.tres" id="2_f4rcp"]
 [ext_resource type="Resource" uid="uid://bcsic7fi7dxee" path="res://GamePreference.tres" id="2_wexnt"]
-[ext_resource type="PackedScene" uid="uid://baucroxjd5o4i" path="res://world_definition.dkworld" id="3_7foso"]
+[ext_resource type="PackedScene" uid="uid://uyhmturoq7o8" path="res://world_definition.dkworld" id="3_7foso"]
 [ext_resource type="Resource" uid="uid://bi1rugic742u0" path="res://dkdata/dkdata.tres" id="3_nh3h6"]
 [ext_resource type="Texture2D" uid="uid://31mrm2ajeyll" path="res://textures/dialogue_box.png" id="4_kkvku"]
 [ext_resource type="PackedScene" uid="uid://t23rsw74uei8" path="res://scenes/long_box.tscn" id="9_kolyd"]
+[ext_resource type="Script" path="res://addons/dkworld/world.gd" id="9_p6s6y"]
 [ext_resource type="PackedScene" uid="uid://dsppfk5r8xdm7" path="res://scenes/L_floating_box.tscn" id="10_tov8v"]
 [ext_resource type="PackedScene" uid="uid://ccwbpjnygckmy" path="res://scenes/door.tscn" id="11_mh163"]
 [ext_resource type="PackedScene" uid="uid://cq7dkdx262hcs" path="res://scenes/switch.tscn" id="12_uwfp4"]
@@ -30,7 +31,22 @@ size = Vector3(1.96265, 7.51904, 1.8761)
 size = Vector3(1, 0.831177, 1)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_cach1"]
-size = Vector3(1, 1, 6.15552)
+size = Vector3(1, 1, 6.0647)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_rdra4"]
+size = Vector3(1, 1, 15.3396)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_pirlk"]
+size = Vector3(1, 1, 15.5098)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_c0qgn"]
+size = Vector3(1, 1, 34.252)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_yyt67"]
+size = Vector3(1, 1, 10.8828)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_icihu"]
+size = Vector3(1, 1, 36.917)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_xingp"]
 shading_mode = 0
@@ -38,6 +54,33 @@ albedo_color = Color(0, 1, 0.133333, 1)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_i81n0"]
 size = Vector3(53.7158, 7.51904, 4.34125)
+
+[sub_resource type="Animation" id="Animation_ddu3q"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("CameraIntro:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0, 95.2315, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("CameraIntro:rotation")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(-1.47047, 0, 0)]
+}
 
 [sub_resource type="Animation" id="Animation_w3qoh"]
 resource_name = "intro_animation"
@@ -79,33 +122,6 @@ tracks/2/keys = {
 "args": [],
 "method": &"end_intro_animation"
 }]
-}
-
-[sub_resource type="Animation" id="Animation_ddu3q"]
-length = 0.001
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("CameraIntro:position")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector3(0, 95.2315, 0)]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("CameraIntro:rotation")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector3(-1.47047, 0, 0)]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_vbxsh"]
@@ -369,9 +385,11 @@ shadow_enabled = true
 [node name="character" parent="Main3D" instance=ExtResource("2_3sgbv")]
 unique_name_in_owner = true
 
-[node name="DKWorld" parent="Main3D" node_paths=PackedStringArray("initial_camera") instance=ExtResource("3_7foso")]
+[node name="DKWorld" type="Node3D" parent="Main3D" node_paths=PackedStringArray("initial_camera", "initial_camera_path") instance=ExtResource("3_7foso")]
 unique_name_in_owner = true
+script = ExtResource("9_p6s6y")
 initial_camera = NodePath("../IntroElements/CameraIntro")
+initial_camera_path = NodePath("camera_camera_001_003/@Path3D@100495")
 world_definition = {
 "Sector_003": {
 "cameras": {
@@ -1166,6 +1184,7 @@ world_definition = {
 [node name="Camera3D" type="Camera3D" parent="Main3D"]
 transform = Transform3D(1, 0, 0, 0, 0.921185, 0.389124, 0, -0.389124, 0.921185, 0.528366, 5.52796, 5.79716)
 current = true
+fov = 37.8493
 
 [node name="MultiMeshInstance3D" type="MultiMeshInstance3D" parent="Main3D"]
 multimesh = SubResource("MultiMesh_g048c")
@@ -1253,6 +1272,7 @@ axis_lock_angular_y = true
 axis_lock_angular_z = true
 
 [node name="CSGBox3D" type="CSGBox3D" parent="Main3D/PysicsObjects/KayakGrabber"]
+visible = false
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Main3D/PysicsObjects/KayakGrabber"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.45584, 0)
@@ -1262,15 +1282,52 @@ shape = SubResource("BoxShape3D_d47b7")
 
 [node name="DemoExitDoor" type="StaticBody3D" parent="Main3D/DemoElements"]
 unique_name_in_owner = true
-transform = Transform3D(0.772966, 0, 0.634447, 0, 1, 0, -0.634447, 0, 0.772966, -167.312, 0, -412.159)
+transform = Transform3D(0.719703, 0, 0.694282, 0, 1, 0, -0.694282, 0, 0.719703, -166.224, 0, -412.89)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Main3D/DemoElements/DemoExitDoor"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.479614)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.10352e-05, 0, -0.479645)
 shape = SubResource("BoxShape3D_cach1")
 
 [node name="CSGBox3D" type="CSGBox3D" parent="Main3D/DemoElements/DemoExitDoor"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.508342, -0.503326)
 size = Vector3(1, 2.01664, 6.10846)
+
+[node name="BlockPath" type="StaticBody3D" parent="Main3D/DemoElements"]
+unique_name_in_owner = true
+transform = Transform3D(-0.626577, 0, 0.77936, 0, 1, 0, -0.77936, 0, -0.626577, 8.26911, 0, -10.0739)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Main3D/DemoElements/BlockPath"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.748719, 0, 0.28206)
+shape = SubResource("BoxShape3D_rdra4")
+
+[node name="BlockPathOtherSide" type="StaticBody3D" parent="Main3D/DemoElements"]
+unique_name_in_owner = true
+transform = Transform3D(-0.999934, 0, 0.0114492, 0, 1, 0, -0.0114492, 0, -0.999934, -42.4736, 0, -145.339)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Main3D/DemoElements/BlockPathOtherSide"]
+shape = SubResource("BoxShape3D_pirlk")
+
+[node name="BlockPathBehindAna" type="StaticBody3D" parent="Main3D/DemoElements"]
+unique_name_in_owner = true
+transform = Transform3D(-0.180159, 0, -0.983638, 0, 1, 0, 0.983638, 0, -0.180159, -7.13075, 0, -193.304)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Main3D/DemoElements/BlockPathBehindAna"]
+shape = SubResource("BoxShape3D_c0qgn")
+
+[node name="BlockPath4" type="StaticBody3D" parent="Main3D/DemoElements"]
+unique_name_in_owner = true
+transform = Transform3D(-0.999356, 0, 0.0358939, 0, 1, 0, -0.0358939, 0, -0.999356, 3.70474, 0, -144.084)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Main3D/DemoElements/BlockPath4"]
+shape = SubResource("BoxShape3D_yyt67")
+
+[node name="BlockPath2" type="StaticBody3D" parent="Main3D/DemoElements"]
+unique_name_in_owner = true
+transform = Transform3D(0.0152537, 0, 0.999884, 0, 1, 0, -0.999884, 0, 0.0152537, -10.2915, 0, 20.5313)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Main3D/DemoElements/BlockPath2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.74872, 0, 0.28206)
+shape = SubResource("BoxShape3D_icihu")
 
 [node name="VinoLabel" type="Label3D" parent="Main3D/DemoElements"]
 unique_name_in_owner = true
@@ -1330,6 +1387,12 @@ light_energy = 9.654
 light_volumetric_fog_energy = 2.61
 omni_range = 7.211
 
+[node name="OmniLight3D2" type="OmniLight3D" parent="Main3D/DemoElements"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16.2877, 5.01654, -15.4993)
+light_color = Color(0.99, 0.693, 0.693, 1)
+light_volumetric_fog_energy = 2.61
+omni_range = 19.4934
+
 [node name="GrabArea3D" type="Area3D" parent="Main3D/DemoElements"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -17.3393, 0, -135.942)
 collision_layer = 0
@@ -1347,6 +1410,16 @@ collision_mask = 2
 metadata/strength = true
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Main3D/DemoElements/ForeshadowingArea3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.18132, 1.48492, 1.23257)
+shape = SubResource("BoxShape3D_i81n0")
+
+[node name="AnaArea3D" type="Area3D" parent="Main3D/DemoElements"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16.3834, 0, -181.826)
+collision_layer = 0
+collision_mask = 2
+metadata/strength = true
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Main3D/DemoElements/AnaArea3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.18132, 1.48492, 1.23257)
 shape = SubResource("BoxShape3D_i81n0")
 
@@ -1373,7 +1446,7 @@ shape = SubResource("BoxShape3D_i81n0")
 [node name="IntroElements" type="Node3D" parent="Main3D"]
 
 [node name="CameraIntro" type="Camera3D" parent="Main3D/IntroElements"]
-transform = Transform3D(1, 0, 0, 0, 0.100153, 0.994969, 0, -0.994972, 0.100153, 0, 95.2315, 0)
+transform = Transform3D(1, 0, 0, 0, 0.100158, 0.994968, 0, -0.994971, 0.100158, 0, 95.2315, 0)
 fov = 77.1
 
 [node name="IntroAnimationPlayer" type="AnimationPlayer" parent="Main3D/IntroElements"]
@@ -1412,5 +1485,6 @@ gizmo_extents = 5.0
 [connection signal="drag_ended" from="Control/Debug/VBoxContainer/DerivativeSlider" to="." method="_on_slider_drag_ended"]
 [connection signal="body_entered" from="Main3D/DemoElements/GrabArea3D" to="." method="_on_grab_kayak_body_entered"]
 [connection signal="body_entered" from="Main3D/DemoElements/ForeshadowingArea3D" to="." method="_on_foreshadowing_body_entered"]
+[connection signal="body_entered" from="Main3D/DemoElements/AnaArea3D" to="." method="_on_ana_body_entered"]
 [connection signal="body_entered" from="Main3D/DemoElements/FirstGrabArea3D" to="." method="_on_first_grab_kayak_body_entered"]
 [connection signal="body_entered" from="Main3D/DemoElements/HeavyKayakArea3D" to="." method="_on_heavy_kayak_body_entered"]

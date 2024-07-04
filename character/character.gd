@@ -28,6 +28,7 @@ var current_speed := 0.0
 var grabbing_object: RigidBody3D
 var grabbing_object_position: Vector3
 var grabbing_state = GRABBING.NO
+var is_grab_locked:=false
 
 var pid_proportional_par := 180 #40.0 #20.0
 var pid_integral_par := 251 #1.0
@@ -36,7 +37,8 @@ var pid_derivative_par := 3639 #2000.0 #1000.0
 var pid_tunning := 0.0
 var control_type := CONTROL_TYPE.CAR
 
-var trail := []
+var trail_position := []
+var trail_velocity := []
 var trail_time := 0.0
 
 enum GRABBING {
@@ -76,9 +78,11 @@ func _process(delta: float) -> void:
 	
 	if trail_time > 1.0:
 		trail_time = 0.0
-		trail.push_front(Vector3(global_position))
-		if trail.size() > 10:
-			trail.pop_back()
+		trail_position.push_front(Vector3(global_position))
+		trail_velocity.push_front(Vector3(linear_velocity))
+		if trail_position.size() > 10:
+			trail_position.pop_back()
+			trail_velocity.pop_back()
 
 func handle_finetunning() -> void:
 	var test_angle := angle_difference(deg_to_rad(90), deg_to_rad(0))
@@ -174,6 +178,7 @@ func get_derivative(_error) -> float:
 #
 
 func handle_grabbing():
+	if is_grab_locked: return
 	if Input.is_action_just_pressed("grab") and grabbing_state == GRABBING.NO:
 		match grabbing_state:
 			GRABBING.NO:
@@ -196,6 +201,9 @@ func release_grab()->void:
 	Global.grab_joint.set_node_a(NodePath(""))
 	Global.grab_joint.set_node_b(NodePath(""))
 	set_collision_mask_value(3, true)
+
+func lock_grab(value:=true):
+	is_grab_locked = value
 
 func _physics_process(delta: float):
 	if pid_tunning == 0.0:

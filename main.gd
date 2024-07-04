@@ -28,7 +28,7 @@ var foreshadowing := false
 
 var kayak_k1: RigidBody3D
 
-const SKIP_INTRO = false
+const SKIP_INTRO = true
 
 const UnhandledTriggers = preload("res://interactives/unhandled_triggers.gd")
 
@@ -431,6 +431,7 @@ func _on_grab_kayak_body_entered(body: Node3D) -> void:
 
 func grab_kayak():
 	if grabbed: return
+	if not is_grabbing_kayak(): return
 	grabbed = true
 	var connect_grab = func():
 		Global.grab_kayak.global_position = Global.character.global_position
@@ -443,6 +444,8 @@ func grab_kayak():
 		Global.grab_kayak2.set_node_a(%KayakGrabber.get_path())
 		Global.grab_kayak2.set_node_b(kayak_k1.get_path())
 	
+	%BlockPathOtherSide.position.y = -20
+	
 	var tt := [
 		Vector3(2, 0, 1),
 		Vector3(1, 0, -1),
@@ -450,6 +453,7 @@ func grab_kayak():
 		Vector3(-2, 0, -0.5),
 	]
 	
+	Global.character.lock_grab()
 	var tween := create_tween()
 	tween.set_process_mode(Tween.TWEEN_PROCESS_PHYSICS)
 	tween.tween_callback(Global.character.apply_central_impulse.bind(Vector3(0, 0, 1)*3))
@@ -487,10 +491,13 @@ func ungrab_kayak():
 	#
 	Global.grab_kayak2.set_node_a(NodePath(""))
 	Global.grab_kayak2.set_node_b(NodePath(""))
+	
+	Global.character.lock_grab(false)
 
 
 func _on_first_grab_kayak_body_entered(body: Node3D) -> void:
 	if moved: return
+	if not is_grabbing_kayak(): return
 	moved = true
 	var tween := create_tween()
 	tween.set_process_mode(Tween.TWEEN_PROCESS_PHYSICS)
@@ -521,12 +528,32 @@ func _on_first_grab_kayak_body_entered(body: Node3D) -> void:
 
 func _on_foreshadowing_body_entered(body: Node3D) -> void:
 	if foreshadowing: return
+	if not is_grabbing_kayak(): return
 	foreshadowing = true
 	say_dialogue("demo_foreshadowing")
-
 
 var heavy_kayak := false
 func _on_heavy_kayak_body_entered(body: Node3D) -> void:
 	if heavy_kayak: return
 	heavy_kayak = true
 	say_dialogue("demo_heavy_kayak")
+
+
+func is_grabbing_kayak():
+	var is_grabbing:bool = false
+	var grab_path := Global.grab_joint.get_node_b()
+	if grab_path:
+		var grabbing_item: Node3D = get_node(grab_path)
+		is_grabbing = grabbing_item.name == "KayakKone"
+	if not is_grabbing:
+		if kayak_k1.global_position.z < -139:
+			is_grabbing = true
+		elif kayak_k1.global_position.distance_to(Global.character.global_position) < 6:
+			is_grabbing = true
+	if not is_grabbing:
+		say_dialogue("demo_forgot_kayak")
+	return is_grabbing
+
+
+func _on_ana_body_entered(body: Node3D) -> void:
+	say_dialogue("demo_ana")

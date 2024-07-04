@@ -1,0 +1,94 @@
+[gd_scene load_steps=8 format=3 uid="uid://c2ay4taoc0fcx"]
+
+[ext_resource type="Script" path="res://experiments/improved_boat.gd" id="1_2xlkm"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_sr1hb"]
+sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+ground_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+
+[sub_resource type="Sky" id="Sky_o84vh"]
+sky_material = SubResource("ProceduralSkyMaterial_sr1hb")
+
+[sub_resource type="Environment" id="Environment_gr7uc"]
+background_mode = 2
+sky = SubResource("Sky_o84vh")
+tonemap_mode = 2
+glow_enabled = true
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_007ww"]
+radius = 1.38489
+height = 13.2257
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_otbox"]
+size = Vector3(1, 0.2, 1)
+
+[sub_resource type="Curve3D" id="Curve3D_m3kg8"]
+_data = {
+"points": PackedVector3Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 10, 0, 0),
+"tilts": PackedFloat32Array(0, 0)
+}
+point_count = 2
+
+[node name="Node3D" type="Node3D"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_gr7uc")
+
+[node name="Boat" type="RigidBody3D" parent="."]
+axis_lock_linear_y = true
+axis_lock_angular_x = true
+axis_lock_angular_z = true
+mass = 10.0
+center_of_mass_mode = 1
+center_of_mass = Vector3(0, 0, -4)
+script = ExtResource("1_2xlkm")
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="Boat"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, -2.46672e-09, 0.0564319)
+shape = SubResource("CapsuleShape3D_007ww")
+
+[node name="CSGBox3D" type="CSGBox3D" parent="Boat"]
+size = Vector3(2.6272, 0.207275, 13.1758)
+
+[node name="Boat2" type="RigidBody3D" parent="."]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25.0675, 0, -18.6957)
+axis_lock_linear_y = true
+axis_lock_angular_x = true
+axis_lock_angular_z = true
+mass = 8.859
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Boat2"]
+shape = SubResource("BoxShape3D_otbox")
+
+[node name="CSGBox3D" type="CSGBox3D" parent="Boat2"]
+size = Vector3(1.80884, 0.207275, 3.06445)
+
+[node name="Coso" type="RigidBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 19.1284, 0, -6.45224)
+axis_lock_linear_y = true
+axis_lock_angular_x = true
+axis_lock_angular_z = true
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Coso"]
+shape = SubResource("BoxShape3D_otbox")
+
+[node name="CSGBox3D" type="CSGBox3D" parent="Coso"]
+transform = Transform3D(0.999972, 0, 0, 0, 1, 0, 0, 0, 0.999972, 0, 0, 0)
+size = Vector3(1, 0.2, 1)
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 9.08728, 0)
+projection = 1
+size = 74.958
+
+[node name="CSGSphere3D" type="CSGSphere3D" parent="."]
+unique_name_in_owner = true
+
+[node name="CSGSphere3D2" type="CSGSphere3D" parent="."]
+unique_name_in_owner = true
+radius = 0.1
+
+[node name="Path3D" type="Path3D" parent="."]
+unique_name_in_owner = true
+curve = SubResource("Curve3D_m3kg8")

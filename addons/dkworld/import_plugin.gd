@@ -7,6 +7,12 @@ const gltf_document_extension_class = preload("./gltf_extension.gd")
 
 const WATER_PATCH = preload("res://scenes/water_patch.tscn")
 
+const TREES := [
+	"Tree001",
+	"Tree003",
+	"Tree021"
+]
+	
 enum Presets { DEFAULT }
 
 var packed_scenes: Dictionary
@@ -175,10 +181,12 @@ func add_lands(lands: Array, sector_id:String, main_node:Node3D):
 		land_polygon.set_owner(main_node)
 		
 		
-		var material := StandardMaterial3D.new()
-		material.albedo_color = Color.GREEN
-		land_polygon.material = material
+		#var material := StandardMaterial3D.new()
+		#material.albedo_color = Color.GREEN
+		#land_polygon.material = material
+		land_polygon.material = preload("res://materials/land_material_2.tres")
 		land_polygon.use_collision = true
+		land_polygon.smooth_faces = true
 		land_polygon.set_collision_mask_value(1, true) # Walls
 		land_polygon.set_collision_mask_value(2, true) # Character
 		land_polygon.set_collision_mask_value(3, true) # Grabbable
@@ -252,95 +260,96 @@ func add_water(main_node:Node3D):
 	water.set_owner(main_node)
 
 func add_trees(trees: Dictionary, sector_id:String, main_node:Node3D):
-	var amount_trees: int = trees.keys().size()
-	#print(amount_trees)
-	if amount_trees < 1: return
-	var multimesh_instance := MultiMeshInstance3D.new()
-	var multimesh := MultiMesh.new()
-	multimesh_instance.set_name("Trees_%s" % sector_id)
-	main_node.add_child(multimesh_instance)
-	multimesh_instance.set_owner(main_node)
-	multimesh_instance.multimesh = multimesh
-	multimesh.transform_format = MultiMesh.TRANSFORM_3D
-	multimesh.mesh = load_tree_meshes()
-	
-	var points := get_trees_positions(trees)
-	
-	multimesh.instance_count = points.size()
-	
-	#print(corners)
-	var tree_n := 0
-	for p in points:
-		#var v = p
-		#var t := Transform3D(Basis(), v)
-		#t = t.rotated_local(Vector3.UP, randf_range(deg_to_rad(-180), deg_to_rad(180)))
-		#t = t.scaled_local(Vector3.ONE*((randf()+0.5)*0.5))
-		multimesh.set_instance_transform(tree_n, p)
-		tree_n += 1
-
-func get_trees_positions(trees) -> Array:
-	var tree_n := 0
-	var points := []
+	# TODO this creates one MultiMeshInstance for al trees in the sector
+	# must create smaller chunks
 	for tree_id in trees:
-		#print(tree_id)
-		var tree:Dictionary = trees[tree_id] as Dictionary
-		var set_position:= array_to_vector3(tree.position)
-		var set_rotation:= array_to_vector3(tree.rotation)
-		var set_scale:= array_to_vector3(tree.scale)
-		var t := Transform3D(Basis(), set_position)
-		t = t.rotated_local(Vector3.RIGHT, set_rotation.x)
-		t = t.rotated_local(Vector3.UP, set_rotation.y)
-		t = t.rotated_local(Vector3.FORWARD, set_rotation.z)
-		t = t.scaled_local(set_scale)
-		
-		# TODO allow rotation in any axis
-		var corners: Array[Vector3] = [
-			t * Vector3(-1, 0, -1),
-			t * Vector3(1, 0, -1),
-			t * Vector3(-1, 0, 1),
-			t * Vector3(1, 0, 1)
-		]
-		var length_side1 := corners[0].distance_to(corners[1])
-		var length_side2 := corners[1].distance_to(corners[2])
-		var amount_side1:float = max(1., length_side1 * 0.5)
-		var amount_side2:float = max(1., length_side2 * 0.5)
-		for side1 in int(amount_side1):
-			for side2 in int(amount_side2):
-				var point_a: Vector3 = lerp(corners[0], corners[1], side1/amount_side1)
-				var point_b: Vector3 = lerp(corners[2], corners[3], side1/amount_side1)
-				var point:Vector3 = lerp(point_a, point_b, side2/amount_side2)
-				point += Vector3(randf_range(-0.5, 0.5), 0, randf_range(-0.5, 0.5))
-				var t_point := Transform3D(Basis(), point)
-				var rand_rotation := randf_range(deg_to_rad(-180), deg_to_rad(180))
-				var rand_scale := Vector3.ONE*randf_range(0.5, 1.0)
-				t_point = t_point.rotated_local(Vector3.RIGHT, set_rotation.x)
-				t_point = t_point.rotated_local(Vector3.UP, set_rotation.y+rand_rotation)
-				t_point = t_point.rotated_local(Vector3.FORWARD, set_rotation.z)
-				t_point = t_point.scaled_local(rand_scale)
-				points.append(t_point)
+		for tree_type in TREES:
+			#var amount_trees: int = trees.keys().size()
+			#if amount_trees < 1: return
+			var multimesh_instance := MultiMeshInstance3D.new()
+			var multimesh := MultiMesh.new()
+			multimesh_instance.set_name("Trees_%s_%s" % [sector_id, tree_id])
+			main_node.add_child(multimesh_instance)
+			multimesh_instance.set_owner(main_node)
+			multimesh_instance.multimesh = multimesh
+			multimesh.transform_format = MultiMesh.TRANSFORM_3D
+			multimesh.mesh = load_tree_meshes(tree_type)
+			var points := get_trees_positions(trees[tree_id], "%s%s" % [tree_id, tree_type])
+			multimesh.instance_count = points.size()
+			
+			var tree_n := 0
+			for p in points:
+				multimesh.set_instance_transform(tree_n, p)
+				tree_n += 1
+
+func get_trees_positions(tree:Dictionary, my_seed:String) -> Array:
+	#var tree_n := 0
+	var points := []
+	#for tree_id in trees:
+	#var my_seed = tree_id.hash()
+	seed(my_seed.hash())
+	#print(tree_id)
+	#var tree:Dictionary = trees[tree_id] as Dictionary
+	var set_position:= array_to_vector3(tree.position)
+	var set_rotation:= array_to_vector3(tree.rotation)
+	var set_scale:= array_to_vector3(tree.scale)
+	var t := Transform3D(Basis(), set_position)
+	t = t.rotated_local(Vector3.RIGHT, set_rotation.x)
+	t = t.rotated_local(Vector3.UP, set_rotation.y)
+	t = t.rotated_local(Vector3.FORWARD, set_rotation.z)
+	t = t.scaled_local(set_scale)
+	
+	# TODO allow rotation in any axis
+	var corners: Array[Vector3] = [
+		t * Vector3(-1, 0, -1),
+		t * Vector3(1, 0, -1),
+		t * Vector3(-1, 0, 1),
+		t * Vector3(1, 0, 1)
+	]
+	var length_side1 := corners[0].distance_to(corners[1])
+	var length_side2 := corners[1].distance_to(corners[2])
+	var amount_side1:float = max(1., length_side1 * 0.5)
+	var amount_side2:float = max(1., length_side2 * 0.5)
+	for side1 in int(amount_side1):
+		for side2 in int(amount_side2):
+			var point_a: Vector3 = lerp(corners[0], corners[1], side1/amount_side1)
+			var point_b: Vector3 = lerp(corners[2], corners[3], side1/amount_side1)
+			var point:Vector3 = lerp(point_a, point_b, side2/amount_side2)
+			point += Vector3(randf_range(-0.9, 0.9), 0, randf_range(-0.9, 0.9))
+			var t_point := Transform3D(Basis(), point)
+			var rand_rotation := randf_range(deg_to_rad(-180), deg_to_rad(180))
+			var rand_scale := Vector3.ONE*randf_range(0.5, 1.0)
+			t_point = t_point.rotated_local(Vector3.RIGHT, set_rotation.x)
+			t_point = t_point.rotated_local(Vector3.UP, set_rotation.y+rand_rotation)
+			t_point = t_point.rotated_local(Vector3.FORWARD, set_rotation.z)
+			t_point = t_point.scaled_local(rand_scale)
+			points.append(t_point)
 	return points
 
-func load_tree_meshes():
-	var gltf_loader := GLTFDocument.new()
-	var convert_mesh_extension := GLTFDocumentExtensionConvertImporterMesh.new()
-	gltf_loader.register_gltf_document_extension(convert_mesh_extension, true)
-	var gltf_state := GLTFState.new()
-	var gltf_path:String = "res://models/world/Tree001.glb"
-	gltf_state.base_path = "res://models/world/"
-	var gltf_error = gltf_loader.append_from_file(gltf_path, gltf_state)
-	var gltf_instance: Node3D
-	if gltf_error == OK:
-		gltf_instance = gltf_loader.generate_scene(gltf_state) as Node3D
-	gltf_loader.unregister_gltf_document_extension(convert_mesh_extension)
-	const TREE_001_DIFFUSE = preload("res://models/world_textures/Tree001_diffuse.png")
-	for c in gltf_instance.get_children():
-		if c is MeshInstance3D:
-			var mat := c.mesh.surface_get_material(0) as StandardMaterial3D
-			mat.albedo_texture = TREE_001_DIFFUSE
-			mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA_HASH
-			mat.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
-			return c.mesh
-	return null
+var tree_mesh_cache := {}
+func load_tree_meshes(tree_type:String):
+	for tree_id in TREES:
+		if tree_id in tree_mesh_cache.keys(): continue
+		var gltf_loader := GLTFDocument.new()
+		var convert_mesh_extension := GLTFDocumentExtensionConvertImporterMesh.new()
+		gltf_loader.register_gltf_document_extension(convert_mesh_extension, true)
+		var gltf_state := GLTFState.new()
+		var gltf_path:String = "res://models/world/%s.glb" % tree_id
+		gltf_state.base_path = "res://models/world/"
+		var gltf_error = gltf_loader.append_from_file(gltf_path, gltf_state)
+		var gltf_instance: Node3D
+		if gltf_error == OK:
+			gltf_instance = gltf_loader.generate_scene(gltf_state) as Node3D
+		gltf_loader.unregister_gltf_document_extension(convert_mesh_extension)
+		var TREE_001_DIFFUSE = load("res://models/world_textures/%s_diffuse.png" % tree_id)
+		for c in gltf_instance.get_children():
+			if c is MeshInstance3D:
+				var mat := c.mesh.surface_get_material(0) as StandardMaterial3D
+				mat.albedo_texture = TREE_001_DIFFUSE
+				mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA_HASH
+				mat.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
+				tree_mesh_cache[tree_id] = c.mesh
+	return tree_mesh_cache[tree_type]
 
 func add_camera(camera:Dictionary, camera_id:String, main_node:Node3D):
 	#print(camera)
