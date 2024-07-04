@@ -1,5 +1,4 @@
 @tool
-#extends CompositorEffect
 extends CompositorEffect
 class_name CompositorEffectScreen
 
@@ -10,7 +9,7 @@ var texture : StringName = "texture"
 # back gray scale values. 
 
 func _init():
-	needs_motion_vectors = true
+	#needs_motion_vectors = true
 	effect_callback_type = CompositorEffect.EFFECT_CALLBACK_TYPE_POST_TRANSPARENT
 	RenderingServer.call_on_render_thread(_initialize_compute)
 
@@ -89,6 +88,6 @@ func _render_callback(p_effect_callback_type, p_render_data):
 				var compute_list := rd.compute_list_begin()
 				rd.compute_list_bind_compute_pipeline(compute_list, screen_pipeline)
 				rd.compute_list_bind_uniform_set(compute_list, input_set, 0)
-				rd.compute_list_set_push_constant(compute_list, push_constant.to_byte_array(), push_constant.size() * 4) #16)
+				rd.compute_list_set_push_constant(compute_list, push_constant.to_byte_array(), push_constant.size() * 4)
 				rd.compute_list_dispatch(compute_list, x_groups, y_groups, 1)
 				rd.compute_list_end()

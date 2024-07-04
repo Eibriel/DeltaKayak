@@ -9,6 +9,9 @@ var grab_kayak: Generic6DOFJoint3D
 var grab_kayak2: Generic6DOFJoint3D
 var log_text: String = ""
 
+# NOTE Needed for datamosh_compositior
+var refresh_frame: bool
+
 func is_demo():
 	var _is_demo:bool = OS.has_feature("demo")
 	#if not is_demo:

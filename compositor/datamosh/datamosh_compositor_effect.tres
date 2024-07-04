@@ -1,6 +1,4 @@
-[gd_resource type="CompositorEffect" script_class="CompositorEffectGrayScale" load_steps=2 format=3 uid="uid://c84wg0tlxmyha"]
-
-[ext_resource type="Script" path="res://compositor/datamosh_compositor.gd" id="1_ej5ku"]
+[gd_resource type="CompositorEffect" format=3 uid="uid://c84wg0tlxmyha"]
 
 [resource]
 resource_local_to_scene = false
@@ -8,5 +6,4 @@ resource_name = ""
 enabled = true
 effect_callback_type = 4
 needs_motion_vectors = true
-needs_normal_roughness = true
-script = ExtResource("1_ej5ku")
+needs_normal_roughness = false

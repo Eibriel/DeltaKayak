@@ -452,7 +452,6 @@ func grab_kayak():
 		Vector3(0.5, 0, 0),
 		Vector3(-2, 0, -0.5),
 	]
-	
 	Global.character.lock_grab()
 	var tween := create_tween()
 	tween.set_process_mode(Tween.TWEEN_PROCESS_PHYSICS)
@@ -478,12 +477,17 @@ func grab_kayak():
 	tween.parallel().tween_property(%KayakGrabber, "global_rotation:y", deg_to_rad(-90+45), 0.7)
 	tween.tween_interval(1.0)
 	tween.set_trans(Tween.TRANS_LINEAR)
+	tween.tween_callback(set_datamosh.bind(true))
 	tween.tween_property(%KayakGrabber, "global_position", Vector3(-196.017, 0, -147.396), 6.0)
 	tween.parallel().tween_property(%KayakGrabber, "global_rotation:y", deg_to_rad(-90+60), 6.0)
 	tween.tween_callback(ungrab_kayak)
 	tween.tween_callback(kayak_k1.queue_free)
 	tween.tween_interval(3.0)
 	tween.tween_callback(say_dialogue.bind("demo_other_side"))
+	tween.tween_callback(set_datamosh.bind(false))
+
+func set_datamosh(value:bool):
+	%WorldEnvironment.compositor.compositor_effects[0].enabled = value
 
 func ungrab_kayak():
 	Global.grab_kayak.set_node_a(NodePath(""))

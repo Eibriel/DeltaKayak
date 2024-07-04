@@ -1,5 +1,4 @@
 @tool
-#extends CompositorEffect
 extends CompositorEffect
 class_name CompositorEffectDatamosh
 
@@ -40,12 +39,12 @@ func _initialize_compute():
 		return
 
 	# Create our shader
-	var shader_file = load("res://compositor/datamosh.glsl")
+	var shader_file = load("res://compositor/datamosh/datamosh.glsl")
 	var shader_spirv: RDShaderSPIRV = shader_file.get_spirv()
 	datamosh_shader = rd.shader_create_from_spirv(shader_spirv)
 	datamosh_pipeline = rd.compute_pipeline_create(datamosh_shader)
 	
-	shader_file = load("res://compositor/loop_frame.glsl")
+	shader_file = load("res://compositor/datamosh/loop_frame.glsl")
 	shader_spirv = shader_file.get_spirv()
 	loop_frame_shader = rd.shader_create_from_spirv(shader_spirv)
 	loop_frame_pipeline = rd.compute_pipeline_create(loop_frame_shader)
@@ -108,6 +107,7 @@ func _render_callback(p_effect_callback_type, p_render_data):
 				push_constant.push_back(size.x)
 				push_constant.push_back(size.y)
 				push_constant.push_back(Time.get_ticks_msec())
+				push_constant.push_back(0) # dummy value, array needs to be a multiple of 4
 				
 				if not Global.refresh_frame:
 					# Create a uniform set, this will be cached, the cache will be cleared if our viewports configuration is changed
@@ -126,7 +126,7 @@ func _render_callback(p_effect_callback_type, p_render_data):
 					rd.compute_list_bind_uniform_set(compute_list, input_set, 0)
 					rd.compute_list_bind_uniform_set(compute_list, velocity_set, 1)
 					rd.compute_list_bind_uniform_set(compute_list, previous_set, 2)
-					rd.compute_list_set_push_constant(compute_list, push_constant.to_byte_array(), 16)
+					rd.compute_list_set_push_constant(compute_list, push_constant.to_byte_array(), push_constant.size() * 4)
 					rd.compute_list_dispatch(compute_list, x_groups, y_groups, 1)
 					rd.compute_list_end()
 				
