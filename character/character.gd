@@ -338,8 +338,10 @@ func set_damage():
 	damage += 1.0
 	damage_timer = 1.0
 	var tween := create_tween()
+	tween.tween_callback(Global.main_scene.set_datamosh.bind(true))
 	tween.tween_property(%DamageIndicator, "scale", Vector3.ZERO, 0.1)
 	tween.tween_property(%DamageIndicator, "scale", Vector3.ONE, 0.1)
 	tween.tween_property(%DamageIndicator, "scale", Vector3.ZERO, 0.1)
+	tween.tween_callback(Global.main_scene.set_datamosh.bind(false))
 	if damage > 10:
 		get_tree().quit()

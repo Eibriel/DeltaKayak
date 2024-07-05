@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://r0o1qsmlq84u"]
+[gd_scene load_steps=22 format=3 uid="uid://r0o1qsmlq84u"]
 
 [ext_resource type="Script" path="res://character/character.gd" id="1_mnv7b"]
 [ext_resource type="PackedScene" uid="uid://b5n8cpa2p23cu" path="res://models/kayak_detailed.glb" id="2_qknmv"]
@@ -27,6 +27,66 @@ height = 4.48046
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_bt2tn"]
 shading_mode = 0
 albedo_color = Color(1, 0, 0, 1)
+
+[sub_resource type="Curve" id="Curve_g5f2h"]
+_data = [Vector2(0, 1), 0.0, -0.249922, 0, 0, Vector2(1, 0), -3.68344, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_tgiu8"]
+curve = SubResource("Curve_g5f2h")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_nmsp7"]
+emission_shape = 3
+emission_box_extents = Vector3(0.15, 0, 0)
+inherit_velocity_ratio = 0.1
+direction = Vector3(0, 0, 1)
+spread = 0.0
+initial_velocity_max = 0.2
+gravity = Vector3(0, 0, 0)
+linear_accel_min = -2.23517e-06
+linear_accel_max = -2.23517e-06
+damping_min = 0.01
+damping_max = 0.1
+scale_curve = SubResource("CurveTexture_tgiu8")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0ij2n"]
+shading_mode = 0
+albedo_color = Color(0.17, 0.129795, 0.1139, 1)
+
+[sub_resource type="TubeTrailMesh" id="TubeTrailMesh_6cpm0"]
+material = SubResource("StandardMaterial3D_0ij2n")
+radius = 0.03
+section_length = 0.001
+
+[sub_resource type="Curve" id="Curve_cmpet"]
+_data = [Vector2(0, 0), 0.0, 5.2871, 0, 0, Vector2(0.497653, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), -5.68505, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="CurveTexture" id="CurveTexture_gs84f"]
+curve = SubResource("Curve_cmpet")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_q2xsn"]
+lifetime_randomness = 0.13
+particle_flag_align_y = true
+emission_shape = 3
+emission_box_extents = Vector3(10, 10, 10)
+angle_min = -146.5
+angle_max = 127.8
+gravity = Vector3(0, -0.02, 0)
+scale_min = 0.5
+scale_curve = SubResource("CurveTexture_gs84f")
+turbulence_enabled = true
+turbulence_noise_strength = 0.1
+turbulence_noise_scale = 3.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_vgkea"]
+shading_mode = 2
+albedo_color = Color(0.120083, 0.105364, 0.0145188, 1)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_ko0bq"]
+material = SubResource("StandardMaterial3D_vgkea")
+size = Vector2(0.05, 0.1)
+orientation = 0
 
 [node name="character" type="RigidBody3D"]
 collision_layer = 2
@@ -154,5 +214,25 @@ unique_name_in_owner = true
 transform = Transform3D(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.194336, 0.15918)
 radius = 0.438744
 material = SubResource("StandardMaterial3D_bt2tn")
+
+[node name="GPUParticles3D" type="GPUParticles3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0307007, 0.999695)
+cast_shadow = 0
+amount = 200
+lifetime = 20.0
+fixed_fps = 20
+process_material = SubResource("ParticleProcessMaterial_nmsp7")
+draw_pass_1 = SubResource("TubeTrailMesh_6cpm0")
+
+[node name="GPUParticles3D2" type="GPUParticles3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.95959, 0)
+cast_shadow = 0
+amount = 1000
+lifetime = 20.0
+preprocess = 20.0
+fixed_fps = 20
+interpolate = false
+process_material = SubResource("ParticleProcessMaterial_q2xsn")
+draw_pass_1 = SubResource("PlaneMesh_ko0bq")
 
 [connection signal="area_entered" from="InteractionArea" to="." method="_on_interaction_area_area_entered"]

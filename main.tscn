@@ -140,7 +140,7 @@ grow_vertical = 2
 script = ExtResource("1_xxenq")
 game_preferences = ExtResource("2_wexnt")
 game_state = ExtResource("3_nh3h6")
-initial_position = NodePath("Main3D/InitialPosition")
+initial_position = NodePath("Main3D/InitialPositionOtherSide")
 
 [node name="Control" type="Control" parent="."]
 layout_mode = 1
