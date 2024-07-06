@@ -220,7 +220,6 @@ text = "¡Gracias por jugar la demo!"
 [node name="LogLabel" type="RichTextLabel" parent="Control"]
 unique_name_in_owner = true
 auto_translate_mode = 1
-visible = false
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.101667
@@ -1444,7 +1443,7 @@ shape = SubResource("BoxShape3D_i81n0")
 [node name="IntroElements" type="Node3D" parent="Main3D"]
 
 [node name="CameraIntro" type="Camera3D" parent="Main3D/IntroElements"]
-transform = Transform3D(1, 0, 0, 0, 0.100158, 0.994968, 0, -0.994971, 0.100158, 0, 95.2315, 0)
+transform = Transform3D(1, 0, 0, 0, 0.100158, 0.994967, 0, -0.99497, 0.100158, 0, 95.2315, 0)
 fov = 77.1
 
 [node name="IntroAnimationPlayer" type="AnimationPlayer" parent="Main3D/IntroElements"]
@@ -1466,7 +1465,7 @@ transform = Transform3D(0.998732, 0, -0.0503483, 0, 1, 0, 0.0503483, 0, 0.998732
 gizmo_extents = 5.0
 
 [node name="InitialPositionOtherSide" type="Marker3D" parent="Main3D"]
-transform = Transform3D(0.998732, 0, -0.0503483, 0, 1, 0, 0.0503483, 0, 0.998732, -206.715, 0, -137.19)
+transform = Transform3D(0.998732, 0, -0.0503483, 0, 1, 0, 0.0503483, 0, 0.998732, -209.733, 0, -176.028)
 gizmo_extents = 5.0
 
 [node name="InitialPositionPuzzle" type="Marker3D" parent="Main3D"]

@@ -1,10 +1,24 @@
-[gd_scene load_steps=22 format=3 uid="uid://r0o1qsmlq84u"]
+[gd_scene load_steps=49 format=3 uid="uid://r0o1qsmlq84u"]
 
 [ext_resource type="Script" path="res://character/character.gd" id="1_mnv7b"]
 [ext_resource type="PackedScene" uid="uid://b5n8cpa2p23cu" path="res://models/kayak_detailed.glb" id="2_qknmv"]
 [ext_resource type="Texture2D" uid="uid://cdex8bqdmulf8" path="res://textures/flashlight.jpg" id="3_xitmn"]
 [ext_resource type="PackedScene" uid="uid://ds44csvhmqggb" path="res://models/pepa/pillow.glb" id="4_81u6e"]
 [ext_resource type="PackedScene" uid="uid://dnempkm0ot1g4" path="res://models/pepa/pepa.glb" id="4_bo5nj"]
+[ext_resource type="PackedScene" uid="uid://b2upxlbvq2a2j" path="res://models/character.glb" id="5_v01ah"]
+[ext_resource type="AnimationLibrary" uid="uid://c74x8dp0qiahp" path="res://models/character_anims.glb" id="7_2v7p3"]
+[ext_resource type="AudioStream" uid="uid://3iyaylcuo8g" path="res://sounds/112339__alyceobvious__6_27_07-cricket-1.mp3" id="8_3egmi"]
+[ext_resource type="AudioStream" uid="uid://dvxr7lplyacmm" path="res://character/paddle_streams.tres" id="8_fdves"]
+[ext_resource type="AudioStream" uid="uid://de4v7ug7ys7hi" path="res://sounds/river.mp3" id="10_e5eh0"]
+[ext_resource type="AudioStream" uid="uid://mv6ajuqoy1h0" path="res://sounds/kayak.mp3" id="11_j3wxn"]
+[ext_resource type="AudioStream" uid="uid://bp36tqi0aij8q" path="res://sounds/collision_01.mp3" id="12_olbxk"]
+[ext_resource type="AudioStream" uid="uid://bp6slwbbgwucv" path="res://sounds/collision_02.mp3" id="13_4mmsu"]
+[ext_resource type="AudioStream" uid="uid://b7m2ewd4p5h8x" path="res://sounds/collision_03.mp3" id="14_o4wqp"]
+[ext_resource type="AudioStream" uid="uid://cgir6repirstg" path="res://sounds/collision_04.mp3" id="15_hr5p7"]
+[ext_resource type="AudioStream" uid="uid://c8ys0ahbx3bmn" path="res://sounds/collision_05.mp3" id="16_kto82"]
+[ext_resource type="AudioStream" uid="uid://dg2cu6vudgrba" path="res://sounds/collision_06.mp3" id="17_egvyw"]
+[ext_resource type="AudioStream" uid="uid://bycfel2ioa5po" path="res://sounds/collision_07.mp3" id="18_euw5c"]
+[ext_resource type="AudioStream" uid="uid://dpj8ejx1m2mmr" path="res://sounds/collision_08.mp3" id="19_u5rwt"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_p6dmh"]
 friction = 0.2
@@ -88,6 +102,118 @@ material = SubResource("StandardMaterial3D_vgkea")
 size = Vector2(0.05, 0.1)
 orientation = 0
 
+[sub_resource type="Animation" id="Animation_ik2gb"]
+length = 4.1667
+tracks/0/type = "audio"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("../RightPaddleAudio")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"clips": [{
+"end_offset": 0.0,
+"start_offset": 0.0,
+"stream": ExtResource("8_fdves")
+}],
+"times": PackedFloat32Array(0.5)
+}
+tracks/0/use_blend = true
+tracks/1/type = "audio"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("../LeftPaddleAudio")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"clips": [{
+"end_offset": 0.0,
+"start_offset": 0.0,
+"stream": ExtResource("8_fdves")
+}],
+"times": PackedFloat32Array(2.8)
+}
+tracks/1/use_blend = true
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_5hwsr"]
+_data = {
+"ForwardPaddleSounds": SubResource("Animation_ik2gb")
+}
+
+[sub_resource type="AnimationNodeAdd2" id="AnimationNodeAdd2_xg8hx"]
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_3h4w6"]
+animation = &"sync_sounds/ForwardPaddleSounds"
+use_custom_timeline = true
+timeline_length = 1.0
+stretch_time_scale = true
+start_offset = 0.0
+loop_mode = 1
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_71kq4"]
+animation = &"character_anims/ForwardPaddle"
+use_custom_timeline = true
+timeline_length = 1.0
+stretch_time_scale = true
+start_offset = 0.0
+loop_mode = 1
+
+[sub_resource type="AnimationNodeTimeScale" id="AnimationNodeTimeScale_xdsem"]
+
+[sub_resource type="AnimationNodeBlendTree" id="AnimationNodeBlendTree_br1pl"]
+graph_offset = Vector2(-59, 64)
+nodes/Add2/node = SubResource("AnimationNodeAdd2_xg8hx")
+nodes/Add2/position = Vector2(400, 140)
+nodes/Animation/node = SubResource("AnimationNodeAnimation_71kq4")
+nodes/Animation/position = Vector2(60, 100)
+"nodes/Animation 2/node" = SubResource("AnimationNodeAnimation_3h4w6")
+"nodes/Animation 2/position" = Vector2(60, 260)
+nodes/TimeScale/node = SubResource("AnimationNodeTimeScale_xdsem")
+nodes/TimeScale/position = Vector2(560, 60)
+nodes/output/position = Vector2(740, 140)
+node_connections = [&"Add2", 0, &"Animation", &"Add2", 1, &"Animation 2", &"TimeScale", 0, &"Add2", &"output", 0, &"TimeScale"]
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_rkenj"]
+animation = &"character_anims/Idle"
+use_custom_timeline = true
+timeline_length = 1.0
+stretch_time_scale = true
+start_offset = 0.0
+loop_mode = 1
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_mej27"]
+advance_mode = 2
+advance_condition = &"forward"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_yuhqn"]
+advance_mode = 2
+advance_condition = &"idle"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_i1tmv"]
+advance_mode = 2
+
+[sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_wkph0"]
+states/BlendForward/node = SubResource("AnimationNodeBlendTree_br1pl")
+states/BlendForward/position = Vector2(700, 100)
+states/Start/position = Vector2(218, 20)
+states/character_anims_Idle/node = SubResource("AnimationNodeAnimation_rkenj")
+states/character_anims_Idle/position = Vector2(450, 100)
+transitions = ["character_anims_Idle", "BlendForward", SubResource("AnimationNodeStateMachineTransition_mej27"), "BlendForward", "character_anims_Idle", SubResource("AnimationNodeStateMachineTransition_yuhqn"), "Start", "character_anims_Idle", SubResource("AnimationNodeStateMachineTransition_i1tmv")]
+graph_offset = Vector2(66, -57)
+
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_oxp1s"]
+random_pitch = 1.54
+random_volume_offset_db = 0.29
+streams_count = 8
+stream_0/stream = ExtResource("12_olbxk")
+stream_1/stream = ExtResource("13_4mmsu")
+stream_2/stream = ExtResource("14_o4wqp")
+stream_3/stream = ExtResource("15_hr5p7")
+stream_4/stream = ExtResource("16_kto82")
+stream_5/stream = ExtResource("17_egvyw")
+stream_6/stream = ExtResource("18_euw5c")
+stream_7/stream = ExtResource("19_u5rwt")
+
 [node name="character" type="RigidBody3D"]
 collision_layer = 2
 collision_mask = 31
@@ -165,6 +291,9 @@ visible = false
 [node name="kayak_detailed" parent="." instance=ExtResource("2_qknmv")]
 transform = Transform3D(0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, 0.0386806, 0.312028)
 
+[node name="character" parent="." instance=ExtResource("5_v01ah")]
+transform = Transform3D(-0.75, 0, -1.13247e-07, 0, 0.75, 0, 1.13247e-07, 0, -0.75, 3.49285e-08, -0.0718384, 0.37019)
+
 [node name="OmniLight3D" type="OmniLight3D" parent="."]
 transform = Transform3D(-1, 0, 8.74227e-08, 0, 1, 0, -8.74227e-08, 0, -1, 1.81245e-08, 1.35318, 0.104708)
 light_energy = 0.05
@@ -234,5 +363,91 @@ fixed_fps = 20
 interpolate = false
 process_material = SubResource("ParticleProcessMaterial_q2xsn")
 draw_pass_1 = SubResource("PlaneMesh_ko0bq")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+unique_name_in_owner = true
+root_node = NodePath("../character")
+libraries = {
+"character_anims": ExtResource("7_2v7p3"),
+"sync_sounds": SubResource("AnimationLibrary_5hwsr")
+}
+
+[node name="AnimationTree" type="AnimationTree" parent="."]
+unique_name_in_owner = true
+root_node = NodePath("%AnimationTree/../character")
+tree_root = SubResource("AnimationNodeStateMachine_wkph0")
+anim_player = NodePath("../AnimationPlayer")
+parameters/current_length = 1.0
+parameters/current_position = 0.757798
+parameters/current_delta = 0.0166667
+parameters/conditions/forward = false
+parameters/conditions/idle = false
+parameters/BlendForward/current_length = 1.0
+parameters/BlendForward/current_position = 0.30167
+parameters/BlendForward/current_delta = 0.0166667
+parameters/BlendForward/Add2/current_length = 1.0
+parameters/BlendForward/Add2/current_position = 0.30167
+parameters/BlendForward/Add2/current_delta = 0.0166667
+parameters/BlendForward/Add2/add_amount = 1.0
+parameters/BlendForward/Animation/current_length = 1.0
+parameters/BlendForward/Animation/current_position = 0.30167
+parameters/BlendForward/Animation/current_delta = 0.0166667
+"parameters/BlendForward/Animation 2/current_length" = 4.1667
+"parameters/BlendForward/Animation 2/current_position" = 4.1667
+"parameters/BlendForward/Animation 2/current_delta" = 0.0
+parameters/BlendForward/TimeScale/current_length = 1.0
+parameters/BlendForward/TimeScale/current_position = 0.30167
+parameters/BlendForward/TimeScale/current_delta = 0.0166667
+parameters/BlendForward/TimeScale/scale = 1.0
+parameters/BlendForward/output/current_length = 1.0
+parameters/BlendForward/output/current_position = 0.30167
+parameters/BlendForward/output/current_delta = 0.0166667
+parameters/End/current_length = null
+parameters/End/current_position = null
+parameters/End/current_delta = null
+parameters/Start/current_length = 0.0
+parameters/Start/current_position = 0.0
+parameters/Start/current_delta = 0.0
+parameters/character_anims_Idle/current_length = 1.0
+parameters/character_anims_Idle/current_position = 0.757798
+parameters/character_anims_Idle/current_delta = 0.0166667
+
+[node name="KriketsAudio" type="AudioStreamPlayer3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.05414, -16.3561)
+stream = ExtResource("8_3egmi")
+volume_db = -7.111
+autoplay = true
+
+[node name="RiverAudio" type="AudioStreamPlayer3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.8797, 0.215637)
+stream = ExtResource("10_e5eh0")
+volume_db = -20.0
+autoplay = true
+
+[node name="KayakAudio" type="AudioStreamPlayer3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.8797, 0.215637)
+stream = ExtResource("11_j3wxn")
+volume_db = -18.913
+autoplay = true
+
+[node name="RightPaddleAudio" type="AudioStreamPlayer3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.25613, 0, 0)
+volume_db = 10.0
+max_polyphony = 5
+
+[node name="LeftPaddleAudio" type="AudioStreamPlayer3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.35202, 0, 0)
+volume_db = 13.846
+max_polyphony = 5
+
+[node name="CollisionAudio" type="AudioStreamPlayer3D" parent="."]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.35202, 0, 0)
+stream = SubResource("AudioStreamRandomizer_oxp1s")
+unit_size = 20.0
+
+[node name="AudioListener3D" type="AudioListener3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.661621, 0.329895)
+current = true
 
 [connection signal="area_entered" from="InteractionArea" to="." method="_on_interaction_area_area_entered"]

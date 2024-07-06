@@ -2,6 +2,14 @@ extends Boat3D
 
 @export var home_position:Vector3
 
+@export var engine_curve_1:Curve
+@export var engine_curve_2:Curve
+@export var engine_curve_3:Curve
+@export var engine_curve_4:Curve
+@export var engine_curve_5:Curve
+@export var engine_curve_6:Curve
+@export var engine_curve_7:Curve
+
 @onready var nav: NavigationAgent3D = $NavigationAgent3D
 @onready var ray_cast_3d: RayCast3D = $RayCast3D
 
@@ -14,6 +22,7 @@ var attack_charge_time := 0.0
 var attack_intimidate_time := 0.0
 var path_blocked_time := 0.0
 
+var forward_force := 0.0
 #var attack_position:Vector3
 
 enum STATE {
@@ -34,6 +43,39 @@ func _process(_delta: float) -> void:
 	Global.log_text += "\nState: %s" % STATE.find_key(current_state)
 	Global.log_text += "\nAttack: %s" % ATTACK_STATE.find_key(attack_state)
 	#%AttackPositionindicator.global_position = attack_position
+	handle_sounds()
+
+func handle_sounds():
+	var new_forward_force = lerpf(forward_force, -last_applied_force.rotated(Vector3.UP, -rotation.y).z, 0.1)
+	if new_forward_force > 0.0 and forward_force < 0.0:
+		print("Shift forward")
+		%ShiftAudio.play()
+	elif new_forward_force < 0.0 and forward_force > 0.0:
+		print("Shift backward")
+		%ShiftAudio.play()
+	forward_force = new_forward_force
+	#print(forward_force)
+	var pitch := remap(abs(forward_force), 0, 15, 0.2, 1.0)
+	Global.log_text += "\nforward_force: %f" % forward_force
+	%MotorAudio.pitch_scale = pitch
+	var volume := remap(abs(forward_force), 0, 15, -20.0, 0.0)
+	%MotorAudio.volume_db = volume
+	
+	var engine_speed := remap(abs(forward_force), 0, 15, 0.0, 1.0)
+	var samples := [
+		engine_curve_1.sample(engine_speed),
+		engine_curve_2.sample(engine_speed),
+		engine_curve_3.sample(engine_speed),
+		engine_curve_4.sample(engine_speed),
+		engine_curve_5.sample(engine_speed),
+		engine_curve_6.sample(engine_speed),
+		engine_curve_7.sample(engine_speed)
+	]
+	for n in range(samples.size()):
+		var vol:float = (samples[n]*20) - 20
+		prints(n, vol)
+		%EngineAudio.stream["stream_%s/volume" % n] = vol
+	
 
 func _get_target(delta: float) -> void:
 	change_state()
@@ -195,6 +237,12 @@ func is_trail_visible() -> bool:
 
 func _handle_contacts(state: PhysicsDirectBodyState3D):
 	if state.get_contact_count() > 0:
+		var collision_impulse:float = state.get_contact_impulse(0).length()
+		if collision_impulse > 0.5:
+			%CollisionAudio.global_position = state.get_contact_collider_position(0)
+			%CollisionAudio.volume_db = ((collision_impulse-15) * 15) - 15
+			if not %CollisionAudio.playing:
+				%CollisionAudio.play()
 		var body = state.get_contact_collider_object(0)
 		if body.name == "character":
 			Global.character.set_damage()

@@ -30,6 +30,8 @@ var pid_derivative_par := 0.0 #8180.0
 
 var path_visualization:Path3D
 
+var last_applied_force: Vector3
+
 func _ready():
 	last_rotation = rotation.y
 	set_physics_process(false)
@@ -117,7 +119,7 @@ func _physics_process(delta: float):
 	var forward_direction := (transform.basis * Vector3.FORWARD).normalized()
 	var forward_component: Vector3 = forward_direction * force_to_apply.dot(forward_direction)
 	apply_central_force(forward_component)
-	
+	last_applied_force = forward_component
 	#var rotated_force := force_to_apply.rotated(Vector3.UP, rotation.y)
 	#print(rotated_force)
 	#var torque := -rotated_force.x

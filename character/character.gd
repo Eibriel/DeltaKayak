@@ -41,6 +41,8 @@ var trail_position := []
 var trail_velocity := []
 var trail_time := 0.0
 
+@onready var character: Node3D = $character
+
 enum GRABBING {
 	WANTS_TO,
 	YES,
@@ -61,6 +63,10 @@ func _ready():
 	#print("Transform")
 	#print($CSGCylinder3D3.transform)
 	#print($CSGCylinder3D3.global_transform)
+	#var char_anim:AnimationPlayer = %AnimationPlayer
+	#char_anim.get_animation("character_anims/ForwardPaddle").loop_mode = Animation.LOOP_LINEAR
+	#char_anim.get_animation("character_anims/Idle").loop_mode = Animation.LOOP_LINEAR
+	#char_anim.play("character_anims/ForwardPaddle", -1, 2.0)
 	
 
 func _process(delta: float) -> void:
@@ -83,6 +89,25 @@ func _process(delta: float) -> void:
 		if trail_position.size() > 10:
 			trail_position.pop_back()
 			trail_velocity.pop_back()
+	handle_animations()
+
+func handle_animations()->void:
+	var input_dir:Vector2 = Input.get_vector("left", "right", "up", "down")
+	if input_dir == Vector2.ZERO:
+		%AnimationTree["parameters/conditions/forward"] = false
+		%AnimationTree["parameters/conditions/idle"] = true
+	else:
+		%AnimationTree["parameters/conditions/forward"] = true
+		%AnimationTree["parameters/conditions/idle"] = false
+	
+	var forward_direction := (transform.basis * Vector3.FORWARD).normalized()
+	var forward_velocity: float = (forward_direction * linear_velocity.dot(forward_direction)).length()
+	
+	var anim_speed := remap(forward_velocity, 0, 3, 0.25, 0.7)
+	if going_backwards:
+		anim_speed *= -1
+	#Global.log_text += "\nanim_length: %f" % anim_speed
+	%AnimationTree.set("parameters/BlendForward/TimeScale/scale", anim_speed)
 
 func handle_finetunning() -> void:
 	var test_angle := angle_difference(deg_to_rad(90), deg_to_rad(0))
@@ -278,6 +303,12 @@ func _integrate_forces(state: PhysicsDirectBodyState3D) -> void:
 
 func handle_contacts(state: PhysicsDirectBodyState3D):
 	if state.get_contact_count() > 0:
+		var collision_impulse:float = state.get_contact_impulse(0).length()
+		if collision_impulse > 0.5:
+			prints("collision", collision_impulse)
+			%CollisionAudio.global_position = state.get_contact_collider_position(0)
+			%CollisionAudio.volume_db = collision_impulse * 50
+			%CollisionAudio.play(0.03)
 		var body = state.get_contact_collider_object(0)
 		if body.has_meta("grabbable"):
 			if grabbing_state == GRABBING.WANTS_TO:

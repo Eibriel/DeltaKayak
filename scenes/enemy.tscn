@@ -1,10 +1,51 @@
-[gd_scene load_steps=7 format=3 uid="uid://mvc5qr5igrlq"]
+[gd_scene load_steps=29 format=3 uid="uid://mvc5qr5igrlq"]
 
 [ext_resource type="Script" path="res://scenes/enemy.gd" id="1_ht45k"]
 [ext_resource type="Texture2D" uid="uid://cdex8bqdmulf8" path="res://textures/flashlight.jpg" id="2_1pota"]
 [ext_resource type="PackedScene" uid="uid://b8olueufru4tm" path="res://models/enemy/enemy.glb" id="3_ididr"]
+[ext_resource type="AudioStream" uid="uid://bavkx8beygeiq" path="res://sounds/LanchaColectivaB.wav" id="4_ikrfw"]
+[ext_resource type="AudioStream" uid="uid://b0rnwooo50rbv" path="res://sounds/Engine_shift.wav" id="5_60emu"]
+[ext_resource type="AudioStream" uid="uid://k7e3hcppivtd" path="res://sounds/Engine_1.wav" id="5_icqa8"]
+[ext_resource type="AudioStream" uid="uid://c6xds28wxycim" path="res://sounds/Engine_2.wav" id="6_5o4j6"]
+[ext_resource type="AudioStream" uid="uid://blbee7otbp6bd" path="res://sounds/Engine_3.wav" id="7_ochvj"]
+[ext_resource type="AudioStream" uid="uid://cuoam0giruryn" path="res://sounds/Engine_4.wav" id="8_85ycd"]
+[ext_resource type="AudioStream" uid="uid://dobcxmrmht81r" path="res://sounds/Engine_5.wav" id="9_26owm"]
+[ext_resource type="AudioStream" uid="uid://dtnhnqpdonxj7" path="res://sounds/Engine_6.wav" id="10_3oiay"]
+[ext_resource type="AudioStream" uid="uid://ddl18qpqdqdqs" path="res://sounds/Engine_7.wav" id="11_j8owj"]
+[ext_resource type="AudioStream" uid="uid://cc6y2c8m6u60" path="res://sounds/hit1.mp3" id="13_vjfw1"]
+[ext_resource type="AudioStream" uid="uid://dkqyvaop4y4xh" path="res://sounds/hit2.mp3" id="14_wsgj4"]
+[ext_resource type="AudioStream" uid="uid://b6vvw2om552u" path="res://sounds/hit3.mp3" id="15_f2crf"]
+[ext_resource type="AudioStream" uid="uid://bh78ed7n2w0xm" path="res://sounds/hit4.mp3" id="16_o4325"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_w2uow"]
+
+[sub_resource type="Curve" id="Curve_bm67l"]
+_data = [Vector2(0, 0), 0.0, 42.5202, 0, 0, Vector2(0.0460317, 1), 0.0, 0.0, 0, 0, Vector2(0.12381, 0), -29.1532, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="Curve" id="Curve_f826n"]
+_data = [Vector2(0.0454545, 0), 0.0, 23.4868, 0, 0, Vector2(0.127273, 1), 0.0, 0.0, 0, 0, Vector2(0.252381, 0), -16.5543, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="Curve" id="Curve_mttfc"]
+_data = [Vector2(0.130303, 0), 0.0, 18.6513, 0, 0, Vector2(0.245455, 1), 0.0, 0.0, 0, 0, Vector2(0.387879, 0), -13.562, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="Curve" id="Curve_8hk5o"]
+_data = [Vector2(0.252381, 0), 0.0, 16.0855, 0, 0, Vector2(0.380952, 1), -0.0570172, -0.0570172, 0, 0, Vector2(0.524242, 0), -13.562, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="Curve" id="Curve_m6jhk"]
+_data = [Vector2(0.4, 0), 0.0, 21.8649, 0, 0, Vector2(0.504762, 1), 0.0, 0.0, 0, 0, Vector2(0.726984, 0), -7.52198, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="Curve" id="Curve_ekwef"]
+_data = [Vector2(0.498413, 0), 0.0, 9.19357, 0, 0, Vector2(0.725397, 1), 0.0, 0.0, 0, 0, Vector2(0.895238, 0), -15.1331, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="Curve" id="Curve_oxwsh"]
+_data = [Vector2(0.757143, 0), 0.0, 13.3972, 0, 0, Vector2(0.909091, 1), 0.0, 0.0, 0, 0]
+point_count = 2
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_c8bgx"]
 radius = 1.38489
@@ -13,6 +54,30 @@ height = 13.2257
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_y8box"]
 shading_mode = 0
 albedo_color = Color(0.730458, 0.118933, 0, 1)
+
+[sub_resource type="AudioStreamSynchronized" id="AudioStreamSynchronized_fxjsm"]
+stream_count = 7
+stream_0/stream = ExtResource("5_icqa8")
+stream_0/volume = -16.79
+stream_1/stream = ExtResource("6_5o4j6")
+stream_1/volume = -27.61
+stream_2/stream = ExtResource("7_ochvj")
+stream_2/volume = -27.23
+stream_3/stream = ExtResource("8_85ycd")
+stream_3/volume = 0.0
+stream_4/stream = ExtResource("9_26owm")
+stream_4/volume = -26.86
+stream_5/stream = ExtResource("10_3oiay")
+stream_5/volume = -29.1
+stream_6/stream = ExtResource("11_j8owj")
+stream_6/volume = -29.1
+
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_3dauc"]
+streams_count = 4
+stream_0/stream = ExtResource("13_vjfw1")
+stream_1/stream = ExtResource("14_wsgj4")
+stream_2/stream = ExtResource("15_f2crf")
+stream_3/stream = ExtResource("16_o4325")
 
 [node name="Enemy" type="RigidBody3D"]
 collision_layer = 8
@@ -27,6 +92,13 @@ center_of_mass = Vector3(0, 0, -4)
 contact_monitor = true
 max_contacts_reported = 2
 script = ExtResource("1_ht45k")
+engine_curve_1 = SubResource("Curve_bm67l")
+engine_curve_2 = SubResource("Curve_f826n")
+engine_curve_3 = SubResource("Curve_mttfc")
+engine_curve_4 = SubResource("Curve_8hk5o")
+engine_curve_5 = SubResource("Curve_m6jhk")
+engine_curve_6 = SubResource("Curve_ekwef")
+engine_curve_7 = SubResource("Curve_oxwsh")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, -2.46672e-09, 0.0564319)
@@ -66,3 +138,25 @@ target_position = Vector3(0, 0, -3)
 
 [node name="AttackPositionindicator" type="CSGSphere3D" parent="."]
 unique_name_in_owner = true
+
+[node name="MotorAudio" type="AudioStreamPlayer3D" parent="."]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.362514, 4.14038)
+stream = ExtResource("4_ikrfw")
+bus = &"Monster"
+
+[node name="ShiftAudio" type="AudioStreamPlayer3D" parent="."]
+unique_name_in_owner = true
+stream = ExtResource("5_60emu")
+bus = &"Monster"
+
+[node name="EngineAudio" type="AudioStreamPlayer3D" parent="."]
+unique_name_in_owner = true
+stream = SubResource("AudioStreamSynchronized_fxjsm")
+autoplay = true
+bus = &"Monster"
+
+[node name="CollisionAudio" type="AudioStreamPlayer3D" parent="."]
+unique_name_in_owner = true
+stream = SubResource("AudioStreamRandomizer_3dauc")
+bus = &"Monster"

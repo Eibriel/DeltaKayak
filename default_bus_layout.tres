@@ -1,0 +1,17 @@
+[gd_resource type="AudioBusLayout" load_steps=2 format=3 uid="uid://ega0sk1e2tw8"]
+
+[sub_resource type="AudioEffectReverb" id="AudioEffectReverb_nch63"]
+resource_name = "Reverb"
+room_size = 1.0
+damping = 0.35
+wet = 0.3
+
+[resource]
+bus/1/name = &"Monster"
+bus/1/solo = false
+bus/1/mute = false
+bus/1/bypass_fx = false
+bus/1/volume_db = -14.0622
+bus/1/send = &"Master"
+bus/1/effect/0/effect = SubResource("AudioEffectReverb_nch63")
+bus/1/effect/0/enabled = true
