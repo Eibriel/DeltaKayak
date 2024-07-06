@@ -1,4 +1,4 @@
-[gd_scene load_steps=32 format=3 uid="uid://ce6e8v1saxjr5"]
+[gd_scene load_steps=36 format=3 uid="uid://ce6e8v1saxjr5"]
 
 [ext_resource type="Environment" uid="uid://xpf4ng2ym0n4" path="res://environments/main_environment.tres" id="1_ekqa4"]
 [ext_resource type="Script" path="res://main.gd" id="1_xxenq"]
@@ -15,6 +15,10 @@
 [ext_resource type="PackedScene" uid="uid://cq7dkdx262hcs" path="res://scenes/switch.tscn" id="12_uwfp4"]
 [ext_resource type="PackedScene" uid="uid://b1dpqormd2sea" path="res://scenes/chain.tscn" id="13_60n28"]
 [ext_resource type="PackedScene" uid="uid://budwwb6cj1obm" path="res://scenes/pendulum.tscn" id="14_80ibj"]
+[ext_resource type="AudioStream" uid="uid://dfo6kurv2uoq5" path="res://music/237275__klankbeeld__horror-ambience-75-140328_143.ogg" id="16_dvrax"]
+[ext_resource type="AudioStream" uid="uid://dyhpoke86xwui" path="res://music/491210__deleted_user_9768630__jumpscare-sfx.wav" id="17_a32ot"]
+[ext_resource type="AudioStream" uid="uid://ctm601sbah8df" path="res://music/494981__original_sound__risers-horror-whooshes-tension-builder-1.mp3" id="18_akxex"]
+[ext_resource type="AudioStream" uid="uid://css74q0cr7wrf" path="res://sounds/679400__adviseme333__fast-water-flutter.wav" id="19_7efqm"]
 
 [sub_resource type="Compositor" id="Compositor_lm6bj"]
 compositor_effects = Array[CompositorEffect]([ExtResource("6_02wi3"), ExtResource("2_f4rcp")])
@@ -140,7 +144,7 @@ grow_vertical = 2
 script = ExtResource("1_xxenq")
 game_preferences = ExtResource("2_wexnt")
 game_state = ExtResource("3_nh3h6")
-initial_position = NodePath("Main3D/InitialPositionOtherSide")
+initial_position = NodePath("Main3D/InitialPosition")
 
 [node name="Control" type="Control" parent="."]
 layout_mode = 1
@@ -220,6 +224,7 @@ text = "¡Gracias por jugar la demo!"
 [node name="LogLabel" type="RichTextLabel" parent="Control"]
 unique_name_in_owner = true
 auto_translate_mode = 1
+visible = false
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.101667
@@ -1476,6 +1481,23 @@ gizmo_extents = 5.0
 unique_name_in_owner = true
 transform = Transform3D(0.998732, 0, -0.0503483, 0, 1, 0, 0.0503483, 0, 0.998732, -159.177, 0, -419.987)
 gizmo_extents = 5.0
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("16_dvrax")
+autoplay = true
+
+[node name="JumpscareAudio" type="AudioStreamPlayer" parent="."]
+unique_name_in_owner = true
+stream = ExtResource("17_a32ot")
+
+[node name="JumpscareAudio2" type="AudioStreamPlayer" parent="."]
+unique_name_in_owner = true
+stream = ExtResource("18_akxex")
+volume_db = -10.0
+
+[node name="JumpscareAudio3" type="AudioStreamPlayer" parent="."]
+unique_name_in_owner = true
+stream = ExtResource("19_7efqm")
 
 [connection signal="drag_ended" from="Control/Debug/VBoxContainer/ProportionalSlider" to="." method="_on_slider_drag_ended"]
 [connection signal="drag_ended" from="Control/Debug/VBoxContainer/IntegralSlider" to="." method="_on_slider_drag_ended"]

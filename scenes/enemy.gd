@@ -44,14 +44,19 @@ func _process(_delta: float) -> void:
 	Global.log_text += "\nAttack: %s" % ATTACK_STATE.find_key(attack_state)
 	#%AttackPositionindicator.global_position = attack_position
 	handle_sounds()
+	handle_music()
+
+func handle_music():
+	var dist := global_position.distance_to(Global.character.global_position)
+	%MusicPlayer.volume_db = remap(dist, 0, 50, -10, -30)
 
 func handle_sounds():
 	var new_forward_force = lerpf(forward_force, -last_applied_force.rotated(Vector3.UP, -rotation.y).z, 0.1)
 	if new_forward_force > 0.0 and forward_force < 0.0:
-		print("Shift forward")
+		#print("Shift forward")
 		%ShiftAudio.play()
 	elif new_forward_force < 0.0 and forward_force > 0.0:
-		print("Shift backward")
+		#print("Shift backward")
 		%ShiftAudio.play()
 	forward_force = new_forward_force
 	#print(forward_force)
@@ -73,7 +78,7 @@ func handle_sounds():
 	]
 	for n in range(samples.size()):
 		var vol:float = (samples[n]*20) - 20
-		prints(n, vol)
+		#prints(n, vol)
 		%EngineAudio.stream["stream_%s/volume" % n] = vol
 	
 
@@ -240,7 +245,8 @@ func _handle_contacts(state: PhysicsDirectBodyState3D):
 		var collision_impulse:float = state.get_contact_impulse(0).length()
 		if collision_impulse > 0.5:
 			%CollisionAudio.global_position = state.get_contact_collider_position(0)
-			%CollisionAudio.volume_db = ((collision_impulse-15) * 15) - 15
+			%CollisionAudio.volume_db = remap(collision_impulse, 0.5, 2, -30, -10)
+			print(%CollisionAudio.volume_db)
 			if not %CollisionAudio.playing:
 				%CollisionAudio.play()
 		var body = state.get_contact_collider_object(0)

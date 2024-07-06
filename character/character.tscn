@@ -378,7 +378,7 @@ root_node = NodePath("%AnimationTree/../character")
 tree_root = SubResource("AnimationNodeStateMachine_wkph0")
 anim_player = NodePath("../AnimationPlayer")
 parameters/current_length = 1.0
-parameters/current_position = 0.757798
+parameters/current_position = 0.319103
 parameters/current_delta = 0.0166667
 parameters/conditions/forward = false
 parameters/conditions/idle = false
@@ -409,7 +409,7 @@ parameters/Start/current_length = 0.0
 parameters/Start/current_position = 0.0
 parameters/Start/current_delta = 0.0
 parameters/character_anims_Idle/current_length = 1.0
-parameters/character_anims_Idle/current_position = 0.757798
+parameters/character_anims_Idle/current_position = 0.319103
 parameters/character_anims_Idle/current_delta = 0.0166667
 
 [node name="KriketsAudio" type="AudioStreamPlayer3D" parent="."]
@@ -417,34 +417,40 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.05414, -16.3561)
 stream = ExtResource("8_3egmi")
 volume_db = -7.111
 autoplay = true
+bus = &"Ambient"
 
 [node name="RiverAudio" type="AudioStreamPlayer3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.8797, 0.215637)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -13.1346, 0.515442)
 stream = ExtResource("10_e5eh0")
-volume_db = -20.0
+volume_db = -5.0
 autoplay = true
+bus = &"Ambient"
 
 [node name="KayakAudio" type="AudioStreamPlayer3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.8797, 0.215637)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -6.58295, 0.215637)
 stream = ExtResource("11_j3wxn")
-volume_db = -18.913
+volume_db = -20.0
 autoplay = true
+bus = &"Kayak"
 
 [node name="RightPaddleAudio" type="AudioStreamPlayer3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.25613, 0, 0)
 volume_db = 10.0
 max_polyphony = 5
+bus = &"Kayak"
 
 [node name="LeftPaddleAudio" type="AudioStreamPlayer3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.35202, 0, 0)
 volume_db = 13.846
 max_polyphony = 5
+bus = &"Kayak"
 
 [node name="CollisionAudio" type="AudioStreamPlayer3D" parent="."]
 unique_name_in_owner = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.35202, 0, 0)
 stream = SubResource("AudioStreamRandomizer_oxp1s")
 unit_size = 20.0
+bus = &"Kayak"
 
 [node name="AudioListener3D" type="AudioListener3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.661621, 0.329895)

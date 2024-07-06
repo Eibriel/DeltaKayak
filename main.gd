@@ -28,7 +28,7 @@ var foreshadowing := false
 
 var kayak_k1: RigidBody3D
 
-const SKIP_INTRO = true
+const SKIP_INTRO = false
 
 const UnhandledTriggers = preload("res://interactives/unhandled_triggers.gd")
 
@@ -455,6 +455,7 @@ func grab_kayak():
 	Global.character.lock_grab()
 	var tween := create_tween()
 	tween.set_process_mode(Tween.TWEEN_PROCESS_PHYSICS)
+	tween.tween_callback(%JumpscareAudio3.play)
 	tween.tween_callback(Global.character.apply_central_impulse.bind(Vector3(0, 0, 1)*3))
 	tween.tween_interval(1.0)
 	tween.tween_callback(Global.character.apply_central_impulse.bind(Vector3(-1, 0, 1)*3))
@@ -505,6 +506,8 @@ func _on_first_grab_kayak_body_entered(body: Node3D) -> void:
 	moved = true
 	var tween := create_tween()
 	tween.set_process_mode(Tween.TWEEN_PROCESS_PHYSICS)
+	tween.tween_callback(%JumpscareAudio2.play)
+	tween.tween_callback(%JumpscareAudio3.play)
 	tween.tween_callback(Global.character.apply_central_impulse.bind(Vector3(0, 0, 1)*0.5))
 	tween.tween_interval(1.0)
 	tween.tween_callback(Global.character.apply_central_impulse.bind(Vector3(-1, 0, 1)*1))
@@ -514,6 +517,10 @@ func _on_first_grab_kayak_body_entered(body: Node3D) -> void:
 	tween.tween_callback(Global.character.apply_central_impulse.bind(Vector3(-1, 0, 1)))
 	tween.tween_callback(say_dialogue.bind("demo2_kayak_movement"))
 	tween.tween_interval(10)
+	tween.tween_callback(%JumpscareAudio2.set_pitch_scale.bind(0.8))
+	tween.tween_callback(%JumpscareAudio2.play)
+	tween.tween_callback(%JumpscareAudio2.set_pitch_scale.bind(0.8))
+	tween.tween_callback(%JumpscareAudio3.play)
 	tween.tween_callback(Global.character.apply_central_impulse.bind(Vector3(0, 0, 1)*0.5))
 	tween.tween_interval(1.0)
 	tween.tween_callback(Global.character.apply_central_impulse.bind(Vector3(-1, 0, 1)*1))
@@ -522,6 +529,7 @@ func _on_first_grab_kayak_body_entered(body: Node3D) -> void:
 	tween.tween_interval(1.0)
 	tween.tween_callback(Global.character.apply_central_impulse.bind(Vector3(-1, 0, 1)))
 	tween.tween_callback(say_dialogue.bind("demo2_kayak_movement_2"))
+	tween.tween_callback(%JumpscareAudio.play)
 	tween.tween_callback(kayak_k1.set_camera)
 	tween.tween_callback(dk_world.set_select_cameras.bind(false))
 	tween.tween_callback(kayak_k1.pepa_visible.bind(true))

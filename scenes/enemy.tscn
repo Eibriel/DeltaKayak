@@ -1,4 +1,4 @@
-[gd_scene load_steps=29 format=3 uid="uid://mvc5qr5igrlq"]
+[gd_scene load_steps=34 format=3 uid="uid://mvc5qr5igrlq"]
 
 [ext_resource type="Script" path="res://scenes/enemy.gd" id="1_ht45k"]
 [ext_resource type="Texture2D" uid="uid://cdex8bqdmulf8" path="res://textures/flashlight.jpg" id="2_1pota"]
@@ -16,6 +16,11 @@
 [ext_resource type="AudioStream" uid="uid://dkqyvaop4y4xh" path="res://sounds/hit2.mp3" id="14_wsgj4"]
 [ext_resource type="AudioStream" uid="uid://b6vvw2om552u" path="res://sounds/hit3.mp3" id="15_f2crf"]
 [ext_resource type="AudioStream" uid="uid://bh78ed7n2w0xm" path="res://sounds/hit4.mp3" id="16_o4325"]
+[ext_resource type="AudioStream" uid="uid://bcrjqoihaab8" path="res://sounds/hit5.mp3" id="17_0lwtd"]
+[ext_resource type="AudioStream" uid="uid://dlf31kjxooese" path="res://sounds/hit6.mp3" id="18_4yx0i"]
+[ext_resource type="AudioStream" uid="uid://cscgy1o1ghfal" path="res://sounds/hit7.mp3" id="19_o2rft"]
+[ext_resource type="AudioStream" uid="uid://c5c82h1jr2wf4" path="res://sounds/hit8.mp3" id="20_50hpc"]
+[ext_resource type="AudioStream" uid="uid://cf34gcxjry6te" path="res://music/535963__klankbeeld__horror-ambience-hell.wav" id="21_a13hk"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_w2uow"]
 
@@ -73,11 +78,16 @@ stream_6/stream = ExtResource("11_j8owj")
 stream_6/volume = -29.1
 
 [sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_3dauc"]
-streams_count = 4
+random_pitch = 1.28
+streams_count = 8
 stream_0/stream = ExtResource("13_vjfw1")
 stream_1/stream = ExtResource("14_wsgj4")
 stream_2/stream = ExtResource("15_f2crf")
 stream_3/stream = ExtResource("16_o4325")
+stream_4/stream = ExtResource("17_0lwtd")
+stream_5/stream = ExtResource("18_4yx0i")
+stream_6/stream = ExtResource("19_o2rft")
+stream_7/stream = ExtResource("20_50hpc")
 
 [node name="Enemy" type="RigidBody3D"]
 collision_layer = 8
@@ -160,3 +170,9 @@ bus = &"Monster"
 unique_name_in_owner = true
 stream = SubResource("AudioStreamRandomizer_3dauc")
 bus = &"Monster"
+
+[node name="MusicPlayer" type="AudioStreamPlayer" parent="."]
+unique_name_in_owner = true
+stream = ExtResource("21_a13hk")
+volume_db = -54.154
+autoplay = true
