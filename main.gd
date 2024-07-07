@@ -28,7 +28,7 @@ var foreshadowing := false
 
 var kayak_k1: RigidBody3D
 
-const SKIP_INTRO = false
+const SKIP_INTRO = true
 
 const UnhandledTriggers = preload("res://interactives/unhandled_triggers.gd")
 

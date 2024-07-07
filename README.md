@@ -30,3 +30,5 @@ Risers - Horror Whooshes Tension Builder 1.mp3 by original_sound -- https://free
 "Lowpoly PS1 Basemesh Male, Unwrapped, Segmented" (https://skfb.ly/6XVJQ) by BitHack is licensed under Creative Commons Attribution (http://creativecommons.org/licenses/by/4.0/).
 
 "Segmented lowpoly base female PS1 style" (https://skfb.ly/6XNRC) by BitHack is licensed under Creative Commons Attribution (http://creativecommons.org/licenses/by/4.0/).
+
+"Capybara PS1 style" (https://skfb.ly/oAWtu) by Kabuum is licensed under Creative Commons Attribution (http://creativecommons.org/licenses/by/4.0/).

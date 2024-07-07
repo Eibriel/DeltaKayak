@@ -1,4 +1,4 @@
-[gd_scene load_steps=34 format=3 uid="uid://mvc5qr5igrlq"]
+[gd_scene load_steps=44 format=3 uid="uid://mvc5qr5igrlq"]
 
 [ext_resource type="Script" path="res://scenes/enemy.gd" id="1_ht45k"]
 [ext_resource type="Texture2D" uid="uid://cdex8bqdmulf8" path="res://textures/flashlight.jpg" id="2_1pota"]
@@ -21,6 +21,7 @@
 [ext_resource type="AudioStream" uid="uid://cscgy1o1ghfal" path="res://sounds/hit7.mp3" id="19_o2rft"]
 [ext_resource type="AudioStream" uid="uid://c5c82h1jr2wf4" path="res://sounds/hit8.mp3" id="20_50hpc"]
 [ext_resource type="AudioStream" uid="uid://cf34gcxjry6te" path="res://music/535963__klankbeeld__horror-ambience-hell.wav" id="21_a13hk"]
+[ext_resource type="Texture2D" uid="uid://bue181jtwq3fu" path="res://textures/smoke.png" id="22_pdnyu"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_w2uow"]
 
@@ -89,6 +90,52 @@ stream_5/stream = ExtResource("18_4yx0i")
 stream_6/stream = ExtResource("19_o2rft")
 stream_7/stream = ExtResource("20_50hpc")
 
+[sub_resource type="Curve" id="Curve_wu0in"]
+_data = [Vector2(0, 0.0328095), 0.0, 0.0, 0, 0, Vector2(0.68932, 0.128928), 0.0, 0.0, 0, 0, Vector2(1, 0.0388169), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="CurveTexture" id="CurveTexture_co714"]
+curve = SubResource("Curve_wu0in")
+
+[sub_resource type="Gradient" id="Gradient_x6am8"]
+colors = PackedColorArray(0.057376, 0.0123224, 0.0240525, 1, 0.0166267, 0.02, 0.0108, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_2rfqf"]
+gradient = SubResource("Gradient_x6am8")
+
+[sub_resource type="Curve" id="Curve_k4q7v"]
+_data = [Vector2(0.236111, 0.157747), 0.0, 0.646718, 0, 0, Vector2(0.465278, 1), 0.0, 0.0, 0, 0, Vector2(0.836806, 0.624648), -0.452113, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="CurveTexture" id="CurveTexture_0f5r0"]
+curve = SubResource("Curve_k4q7v")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_22ppc"]
+direction = Vector3(0, 1, 0)
+spread = 2.0
+initial_velocity_min = 1.0
+initial_velocity_max = 1.0
+gravity = Vector3(0, 0, 0)
+scale_min = 0.5
+scale_max = 2.0
+scale_curve = SubResource("CurveTexture_0f5r0")
+color_ramp = SubResource("GradientTexture1D_2rfqf")
+alpha_curve = SubResource("CurveTexture_co714")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ausrm"]
+transparency = 1
+cull_mode = 2
+shading_mode = 0
+vertex_color_use_as_albedo = true
+albedo_texture = ExtResource("22_pdnyu")
+billboard_mode = 1
+grow_amount = -0.432
+distance_fade_mode = 1
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_mb0vy"]
+material = SubResource("StandardMaterial3D_ausrm")
+orientation = 2
+
 [node name="Enemy" type="RigidBody3D"]
 collision_layer = 8
 collision_mask = 31
@@ -118,12 +165,20 @@ shape = SubResource("CapsuleShape3D_c8bgx")
 path_postprocessing = 1
 debug_enabled = true
 
-[node name="AttackIndicator" type="CSGSphere3D" parent="."]
+[node name="AttackIndicator" type="Node3D" parent="."]
 unique_name_in_owner = true
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.28552, -2.71929)
+
+[node name="AttackIndicator2" type="CSGSphere3D" parent="AttackIndicator"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.357483, 2.20194, -4.12193)
+radius = 0.1
 material = SubResource("StandardMaterial3D_y8box")
 
-[node name="SpotLight3D" type="SpotLight3D" parent="."]
+[node name="AttackIndicator3" type="CSGSphere3D" parent="AttackIndicator"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.365479, 2.20592, -4.12186)
+radius = 0.1
+material = SubResource("StandardMaterial3D_y8box")
+
+[node name="SpotLightEnemy" type="SpotLight3D" parent="."]
 unique_name_in_owner = true
 transform = Transform3D(1, -1.31355e-08, -5.42335e-09, 1.4164e-08, 0.952273, 0.305247, 1.15495e-09, -0.305247, 0.952273, 1.30783e-07, 3.46587, -5.25146)
 light_color = Color(1, 0.69, 0.69, 1)
@@ -132,6 +187,11 @@ light_projector = ExtResource("2_1pota")
 shadow_enabled = true
 spot_range = 13.9665
 spot_angle = 41.0167
+
+[node name="OmniLightEnemy" type="OmniLight3D" parent="."]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.451904, -5.26428)
+light_color = Color(1, 0, 0, 1)
 
 [node name="RayCast3D" type="RayCast3D" parent="."]
 collision_mask = 7
@@ -176,3 +236,14 @@ unique_name_in_owner = true
 stream = ExtResource("21_a13hk")
 volume_db = -54.154
 autoplay = true
+bus = &"Music"
+
+[node name="SmokeParticles" type="GPUParticles3D" parent="."]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.29004, 0)
+cast_shadow = 0
+amount = 50
+lifetime = 5.0
+preprocess = 20.0
+process_material = SubResource("ParticleProcessMaterial_22ppc")
+draw_pass_1 = SubResource("PlaneMesh_mb0vy")

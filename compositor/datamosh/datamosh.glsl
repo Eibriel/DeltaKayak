@@ -36,13 +36,13 @@ void main() {
 	uv2 = min(uv2, size-10);
 	uv2 = max(uv2, 0);
 
-	if (n > 0.1) {
+	if (n > 0.3) {
 		if (n < 0.95) {
 			vec4 color = imageLoad(previous_image, uv2) * 1.0;
 			color += imageLoad(color_image, uv) * 0.0;
 			imageStore(color_image, uv, color);
 		}
-	} else {
+	} else if (n > 0.15) {
 		vec4 color = imageLoad(previous_image, uv);
 		imageStore(color_image, uv, color);
 	}

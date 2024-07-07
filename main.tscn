@@ -1,4 +1,4 @@
-[gd_scene load_steps=36 format=3 uid="uid://ce6e8v1saxjr5"]
+[gd_scene load_steps=37 format=3 uid="uid://ce6e8v1saxjr5"]
 
 [ext_resource type="Environment" uid="uid://xpf4ng2ym0n4" path="res://environments/main_environment.tres" id="1_ekqa4"]
 [ext_resource type="Script" path="res://main.gd" id="1_xxenq"]
@@ -19,6 +19,7 @@
 [ext_resource type="AudioStream" uid="uid://dyhpoke86xwui" path="res://music/491210__deleted_user_9768630__jumpscare-sfx.wav" id="17_a32ot"]
 [ext_resource type="AudioStream" uid="uid://ctm601sbah8df" path="res://music/494981__original_sound__risers-horror-whooshes-tension-builder-1.mp3" id="18_akxex"]
 [ext_resource type="AudioStream" uid="uid://css74q0cr7wrf" path="res://sounds/679400__adviseme333__fast-water-flutter.wav" id="19_7efqm"]
+[ext_resource type="PackedScene" uid="uid://dt7sihp44khg1" path="res://scenes/carpincho.tscn" id="20_wsws0"]
 
 [sub_resource type="Compositor" id="Compositor_lm6bj"]
 compositor_effects = Array[CompositorEffect]([ExtResource("6_02wi3"), ExtResource("2_f4rcp")])
@@ -144,7 +145,7 @@ grow_vertical = 2
 script = ExtResource("1_xxenq")
 game_preferences = ExtResource("2_wexnt")
 game_state = ExtResource("3_nh3h6")
-initial_position = NodePath("Main3D/InitialPosition")
+initial_position = NodePath("Main3D/InitialPositionOtherSide")
 
 [node name="Control" type="Control" parent="."]
 layout_mode = 1
@@ -1448,7 +1449,7 @@ shape = SubResource("BoxShape3D_i81n0")
 [node name="IntroElements" type="Node3D" parent="Main3D"]
 
 [node name="CameraIntro" type="Camera3D" parent="Main3D/IntroElements"]
-transform = Transform3D(1, 0, 0, 0, 0.100158, 0.994967, 0, -0.99497, 0.100158, 0, 95.2315, 0)
+transform = Transform3D(1, 0, 0, 0, 0.100158, 0.994966, 0, -0.994969, 0.100158, 0, 95.2315, 0)
 fov = 77.1
 
 [node name="IntroAnimationPlayer" type="AnimationPlayer" parent="Main3D/IntroElements"]
@@ -1474,7 +1475,7 @@ transform = Transform3D(0.998732, 0, -0.0503483, 0, 1, 0, 0.0503483, 0, 0.998732
 gizmo_extents = 5.0
 
 [node name="InitialPositionPuzzle" type="Marker3D" parent="Main3D"]
-transform = Transform3D(0.998732, 0, -0.0503483, 0, 1, 0, 0.0503483, 0, 0.998732, -186.666, 0, -359.256)
+transform = Transform3D(0.998732, 0, -0.0503483, 0, 1, 0, 0.0503483, 0, 0.998732, -238.518, 0, -312.013)
 gizmo_extents = 5.0
 
 [node name="FinishPositionDemo" type="Marker3D" parent="Main3D"]
@@ -1482,22 +1483,31 @@ unique_name_in_owner = true
 transform = Transform3D(0.998732, 0, -0.0503483, 0, 1, 0, 0.0503483, 0, 0.998732, -159.177, 0, -419.987)
 gizmo_extents = 5.0
 
-[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+[node name="Carpinchos" type="Node3D" parent="Main3D"]
+
+[node name="Carpincho" parent="Main3D/Carpinchos" instance=ExtResource("20_wsws0")]
+transform = Transform3D(0.948655, 0, 0.316311, 0, 1, 0, -0.316311, 0, 0.948655, -248.634, 0.449756, -314.622)
+
+[node name="MusicBackground" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("16_dvrax")
 autoplay = true
+bus = &"Music"
 
 [node name="JumpscareAudio" type="AudioStreamPlayer" parent="."]
 unique_name_in_owner = true
 stream = ExtResource("17_a32ot")
+bus = &"Music"
 
 [node name="JumpscareAudio2" type="AudioStreamPlayer" parent="."]
 unique_name_in_owner = true
 stream = ExtResource("18_akxex")
 volume_db = -10.0
+bus = &"Music"
 
 [node name="JumpscareAudio3" type="AudioStreamPlayer" parent="."]
 unique_name_in_owner = true
 stream = ExtResource("19_7efqm")
+bus = &"Music"
 
 [connection signal="drag_ended" from="Control/Debug/VBoxContainer/ProportionalSlider" to="." method="_on_slider_drag_ended"]
 [connection signal="drag_ended" from="Control/Debug/VBoxContainer/IntegralSlider" to="." method="_on_slider_drag_ended"]

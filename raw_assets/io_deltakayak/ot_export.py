@@ -567,6 +567,7 @@ class DKT_PT_ExportItems(bpy.types.Panel):
         col.label(text="Texture:")
         if active_object is not None:
             col.prop(active_object.dkt_properties, "override_texture")
+            col.prop(active_object.dkt_properties, "base_color")
 
         col.label(text="Stencils:")
         # composition_mode opacity normal_masking mask_image diffuse_image emission_image alpha_image
@@ -580,6 +581,7 @@ class DKT_PT_ExportItems(bpy.types.Panel):
             else:
 
                 col.operator("dktools.apply_stencils", text="Apply Stencils", icon='IMAGE_RGB_ALPHA')
+                col.prop(active_object.dkt_stencil, "keep_texture")
 
 
 class DKT_PT_ExportWorld(bpy.types.Panel):
@@ -669,8 +671,17 @@ class DKT_OT_ApplyStencils(bpy.types.Operator):
                 for x in range(0, width):
                     for y in range(0, height):
                         initial_color: list[float]| None = None
-                        if not first_obj:
+                        if not first_obj or C.active_object.dkt_stencil.keep_texture:
                             initial_color = self.get_pixel(img_target, paint_pixels, x, y)
+                        else:
+                            #mod_color = mathutils.Color(C.active_object.dkt_properties.base_color).from_rec709_linear_to_scene_linear()
+                            mod_color = C.active_object.dkt_properties.base_color
+                            initial_color = [
+                                mod_color.r,
+                                mod_color.g,
+                                mod_color.b,
+                                1.0
+                            ]
                         p = self.get_pixel_color(img_target, triangles, x, y, initial_color)
                         self.set_pixel(img_target, paint_pixels, x, y, p[0], p[1], p[2], p[3])
             else:
@@ -785,8 +796,12 @@ class DKT_OT_ApplyStencils(bpy.types.Operator):
                 triangle_uv2,
                 triangle_uv3
             )
-            if in_triangle == 1:
+            #print("in_triangle", in_triangle)
+            #if in_triangle == 1:
+            if in_triangle != 0:
                 selected_triangles.append(t)
+            #if in_triangle == -1:
+            #    print("in triangle error", uv, triangle_uv1, triangle_uv2, triangle_uv3)
         return selected_triangles
 
 
@@ -929,7 +944,7 @@ class DKT_OT_ApplyStencils(bpy.types.Operator):
     def test_ray(self, point:mathutils.Vector, normal:mathutils.Vector, collected=[], depth=0)->list:
         C = bpy.context
         D = bpy.data
-
+        #print(depth)
         if depth > 30:
             print("Max Depth")
             return collected
@@ -947,11 +962,17 @@ class DKT_OT_ApplyStencils(bpy.types.Operator):
 
         result, location, normal_b, index, object, matrix = ray
         if not result:
+            #print("No hit")
             del ray
             return collected
+        #print("Hit")
         if object.dkt_stencil.is_stencil:
             if len(collected) == 0 or collected[-1][1]!=object:
                 collected.append([location, object, index, normal_b])
+                #print("Collected")
+            else:
+                #print("Skip")
+                pass
             if object.dkt_stencil.stop_coloring:
                 del ray
                 return collected
@@ -1057,6 +1078,8 @@ class DKT_OT_ApplyStencils(bpy.types.Operator):
         color_c:list[float] = []
         for id in range(len(color_a)):
             color_c.append(color_a[id] + color_b[id])
+        if color_c[3] > 1.0:
+            color_c[3] = 1.0
         return color_c
 
     def mult_color(self, color, value):
@@ -1092,6 +1115,8 @@ class DKT_OT_ApplyStencils(bpy.types.Operator):
                 face_hit = hit[2]
                 normal_b = hit[3]
 
+                #print(point_hit)
+
                 dotp = mathutils.Vector(normal).dot( mathutils.Vector(normal_b) )
                 dotp = max(0.0, dotp)
                 #p = [0.0, dotp, 0.0, 1.0]
@@ -1121,18 +1146,20 @@ class DKT_OT_ApplyStencils(bpy.types.Operator):
                     #[-1, 0],
                     #[-1, -1]
                 ]
-                this_p = p
+                #this_p = p
+                sample = [0.0, 0.0, 0.0, 0.0]
                 for offset in offsets:
                     value = self.get_pixel(img_source, source_pixels, pixel[0]+offset[0], pixel[1]+offset[1])
 
                     value[3] *= obj_hit.dkt_stencil.opacity
-
-                    this_p = self.add_colors(value, this_p)
+                    sample = self.add_colors(sample, value)
+                #print("this_p", this_p, "p", p)
                 layer_count:int = len(offsets)
+                #print(layer_count)
                 #if not(initial_color is None):
                 #    layer_count += 1
-                this_p = self.mult_color(this_p, 1.0/layer_count)
-                p = self.color_mix(p, this_p)
+                sample = self.mult_color(sample, 1.0/layer_count)
+                p = self.color_mix(p, sample)
                 
             break
         return p
@@ -1177,6 +1204,11 @@ class DKT_PG_ObjectProperties(bpy.types.PropertyGroup):
         name="Override Texture",
         description="Item to get texture from",
         default=""
+    ) # type: ignore
+
+    base_color: FloatVectorProperty(name="Base Color", 
+        subtype='COLOR',
+        default=[0.0,0.0,0.0]
     ) # type: ignore
 
 class DKT_PG_WorldObjectProperties(bpy.types.PropertyGroup):
@@ -1381,6 +1413,12 @@ class DKT_PG_StencilProperties(bpy.types.PropertyGroup):
         default=1.0,
         min=0.0,
         max=1.0
+    ) # type: ignore
+
+    # Move out of stencils
+    keep_texture: BoolProperty(
+        name="Keep Texture",
+        default=False
     ) # type: ignore
 
 

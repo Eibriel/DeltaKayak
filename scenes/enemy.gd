@@ -81,13 +81,21 @@ func handle_sounds():
 		#prints(n, vol)
 		%EngineAudio.stream["stream_%s/volume" % n] = vol
 	
+	# TODO move outside this function
+	var particle_vel := remap(abs(forward_force), 0, 15, 0, 2)
+	var particle_amount := remap(abs(forward_force), 0, 15, 0, 1)
+	%SmokeParticles.process_material.initial_velocity_min = particle_vel*0.9
+	%SmokeParticles.process_material.initial_velocity_max = particle_vel
+	%SmokeParticles.amount_ratio = particle_amount
+	
 
 func _get_target(delta: float) -> void:
 	change_state()
 	
 	if current_state == STATE.ATTACK:
 		%AttackIndicator.visible = true
-		%SpotLight3D.visible = true
+		%SpotLightEnemy.visible = true
+		%OmniLightEnemy.visible = true
 		change_attack_state()
 		is_trail_visible() # TODO line may not be needed
 		#target_position = attack_position
@@ -111,7 +119,8 @@ func _get_target(delta: float) -> void:
 		boat_speed = 0.4
 	if current_state == STATE.SLEEPING:
 		%AttackIndicator.visible = false
-		%SpotLight3D.visible = false
+		%SpotLightEnemy.visible = false
+		%OmniLightEnemy.visible = false
 		nav.target_position = home_position
 		if nav.is_target_reachable():
 			target_position = nav.get_next_path_position()
@@ -245,7 +254,9 @@ func _handle_contacts(state: PhysicsDirectBodyState3D):
 		var collision_impulse:float = state.get_contact_impulse(0).length()
 		if collision_impulse > 0.5:
 			%CollisionAudio.global_position = state.get_contact_collider_position(0)
-			%CollisionAudio.volume_db = remap(collision_impulse, 0.5, 2, -30, -10)
+			var vol := remap(collision_impulse, 0.5, 40, -40, -20)
+			prints(collision_impulse, vol)
+			%CollisionAudio.volume_db = vol
 			print(%CollisionAudio.volume_db)
 			if not %CollisionAudio.playing:
 				%CollisionAudio.play()

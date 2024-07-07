@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3 uid="uid://dt7sihp44khg1"]
+
+[ext_resource type="PackedScene" uid="uid://dx6st1sljwj66" path="res://models/carpincho/carpincho.glb" id="1_jg23j"]
+
+[node name="Carpincho" type="Node3D"]
+
+[node name="carpincho" parent="." instance=ExtResource("1_jg23j")]
