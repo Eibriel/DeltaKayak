@@ -212,6 +212,7 @@ func handle_grabbing():
 				if $RayCast3D.is_colliding():
 					grabbing_state = GRABBING.YES
 					%GrabRay.visible = true
+					%GrabRay.scale.z = $RayCast3D.get_collision_point().distance_to(%GrabRay.global_position)
 					var body = $RayCast3D.get_collider()
 					Global.grab_joint.global_position = $GrabbingPosition.global_position
 					Global.grab_joint.set_node_a(get_path())

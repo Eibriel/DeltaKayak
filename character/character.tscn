@@ -1,6 +1,7 @@
-[gd_scene load_steps=49 format=3 uid="uid://r0o1qsmlq84u"]
+[gd_scene load_steps=50 format=3 uid="uid://r0o1qsmlq84u"]
 
 [ext_resource type="Script" path="res://character/character.gd" id="1_mnv7b"]
+[ext_resource type="Texture2D" uid="uid://dbr6od55galv2" path="res://models/world_textures/BoteMadera_diffuse.png" id="2_j3chf"]
 [ext_resource type="PackedScene" uid="uid://b5n8cpa2p23cu" path="res://models/kayak_detailed.glb" id="2_qknmv"]
 [ext_resource type="Texture2D" uid="uid://cdex8bqdmulf8" path="res://textures/flashlight.jpg" id="3_xitmn"]
 [ext_resource type="PackedScene" uid="uid://ds44csvhmqggb" path="res://models/pepa/pillow.glb" id="4_81u6e"]
@@ -25,7 +26,8 @@ friction = 0.2
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_e56vi"]
 shading_mode = 0
-albedo_color = Color(0.26, 0.5, 0.484, 1)
+albedo_color = Color(1, 0.883333, 0.3, 1)
+albedo_texture = ExtResource("2_j3chf")
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_ogamo"]
 radius = 0.271211
@@ -227,12 +229,15 @@ linear_damp = 0.1
 angular_damp = 0.1
 script = ExtResource("1_mnv7b")
 
-[node name="GrabRay" type="CSGCylinder3D" parent="."]
+[node name="GrabRay" type="Node3D" parent="."]
 unique_name_in_owner = true
-transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0.173584, -3.23356)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.133543, -1.52912)
 visible = false
-radius = 0.03
-height = 3.0
+
+[node name="GrabRayCylinder" type="CSGCylinder3D" parent="GrabRay"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0.0106019, -0.49395)
+radius = 0.02
+height = 1.0
 material = SubResource("StandardMaterial3D_e56vi")
 
 [node name="CSGCylinder3D2" type="CSGCylinder3D" parent="."]
@@ -378,7 +383,7 @@ root_node = NodePath("%AnimationTree/../character")
 tree_root = SubResource("AnimationNodeStateMachine_wkph0")
 anim_player = NodePath("../AnimationPlayer")
 parameters/current_length = 1.0
-parameters/current_position = 0.319103
+parameters/current_position = 0.95973
 parameters/current_delta = 0.0166667
 parameters/conditions/forward = false
 parameters/conditions/idle = false
@@ -409,7 +414,7 @@ parameters/Start/current_length = 0.0
 parameters/Start/current_position = 0.0
 parameters/Start/current_delta = 0.0
 parameters/character_anims_Idle/current_length = 1.0
-parameters/character_anims_Idle/current_position = 0.319103
+parameters/character_anims_Idle/current_position = 0.95973
 parameters/character_anims_Idle/current_delta = 0.0166667
 
 [node name="KriketsAudio" type="AudioStreamPlayer3D" parent="."]

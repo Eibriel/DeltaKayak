@@ -1,9 +1,13 @@
-[gd_scene load_steps=3 format=3 uid="uid://13fm0bap5hxi"]
+[gd_scene load_steps=7 format=3 uid="uid://13fm0bap5hxi"]
 
 [ext_resource type="Script" path="res://scenes/demo_box.gd" id="1_0hjt7"]
+[ext_resource type="PackedScene" uid="uid://d0sak1gv4yypw" path="res://models/world/BoteMadera.glb" id="2_li2ae"]
+[ext_resource type="PackedScene" uid="uid://c4q0n4pfj1oln" path="res://models/world/PuzzleSword.glb" id="3_aibwc"]
+[ext_resource type="PackedScene" uid="uid://cyp5cfs2ippgd" path="res://models/world/PuzzleCup.glb" id="4_7erw4"]
+[ext_resource type="PackedScene" uid="uid://dih4j0703e8bg" path="res://models/world/PuzzleSun.glb" id="5_lwnpp"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_v311q"]
-size = Vector3(2, 2, 2)
+size = Vector3(0.866943, 0.525146, 2.54333)
 
 [node name="DemoBox" type="RigidBody3D"]
 collision_layer = 4
@@ -18,16 +22,33 @@ metadata/grabbable = true
 metadata/puzzle_item = true
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0918579, -0.293518)
 shape = SubResource("BoxShape3D_v311q")
 
-[node name="CSGBox3D" type="CSGBox3D" parent="."]
-size = Vector3(2, 2, 2)
+[node name="BoteMadera" parent="." instance=ExtResource("2_li2ae")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0918579, 0)
 
 [node name="Label3D" type="Label3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.90711, 0)
+visible = false
 pixel_size = 0.02
 billboard = 2
 shaded = true
 alpha_cut = 1
 text = "Texto"
 font_size = 64
+
+[node name="PuzzleSword" parent="." instance=ExtResource("3_aibwc")]
+unique_name_in_owner = true
+transform = Transform3D(-1.31134e-07, 0, 3, 0, 3, 0, -3, 0, -1.31134e-07, 0.000412002, 0.221405, -0.186645)
+visible = false
+
+[node name="PuzzleCup" parent="." instance=ExtResource("4_7erw4")]
+unique_name_in_owner = true
+transform = Transform3D(4, 0, 0, 0, 4, 0, 0, 0, 4, -0.00232506, 0.286682, -0.172563)
+visible = false
+
+[node name="PuzzleSun" parent="." instance=ExtResource("5_lwnpp")]
+unique_name_in_owner = true
+transform = Transform3D(-1.74846e-07, 0, 4, 1.56119, 3.68276, 6.82417e-08, -3.68276, 1.56119, -1.60978e-07, 0, 1.33734, -0.201233)
+visible = false

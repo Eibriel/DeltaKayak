@@ -27,5 +27,5 @@ size = Vector3(6, 2, 2)
 
 [node name="Element" type="Node3D" parent="."]
 
-[node name="AysaTank2" type="Node3D" parent="Element" instance=ExtResource("1_vcrlp")]
+[node name="AysaTank2" parent="Element" instance=ExtResource("1_vcrlp")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.02578, 0)

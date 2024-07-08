@@ -7,7 +7,7 @@ func _post_import(scene):
 	# Change all node names to "modified_[oldnodename]"
 	print(scene.name)
 	for c in scene.get_children():
-		apply_material(c, c.name.split("_")[0])
+		apply_material(c, scene.name)#c.name.split("_")[0])
 	return scene # Remember to return the imported scene
 
 func apply_material(node, filename: String):

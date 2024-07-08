@@ -107,7 +107,9 @@ func _process(delta: float) -> void:
 			%WorldEnvironment.environment.volumetric_fog_density = float(Global.camera.get_meta("fog_density"))
 			Global.log_text = "\nFog:%f" % %WorldEnvironment.environment.volumetric_fog_density
 
+var puzzle_solved := false
 func handle_demo_puzzle():
+	if puzzle_solved: return
 	var match_count := 0
 	%VinoIndicador.visible = false
 	%CarneIndicador.visible = false
@@ -136,10 +138,11 @@ func handle_demo_puzzle():
 						%CarneIndicador.visible = true
 						match_count += 1
 	if match_count == 3:
-		%DemoExitDoor.position.y = -20
+		puzzle_solved = true
+		#%DemoExitDoor.position.y = -20
 		#print("OpenDoor")
-	else:
-		%DemoExitDoor.position.y = 0
+		var tween := create_tween()
+		tween.tween_property(%DemoExitDoor, "position:y", -1.7, 10)
 	if Global.character.position.distance_to(%FinishPositionDemo.global_position) < 6 \
 	 and not %LabelThanks.visible:
 		%LabelThanks.visible = true

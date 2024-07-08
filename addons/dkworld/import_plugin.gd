@@ -556,10 +556,13 @@ func add_physicsitem(item: Dictionary, item_id: String, main_node: Node3D):
 			gltf_instance.home_position = array_to_vector3(item.position)
 		"demobox1":
 			gltf_instance.label_text = "Cáliz"
+			#gltf_instance.get_node("PuzzleCup").visible = true
 		"demobox2":
 			gltf_instance.label_text = "Espada"
+			#gltf_instance.get_node("PuzzleSword").visible = true
 		"demobox3":
 			gltf_instance.label_text = "Sol"
+			#gltf_instance.get_node("PuzzleSun").visible = true
 	#gltf_instance.name = item_id
 	main_node.add_child(gltf_instance)
 	gltf_instance.position = array_to_vector3(item.position)

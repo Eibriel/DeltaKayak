@@ -1,4 +1,4 @@
-[gd_scene load_steps=37 format=3 uid="uid://ce6e8v1saxjr5"]
+[gd_scene load_steps=39 format=3 uid="uid://ce6e8v1saxjr5"]
 
 [ext_resource type="Environment" uid="uid://xpf4ng2ym0n4" path="res://environments/main_environment.tres" id="1_ekqa4"]
 [ext_resource type="Script" path="res://main.gd" id="1_xxenq"]
@@ -10,6 +10,7 @@
 [ext_resource type="Texture2D" uid="uid://31mrm2ajeyll" path="res://textures/dialogue_box.png" id="4_kkvku"]
 [ext_resource type="CompositorEffect" uid="uid://b45j2vp4hks5x" path="res://compositor/datamosh/datamosh_compositor_effect_2.tres" id="6_02wi3"]
 [ext_resource type="PackedScene" uid="uid://t23rsw74uei8" path="res://scenes/long_box.tscn" id="9_kolyd"]
+[ext_resource type="Script" path="res://addons/dkworld/world.gd" id="10_qu53w"]
 [ext_resource type="PackedScene" uid="uid://dsppfk5r8xdm7" path="res://scenes/L_floating_box.tscn" id="10_tov8v"]
 [ext_resource type="PackedScene" uid="uid://ccwbpjnygckmy" path="res://scenes/door.tscn" id="11_mh163"]
 [ext_resource type="PackedScene" uid="uid://cq7dkdx262hcs" path="res://scenes/switch.tscn" id="12_uwfp4"]
@@ -17,6 +18,7 @@
 [ext_resource type="PackedScene" uid="uid://budwwb6cj1obm" path="res://scenes/pendulum.tscn" id="14_80ibj"]
 [ext_resource type="AudioStream" uid="uid://dfo6kurv2uoq5" path="res://music/237275__klankbeeld__horror-ambience-75-140328_143.ogg" id="16_dvrax"]
 [ext_resource type="AudioStream" uid="uid://dyhpoke86xwui" path="res://music/491210__deleted_user_9768630__jumpscare-sfx.wav" id="17_a32ot"]
+[ext_resource type="PackedScene" uid="uid://du2f5nf7l2btb" path="res://models/world/PuzzleStatueDoor.glb" id="17_y0syq"]
 [ext_resource type="AudioStream" uid="uid://ctm601sbah8df" path="res://music/494981__original_sound__risers-horror-whooshes-tension-builder-1.mp3" id="18_akxex"]
 [ext_resource type="AudioStream" uid="uid://css74q0cr7wrf" path="res://sounds/679400__adviseme333__fast-water-flutter.wav" id="19_7efqm"]
 [ext_resource type="PackedScene" uid="uid://dt7sihp44khg1" path="res://scenes/carpincho.tscn" id="20_wsws0"]
@@ -145,7 +147,7 @@ grow_vertical = 2
 script = ExtResource("1_xxenq")
 game_preferences = ExtResource("2_wexnt")
 game_state = ExtResource("3_nh3h6")
-initial_position = NodePath("Main3D/InitialPositionOtherSide")
+initial_position = NodePath("Main3D/InitialPositionPuzzle")
 
 [node name="Control" type="Control" parent="."]
 layout_mode = 1
@@ -384,14 +386,18 @@ compositor = SubResource("Compositor_lm6bj")
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="Main3D"]
 transform = Transform3D(-0.703072, 0.436428, 0.561445, -8.66841e-09, -0.789524, 0.61372, 0.711119, 0.431489, 0.555092, 0, 18.834, 0)
 light_color = Color(0.429084, 0.569185, 0.473505, 1)
-light_energy = 0.2
+light_energy = 0.5
 shadow_enabled = true
+shadow_opacity = 0.64
+shadow_blur = 1.774
+directional_shadow_mode = 0
 
 [node name="character" parent="Main3D" instance=ExtResource("2_3sgbv")]
 unique_name_in_owner = true
 
-[node name="DKWorld" parent="Main3D" node_paths=PackedStringArray("initial_camera") instance=ExtResource("3_7foso")]
+[node name="DKWorld" type="Node3D" parent="Main3D" node_paths=PackedStringArray("initial_camera") instance=ExtResource("3_7foso")]
 unique_name_in_owner = true
+script = ExtResource("10_qu53w")
 initial_camera = NodePath("../IntroElements/CameraIntro")
 world_definition = {
 "Sector_003": {
@@ -1293,7 +1299,11 @@ shape = SubResource("BoxShape3D_cach1")
 
 [node name="CSGBox3D" type="CSGBox3D" parent="Main3D/DemoElements/DemoExitDoor"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.508342, -0.503326)
+visible = false
 size = Vector3(1, 2.01664, 6.10846)
+
+[node name="PuzzleStatueDoor" type="Node3D" parent="Main3D/DemoElements/DemoExitDoor" instance=ExtResource("17_y0syq")]
+transform = Transform3D(0.108988, 0, -2.99802, 0, 3, 0, 2.99802, 0, 0.108988, 1.30937, -0.625061, -0.845612)
 
 [node name="BlockPath" type="StaticBody3D" parent="Main3D/DemoElements"]
 unique_name_in_owner = true
@@ -1332,41 +1342,47 @@ transform = Transform3D(0.0152537, 0, 0.999884, 0, 1, 0, -0.999884, 0, 0.0152537
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.74872, 0, 0.28206)
 shape = SubResource("BoxShape3D_icihu")
 
+[node name="VinoIndicador" type="CSGSphere3D" parent="Main3D/DemoElements"]
+unique_name_in_owner = true
+transform = Transform3D(0.739455, 0, 0.673206, 0, 1, 0, -0.673206, 0, 0.739455, -193.235, 5.94782, -370.267)
+radius = 0.235075
+material = SubResource("StandardMaterial3D_xingp")
+
 [node name="VinoLabel" type="Label3D" parent="Main3D/DemoElements"]
 unique_name_in_owner = true
 transform = Transform3D(0.739455, 0, 0.673206, 0, 1, 0, -0.673206, 0, 0.739455, -193.438, 4.46076, -369.809)
+visible = false
 pixel_size = 0.02
 text = "Vino"
 font_size = 64
 
-[node name="VinoIndicador" type="CSGSphere3D" parent="Main3D/DemoElements/VinoLabel"]
+[node name="CarneIndicador" type="CSGSphere3D" parent="Main3D/DemoElements"]
 unique_name_in_owner = true
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.32227, 0)
+transform = Transform3D(0.739455, 0, 0.673206, 0, 1, 0, -0.673206, 0, 0.739455, -207.391, 6.05304, -385.968)
+radius = 0.265138
 material = SubResource("StandardMaterial3D_xingp")
 
 [node name="CarneLabel" type="Label3D" parent="Main3D/DemoElements"]
 unique_name_in_owner = true
 transform = Transform3D(-0.739455, 0, -0.673206, 0, 1, 0, 0.673206, 0, -0.739455, -207.955, 4.90522, -386.662)
+visible = false
 pixel_size = 0.02
 text = "Carne"
 font_size = 64
 
-[node name="CarneIndicador" type="CSGSphere3D" parent="Main3D/DemoElements/CarneLabel"]
+[node name="TierraIndicador" type="CSGSphere3D" parent="Main3D/DemoElements"]
 unique_name_in_owner = true
-transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 1.19067, 0)
+transform = Transform3D(0.739455, 0, 0.673206, 0, 1, 0, -0.673206, 0, 0.739455, -209.811, 5.9369, -370.369)
+radius = 0.248745
 material = SubResource("StandardMaterial3D_xingp")
 
 [node name="TierraLabel" type="Label3D" parent="Main3D/DemoElements"]
 unique_name_in_owner = true
 transform = Transform3D(0.673206, 0, -0.739455, 0, 1, 0, 0.739455, 0, 0.673206, -210.181, 4.90522, -370.916)
+visible = false
 pixel_size = 0.02
 text = "Tierra"
 font_size = 64
-
-[node name="TierraIndicador" type="CSGSphere3D" parent="Main3D/DemoElements/TierraLabel"]
-unique_name_in_owner = true
-transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 1.43262, 0)
-material = SubResource("StandardMaterial3D_xingp")
 
 [node name="InstruccionLabel" type="Label3D" parent="Main3D/DemoElements"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 104.443, 2.85102, -202.56)
@@ -1475,7 +1491,7 @@ transform = Transform3D(0.998732, 0, -0.0503483, 0, 1, 0, 0.0503483, 0, 0.998732
 gizmo_extents = 5.0
 
 [node name="InitialPositionPuzzle" type="Marker3D" parent="Main3D"]
-transform = Transform3D(0.998732, 0, -0.0503483, 0, 1, 0, 0.0503483, 0, 0.998732, -238.518, 0, -312.013)
+transform = Transform3D(0.998732, 0, -0.0503483, 0, 1, 0, 0.0503483, 0, 0.998732, -175.789, 0, -390.623)
 gizmo_extents = 5.0
 
 [node name="FinishPositionDemo" type="Marker3D" parent="Main3D"]
