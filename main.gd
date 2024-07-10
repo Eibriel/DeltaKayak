@@ -28,11 +28,18 @@ var foreshadowing := false
 
 var kayak_k1: RigidBody3D
 
-const SKIP_INTRO = true
+var SKIP_INTRO = false
 
 const UnhandledTriggers = preload("res://interactives/unhandled_triggers.gd")
 
 func _ready() -> void:
+	if OS.has_feature("editor"):
+		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_MAXIMIZED)
+	else:
+		initial_position = %InitialPosition
+		SKIP_INTRO = false
+		character.pepa.visible = true
+	
 	Global.main_scene = self
 	Global.grab_joint = %GrabJoint3D
 	Global.grab_joint.set_param_x(Generic6DOFJoint3D.PARAM_LINEAR_LIMIT_SOFTNESS, 0.01)
@@ -72,6 +79,7 @@ func _ready() -> void:
 	%DerivativeSlider.value = character.pid_derivative_par
 	
 	#Input.set_mouse_mode(Input.MOUSE_MODE_HIDDEN)
+	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 	
 	for c in dk_world.get_children():
 		if c.has_meta("is_pepa_kayak"):
@@ -79,14 +87,31 @@ func _ready() -> void:
 	
 	%IntroChatLabel.visible = true
 	intro_animation()
+	#Global.character.camera.current = true
+	
+
+func pause():
+	#player.about_to_pause()
+	get_tree().paused = true
+	%PauseMenu.show()
+	#$StatsMenu.show()
+	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+
+func unpause():
+	%PauseMenu.hide()
+	#$StatsMenu.hide()
+	get_tree().paused = false
+	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 
 func intro_animation():
 	if SKIP_INTRO:
 		end_intro_animation()
 	else:
+		%CameraIntro.current = true
 		%IntroAnimationPlayer.play("intro_animation")
 
 func end_intro_animation():
+	character.camera.current = true
 	dk_world.select_cameras = true
 	%IntroChatLabel.visible = false
 	say_dialogue("demo_start_point")
@@ -109,6 +134,12 @@ func _process(delta: float) -> void:
 
 var puzzle_solved := false
 func handle_demo_puzzle():
+	if Global.character.position.distance_to(%FinishPositionDemo.global_position) < 6 \
+	 and not %LabelThanks.visible:
+		GamePlatform.set_achievement("demo_completed")
+		%LabelThanks.visible = true
+		%LabelThanks.text += "\n\n%s" % %LabelTemporizador.text
+		
 	if puzzle_solved: return
 	var match_count := 0
 	%VinoIndicador.visible = false
@@ -143,10 +174,6 @@ func handle_demo_puzzle():
 		#print("OpenDoor")
 		var tween := create_tween()
 		tween.tween_property(%DemoExitDoor, "position:y", -1.7, 10)
-	if Global.character.position.distance_to(%FinishPositionDemo.global_position) < 6 \
-	 and not %LabelThanks.visible:
-		%LabelThanks.visible = true
-		%LabelThanks.text += "\n\n%s" % %LabelTemporizador.text
 
 func handle_stats(_delta):
 	#
@@ -264,7 +291,8 @@ func _input(event: InputEvent) -> void:
 	elif event.is_action_pressed("compicactus"):
 		on_compicactus()
 	elif event.is_action_pressed("quit"):
-		get_tree().quit()
+		#get_tree().quit()
+		pause()
 	elif event.is_action_pressed("help"):
 		%HelpLabel.visible = !%HelpLabel.visible
 
@@ -423,10 +451,12 @@ func update_pid_values()->void:
 	character.pid_derivative_par = %DerivativeSlider.value
 
 func _on_slider_value_changed(value: float) -> void:
-	update_pid_values()
+	#update_pid_values()
+	pass
 
 func _on_slider_drag_ended(value_changed: bool) -> void:
-	update_pid_values()
+	#update_pid_values()
+	pass
 
 func _on_grab_kayak_body_entered(body: Node3D) -> void:
 	if body.name == "character":
@@ -434,7 +464,7 @@ func _on_grab_kayak_body_entered(body: Node3D) -> void:
 
 func grab_kayak():
 	if grabbed: return
-	if not is_grabbing_kayak(): return
+	#if not is_grabbing_kayak(): return
 	grabbed = true
 	var connect_grab = func():
 		Global.grab_kayak.global_position = Global.character.global_position
@@ -485,7 +515,8 @@ func grab_kayak():
 	tween.tween_property(%KayakGrabber, "global_position", Vector3(-196.017, 0, -147.396), 6.0)
 	tween.parallel().tween_property(%KayakGrabber, "global_rotation:y", deg_to_rad(-90+60), 6.0)
 	tween.tween_callback(ungrab_kayak)
-	tween.tween_callback(kayak_k1.queue_free)
+	#tween.tween_callback(kayak_k1.queue_free)
+	tween.tween_callback(Global.character.hide_pepa)
 	tween.tween_interval(3.0)
 	tween.tween_callback(say_dialogue.bind("demo_other_side"))
 	tween.tween_callback(set_datamosh.bind(false))
@@ -505,7 +536,7 @@ func ungrab_kayak():
 
 func _on_first_grab_kayak_body_entered(body: Node3D) -> void:
 	if moved: return
-	if not is_grabbing_kayak(): return
+	#if not is_grabbing_kayak(): return
 	moved = true
 	var tween := create_tween()
 	tween.set_process_mode(Tween.TWEEN_PROCESS_PHYSICS)
@@ -519,27 +550,28 @@ func _on_first_grab_kayak_body_entered(body: Node3D) -> void:
 	tween.tween_interval(0.3)
 	tween.tween_callback(Global.character.apply_central_impulse.bind(Vector3(-1, 0, 1)))
 	tween.tween_callback(say_dialogue.bind("demo2_kayak_movement"))
-	tween.tween_interval(10)
-	tween.tween_callback(%JumpscareAudio2.set_pitch_scale.bind(0.8))
-	tween.tween_callback(%JumpscareAudio2.play)
-	tween.tween_callback(%JumpscareAudio2.set_pitch_scale.bind(0.8))
-	tween.tween_callback(%JumpscareAudio3.play)
-	tween.tween_callback(Global.character.apply_central_impulse.bind(Vector3(0, 0, 1)*0.5))
-	tween.tween_interval(1.0)
-	tween.tween_callback(Global.character.apply_central_impulse.bind(Vector3(-1, 0, 1)*1))
-	tween.tween_interval(0.3)
-	tween.tween_callback(Global.character.apply_central_impulse.bind(Vector3(1, 0, 1)*2))
-	tween.tween_interval(1.0)
-	tween.tween_callback(Global.character.apply_central_impulse.bind(Vector3(-1, 0, 1)))
-	tween.tween_callback(say_dialogue.bind("demo2_kayak_movement_2"))
-	tween.tween_callback(%JumpscareAudio.play)
-	tween.tween_callback(kayak_k1.set_camera)
-	tween.tween_callback(dk_world.set_select_cameras.bind(false))
-	tween.tween_callback(kayak_k1.pepa_visible.bind(true))
-	tween.tween_interval(3.0)
-	tween.tween_callback(dk_world.set_select_cameras.bind(true))
-	tween.tween_interval(10.0)
-	tween.tween_callback(say_dialogue.bind("demo2_kayak_movement_2b"))
+	if false:
+		tween.tween_interval(10)
+		tween.tween_callback(%JumpscareAudio2.set_pitch_scale.bind(0.8))
+		tween.tween_callback(%JumpscareAudio2.play)
+		tween.tween_callback(%JumpscareAudio2.set_pitch_scale.bind(0.8))
+		tween.tween_callback(%JumpscareAudio3.play)
+		tween.tween_callback(Global.character.apply_central_impulse.bind(Vector3(0, 0, 1)*0.5))
+		tween.tween_interval(1.0)
+		tween.tween_callback(Global.character.apply_central_impulse.bind(Vector3(-1, 0, 1)*1))
+		tween.tween_interval(0.3)
+		tween.tween_callback(Global.character.apply_central_impulse.bind(Vector3(1, 0, 1)*2))
+		tween.tween_interval(1.0)
+		tween.tween_callback(Global.character.apply_central_impulse.bind(Vector3(-1, 0, 1)))
+		tween.tween_callback(say_dialogue.bind("demo2_kayak_movement_2"))
+		tween.tween_callback(%JumpscareAudio.play)
+		#tween.tween_callback(kayak_k1.set_camera)
+		tween.tween_callback(dk_world.set_select_cameras.bind(false))
+		tween.tween_callback(kayak_k1.pepa_visible.bind(true))
+		tween.tween_interval(3.0)
+		tween.tween_callback(dk_world.set_select_cameras.bind(true))
+		tween.tween_interval(10.0)
+		tween.tween_callback(say_dialogue.bind("demo2_kayak_movement_2b"))
 
 func _on_foreshadowing_body_entered(body: Node3D) -> void:
 	if foreshadowing: return
@@ -572,3 +604,13 @@ func is_grabbing_kayak():
 
 func _on_ana_body_entered(body: Node3D) -> void:
 	say_dialogue("demo_ana")
+
+func _on_quit_button_button_up() -> void:
+	get_tree().quit()
+
+func _on_resume_button_button_up() -> void:
+	unpause()
+
+
+func _on_menu_button_button_up() -> void:
+	get_tree().change_scene_to_packed(preload("res://menu.tscn"))

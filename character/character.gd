@@ -2,7 +2,7 @@ extends RigidBody3D
 
 @onready var target_box := $CSGBox3D
 @onready var pepa: Node3D = %pepa
-@onready var camera: Camera3D = %CharacterCamera3D
+@onready var camera: Camera3D = %POVCamera3D
 @onready var marker_3d: Marker3D = $Marker3D
 @onready var grabbing_position: Marker3D = $GrabbingPosition
 
@@ -59,7 +59,9 @@ func _ready():
 	#position = Vector3(34.7, 0, -5)
 	last_rotation = rotation.y
 	Global.character = self
-	pepa.get_node("AnimationPlayer").play("Sitting")
+	var pepa_anim:AnimationPlayer = pepa.get_node("AnimationPlayer")
+	pepa_anim.get_animation("Sitting").loop_mode = Animation.LOOP_LINEAR
+	pepa_anim.play("Sitting")
 	#print("Transform")
 	#print($CSGCylinder3D3.transform)
 	#print($CSGCylinder3D3.global_transform)
@@ -67,6 +69,17 @@ func _ready():
 	#char_anim.get_animation("character_anims/ForwardPaddle").loop_mode = Animation.LOOP_LINEAR
 	#char_anim.get_animation("character_anims/Idle").loop_mode = Animation.LOOP_LINEAR
 	#char_anim.play("character_anims/ForwardPaddle", -1, 2.0)
+	
+	var kayak_mat:StandardMaterial3D = $kayak_detailed.get_node("Kayak_001").mesh.surface_get_material(0)
+	kayak_mat.albedo_color = Color(0.81, 0.31, 0.25, 1.0) # Pink
+	#kayak_mat.albedo_color = Color(0.50, 0.74, 0.72, 1.0) # Light blue
+	#kayak_mat.albedo_color = Color(0.18, 0.41, 0.21, 1.0) # Green
+	#kayak_mat.albedo_color = Color(1.0, 0.8, 0.0, 1.0) # Yellow
+	kayak_mat.albedo_color = Color(0.9, 0.03, 0.03, 1.0) # Red
+	#kayak_mat.albedo_color = Color(0.73, 0.07, 0.07, 1.0) # Dark Red
+	kayak_mat.emission_enabled = false
+	kayak_mat.emission = kayak_mat.albedo_color * 0.1
+	#kayak_mat.emission_intensity = 1.0
 	
 
 func _process(delta: float) -> void:
@@ -90,6 +103,31 @@ func _process(delta: float) -> void:
 			trail_position.pop_back()
 			trail_velocity.pop_back()
 	handle_animations()
+
+var _mouse_input:bool
+var _mouse_rotation:Vector3
+var _rotation_input:float
+var _tilt_input:float
+
+func _unhandled_input(event: InputEvent) -> void:
+	_mouse_input = event is InputEventMouseMotion \
+		and Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED
+	if _mouse_input:
+		_rotation_input = -event.relative.x * 0.1
+		_tilt_input = -event.relative.y * 0.1
+
+func _update_camera(delta:float)->void:
+	_mouse_rotation.x += _tilt_input * delta
+	_mouse_rotation.y += _rotation_input * delta
+	
+	%POVCameraController.transform.basis = Basis.from_euler(_mouse_rotation)
+	%POVCameraController.rotation.z = 0.0
+	
+	_rotation_input = 0.0
+	_tilt_input = 0.0
+
+func hide_pepa()->void:
+	pepa.visible = false
 
 func handle_animations()->void:
 	var input_dir:Vector2 = Input.get_vector("left", "right", "up", "down")
@@ -248,6 +286,7 @@ func _physics_process(delta: float):
 	#Global.log_text += "\ncurrent.x: %f" % current.x
 	#Global.log_text += "\ncurrent.y: %f" % current.y
 	#Global.log_text += "\ncurrent.z: %f" % current.z
+	_update_camera(delta)
 
 func go_forward(_speed:float):
 	var direction := (transform.basis * Vector3.BACK).normalized()

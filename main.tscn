@@ -1,4 +1,4 @@
-[gd_scene load_steps=39 format=3 uid="uid://ce6e8v1saxjr5"]
+[gd_scene load_steps=38 format=3 uid="uid://ce6e8v1saxjr5"]
 
 [ext_resource type="Environment" uid="uid://xpf4ng2ym0n4" path="res://environments/main_environment.tres" id="1_ekqa4"]
 [ext_resource type="Script" path="res://main.gd" id="1_xxenq"]
@@ -10,7 +10,6 @@
 [ext_resource type="Texture2D" uid="uid://31mrm2ajeyll" path="res://textures/dialogue_box.png" id="4_kkvku"]
 [ext_resource type="CompositorEffect" uid="uid://b45j2vp4hks5x" path="res://compositor/datamosh/datamosh_compositor_effect_2.tres" id="6_02wi3"]
 [ext_resource type="PackedScene" uid="uid://t23rsw74uei8" path="res://scenes/long_box.tscn" id="9_kolyd"]
-[ext_resource type="Script" path="res://addons/dkworld/world.gd" id="10_qu53w"]
 [ext_resource type="PackedScene" uid="uid://dsppfk5r8xdm7" path="res://scenes/L_floating_box.tscn" id="10_tov8v"]
 [ext_resource type="PackedScene" uid="uid://ccwbpjnygckmy" path="res://scenes/door.tscn" id="11_mh163"]
 [ext_resource type="PackedScene" uid="uid://cq7dkdx262hcs" path="res://scenes/switch.tscn" id="12_uwfp4"]
@@ -144,10 +143,11 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 1
 script = ExtResource("1_xxenq")
 game_preferences = ExtResource("2_wexnt")
 game_state = ExtResource("3_nh3h6")
-initial_position = NodePath("Main3D/InitialPositionPuzzle")
+initial_position = NodePath("Main3D/InitialPosition")
 
 [node name="Control" type="Control" parent="."]
 layout_mode = 1
@@ -156,6 +156,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 1
 
 [node name="InteractiveLabels" type="Control" parent="Control"]
 unique_name_in_owner = true
@@ -178,6 +179,7 @@ text = "Demo Version"
 
 [node name="LabelHelp" type="Label" parent="Control"]
 auto_translate_mode = 1
+visible = false
 layout_mode = 1
 anchors_preset = 3
 anchor_left = 1.0
@@ -195,6 +197,7 @@ text = "Esc: Salir - F1: Ayuda"
 [node name="LabelTemporizador" type="Label" parent="Control"]
 unique_name_in_owner = true
 auto_translate_mode = 1
+visible = false
 layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
@@ -242,7 +245,6 @@ metadata/_edit_use_anchors_ = true
 [node name="IntroChatLabel" type="RichTextLabel" parent="Control"]
 unique_name_in_owner = true
 auto_translate_mode = 1
-visible = false
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.101667
@@ -286,6 +288,22 @@ A: observar
 Meta: Abrirte camino por el río"
 metadata/_edit_use_anchors_ = true
 
+[node name="TaskListLabel" type="RichTextLabel" parent="Control"]
+unique_name_in_owner = true
+auto_translate_mode = 1
+visible = false
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.10125
+anchor_top = 0.0733333
+anchor_right = 0.91375
+anchor_bottom = 0.816667
+grow_horizontal = 2
+grow_vertical = 0
+text = "Tareas:
+- "
+metadata/_edit_use_anchors_ = true
+
 [node name="DialogueControl" type="Control" parent="Control"]
 unique_name_in_owner = true
 layout_mode = 1
@@ -296,6 +314,7 @@ anchor_bottom = 0.91375
 metadata/_edit_use_anchors_ = true
 
 [node name="NinePatchRect" type="NinePatchRect" parent="Control/DialogueControl"]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -376,6 +395,43 @@ auto_translate_mode = 1
 layout_mode = 2
 max_value = 10000.0
 
+[node name="PauseMenu" type="Control" parent="Control"]
+unique_name_in_owner = true
+process_mode = 2
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Control/PauseMenu"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -36.0
+offset_top = -33.0
+offset_right = 36.0
+offset_bottom = 33.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ResumeButton" type="Button" parent="Control/PauseMenu/VBoxContainer"]
+layout_mode = 2
+text = "RESUME"
+
+[node name="MenuButton" type="Button" parent="Control/PauseMenu/VBoxContainer"]
+layout_mode = 2
+text = "MAIN MENU"
+
+[node name="QuitButton" type="Button" parent="Control/PauseMenu/VBoxContainer"]
+layout_mode = 2
+text = "QUIT"
+
 [node name="Main3D" type="Node3D" parent="."]
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="Main3D"]
@@ -395,9 +451,8 @@ directional_shadow_mode = 0
 [node name="character" parent="Main3D" instance=ExtResource("2_3sgbv")]
 unique_name_in_owner = true
 
-[node name="DKWorld" type="Node3D" parent="Main3D" node_paths=PackedStringArray("initial_camera") instance=ExtResource("3_7foso")]
+[node name="DKWorld" parent="Main3D" node_paths=PackedStringArray("initial_camera") instance=ExtResource("3_7foso")]
 unique_name_in_owner = true
-script = ExtResource("10_qu53w")
 initial_camera = NodePath("../IntroElements/CameraIntro")
 world_definition = {
 "Sector_003": {
@@ -1190,7 +1245,7 @@ world_definition = {
 }
 }
 
-[node name="Camera3D" type="Camera3D" parent="Main3D"]
+[node name="DebugCamera3D" type="Camera3D" parent="Main3D"]
 transform = Transform3D(1, 0, 0, 0, 0.921185, 0.389124, 0, -0.389124, 0.921185, 0.528366, 5.52796, 5.79716)
 current = true
 fov = 37.8493
@@ -1237,7 +1292,7 @@ shape = SubResource("BoxShape3D_0ev4o")
 transform = Transform3D(0.0265782, 0, -0.999647, 0, 1, 0, 0.999647, 0, 0.0265782, -14.9052, 3.7883, 53.2051)
 
 [node name="FloatingBox2" parent="Main3D/PysicsObjects" instance=ExtResource("9_kolyd")]
-transform = Transform3D(0.0233155, 0, 0.999728, 0, 1, 0, -0.999728, 0, 0.0233155, -29.309, 0, 34.8611)
+transform = Transform3D(0.0233155, 0, 0.999728, 0, 1, 0, -0.999728, 0, 0.0233155, -26.309, 0, 34.8611)
 
 [node name="FloatingBox3" parent="Main3D/PysicsObjects" instance=ExtResource("9_kolyd")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14.6896, 0, 50.0311)
@@ -1302,12 +1357,12 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.508342, -0.503326)
 visible = false
 size = Vector3(1, 2.01664, 6.10846)
 
-[node name="PuzzleStatueDoor" type="Node3D" parent="Main3D/DemoElements/DemoExitDoor" instance=ExtResource("17_y0syq")]
+[node name="PuzzleStatueDoor" parent="Main3D/DemoElements/DemoExitDoor" instance=ExtResource("17_y0syq")]
 transform = Transform3D(0.108988, 0, -2.99802, 0, 3, 0, 2.99802, 0, 0.108988, 1.30937, -0.625061, -0.845612)
 
 [node name="BlockPath" type="StaticBody3D" parent="Main3D/DemoElements"]
 unique_name_in_owner = true
-transform = Transform3D(-0.626577, 0, 0.77936, 0, 1, 0, -0.77936, 0, -0.626577, 8.26911, 0, -10.0739)
+transform = Transform3D(-0.626577, 0, 0.77936, 0, 1, 0, -0.77936, 0, -0.626577, -14.1926, 0, 30.201)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Main3D/DemoElements/BlockPath"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.748719, 0, 0.28206)
@@ -1408,7 +1463,7 @@ omni_range = 7.211
 
 [node name="OmniLight3D2" type="OmniLight3D" parent="Main3D/DemoElements"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16.2877, 5.01654, -15.4993)
-light_color = Color(0.99, 0.693, 0.693, 1)
+light_color = Color(0.99, 0.9603, 0.693, 1)
 light_volumetric_fog_energy = 2.61
 omni_range = 19.4934
 
@@ -1465,6 +1520,7 @@ shape = SubResource("BoxShape3D_i81n0")
 [node name="IntroElements" type="Node3D" parent="Main3D"]
 
 [node name="CameraIntro" type="Camera3D" parent="Main3D/IntroElements"]
+unique_name_in_owner = true
 transform = Transform3D(1, 0, 0, 0, 0.100158, 0.994966, 0, -0.994969, 0.100158, 0, 95.2315, 0)
 fov = 77.1
 
@@ -1475,6 +1531,7 @@ libraries = {
 }
 
 [node name="InitialPosition" type="Marker3D" parent="Main3D"]
+unique_name_in_owner = true
 transform = Transform3D(0.153244, 0, 0.988189, 0, 1, 0, -0.988189, 0, 0.153244, 37.025, 0, -18.4407)
 gizmo_extents = 5.0
 
@@ -1491,7 +1548,7 @@ transform = Transform3D(0.998732, 0, -0.0503483, 0, 1, 0, 0.0503483, 0, 0.998732
 gizmo_extents = 5.0
 
 [node name="InitialPositionPuzzle" type="Marker3D" parent="Main3D"]
-transform = Transform3D(0.998732, 0, -0.0503483, 0, 1, 0, 0.0503483, 0, 0.998732, -175.789, 0, -390.623)
+transform = Transform3D(0.998732, 0, -0.0503483, 0, 1, 0, 0.0503483, 0, 0.998732, -182.723, 0, -316.332)
 gizmo_extents = 5.0
 
 [node name="FinishPositionDemo" type="Marker3D" parent="Main3D"]
@@ -1528,6 +1585,9 @@ bus = &"Music"
 [connection signal="drag_ended" from="Control/Debug/VBoxContainer/ProportionalSlider" to="." method="_on_slider_drag_ended"]
 [connection signal="drag_ended" from="Control/Debug/VBoxContainer/IntegralSlider" to="." method="_on_slider_drag_ended"]
 [connection signal="drag_ended" from="Control/Debug/VBoxContainer/DerivativeSlider" to="." method="_on_slider_drag_ended"]
+[connection signal="button_up" from="Control/PauseMenu/VBoxContainer/ResumeButton" to="." method="_on_resume_button_button_up"]
+[connection signal="button_up" from="Control/PauseMenu/VBoxContainer/MenuButton" to="." method="_on_menu_button_button_up"]
+[connection signal="button_up" from="Control/PauseMenu/VBoxContainer/QuitButton" to="." method="_on_quit_button_button_up"]
 [connection signal="body_entered" from="Main3D/DemoElements/GrabArea3D" to="." method="_on_grab_kayak_body_entered"]
 [connection signal="body_entered" from="Main3D/DemoElements/ForeshadowingArea3D" to="." method="_on_foreshadowing_body_entered"]
 [connection signal="body_entered" from="Main3D/DemoElements/AnaArea3D" to="." method="_on_ana_body_entered"]

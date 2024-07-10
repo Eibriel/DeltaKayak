@@ -86,5 +86,27 @@ void main() {
 
 	//color = vec4(color_yuv.r, color_yuv.g, color_yuv.b, color.a);
 
-	imageStore(color_image, uv, color);
+	// Dither
+	//vec4 color = texture(TEXTURE, UV);
+	
+        float colors = 100;
+        float dither = 0.5;
+	vec4 color_dithered = vec4(1.0);
+
+	//float a = floor(mod(UV.x / TEXTURE_PIXEL_SIZE.x, 2.0));
+	//float b = floor(mod(UV.y / TEXTURE_PIXEL_SIZE.y, 2.0));
+        float a = floor(mod(uvp.x, 2.0));	
+        float b = floor(mod(uvp.y, 2.0));
+	float c = mod(a + b, 2.0);
+
+	color_dithered.r = (round(color.r * colors + dither) / colors) * c;
+	color_dithered.g = (round(color.g * colors + dither) / colors) * c;
+	color_dithered.b = (round(color.b * colors + dither) / colors) * c;
+	c = 1.0 - c;
+	color_dithered.r += (round(color.r * colors - dither) / colors) * c;
+	color_dithered.g += (round(color.g * colors - dither) / colors) * c;
+	color_dithered.b += (round(color.b * colors - dither) / colors) * c;
+
+	//imageStore(color_image, uv, color);
+        imageStore(color_image, uv, color_dithered);
 }
