@@ -113,8 +113,8 @@ func _unhandled_input(event: InputEvent) -> void:
 	_mouse_input = event is InputEventMouseMotion \
 		and Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED
 	if _mouse_input:
-		_rotation_input = -event.relative.x * 0.1
-		_tilt_input = -event.relative.y * 0.1
+		_rotation_input = -event.relative.x * Global.mouse_sensibility
+		_tilt_input = -event.relative.y * Global.mouse_sensibility
 
 func _update_camera(delta:float)->void:
 	_mouse_rotation.x += _tilt_input * delta

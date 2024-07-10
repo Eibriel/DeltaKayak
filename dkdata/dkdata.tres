@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="DKDataResource" load_steps=84 format=3 uid="uid://bi1rugic742u0"]
+[gd_resource type="Resource" script_class="DKDataResource" load_steps=81 format=3 uid="uid://bi1rugic742u0"]
 
 [ext_resource type="Script" path="res://data_resources/dkdata_resource.gd" id="1_mesef"]
 [ext_resource type="Script" path="res://data_resources/dialogue_resource.gd" id="1_yf062"]
@@ -121,26 +121,12 @@ script = ExtResource("1_yf062")
 id = "new_item"
 character = 1
 image = ""
-text = "Tengo que salir sigilosamente. ¡Espero que Pepa no se ponga a ladrar!"
-
-[sub_resource type="Resource" id="Resource_aon3o"]
-script = ExtResource("1_yf062")
-id = "new_item"
-character = 1
-image = ""
-text = "Por suerte estuvo callada este rato. Debe estar durmiendo por ahí."
-
-[sub_resource type="Resource" id="Resource_4w0e7"]
-script = ExtResource("1_yf062")
-id = "new_item"
-character = 1
-image = ""
-text = "Tengo que agarrar el kayak de mi hermano antes de irme."
+text = "Primero: traer las pelotas de fútbol para acá"
 
 [sub_resource type="Resource" id="Resource_fharu"]
 script = ExtResource("2_xdm14")
 id = "demo_start_point"
-dialogues = Array[ExtResource("1_yf062")]([SubResource("Resource_x06et"), SubResource("Resource_aon3o"), SubResource("Resource_4w0e7")])
+dialogues = Array[ExtResource("1_yf062")]([SubResource("Resource_x06et")])
 
 [sub_resource type="Resource" id="Resource_kctts"]
 script = ExtResource("1_yf062")
@@ -257,7 +243,7 @@ script = ExtResource("1_yf062")
 id = "new_item"
 character = 1
 image = ""
-text = "¡Pepa, no jodas!"
+text = "¡Pepa, no te muevas!"
 
 [sub_resource type="Resource" id="Resource_rjkha"]
 script = ExtResource("2_xdm14")
@@ -269,12 +255,19 @@ script = ExtResource("1_yf062")
 id = "new_item"
 character = 1
 image = ""
-text = "¡Mierda! ¡No pudo haber sido Pepa esta vez!"
+text = "¡Pepa! ¿Donde estás?"
+
+[sub_resource type="Resource" id="Resource_d66k7"]
+script = ExtResource("1_yf062")
+id = "new_item"
+character = 1
+image = ""
+text = "Tengo que encontrar a Pepa."
 
 [sub_resource type="Resource" id="Resource_6mhsj"]
 script = ExtResource("2_xdm14")
 id = "demo_other_side"
-dialogues = Array[ExtResource("1_yf062")]([SubResource("Resource_mccnv")])
+dialogues = Array[ExtResource("1_yf062")]([SubResource("Resource_mccnv"), SubResource("Resource_d66k7")])
 
 [sub_resource type="Resource" id="Resource_kqdnr"]
 script = ExtResource("1_yf062")
@@ -319,38 +312,24 @@ script = ExtResource("1_yf062")
 id = "new_item"
 character = 1
 image = ""
-text = "Ana me hace señas"
-
-[sub_resource type="Resource" id="Resource_0yl63"]
-script = ExtResource("1_yf062")
-id = "new_item"
-character = 1
-image = ""
-text = "¿Tán emocionada está de verme?"
+text = "Que silencio que hace"
 
 [sub_resource type="Resource" id="Resource_6tc6t"]
 script = ExtResource("2_xdm14")
 id = "demo_foreshadowing"
-dialogues = Array[ExtResource("1_yf062")]([SubResource("Resource_gkviw"), SubResource("Resource_0yl63")])
+dialogues = Array[ExtResource("1_yf062")]([SubResource("Resource_gkviw")])
 
 [sub_resource type="Resource" id="Resource_wayrf"]
 script = ExtResource("1_yf062")
 id = "new_item"
 character = 1
 image = ""
-text = "Si me agarra mi hermano con su kayak me mata jaja"
-
-[sub_resource type="Resource" id="Resource_l6j2y"]
-script = ExtResource("1_yf062")
-id = "new_item"
-character = 1
-image = ""
-text = "¡Está pesado! ¿Lleva piedras ahí adentro?"
+text = "Ahora a buscar la miel en la casa de allá adelante."
 
 [sub_resource type="Resource" id="Resource_t3vlm"]
 script = ExtResource("2_xdm14")
 id = "demo_heavy_kayak"
-dialogues = Array[ExtResource("1_yf062")]([SubResource("Resource_wayrf"), SubResource("Resource_l6j2y")])
+dialogues = Array[ExtResource("1_yf062")]([SubResource("Resource_wayrf")])
 
 [sub_resource type="Resource" id="Resource_exawk"]
 script = ExtResource("1_yf062")

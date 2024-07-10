@@ -9,6 +9,8 @@ var grab_kayak: Generic6DOFJoint3D
 var grab_kayak2: Generic6DOFJoint3D
 var log_text: String = ""
 
+var mouse_sensibility := 0.5
+
 # NOTE Needed for datamosh_compositior
 var refresh_frame: bool
 

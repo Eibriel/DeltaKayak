@@ -1,9 +1,73 @@
-key,es_AR,es_ES,en
-NARRATOR,Narrador,Narrador,Narratos
-COMPICACTUS,Compicactus,Compicactus,Compicactus
-PROTAGONIST,Yo,Yo,Me
-PEPA,Pepa,Pepa,Pepa
-CAROLINA,Carolina,Carolina,Carolina
-MIGUEL,Miguel,Miguel,Miguel
-MARTA,Marta,Marta,Marta
-DON_PANCHO,Don Pancho,Don Pancho,Don Pancho
+"key","es_AR","es_ES","en"
+"NARRATOR","Narrador","Narrador","Narratos"
+"COMPICACTUS","Compicactus","Compicactus","Compicactus"
+"PROTAGONIST","Yo","Yo","Me"
+"PEPA","Pepa","Pepa","Pepa"
+"CAROLINA","Carolina","Carolina","Carolina"
+"MIGUEL","Miguel","Miguel","Miguel"
+"MARTA","Marta","Marta","Marta"
+"DON_PANCHO","Don Pancho","Don Pancho","Don Pancho"
+"START","Iniciar","Iniciar","Start"
+"SETTINGS","Opciones","Opciones","Settings"
+"QUIT","Salir","Salir","Quit"
+"WISHLIST NOW","Agrégalo a tus deseados","Agrégalo a tus deseados","Wishlist now"
+"JOIN THE NEWSLETTER","Unite al newsletter","Únete al newsletter","Join the newsletter"
+"RESUME","Continuar","Continuar","Resume"
+"MAIN MENU","Menú principal","Menú principal","Main menu"
+"THANKS FOR PLAYING","¡Gracias por jugar la demo!","¡Gracias por jugar la demo!","Thanks for playing the demo!"
+"INTRO TEXT","Tengo que terminar las tareas del día:
+- Guardar las pelotas de fútbol
+- Ir a buscar el tacho de miel a la casa de la curva
+
+Por suerte Pepa me hace compañía <3","Debo terminar las tareas del día:
+- Guardar las pelotas de fútbol
+- Ir a buscar el tacho de miel a la casa de la curva
+
+Por suerte Pepa me hace compañía <3","I must finish this tasks:
+- Store 2 soccer balls
+- Go get a jar of honey from the house on the curve
+
+Pepa makes me company <3"
+"HELP TEXT","Teclado
+A,W,S,D: avanzar
+Esc: salir
+Space: agarrar
+E: observar
+
+Control
+Analógico: avanzar
+Atrás: salir
+RB: agarrar
+A: observar
+
+Meta: Abrirte camino por el río","Teclado
+A,W,S,D: avanzar
+Esc: salir
+Space: agarrar
+E: observar
+
+Control
+Analógico: avanzar
+Atrás: salir
+RB: agarrar
+A: observar
+
+Meta: Abrirte camino por el río","Keyboard
+A,W,S,D: move
+Esc: pause
+Space: grab
+E: look
+
+Control
+Analog: move
+Back: pause
+RB: grab
+A: look
+
+Goal: Find your way back home"
+"FEEDBACK","Dejá un comentario","Deja un comentario","Provide feedback"
+"GAME SETTINGS","Opciones de juego","Opciones de juego","Game settings"
+"FULL SCREEN","Pantalla completa","Pantalla completa","Full screen"
+"VSYNC","V-Sync","V-Sync","V-Sync"
+"MOUSE SENSIBILITY","Sensibilidad del ratón","Sensibilidad del ratón","Mouse sensibility"
+"BACK","Volver","Volver","Back"

@@ -6,10 +6,10 @@ uid="uid://bbofsoph0ox1w"
 
 [deps]
 
-files=["res://dkdata_strings.es_AR.translation", "res://dkdata_strings.es_ES.translation", "res://dkdata_strings.en.translation"]
+files=["res://dkdata_strings.updated.translation", "res://dkdata_strings.es_AR.translation", "res://dkdata_strings.es_ES.translation", "res://dkdata_strings.en.translation"]
 
 source_file="res://dkdata_strings.csv"
-dest_files=["res://dkdata_strings.es_AR.translation", "res://dkdata_strings.es_ES.translation", "res://dkdata_strings.en.translation"]
+dest_files=["res://dkdata_strings.updated.translation", "res://dkdata_strings.es_AR.translation", "res://dkdata_strings.es_ES.translation", "res://dkdata_strings.en.translation"]
 
 [params]
 

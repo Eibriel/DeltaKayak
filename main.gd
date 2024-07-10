@@ -34,7 +34,8 @@ const UnhandledTriggers = preload("res://interactives/unhandled_triggers.gd")
 
 func _ready() -> void:
 	if OS.has_feature("editor"):
-		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_MAXIMIZED)
+		#DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_MAXIMIZED)
+		pass
 	else:
 		initial_position = %InitialPosition
 		SKIP_INTRO = false
@@ -89,6 +90,17 @@ func _ready() -> void:
 	intro_animation()
 	#Global.character.camera.current = true
 	
+	if DisplayServer.window_get_vsync_mode(0) == DisplayServer.VSYNC_DISABLED:
+		%VSyncButton.set_pressed_no_signal(false)
+	else:
+		%VSyncButton.set_pressed_no_signal(true)
+	
+	if DisplayServer.window_get_mode() == DisplayServer.WINDOW_MODE_FULLSCREEN:
+		%FullScreenButton.set_pressed_no_signal(true)
+	else:
+		%FullScreenButton.set_pressed_no_signal(false)
+	%MouseSensibilitySlider.value = Global.mouse_sensibility
+	%FPSSpinbox.set_value_no_signal(Engine.max_fps)
 
 func pause():
 	#player.about_to_pause()
@@ -138,7 +150,7 @@ func handle_demo_puzzle():
 	 and not %LabelThanks.visible:
 		GamePlatform.set_achievement("demo_completed")
 		%LabelThanks.visible = true
-		%LabelThanks.text += "\n\n%s" % %LabelTemporizador.text
+		%LabelThanks.text += "%s\n\n%s" % [tr("THANKS FOR PLAYING"), %LabelTemporizador.text]
 		
 	if puzzle_solved: return
 	var match_count := 0
@@ -575,7 +587,7 @@ func _on_first_grab_kayak_body_entered(body: Node3D) -> void:
 
 func _on_foreshadowing_body_entered(body: Node3D) -> void:
 	if foreshadowing: return
-	if not is_grabbing_kayak(): return
+	#if not is_grabbing_kayak(): return
 	foreshadowing = true
 	say_dialogue("demo_foreshadowing")
 
@@ -614,3 +626,38 @@ func _on_resume_button_button_up() -> void:
 
 func _on_menu_button_button_up() -> void:
 	get_tree().change_scene_to_packed(preload("res://menu.tscn"))
+
+
+func _on_game_settings_button_up() -> void:
+	%PauseMenuContainer.visible = false
+	%GameSettingsContainer.visible = true
+
+
+func _on_back_button_up() -> void:
+	%PauseMenuContainer.visible = true
+	%GameSettingsContainer.visible = false
+
+
+func _on_full_screen_toggled(toggled_on: bool) -> void:
+	if toggled_on:
+		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN)
+	else:
+		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_MAXIMIZED)
+
+
+func _on_v_sync_toggled(toggled_on: bool) -> void:
+	if toggled_on:
+		DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_ADAPTIVE, 0)
+	else:
+		DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_DISABLED, 0)
+	#Engine.max_fps
+	#RenderingServer.force_sync()
+
+
+func _on_mouse_sensibility_slider_drag_ended(value_changed: bool) -> void:
+	if value_changed:
+		Global.mouse_sensibility = %MouseSensibilitySlider.value
+
+
+func _on_fps_spinbox_value_changed(value: float) -> void:
+	Engine.max_fps = int(%FPSSpinbox.value)

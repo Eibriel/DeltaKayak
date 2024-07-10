@@ -225,7 +225,7 @@ offset_right = 98.0
 offset_bottom = 15.0
 grow_horizontal = 2
 grow_vertical = 2
-text = "¡Gracias por jugar la demo!"
+text = "THANKS FOR PLAYING"
 
 [node name="LogLabel" type="RichTextLabel" parent="Control"]
 unique_name_in_owner = true
@@ -253,12 +253,7 @@ anchor_right = 0.914167
 anchor_bottom = 0.61125
 grow_horizontal = 2
 grow_vertical = 0
-text = "Messenger:
-
-Te espero esta noche.
-Traé el kayak de tu hermano.
-Mis viejos casi nos agarran la otra vez, vayamos a otro lugar esta vuelta.
-¡No tardes o se va a calentar la cerveza!"
+text = "INTRO TEXT"
 metadata/_edit_use_anchors_ = true
 
 [node name="HelpLabel" type="RichTextLabel" parent="Control"]
@@ -273,19 +268,7 @@ anchor_right = 0.91375
 anchor_bottom = 0.816667
 grow_horizontal = 2
 grow_vertical = 0
-text = "Teclado
-A,W,S,D: avanzar
-Esc: salir
-Space: agarrar
-E: observar
-
-Control
-Analógico: avanzar
-Atrás: salir
-RB: agarrar
-A: observar
-
-Meta: Abrirte camino por el río"
+text = "HELP TEXT"
 metadata/_edit_use_anchors_ = true
 
 [node name="TaskListLabel" type="RichTextLabel" parent="Control"]
@@ -406,7 +389,8 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Control/PauseMenu"]
+[node name="PauseMenuContainer" type="VBoxContainer" parent="Control/PauseMenu"]
+unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -420,17 +404,84 @@ offset_bottom = 33.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="ResumeButton" type="Button" parent="Control/PauseMenu/VBoxContainer"]
+[node name="ResumeButton" type="Button" parent="Control/PauseMenu/PauseMenuContainer"]
 layout_mode = 2
 text = "RESUME"
 
-[node name="MenuButton" type="Button" parent="Control/PauseMenu/VBoxContainer"]
+[node name="GameSettingsButton" type="Button" parent="Control/PauseMenu/PauseMenuContainer"]
+layout_mode = 2
+text = "GAME SETTINGS"
+
+[node name="HSeparator" type="HSeparator" parent="Control/PauseMenu/PauseMenuContainer"]
+layout_mode = 2
+
+[node name="MenuButton" type="Button" parent="Control/PauseMenu/PauseMenuContainer"]
 layout_mode = 2
 text = "MAIN MENU"
 
-[node name="QuitButton" type="Button" parent="Control/PauseMenu/VBoxContainer"]
+[node name="QuitButton" type="Button" parent="Control/PauseMenu/PauseMenuContainer"]
+visible = false
 layout_mode = 2
 text = "QUIT"
+
+[node name="GameSettingsContainer" type="VBoxContainer" parent="Control/PauseMenu"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -36.0
+offset_top = -33.0
+offset_right = 36.0
+offset_bottom = 33.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="FullScreenButton" type="CheckButton" parent="Control/PauseMenu/GameSettingsContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "FULL SCREEN"
+
+[node name="VSyncButton" type="CheckButton" parent="Control/PauseMenu/GameSettingsContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "VSYNC"
+
+[node name="FPSLabel" type="Label" parent="Control/PauseMenu/GameSettingsContainer"]
+visible = false
+layout_mode = 2
+text = "FPS"
+
+[node name="FPSSpinbox" type="SpinBox" parent="Control/PauseMenu/GameSettingsContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+min_value = 15.0
+max_value = 400.0
+value = 30.0
+rounded = true
+suffix = "fps"
+
+[node name="MouseSensibilityLabel" type="Label" parent="Control/PauseMenu/GameSettingsContainer"]
+layout_mode = 2
+text = "MOUSE SENSIBILITY"
+
+[node name="MouseSensibilitySlider" type="HSlider" parent="Control/PauseMenu/GameSettingsContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+max_value = 1.0
+step = 0.01
+value = 0.5
+tick_count = 9
+
+[node name="HSeparator" type="HSeparator" parent="Control/PauseMenu/GameSettingsContainer"]
+layout_mode = 2
+
+[node name="BackButton" type="Button" parent="Control/PauseMenu/GameSettingsContainer"]
+layout_mode = 2
+text = "BACK"
 
 [node name="Main3D" type="Node3D" parent="."]
 
@@ -1585,9 +1636,15 @@ bus = &"Music"
 [connection signal="drag_ended" from="Control/Debug/VBoxContainer/ProportionalSlider" to="." method="_on_slider_drag_ended"]
 [connection signal="drag_ended" from="Control/Debug/VBoxContainer/IntegralSlider" to="." method="_on_slider_drag_ended"]
 [connection signal="drag_ended" from="Control/Debug/VBoxContainer/DerivativeSlider" to="." method="_on_slider_drag_ended"]
-[connection signal="button_up" from="Control/PauseMenu/VBoxContainer/ResumeButton" to="." method="_on_resume_button_button_up"]
-[connection signal="button_up" from="Control/PauseMenu/VBoxContainer/MenuButton" to="." method="_on_menu_button_button_up"]
-[connection signal="button_up" from="Control/PauseMenu/VBoxContainer/QuitButton" to="." method="_on_quit_button_button_up"]
+[connection signal="button_up" from="Control/PauseMenu/PauseMenuContainer/ResumeButton" to="." method="_on_resume_button_button_up"]
+[connection signal="button_up" from="Control/PauseMenu/PauseMenuContainer/GameSettingsButton" to="." method="_on_game_settings_button_up"]
+[connection signal="button_up" from="Control/PauseMenu/PauseMenuContainer/MenuButton" to="." method="_on_menu_button_button_up"]
+[connection signal="button_up" from="Control/PauseMenu/PauseMenuContainer/QuitButton" to="." method="_on_quit_button_button_up"]
+[connection signal="toggled" from="Control/PauseMenu/GameSettingsContainer/FullScreenButton" to="." method="_on_full_screen_toggled"]
+[connection signal="toggled" from="Control/PauseMenu/GameSettingsContainer/VSyncButton" to="." method="_on_v_sync_toggled"]
+[connection signal="value_changed" from="Control/PauseMenu/GameSettingsContainer/FPSSpinbox" to="." method="_on_fps_spinbox_value_changed"]
+[connection signal="drag_ended" from="Control/PauseMenu/GameSettingsContainer/MouseSensibilitySlider" to="." method="_on_mouse_sensibility_slider_drag_ended"]
+[connection signal="button_up" from="Control/PauseMenu/GameSettingsContainer/BackButton" to="." method="_on_back_button_up"]
 [connection signal="body_entered" from="Main3D/DemoElements/GrabArea3D" to="." method="_on_grab_kayak_body_entered"]
 [connection signal="body_entered" from="Main3D/DemoElements/ForeshadowingArea3D" to="." method="_on_foreshadowing_body_entered"]
 [connection signal="body_entered" from="Main3D/DemoElements/AnaArea3D" to="." method="_on_ana_body_entered"]
