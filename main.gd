@@ -41,6 +41,10 @@ func _ready() -> void:
 		SKIP_INTRO = false
 		character.pepa.visible = true
 	
+	%GameSettingsContainer.visible = false
+	%PauseMenuContainer.visible = true
+	%PauseMenu.visible = false
+	
 	Global.main_scene = self
 	Global.grab_joint = %GrabJoint3D
 	Global.grab_joint.set_param_x(Generic6DOFJoint3D.PARAM_LINEAR_LIMIT_SOFTNESS, 0.01)
@@ -164,7 +168,7 @@ func handle_demo_puzzle():
 	 and not %LabelThanks.visible:
 		GamePlatform.set_achievement("demo_completed")
 		%LabelThanks.visible = true
-		%LabelThanks.text += "%s\n\n%s" % [tr("THANKS FOR PLAYING"), %LabelTemporizador.text]
+		%LabelThanks.text = "%s\n\n%s" % [tr("THANKS FOR PLAYING"), %LabelTemporizador.text]
 		
 	if puzzle_solved: return
 	var match_count := 0
@@ -548,7 +552,12 @@ func grab_kayak():
 	tween.tween_callback(set_datamosh.bind(false))
 
 func set_datamosh(value:bool):
-	%WorldEnvironment.compositor.compositor_effects[0].enabled = value
+	#%WorldEnvironment.compositor.compositor_effects[0].enabled = value
+	if value:
+		Global.force_datamosh = 0.7
+	else:
+		var dm_tween := create_tween()
+		dm_tween.tween_property(Global, "force_datamosh", 0.0, 10.0)
 
 func ungrab_kayak():
 	Global.grab_kayak.set_node_a(NodePath(""))
@@ -669,9 +678,20 @@ func _on_v_sync_toggled(toggled_on: bool) -> void:
 
 
 func _on_mouse_sensibility_slider_drag_ended(value_changed: bool) -> void:
-	if value_changed:
-		Global.mouse_sensibility = %MouseSensibilitySlider.value
+	if not value_changed: return
+	Global.mouse_sensibility = %MouseSensibilitySlider.value
 
 
 func _on_fps_spinbox_value_changed(value: float) -> void:
 	Engine.max_fps = int(%FPSSpinbox.value)
+
+
+func _on_master_volume_slider_drag_ended(value_changed: bool) -> void:
+	if not value_changed: return
+	var sfx_index := AudioServer.get_bus_index("Master")
+	var value_in_db := remap(%MasterVolumeSlider.value, 0.0, 1.0, -30.0, 6.0)
+	AudioServer.set_bus_volume_db(sfx_index, value_in_db)
+	if %MasterVolumeSlider.value == 0.0:
+		AudioServer.set_bus_mute(sfx_index, true)
+	else:
+		AudioServer.set_bus_mute(sfx_index, false)

@@ -12,6 +12,7 @@ var torque := 0.0
 var going_backwards := false
 var damage := 0.0
 var damage_timer := 0.0
+var max_damage := 10.0
 
 var kayak_speed := 0.17
 var temp_speed := 0.0
@@ -84,16 +85,15 @@ func _ready():
 
 func _process(delta: float) -> void:
 	trail_time += delta
-	if temp_time > 0:
-		temp_time -= delta
-	elif temp_time < 0:
-		temp_time = 0
+	temp_time -= delta
+	temp_time = max(0.0, temp_time)
 	# Damage
 	damage_timer -= delta
-	if damage_timer < 0: damage_timer = 0
+	damage_timer = max(0, damage_timer)
 	damage -= delta*0.25
-	if damage < 0: damage = 0
+	damage = max(0, damage)
 	%DamageLight.light_energy = damage * 0.1
+	Global.datamosh_mount = damage / max_damage
 	
 	if trail_time > 1.0:
 		trail_time = 0.0
@@ -346,7 +346,7 @@ func handle_contacts(state: PhysicsDirectBodyState3D):
 	if state.get_contact_count() > 0:
 		var collision_impulse:float = state.get_contact_impulse(0).length()
 		if collision_impulse > 0.5:
-			prints("collision", collision_impulse)
+			#prints("collision", collision_impulse)
 			%CollisionAudio.global_position = state.get_contact_collider_position(0)
 			%CollisionAudio.volume_db = collision_impulse * 50
 			%CollisionAudio.play(0.03)
@@ -409,11 +409,11 @@ func set_damage():
 	if damage_timer > 0: return
 	damage += 1.0
 	damage_timer = 1.0
-	var tween := create_tween()
-	tween.tween_callback(Global.main_scene.set_datamosh.bind(true))
-	tween.tween_property(%DamageIndicator, "scale", Vector3.ZERO, 0.1)
-	tween.tween_property(%DamageIndicator, "scale", Vector3.ONE, 0.1)
-	tween.tween_property(%DamageIndicator, "scale", Vector3.ZERO, 0.1)
-	tween.tween_callback(Global.main_scene.set_datamosh.bind(false))
-	if damage > 10:
+	#var tween := create_tween()
+	#tween.tween_callback(Global.main_scene.set_datamosh.bind(true))
+	#tween.tween_property(%DamageIndicator, "scale", Vector3.ZERO, 0.1)
+	#tween.tween_property(%DamageIndicator, "scale", Vector3.ONE, 0.1)
+	#tween.tween_property(%DamageIndicator, "scale", Vector3.ZERO, 0.1)
+	#tween.tween_callback(Global.main_scene.set_datamosh.bind(false))
+	if damage > max_damage:
 		get_tree().quit()

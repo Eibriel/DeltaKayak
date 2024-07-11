@@ -148,7 +148,7 @@ mouse_filter = 1
 script = ExtResource("1_xxenq")
 game_preferences = ExtResource("2_wexnt")
 game_state = ExtResource("3_nh3h6")
-initial_position = NodePath("Main3D/InitialPositionOtherSide")
+initial_position = NodePath("Main3D/InitialPositionGrab")
 
 [node name="Node2D" type="Node2D" parent="."]
 
@@ -394,7 +394,6 @@ max_value = 10000.0
 [node name="PauseMenu" type="Control" parent="Control"]
 unique_name_in_owner = true
 process_mode = 2
-visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -404,6 +403,7 @@ grow_vertical = 2
 
 [node name="PauseMenuContainer" type="VBoxContainer" parent="Control/PauseMenu"]
 unique_name_in_owner = true
+visible = false
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -439,7 +439,6 @@ text = "QUIT"
 
 [node name="GameSettingsContainer" type="VBoxContainer" parent="Control/PauseMenu"]
 unique_name_in_owner = true
-visible = false
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -488,6 +487,20 @@ max_value = 1.0
 step = 0.01
 value = 0.5
 tick_count = 9
+ticks_on_borders = true
+
+[node name="MasterVolumeLabel" type="Label" parent="Control/PauseMenu/GameSettingsContainer"]
+layout_mode = 2
+text = "MASTER VOLUME"
+
+[node name="MasterVolumeSlider" type="HSlider" parent="Control/PauseMenu/GameSettingsContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+max_value = 1.0
+step = 0.01
+value = 0.5
+tick_count = 9
+ticks_on_borders = true
 
 [node name="HSeparator" type="HSeparator" parent="Control/PauseMenu/GameSettingsContainer"]
 layout_mode = 2
@@ -1657,6 +1670,7 @@ bus = &"Music"
 [connection signal="toggled" from="Control/PauseMenu/GameSettingsContainer/VSyncButton" to="." method="_on_v_sync_toggled"]
 [connection signal="value_changed" from="Control/PauseMenu/GameSettingsContainer/FPSSpinbox" to="." method="_on_fps_spinbox_value_changed"]
 [connection signal="drag_ended" from="Control/PauseMenu/GameSettingsContainer/MouseSensibilitySlider" to="." method="_on_mouse_sensibility_slider_drag_ended"]
+[connection signal="drag_ended" from="Control/PauseMenu/GameSettingsContainer/MasterVolumeSlider" to="." method="_on_master_volume_slider_drag_ended"]
 [connection signal="button_up" from="Control/PauseMenu/GameSettingsContainer/BackButton" to="." method="_on_back_button_up"]
 [connection signal="body_entered" from="Main3D/DemoElements/GrabArea3D" to="." method="_on_grab_kayak_body_entered"]
 [connection signal="body_entered" from="Main3D/DemoElements/ForeshadowingArea3D" to="." method="_on_foreshadowing_body_entered"]

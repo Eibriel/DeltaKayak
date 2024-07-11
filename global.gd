@@ -14,6 +14,8 @@ var mouse_sensibility := 0.5
 
 # NOTE Needed for datamosh_compositior
 var refresh_frame: bool
+var datamosh_mount: float = 0.0
+var force_datamosh:float = 0.0
 
 func is_demo():
 	var _is_demo:bool = OS.has_feature("demo")
@@ -30,6 +32,9 @@ func quit_game():
 	# See https://docs.godotengine.org/en/stable/tutorials/inputs/handling_quit_requests.html
 	# get_tree().root.propagate_notification(NOTIFICATION_WM_CLOSE_REQUEST)
 	get_tree().quit()
+
+func get_datamosh_amount() -> float:
+	return max(datamosh_mount, force_datamosh)
 
 func array_to_vector3(array: Array) -> Vector3:
 	return Vector3(array[0], array[1], array[2])
