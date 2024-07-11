@@ -191,6 +191,7 @@ func handle_rotation() -> void:
 			target_direction = target_direction-PI
 		else:
 			target_direction = target_direction+PI
+		target_direction *=  -1
 	#Global.log_text += "\ntarget_direction: %f" % target_direction
 	#Global.log_text += "\nrotation.y: %f" % (rotation.y)
 	if temp_time == 0:

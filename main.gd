@@ -28,7 +28,7 @@ var foreshadowing := false
 
 var kayak_k1: RigidBody3D
 
-var SKIP_INTRO = false
+var SKIP_INTRO = true
 
 const UnhandledTriggers = preload("res://interactives/unhandled_triggers.gd")
 
@@ -85,6 +85,8 @@ func _ready() -> void:
 	for c in dk_world.get_children():
 		if c.has_meta("is_pepa_kayak"):
 			kayak_k1 = c
+		if c.name == "Enemy":
+			Global.enemy = c
 	
 	%IntroChatLabel.visible = true
 	intro_animation()
@@ -133,6 +135,7 @@ func _process(delta: float) -> void:
 	handle_dialogue(delta)
 	handle_stats(delta)
 	handle_demo_puzzle()
+	handle_enemy_direction_indicator(delta)
 	log_label.text = Global.log_text
 	Global.log_text = ""
 	temporizador += delta
@@ -143,6 +146,16 @@ func _process(delta: float) -> void:
 		if Global.camera.has_meta("fog_density"):
 			%WorldEnvironment.environment.volumetric_fog_density = float(Global.camera.get_meta("fog_density"))
 			Global.log_text = "\nFog:%f" % %WorldEnvironment.environment.volumetric_fog_density
+
+func handle_enemy_direction_indicator(_delta:float) -> void:
+	if Global.enemy == null: return
+	var dist := Global.character.global_position.distance_to(Global.enemy.global_position)
+	var dire := Global.tri_to_bi(Global.character.global_position.direction_to(Global.enemy.global_position))
+	dire = dire.rotated(get_viewport().get_camera_3d().global_rotation.y)
+	var angle := Vector2.DOWN.angle_to(dire)-deg_to_rad(90)
+	var screen_size := get_viewport().get_visible_rect().size
+	%EnemyDirectionIndicator.position = screen_size * 0.5
+	%EnemyDirectionIndicator.rotation = angle
 
 var puzzle_solved := false
 func handle_demo_puzzle():

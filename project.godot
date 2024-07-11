@@ -11,6 +11,7 @@ config_version=5
 [application]
 
 config/name="Delta Kayak"
+config/description="Delta Kayak is a first-person horror game. Explore a small open world, gather information. Go deeper and deeper to uncover a conspiracy and find your missing pet."
 run/main_scene="res://menu.tscn"
 config/features=PackedStringArray("4.3", "Forward Plus")
 run/max_fps=30
