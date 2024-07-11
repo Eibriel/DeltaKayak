@@ -34,3 +34,7 @@ func _on_feedback_button_up() -> void:
 
 func _on_option_button_item_selected(index: int) -> void:
 	TranslationServer.set_locale(locale_names[index])
+
+
+func _on_follow_button_up() -> void:
+	GlobalSteam.open_url("https://store.steampowered.com/developer/eibriel")

@@ -8,7 +8,7 @@
 [ext_resource type="PackedScene" uid="uid://uyhmturoq7o8" path="res://world_definition.dkworld" id="3_7foso"]
 [ext_resource type="Resource" uid="uid://bi1rugic742u0" path="res://dkdata/dkdata.tres" id="3_nh3h6"]
 [ext_resource type="Texture2D" uid="uid://31mrm2ajeyll" path="res://textures/dialogue_box.png" id="4_kkvku"]
-[ext_resource type="Texture2D" uid="uid://dvix2u8rr6fnc" path="res://icon.svg" id="5_6lvr1"]
+[ext_resource type="Texture2D" uid="uid://bue181jtwq3fu" path="res://textures/smoke.png" id="4_ob3me"]
 [ext_resource type="CompositorEffect" uid="uid://b45j2vp4hks5x" path="res://compositor/datamosh/datamosh_compositor_effect_2.tres" id="6_02wi3"]
 [ext_resource type="PackedScene" uid="uid://t23rsw74uei8" path="res://scenes/long_box.tscn" id="9_kolyd"]
 [ext_resource type="PackedScene" uid="uid://dsppfk5r8xdm7" path="res://scenes/L_floating_box.tscn" id="10_tov8v"]
@@ -149,6 +149,18 @@ script = ExtResource("1_xxenq")
 game_preferences = ExtResource("2_wexnt")
 game_state = ExtResource("3_nh3h6")
 initial_position = NodePath("Main3D/InitialPositionOtherSide")
+
+[node name="Node2D" type="Node2D" parent="."]
+
+[node name="EnemyDirectionIndicator" type="Node2D" parent="Node2D"]
+unique_name_in_owner = true
+position = Vector2(400, 300)
+
+[node name="EnemyIndicatorIcon" type="Sprite2D" parent="Node2D/EnemyDirectionIndicator"]
+unique_name_in_owner = true
+modulate = Color(0.47, 0, 0, 0.345098)
+position = Vector2(-227, 0)
+texture = ExtResource("4_ob3me")
 
 [node name="Control" type="Control" parent="."]
 layout_mode = 1
@@ -483,16 +495,6 @@ layout_mode = 2
 [node name="BackButton" type="Button" parent="Control/PauseMenu/GameSettingsContainer"]
 layout_mode = 2
 text = "BACK"
-
-[node name="Node2D" type="Node2D" parent="."]
-
-[node name="EnemyDirectionIndicator" type="Node2D" parent="Node2D"]
-unique_name_in_owner = true
-position = Vector2(400, 300)
-
-[node name="Icon" type="Sprite2D" parent="Node2D/EnemyDirectionIndicator"]
-position = Vector2(-227, 0)
-texture = ExtResource("5_6lvr1")
 
 [node name="Main3D" type="Node3D" parent="."]
 

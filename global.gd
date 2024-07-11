@@ -18,7 +18,8 @@ var refresh_frame: bool
 func is_demo():
 	var _is_demo:bool = OS.has_feature("demo")
 	# Editor counts as demo
-	_is_demo = OS.has_feature("editor")
+	if OS.has_feature("editor"):
+		_is_demo = true
 	#if not is_demo:
 	#	if not FileAccess.file_exists("res://not_demo.gd"):
 	#		print("Not demo")

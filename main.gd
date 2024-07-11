@@ -156,6 +156,7 @@ func handle_enemy_direction_indicator(_delta:float) -> void:
 	var screen_size := get_viewport().get_visible_rect().size
 	%EnemyDirectionIndicator.position = screen_size * 0.5
 	%EnemyDirectionIndicator.rotation = angle
+	%EnemyIndicatorIcon.scale = Vector2.ONE * clampf(remap(dist, 0, 40, 1, 0), 0, 1)
 
 var puzzle_solved := false
 func handle_demo_puzzle():

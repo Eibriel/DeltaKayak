@@ -95,9 +95,14 @@ size_flags_horizontal = 4
 size_flags_vertical = 4
 text = "FEEDBACK"
 
+[node name="FollowButton" type="Button" parent="VBoxContainer3"]
+layout_mode = 2
+text = "FOLLOW"
+
 [connection signal="button_up" from="Control/VBoxContainer/StartButton" to="." method="_on_start_button_button_up"]
 [connection signal="item_selected" from="Control/VBoxContainer/LocaleOption" to="." method="_on_option_button_item_selected"]
 [connection signal="button_up" from="Control/VBoxContainer/QuitButton" to="." method="_on_quit_button_button_up"]
 [connection signal="button_up" from="VBoxContainer2/WishlistButton" to="." method="_on_wishlist_button_button_up"]
 [connection signal="button_up" from="VBoxContainer2/NewsletterButton" to="." method="_on_newsletter_button_up"]
 [connection signal="button_up" from="VBoxContainer3/FeedbackButton" to="." method="_on_feedback_button_up"]
+[connection signal="button_up" from="VBoxContainer3/FollowButton" to="." method="_on_follow_button_up"]
