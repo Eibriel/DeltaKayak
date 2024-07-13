@@ -37,6 +37,7 @@ func _ready() -> void:
 		#DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_MAXIMIZED)
 		pass
 	else:
+		%LogLabel.visible = false
 		var sfx_index := AudioServer.get_bus_index("Master")
 		AudioServer.set_bus_volume_db(sfx_index, 0.0)
 		AudioServer.set_bus_mute(sfx_index, false)

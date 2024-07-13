@@ -223,7 +223,6 @@ func handle_cameras_old(delta) -> void:
 		current_camera.global_position = lerp(current_camera.global_position, target_camera_position, camera_speed)
 
 func select_best_camera():
-	print("Select best camera")
 	var area_amount := [null, null, null, null]
 	var selected_camera
 	for cam in character_in_camera:
@@ -240,7 +239,6 @@ func select_best_camera():
 	if selected_camera != null:
 		next_camera = selected_camera
 	else:
-		print("Character camera")
 		next_camera = Global.character.camera
 
 func camera_entered(area:Area3D, camera: Camera3D, path:Path3D) -> void:
