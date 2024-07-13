@@ -37,6 +37,9 @@ func _ready() -> void:
 		#DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_MAXIMIZED)
 		pass
 	else:
+		var sfx_index := AudioServer.get_bus_index("Master")
+		AudioServer.set_bus_volume_db(sfx_index, 0.0)
+		AudioServer.set_bus_mute(sfx_index, false)
 		initial_position = %InitialPosition
 		SKIP_INTRO = false
 		character.pepa.visible = true
@@ -648,6 +651,7 @@ func _on_resume_button_button_up() -> void:
 
 
 func _on_menu_button_button_up() -> void:
+	get_tree().paused = false
 	get_tree().change_scene_to_packed(preload("res://menu.tscn"))
 
 

@@ -1,7 +1,8 @@
-[gd_scene load_steps=4 format=3 uid="uid://ynml06d5de5s"]
+[gd_scene load_steps=6 format=3 uid="uid://ynml06d5de5s"]
 
 [ext_resource type="Script" path="res://experiments/follow_path.gd" id="1_m5q5e"]
 [ext_resource type="PackedScene" uid="uid://mvc5qr5igrlq" path="res://scenes/enemy.tscn" id="1_t8p63"]
+[ext_resource type="PackedScene" uid="uid://r0o1qsmlq84u" path="res://character/character.tscn" id="3_h0uhc"]
 
 [sub_resource type="Curve3D" id="Curve3D_w7w5o"]
 _data = {
@@ -10,19 +11,26 @@ _data = {
 }
 point_count = 3
 
+[sub_resource type="BoxShape3D" id="BoxShape3D_8irut"]
+size = Vector3(1, 1, 39.1975)
+
 [node name="FollowPath" type="Node3D"]
 script = ExtResource("1_m5q5e")
 
-[node name="Enemy" parent="." instance=ExtResource("1_t8p63")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.0211, 0, 0.671204)
-
 [node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, -0.258819, 0.965926, 0, -0.965926, -0.258819, 0, 28.4726, -33.4407)
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 28.4726, -33.4407)
 projection = 1
 fov = 105.1
 size = 85.523
 
+[node name="Enemy" parent="." instance=ExtResource("1_t8p63")]
+transform = Transform3D(-0.000349015, 0, 1, 0, 1, 0, -1, 0, -0.000349015, -25.6, 0, -40)
+
+[node name="character" parent="." instance=ExtResource("3_h0uhc")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -26.488, 0, -36.2881)
+
 [node name="Path3D" type="Path3D" parent="."]
+visible = false
 curve = SubResource("Curve3D_w7w5o")
 
 [node name="Control" type="Control" parent="."]
@@ -33,6 +41,18 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+
+[node name="LogLabel" type="RichTextLabel" parent="Control"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.303333
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Test text"
+metadata/_edit_use_anchors_ = true
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Control"]
 auto_translate_mode = 1
@@ -76,39 +96,59 @@ max_value = 50000.0
 
 [node name="Label4" type="Label" parent="Control/VBoxContainer"]
 auto_translate_mode = 1
+visible = false
 layout_mode = 2
 text = "Proportional Path"
 
 [node name="ProportionalPathSlider" type="HSlider" parent="Control/VBoxContainer"]
 unique_name_in_owner = true
 auto_translate_mode = 1
+visible = false
 layout_mode = 2
 
 [node name="Label5" type="Label" parent="Control/VBoxContainer"]
 auto_translate_mode = 1
+visible = false
 layout_mode = 2
 text = "Integral Path"
 
 [node name="IntegralPathSlider" type="HSlider" parent="Control/VBoxContainer"]
 unique_name_in_owner = true
 auto_translate_mode = 1
+visible = false
 layout_mode = 2
 max_value = 1000.0
 step = 0.1
 
 [node name="Label6" type="Label" parent="Control/VBoxContainer"]
 auto_translate_mode = 1
+visible = false
 layout_mode = 2
 text = "Derivative Path"
 
 [node name="DerivativePathSlider" type="HSlider" parent="Control/VBoxContainer"]
 unique_name_in_owner = true
 auto_translate_mode = 1
+visible = false
 layout_mode = 2
 max_value = 10000.0
 
 [node name="CSGBox3D" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 50, 0, -50)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -25.2534, 0, -43.9153)
+
+[node name="StaticBody3D" type="StaticBody3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 44.8056, 0, -47.6929)
+shape = SubResource("BoxShape3D_8irut")
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="StaticBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -30.5959, 0, -41.5505)
+shape = SubResource("BoxShape3D_8irut")
+
+[node name="CollisionShape3D3" type="CollisionShape3D" parent="StaticBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -20.5291, 0, -41.5505)
+shape = SubResource("BoxShape3D_8irut")
 
 [connection signal="drag_ended" from="Control/VBoxContainer/ProportionalSlider" to="." method="_on_slider_drag_ended"]
 [connection signal="drag_ended" from="Control/VBoxContainer/IntegralSlider" to="." method="_on_slider_drag_ended"]

@@ -11,6 +11,7 @@ var texture : StringName = "texture"
 func _init():
 	needs_motion_vectors = true
 	effect_callback_type = CompositorEffect.EFFECT_CALLBACK_TYPE_POST_TRANSPARENT
+	CompositorEffect.EFFECT_CALLBACK_TYPE_PRE_TRANSPARENT
 	RenderingServer.call_on_render_thread(_initialize_compute)
 
 func _notification(what):

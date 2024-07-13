@@ -7,6 +7,7 @@ damping = 0.35
 wet = 0.3
 
 [resource]
+bus/0/mute = true
 bus/1/name = &"FX"
 bus/1/solo = false
 bus/1/mute = false

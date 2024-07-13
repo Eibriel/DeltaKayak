@@ -1,0 +1,48 @@
+[gd_scene load_steps=6 format=3 uid="uid://gkdjrojonky1"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_7yoel"]
+sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+ground_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+
+[sub_resource type="Sky" id="Sky_kbrcj"]
+sky_material = SubResource("ProceduralSkyMaterial_7yoel")
+
+[sub_resource type="Environment" id="Environment_behcg"]
+background_mode = 2
+sky = SubResource("Sky_kbrcj")
+tonemap_mode = 2
+glow_enabled = true
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_liktg"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_4x3mg"]
+size = Vector3(3.77734, 3.66141, 4.789)
+
+[node name="Collisions" type="Node3D"]
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.866023, -0.433016, 0.250001, 0, 0.499998, 0.866027, -0.500003, 0.749999, -0.43301, 0, 0, 0)
+shadow_enabled = true
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_behcg")
+
+[node name="RigidBody3D" type="RigidBody3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="RigidBody3D"]
+shape = SubResource("SphereShape3D_liktg")
+
+[node name="CSGSphere3D" type="CSGSphere3D" parent="RigidBody3D"]
+
+[node name="StaticBody3D" type="StaticBody3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.191406, 0.439316, 0.0526428)
+shape = SubResource("BoxShape3D_4x3mg")
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.969484, 0.245155, 0, -0.245155, 0.969484, 0, 2.31586, 5.60693)
+
+[node name="CSGBox3D" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.68447, 0)
+size = Vector3(10.8027, 0.292969, 6.48145)

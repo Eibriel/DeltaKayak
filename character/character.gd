@@ -291,6 +291,7 @@ func _physics_process(delta: float):
 
 func go_forward(_speed:float):
 	var direction := (transform.basis * Vector3.BACK).normalized()
+	#Global.log_text += "\nChar forward_component: %.2f" % (direction*_speed).length()
 	apply_central_force(direction * _speed)
 
 func go_backward(_speed:float):

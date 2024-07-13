@@ -46,11 +46,12 @@ func _ready():
 	camera_sphere = CSGSphere3D.new()
 	camera_sphere.visible = false
 	add_child(camera_sphere)
+	
+	select_best_camera()
 
 func _process(delta: float) -> void:
 	handle_cameras(delta)
 	switch_camera(delta)
-	#Global.character.camera.current = true
 
 func switch_camera(delta):
 	camera_switch_delta += delta
@@ -58,11 +59,10 @@ func switch_camera(delta):
 	camera_switch_delta = 0.0
 	if next_camera == null: return
 	Global.camera = next_camera
-	Global.camera_path = camera_to_path[next_camera]
+	#Global.camera_path = camera_to_path[next_camera]
 
 func handle_cameras(delta)->void:
 	if not select_cameras: return
-	return # TODO testing First Person
 	# TODO Looks like process starts before world is fully initiated
 	if Global.camera == null: return
 	if Global.character == null: return
@@ -78,7 +78,6 @@ func handle_cameras(delta)->void:
 	handle_camera_framing(current_camera, character, new_camera, delta)
 
 func set_select_cameras(value:bool) -> void:
-	return # TODO testing First Person
 	select_cameras = value
 	if value == true:
 		Global.camera.current = true
@@ -224,6 +223,7 @@ func handle_cameras_old(delta) -> void:
 		current_camera.global_position = lerp(current_camera.global_position, target_camera_position, camera_speed)
 
 func select_best_camera():
+	print("Select best camera")
 	var area_amount := [null, null, null, null]
 	var selected_camera
 	for cam in character_in_camera:
@@ -239,6 +239,9 @@ func select_best_camera():
 	
 	if selected_camera != null:
 		next_camera = selected_camera
+	else:
+		print("Character camera")
+		next_camera = Global.character.camera
 
 func camera_entered(area:Area3D, camera: Camera3D, path:Path3D) -> void:
 	if not area.has_meta("is_character_camera"): return

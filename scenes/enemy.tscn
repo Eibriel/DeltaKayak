@@ -1,4 +1,4 @@
-[gd_scene load_steps=44 format=3 uid="uid://mvc5qr5igrlq"]
+[gd_scene load_steps=46 format=3 uid="uid://mvc5qr5igrlq"]
 
 [ext_resource type="Script" path="res://scenes/enemy.gd" id="1_ht45k"]
 [ext_resource type="Texture2D" uid="uid://cdex8bqdmulf8" path="res://textures/flashlight.jpg" id="2_1pota"]
@@ -24,6 +24,7 @@
 [ext_resource type="Texture2D" uid="uid://bue181jtwq3fu" path="res://textures/smoke.png" id="22_pdnyu"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_w2uow"]
+friction = 0.2
 
 [sub_resource type="Curve" id="Curve_bm67l"]
 _data = [Vector2(0, 0), 0.0, 42.5202, 0, 0, Vector2(0.0460317, 1), 0.0, 0.0, 0, 0, Vector2(0.12381, 0), -29.1532, 0.0, 0, 0]
@@ -60,6 +61,13 @@ height = 13.2257
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_y8box"]
 shading_mode = 0
 albedo_color = Color(0.730458, 0.118933, 0, 1)
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_bdtrc"]
+radius = 1.38489
+height = 13.2257
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_o5bdk"]
+radius = 20.0
 
 [sub_resource type="AudioStreamSynchronized" id="AudioStreamSynchronized_fxjsm"]
 stream_count = 7
@@ -200,10 +208,72 @@ debug_shape_thickness = 5
 [node name="enemy" parent="." instance=ExtResource("3_ididr")]
 transform = Transform3D(-1.2, 0, -1.04907e-07, 0, 1.2, 0, 1.04907e-07, 0, -1.2, 0, 0.2, 0)
 
-[node name="RayAhead" type="RayCast3D" parent="."]
+[node name="Rays" type="Node3D" parent="."]
+
+[node name="RayAhead" type="RayCast3D" parent="Rays"]
 unique_name_in_owner = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0630493, -6.61163)
-target_position = Vector3(0, 0, -3)
+target_position = Vector3(0, 0, -5)
+
+[node name="RayBehind" type="RayCast3D" parent="Rays"]
+unique_name_in_owner = true
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0.0630493, 5.95283)
+target_position = Vector3(0, 0, -5)
+
+[node name="RayLeftBack" type="RayCast3D" parent="Rays"]
+unique_name_in_owner = true
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0.063, 4)
+target_position = Vector3(0, 0, -5)
+
+[node name="RayLeftFront" type="RayCast3D" parent="Rays"]
+unique_name_in_owner = true
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0.063, -4)
+target_position = Vector3(0, 0, -5)
+
+[node name="RayRightBack" type="RayCast3D" parent="Rays"]
+unique_name_in_owner = true
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 0, 0.063, 4)
+target_position = Vector3(0, 0, -5)
+
+[node name="RayRightFront" type="RayCast3D" parent="Rays"]
+unique_name_in_owner = true
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 0, 0.063, -4)
+target_position = Vector3(0, 0, -5)
+
+[node name="Phantom" type="Node3D" parent="."]
+
+[node name="PhantomArea1" type="Area3D" parent="Phantom"]
+unique_name_in_owner = true
+top_level = true
+collision_layer = 8
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="Phantom/PhantomArea1"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, -2.46672e-09, 0.0564319)
+shape = SubResource("CapsuleShape3D_bdtrc")
+
+[node name="RotationRadius" type="Marker3D" parent="."]
+
+[node name="RotRadiusRight" type="Marker3D" parent="RotationRadius"]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, 0, 0)
+
+[node name="Area3D" type="Area3D" parent="RotationRadius/RotRadiusRight"]
+collision_layer = 0
+collision_mask = 0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="RotationRadius/RotRadiusRight/Area3D"]
+shape = SubResource("CylinderShape3D_o5bdk")
+
+[node name="RotRadiusLeft" type="Marker3D" parent="RotationRadius"]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -20, 0, 0)
+
+[node name="Area3D2" type="Area3D" parent="RotationRadius/RotRadiusLeft"]
+collision_layer = 0
+collision_mask = 0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="RotationRadius/RotRadiusLeft/Area3D2"]
+shape = SubResource("CylinderShape3D_o5bdk")
 
 [node name="AttackPositionindicator" type="CSGSphere3D" parent="."]
 unique_name_in_owner = true
@@ -246,3 +316,5 @@ lifetime = 5.0
 preprocess = 20.0
 process_material = SubResource("ParticleProcessMaterial_22ppc")
 draw_pass_1 = SubResource("PlaneMesh_mb0vy")
+
+[connection signal="body_entered" from="Phantom/PhantomArea1" to="." method="_on_phantom_area_1_body_entered"]

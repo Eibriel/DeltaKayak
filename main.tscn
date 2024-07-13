@@ -148,7 +148,7 @@ mouse_filter = 1
 script = ExtResource("1_xxenq")
 game_preferences = ExtResource("2_wexnt")
 game_state = ExtResource("3_nh3h6")
-initial_position = NodePath("Main3D/InitialPositionGrab")
+initial_position = NodePath("Main3D/InitialPosition")
 
 [node name="Node2D" type="Node2D" parent="."]
 
@@ -210,7 +210,6 @@ text = "Esc: Salir - F1: Ayuda"
 [node name="LabelTemporizador" type="Label" parent="Control"]
 unique_name_in_owner = true
 auto_translate_mode = 1
-visible = false
 layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
@@ -243,7 +242,6 @@ text = "THANKS FOR PLAYING"
 [node name="LogLabel" type="RichTextLabel" parent="Control"]
 unique_name_in_owner = true
 auto_translate_mode = 1
-visible = false
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.101667
@@ -252,6 +250,7 @@ anchor_right = 0.914167
 anchor_bottom = 0.61125
 grow_horizontal = 2
 grow_vertical = 0
+mouse_filter = 2
 text = "..."
 metadata/_edit_use_anchors_ = true
 

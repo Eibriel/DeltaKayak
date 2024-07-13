@@ -382,7 +382,7 @@ root_node = NodePath("%AnimationTree/../character")
 tree_root = SubResource("AnimationNodeStateMachine_wkph0")
 anim_player = NodePath("../AnimationPlayer")
 parameters/current_length = 1.0
-parameters/current_position = 0.907082
+parameters/current_position = 0.510333
 parameters/current_delta = 0.0166667
 parameters/conditions/forward = false
 parameters/conditions/idle = false
@@ -413,7 +413,7 @@ parameters/Start/current_length = 0.0
 parameters/Start/current_position = 0.0
 parameters/Start/current_delta = 0.0
 parameters/character_anims_Idle/current_length = 1.0
-parameters/character_anims_Idle/current_position = 0.907082
+parameters/character_anims_Idle/current_position = 0.510333
 parameters/character_anims_Idle/current_delta = 0.0166667
 
 [node name="KriketsAudio" type="AudioStreamPlayer3D" parent="."]
