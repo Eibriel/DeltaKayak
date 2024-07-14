@@ -15,9 +15,14 @@ var damage_timer := 0.0
 var max_damage := 10.0
 
 var kayak_speed := 0.17
+var speed_mult := 5.0
+var torque_mult := 2.0
 var temp_speed := 0.0
 var temp_time := 0.0
 var strength := 0
+
+var left_sample:float=0.0
+var right_sample:float=0.0
 
 var last_rotation := 0.0
 var target_direction := 0.0
@@ -162,6 +167,156 @@ func reset_rotation()->void:
 	rotation = Vector3.ZERO
 	angular_velocity = Vector3.ZERO
 
+func handle_controls(delta:float) -> void:
+	var input_dir:Vector2 = Input.get_vector("left", "right", "up", "down")
+	
+	left_sample = max(0,-input_dir.x)
+	right_sample = max(0, input_dir.x)
+	
+	if input_dir.y < 0:
+		left_sample += -input_dir.y
+		right_sample += -input_dir.y
+	if input_dir.y > 0:
+		left_sample += input_dir.y
+		right_sample += input_dir.y
+	var total_sample := left_sample + right_sample
+	if total_sample > 0:
+		left_sample = left_sample / total_sample
+		right_sample = right_sample / total_sample
+	
+	padling_intent = PADDLE_INTENT.IDLE
+	if input_dir.x > 0:
+		# BUG Sometimes the number is very small
+		# but not zero
+		if input_dir.y == 0.0:
+			padling_intent = PADDLE_INTENT.RIGHT
+		elif input_dir.y > 0:
+			padling_intent = PADDLE_INTENT.BACKWARD_RIGHT
+		elif input_dir.y < 0:
+			padling_intent = PADDLE_INTENT.FORWARD_RIGHT
+	elif input_dir.x < 0:
+		if input_dir.y:
+			padling_intent = PADDLE_INTENT.LEFT
+		elif input_dir.y > 0:
+			padling_intent = PADDLE_INTENT.BACKWARD_LEFT
+		elif input_dir.y < 0:
+			padling_intent = PADDLE_INTENT.FORWARD_LEFT
+	elif input_dir.y > 0:
+		padling_intent = PADDLE_INTENT.BACKWARD
+	elif input_dir.y < 0:
+		padling_intent = PADDLE_INTENT.FORWARD
+	
+	Global.log_text += "\ninput_dir.x: %f" % input_dir.x
+	Global.log_text += "\ninput_dir.y: %f" % input_dir.y
+
+var paddle_time:= 0.0
+var padling_side:PADDLE_SIDE=PADDLE_SIDE.IDLE
+var padling_intent:PADDLE_INTENT=PADDLE_INTENT.FORWARD
+enum PADDLE_SIDE {
+	IDLE,
+	LEFT,
+	RIGHT
+}
+enum PADDLE_INTENT {
+	FORWARD,
+	FORWARD_LEFT,
+	FORWARD_RIGHT,
+	LEFT,
+	RIGHT,
+	BACKWARD,
+	BACKWARD_LEFT,
+	BACKWARD_RIGHT,
+	IDLE
+}
+const TORQUE_TO = {
+	"RIGHT": -1,
+	"LEFT": 1
+}
+var paddle_speed := 2.0
+func handle_paddling(delta:float) -> void:
+	paddle_time -= delta
+	paddle_time = max(0, paddle_time)
+	if left_sample == 0 and right_sample == 0:
+		padling_side = PADDLE_SIDE.IDLE
+	else:
+		if paddle_time == 0:
+			if padling_side == PADDLE_SIDE.LEFT or padling_side == PADDLE_SIDE.IDLE:
+				padling_side = PADDLE_SIDE.RIGHT
+				paddle_time = left_sample*paddle_speed
+			else:
+				padling_side = PADDLE_SIDE.LEFT
+				paddle_time = right_sample*paddle_speed
+	Global.log_text += "\npaddle_time: %.2f" % paddle_time
+	Global.log_text += "\n%s" % PADDLE_SIDE.find_key(padling_side)
+	Global.log_text += "\nIntent: %s" % PADDLE_INTENT.find_key(padling_intent)
+	
+	match padling_side:
+		PADDLE_SIDE.IDLE:
+			torque = 0
+			speed = 0
+		PADDLE_SIDE.RIGHT:
+			match padling_intent:
+				PADDLE_INTENT.LEFT:
+					torque = 6*TORQUE_TO.LEFT
+					speed = -1
+				PADDLE_INTENT.RIGHT:
+					torque = 2*TORQUE_TO.LEFT
+					speed = -1
+				#
+				PADDLE_INTENT.FORWARD:
+					torque = 2*TORQUE_TO.LEFT
+					speed = -10
+				PADDLE_INTENT.FORWARD_LEFT:
+					torque = 4*TORQUE_TO.LEFT
+					speed = -7
+				PADDLE_INTENT.FORWARD_RIGHT:
+					torque = 2*TORQUE_TO.LEFT
+					speed = -7
+				#
+				PADDLE_INTENT.BACKWARD:
+					torque = 2*TORQUE_TO.RIGHT
+					speed = 10
+				PADDLE_INTENT.BACKWARD_LEFT:
+					torque = 5*TORQUE_TO.RIGHT
+					speed = 7
+				PADDLE_INTENT.BACKWARD_RIGHT:
+					torque = 3*TORQUE_TO.RIGHT
+					speed = 7
+		PADDLE_SIDE.LEFT:
+			match padling_intent:
+				PADDLE_INTENT.LEFT:
+					torque = 2*TORQUE_TO.RIGHT
+					speed = -1
+				PADDLE_INTENT.RIGHT:
+					torque = 6*TORQUE_TO.RIGHT
+					speed = -1
+				#
+				PADDLE_INTENT.FORWARD:
+					torque = 2*TORQUE_TO.RIGHT
+					speed = -10
+				PADDLE_INTENT.FORWARD_LEFT:
+					torque = 2*TORQUE_TO.RIGHT
+					speed = -7
+				PADDLE_INTENT.FORWARD_RIGHT:
+					torque = 4*TORQUE_TO.RIGHT
+					speed = -7
+				#
+				PADDLE_INTENT.BACKWARD:
+					torque = 2*TORQUE_TO.LEFT
+					speed = 10
+				PADDLE_INTENT.BACKWARD_LEFT:
+					torque = 5*TORQUE_TO.LEFT
+					speed = 7
+				PADDLE_INTENT.BACKWARD_RIGHT:
+					torque = 3*TORQUE_TO.LEFT
+					speed = 7
+	speed *= speed_mult
+	torque *= torque_mult
+	if grabbing_state == GRABBING.YES:
+		torque *= 5
+	going_backwards = false
+	handle_grabbing()
+
 func handle_rotation() -> void:
 	marker_3d.position = position
 	var input_dir:Vector2 = Input.get_vector("left", "right", "up", "down")
@@ -184,7 +339,7 @@ func handle_rotation() -> void:
 	going_backwards = false
 	if PI - abs(target_direction) < 1.0:
 		going_backwards = true
-		Global.log_text += "\nBackwards"
+		#Global.log_text += "\nBackwards"
 	
 	if going_backwards:
 		if target_direction > 0:
@@ -271,11 +426,16 @@ func lock_grab(value:=true):
 	is_grab_locked = value
 
 func _physics_process(delta: float):
-	if pid_tunning == 0.0:
-		handle_rotation()
+	if false:
+		if pid_tunning == 0.0:
+			handle_rotation()
+		else:
+			handle_finetunning()
 	else:
-		handle_finetunning()
-	apply_torque(Vector3(0, torque, 0) * remap(linear_velocity.length(), 0, 3, 0.1, 1) * delta)
+		handle_controls(delta)
+		handle_paddling(delta)
+	#apply_torque(Vector3(0, torque, 0) * remap(linear_velocity.length(), 0, 3, 0.1, 1) * delta)
+	apply_torque(Vector3(0, torque, 0) * delta)
 	if not going_backwards:
 		go_forward(speed * delta)
 	else:

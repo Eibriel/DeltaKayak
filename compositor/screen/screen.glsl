@@ -89,8 +89,8 @@ void main() {
 	// Dither
 	//vec4 color = texture(TEXTURE, UV);
 	
-        float colors = 100;
-        float dither = 0.5;
+        float colors = 200;
+        float dither = 0.9;
 	vec4 color_dithered = vec4(1.0);
 
 	//float a = floor(mod(UV.x / TEXTURE_PIXEL_SIZE.x, 2.0));
