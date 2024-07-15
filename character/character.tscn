@@ -382,8 +382,8 @@ root_node = NodePath("%AnimationTree/../character")
 tree_root = SubResource("AnimationNodeStateMachine_wkph0")
 anim_player = NodePath("../AnimationPlayer")
 parameters/current_length = 1.0
-parameters/current_position = 0.510333
-parameters/current_delta = 0.0166667
+parameters/current_position = 0.975802
+parameters/current_delta = 0.00833333
 parameters/conditions/forward = false
 parameters/conditions/idle = false
 parameters/BlendForward/current_length = 1.0
@@ -413,8 +413,8 @@ parameters/Start/current_length = 0.0
 parameters/Start/current_position = 0.0
 parameters/Start/current_delta = 0.0
 parameters/character_anims_Idle/current_length = 1.0
-parameters/character_anims_Idle/current_position = 0.510333
-parameters/character_anims_Idle/current_delta = 0.0166667
+parameters/character_anims_Idle/current_position = 0.975802
+parameters/character_anims_Idle/current_delta = 0.00833333
 
 [node name="KriketsAudio" type="AudioStreamPlayer3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.05414, -16.3561)
@@ -465,6 +465,5 @@ unique_name_in_owner = true
 
 [node name="AudioListener3D" type="AudioListener3D" parent="POVCameraController"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.091613, 0.044735)
-current = true
 
 [connection signal="area_entered" from="InteractionArea" to="." method="_on_interaction_area_area_entered"]

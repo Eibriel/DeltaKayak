@@ -16,7 +16,7 @@ var max_damage := 10.0
 
 var kayak_speed := 0.17
 var speed_mult := 5.0
-var torque_mult := 2.0
+var torque_mult := 3.0
 var temp_speed := 0.0
 var temp_time := 0.0
 var strength := 0
@@ -169,6 +169,7 @@ func reset_rotation()->void:
 
 func handle_controls(delta:float) -> void:
 	var input_dir:Vector2 = Input.get_vector("left", "right", "up", "down")
+	padling_intent = input_dir
 	
 	left_sample = max(0,-input_dir.x)
 	right_sample = max(0, input_dir.x)
@@ -183,50 +184,18 @@ func handle_controls(delta:float) -> void:
 	if total_sample > 0:
 		left_sample = left_sample / total_sample
 		right_sample = right_sample / total_sample
-	
-	padling_intent = PADDLE_INTENT.IDLE
-	if input_dir.x > 0:
-		# BUG Sometimes the number is very small
-		# but not zero
-		if input_dir.y == 0.0:
-			padling_intent = PADDLE_INTENT.RIGHT
-		elif input_dir.y > 0:
-			padling_intent = PADDLE_INTENT.BACKWARD_RIGHT
-		elif input_dir.y < 0:
-			padling_intent = PADDLE_INTENT.FORWARD_RIGHT
-	elif input_dir.x < 0:
-		if input_dir.y:
-			padling_intent = PADDLE_INTENT.LEFT
-		elif input_dir.y > 0:
-			padling_intent = PADDLE_INTENT.BACKWARD_LEFT
-		elif input_dir.y < 0:
-			padling_intent = PADDLE_INTENT.FORWARD_LEFT
-	elif input_dir.y > 0:
-		padling_intent = PADDLE_INTENT.BACKWARD
-	elif input_dir.y < 0:
-		padling_intent = PADDLE_INTENT.FORWARD
-	
 	Global.log_text += "\ninput_dir.x: %f" % input_dir.x
 	Global.log_text += "\ninput_dir.y: %f" % input_dir.y
 
 var paddle_time:= 0.0
 var padling_side:PADDLE_SIDE=PADDLE_SIDE.IDLE
-var padling_intent:PADDLE_INTENT=PADDLE_INTENT.FORWARD
+var padling_intent:Vector2
+var original_highest_contributor:String = ""
+var previous_highest_contributor:String = ""
 enum PADDLE_SIDE {
 	IDLE,
 	LEFT,
 	RIGHT
-}
-enum PADDLE_INTENT {
-	FORWARD,
-	FORWARD_LEFT,
-	FORWARD_RIGHT,
-	LEFT,
-	RIGHT,
-	BACKWARD,
-	BACKWARD_LEFT,
-	BACKWARD_RIGHT,
-	IDLE
 }
 const TORQUE_TO = {
 	"RIGHT": -1,
@@ -246,74 +215,116 @@ func handle_paddling(delta:float) -> void:
 			else:
 				padling_side = PADDLE_SIDE.LEFT
 				paddle_time = right_sample*paddle_speed
-	Global.log_text += "\npaddle_time: %.2f" % paddle_time
+		else:
+			if original_highest_contributor != previous_highest_contributor:
+				paddle_time = 0
+				if original_highest_contributor.ends_with("left"):
+					padling_side = PADDLE_SIDE.LEFT
+				elif original_highest_contributor.ends_with("right"):
+					padling_side = PADDLE_SIDE.RIGHT
+	previous_highest_contributor = original_highest_contributor
+	#Global.log_text += "\npaddle_time: %.2f" % paddle_time
 	Global.log_text += "\n%s" % PADDLE_SIDE.find_key(padling_side)
-	Global.log_text += "\nIntent: %s" % PADDLE_INTENT.find_key(padling_intent)
+	#Global.log_text += "\nIntent: %s" % PADDLE_INTENT.find_key(padling_intent)
 	
-	match padling_side:
-		PADDLE_SIDE.IDLE:
-			torque = 0
-			speed = 0
-		PADDLE_SIDE.RIGHT:
-			match padling_intent:
-				PADDLE_INTENT.LEFT:
-					torque = 6*TORQUE_TO.LEFT
-					speed = -1
-				PADDLE_INTENT.RIGHT:
-					torque = 2*TORQUE_TO.LEFT
-					speed = -1
-				#
-				PADDLE_INTENT.FORWARD:
-					torque = 2*TORQUE_TO.LEFT
-					speed = -10
-				PADDLE_INTENT.FORWARD_LEFT:
-					torque = 4*TORQUE_TO.LEFT
-					speed = -7
-				PADDLE_INTENT.FORWARD_RIGHT:
-					torque = 2*TORQUE_TO.LEFT
-					speed = -7
-				#
-				PADDLE_INTENT.BACKWARD:
-					torque = 2*TORQUE_TO.RIGHT
-					speed = 10
-				PADDLE_INTENT.BACKWARD_LEFT:
-					torque = 5*TORQUE_TO.RIGHT
-					speed = 7
-				PADDLE_INTENT.BACKWARD_RIGHT:
-					torque = 3*TORQUE_TO.RIGHT
-					speed = 7
-		PADDLE_SIDE.LEFT:
-			match padling_intent:
-				PADDLE_INTENT.LEFT:
-					torque = 2*TORQUE_TO.RIGHT
-					speed = -1
-				PADDLE_INTENT.RIGHT:
-					torque = 6*TORQUE_TO.RIGHT
-					speed = -1
-				#
-				PADDLE_INTENT.FORWARD:
-					torque = 2*TORQUE_TO.RIGHT
-					speed = -10
-				PADDLE_INTENT.FORWARD_LEFT:
-					torque = 2*TORQUE_TO.RIGHT
-					speed = -7
-				PADDLE_INTENT.FORWARD_RIGHT:
-					torque = 4*TORQUE_TO.RIGHT
-					speed = -7
-				#
-				PADDLE_INTENT.BACKWARD:
-					torque = 2*TORQUE_TO.LEFT
-					speed = 10
-				PADDLE_INTENT.BACKWARD_LEFT:
-					torque = 5*TORQUE_TO.LEFT
-					speed = 7
-				PADDLE_INTENT.BACKWARD_RIGHT:
-					torque = 3*TORQUE_TO.LEFT
-					speed = 7
+	var paddle_params := {
+		"forward": {
+			"torque": 2,
+			"speed": 10
+		},
+		"oposite_side": {
+			"torque": 6,
+			"speed": 1
+		},
+		"same_side": {
+			"torque": 2,
+			"speed": 1
+		},
+		"forward_oposite_side": {
+			"torque": 6,
+			"speed": 7
+		},
+		"forward_same_side": {
+			"torque": 2,
+			"speed": 7
+		}
+	}
+	var forward_contribution = maxf(0, -padling_intent.y)
+	var backward_contribution = maxf(0, padling_intent.y)
+	var left_contribution = maxf(0, -padling_intent.x)
+	var right_contribution = maxf(0, padling_intent.x)
+	
+	var contributions := {
+		"forward": forward_contribution,
+		"backward": backward_contribution,
+		"left": left_contribution,
+		"right": right_contribution,
+		"forward_left": forward_contribution + left_contribution,
+		"forward_right": forward_contribution + right_contribution,
+		"backward_left": backward_contribution + left_contribution,
+		"backward_right": backward_contribution + right_contribution
+	}
+	var highest_contributor:=""
+	var highest_value:=0.0
+	for k in contributions:
+		# NOTE the value added to "highest_value" adds a "deadzone"
+		# Allowing analog sticks to point directly front, back and sides
+		if contributions[k] > (highest_value+0.1):
+			highest_value = contributions[k]
+			highest_contributor = k
+	var reverse_speed := 1
+	var reverse_torque := 1
+	original_highest_contributor = highest_contributor
+	# TODO change replace for something faster
+	if backward_contribution > 0:
+		highest_contributor = highest_contributor.replace("backward", "forward")
+		reverse_speed = -1
+	if left_contribution > 0:
+		if padling_side == PADDLE_SIDE.LEFT:
+			highest_contributor = highest_contributor.replace("left", "same_side")
+			reverse_torque = -1
+		else:
+			highest_contributor = highest_contributor.replace("left", "oposite_side")
+	if right_contribution > 0:
+		if padling_side == PADDLE_SIDE.RIGHT:
+			highest_contributor = highest_contributor.replace("right", "same_side")
+		else:
+			highest_contributor = highest_contributor.replace("right", "oposite_side")
+			reverse_torque = -1
+	if highest_contributor == "forward":
+		if padling_side == PADDLE_SIDE.LEFT:
+			reverse_torque = -1
+	speed = 0
+	torque = 0
+	if highest_contributor!="":
+		speed = -paddle_params[highest_contributor]["speed"] * reverse_speed
+		torque = paddle_params[highest_contributor]["torque"] * reverse_torque
+	
+	if original_highest_contributor == "forward":
+		speed *= forward_contribution
+		torque *= forward_contribution
+	elif original_highest_contributor == "backward":
+		speed *= backward_contribution
+		torque *= backward_contribution
+	elif original_highest_contributor == "left":
+		speed *= left_contribution
+		torque *= left_contribution
+	elif original_highest_contributor == "right":
+		speed *= right_contribution
+		torque *= right_contribution
+	elif ["forward_oposite_side", "forward_same_side"].has(highest_contributor):
+		speed *= abs(padling_intent.y)
+		torque *= abs(padling_intent.x)
+	
+	Global.log_text += "\nhighest_contributor: %s" % highest_contributor
+	#Global.log_text += "\ntotal: %f" % padling_intent.length()
+	#Global.log_text += "\nspeed: %f" % speed
+	#Global.log_text += "\ntorque: %f" % torque
+	
 	speed *= speed_mult
 	torque *= torque_mult
 	if grabbing_state == GRABBING.YES:
-		torque *= 5
+		torque *= 10
 	going_backwards = false
 	handle_grabbing()
 
