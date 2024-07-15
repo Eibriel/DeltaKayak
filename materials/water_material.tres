@@ -34,6 +34,6 @@ shader_parameter/albedo = Color(0.69, 0.39, 0.074, 1)
 shader_parameter/ssr_resolution = 2.0
 shader_parameter/ssr_max_travel = 200.0
 shader_parameter/ssr_max_diff = 4.0
-shader_parameter/ssr_mix_strength = 0.7
+shader_parameter/ssr_mix_strength = 0.8
 shader_parameter/texture_1 = SubResource("NoiseTexture2D_fenou")
 shader_parameter/texture_2 = SubResource("NoiseTexture2D_7dcxt")

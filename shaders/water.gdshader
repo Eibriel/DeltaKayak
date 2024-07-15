@@ -80,7 +80,7 @@ void fragment() {
 	if (ssr_color.x < 0.0) {
 		ALBEDO = (((color1 * color2) * 0.5) + 0.5) * albedo;
 	} else {
-		ALBEDO = (((color1 * color2) * 0.5) + 0.5) * albedo * mix(ssr_color, vec3(1.0), 0.5);
+		ALBEDO = (((color1 * color2) * 0.5) + 0.5) * albedo * mix(ssr_color, vec3(1.0), ssr_mix_strength);
 	}
 	//ALBEDO = (((color1 * color2) * 0.5) + 0.5) * albedo;
 

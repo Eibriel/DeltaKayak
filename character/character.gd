@@ -77,11 +77,11 @@ func _ready():
 	#char_anim.play("character_anims/ForwardPaddle", -1, 2.0)
 	
 	var kayak_mat:StandardMaterial3D = $kayak_detailed.get_node("Kayak_001").mesh.surface_get_material(0)
-	kayak_mat.albedo_color = Color(0.81, 0.31, 0.25, 1.0) # Pink
+	#kayak_mat.albedo_color = Color(0.81, 0.31, 0.25, 1.0) # Pink
 	#kayak_mat.albedo_color = Color(0.50, 0.74, 0.72, 1.0) # Light blue
 	#kayak_mat.albedo_color = Color(0.18, 0.41, 0.21, 1.0) # Green
-	#kayak_mat.albedo_color = Color(1.0, 0.8, 0.0, 1.0) # Yellow
-	kayak_mat.albedo_color = Color(0.9, 0.03, 0.03, 1.0) # Red
+	kayak_mat.albedo_color = Color(1.0, 0.8, 0.0, 1.0) # Yellow
+	#kayak_mat.albedo_color = Color(0.9, 0.03, 0.03, 1.0) # Red
 	#kayak_mat.albedo_color = Color(0.73, 0.07, 0.07, 1.0) # Dark Red
 	kayak_mat.emission_enabled = false
 	kayak_mat.emission = kayak_mat.albedo_color * 0.1
@@ -108,6 +108,7 @@ func _process(delta: float) -> void:
 			trail_position.pop_back()
 			trail_velocity.pop_back()
 	handle_animations()
+	hide_head_if_needed()
 
 var _mouse_input:bool
 var _mouse_rotation:Vector3
@@ -134,7 +135,16 @@ func _update_camera(delta:float)->void:
 func hide_pepa()->void:
 	pepa.visible = false
 
+func hide_head_if_needed()->void:
+	if %POVCamera3D.current:
+		$character/Armature/Skeleton3D/capucha.visible = false
+		$character/Armature/Skeleton3D/head.visible = false
+	else:
+		$character/Armature/Skeleton3D/capucha.visible = true
+		$character/Armature/Skeleton3D/head.visible = true
+
 func handle_animations()->void:
+	return
 	var input_dir:Vector2 = Input.get_vector("left", "right", "up", "down")
 	if input_dir == Vector2.ZERO:
 		%AnimationTree["parameters/conditions/forward"] = false
@@ -184,8 +194,8 @@ func handle_controls(delta:float) -> void:
 	if total_sample > 0:
 		left_sample = left_sample / total_sample
 		right_sample = right_sample / total_sample
-	Global.log_text += "\ninput_dir.x: %f" % input_dir.x
-	Global.log_text += "\ninput_dir.y: %f" % input_dir.y
+	#Global.log_text += "\ninput_dir.x: %f" % input_dir.x
+	#Global.log_text += "\ninput_dir.y: %f" % input_dir.y
 
 var paddle_time:= 0.0
 var padling_side:PADDLE_SIDE=PADDLE_SIDE.IDLE
@@ -207,14 +217,25 @@ func handle_paddling(delta:float) -> void:
 	paddle_time = max(0, paddle_time)
 	if left_sample == 0 and right_sample == 0:
 		padling_side = PADDLE_SIDE.IDLE
+		%AnimationTree["parameters/conditions/idle"] = true
+		%AnimationTree["parameters/conditions/right"] = false
+		%AnimationTree["parameters/conditions/left"] = false
 	else:
 		if paddle_time == 0:
 			if padling_side == PADDLE_SIDE.LEFT or padling_side == PADDLE_SIDE.IDLE:
 				padling_side = PADDLE_SIDE.RIGHT
 				paddle_time = left_sample*paddle_speed
+				%AnimationTree["parameters/conditions/idle"] = false
+				%AnimationTree["parameters/conditions/left"] = false
+				%AnimationTree["parameters/conditions/right"] = true
+				%AnimationTree.set("parameters/BlendRight/TimeScale/scale", paddle_speed)
 			else:
 				padling_side = PADDLE_SIDE.LEFT
 				paddle_time = right_sample*paddle_speed
+				%AnimationTree["parameters/conditions/idle"] = false
+				%AnimationTree["parameters/conditions/right"] = false
+				%AnimationTree["parameters/conditions/left"] = true
+				%AnimationTree.set("parameters/BlendLeft/TimeScale/scale", paddle_speed)
 		else:
 			if original_highest_contributor != previous_highest_contributor:
 				paddle_time = 0
@@ -224,8 +245,20 @@ func handle_paddling(delta:float) -> void:
 					padling_side = PADDLE_SIDE.RIGHT
 	previous_highest_contributor = original_highest_contributor
 	#Global.log_text += "\npaddle_time: %.2f" % paddle_time
-	Global.log_text += "\n%s" % PADDLE_SIDE.find_key(padling_side)
+	#Global.log_text += "\n%s" % PADDLE_SIDE.find_key(padling_side)
 	#Global.log_text += "\nIntent: %s" % PADDLE_INTENT.find_key(padling_intent)
+	if false:
+		%AnimationTree["parameters/conditions/idle"] = false
+		%AnimationTree["parameters/conditions/left"] = false
+		%AnimationTree["parameters/conditions/right"] = false
+		match padling_side:
+			PADDLE_SIDE.IDLE:
+				%AnimationTree["parameters/conditions/idle"] = true
+			PADDLE_SIDE.LEFT:
+				%AnimationTree["parameters/conditions/left"] = true
+				#%AnimationTree.set("parameters/BlendLeft/TimeScale/scale", anim_speed)
+			PADDLE_SIDE.RIGHT:
+				%AnimationTree["parameters/conditions/right"] = true
 	
 	var paddle_params := {
 		"forward": {

@@ -65,6 +65,29 @@ vec3 simple_yuv_to_RGB(vec3 color) {
 	return mat_ypbpr_to_rgb * color;
 }
 
+// From https://godotshaders.com/shader/psx-style-camera-shader/
+
+vec3 quantize_color(vec3 color, int levels) {
+    float quantizer = float(levels - 1);
+    return floor(color * quantizer + 0.5) / quantizer;
+}
+
+float dither(vec2 position, float brightness) {
+    int x = int(mod(position.x, 4.0));
+    int y = int(mod(position.y, 4.0));
+    int index = x + y * 4;
+    float dithering[16] = float[](
+        0.0, 0.5, 0.125, 0.625,
+        0.75, 0.25, 0.875, 0.375,
+        0.1875, 0.6875, 0.0625, 0.5625,
+        0.9375, 0.4375, 1.0, 0.8125
+    );
+    float threshold = dithering[index];
+    return brightness < threshold ? 0.0 : 1.0;
+}
+
+//
+
 // The code we want to execute in each invocation
 void main() {
 	float time = params.time;
@@ -88,7 +111,7 @@ void main() {
 
 	// Dither
 	//vec4 color = texture(TEXTURE, UV);
-	
+	/*
         float colors = 200;
         float dither = 0.9;
 	vec4 color_dithered = vec4(1.0);
@@ -106,7 +129,17 @@ void main() {
 	color_dithered.r += (round(color.r * colors - dither) / colors) * c;
 	color_dithered.g += (round(color.g * colors - dither) / colors) * c;
 	color_dithered.b += (round(color.b * colors - dither) / colors) * c;
-
+	*/
 	//imageStore(color_image, uv, color);
-        imageStore(color_image, uv, color_dithered);
+
+	vec3 quantized_color = color.rgb; //quantize_color(color.rgb, 255);
+
+	float dither_strength = 0.05;
+	float brightness = dot(quantized_color, vec3(0.3, 0.59, 0.11));
+	brightness += dither_strength * (dither(uvp, brightness) - 0.5);
+	quantized_color *= (1.0 + dither_strength * (dither(uvp, brightness) - 0.5));
+
+	color = vec4(quantized_color.r, quantized_color.g, quantized_color.b, 1.0);
+
+        imageStore(color_image, uv, color);
 }

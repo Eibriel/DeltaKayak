@@ -148,7 +148,7 @@ mouse_filter = 1
 script = ExtResource("1_xxenq")
 game_preferences = ExtResource("2_wexnt")
 game_state = ExtResource("3_nh3h6")
-initial_position = NodePath("Main3D/InitialPositionOtherSide")
+initial_position = NodePath("Main3D/InitialPosition")
 
 [node name="Node2D" type="Node2D" parent="."]
 
@@ -242,6 +242,7 @@ text = "THANKS FOR PLAYING"
 [node name="LogLabel" type="RichTextLabel" parent="Control"]
 unique_name_in_owner = true
 auto_translate_mode = 1
+visible = false
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.101667
@@ -520,8 +521,6 @@ transform = Transform3D(-0.703072, 0.436428, 0.561445, -8.66841e-09, -0.789524, 
 light_color = Color(0.429084, 0.569185, 0.473505, 1)
 light_energy = 0.5
 shadow_enabled = true
-shadow_opacity = 0.64
-shadow_blur = 1.774
 directional_shadow_mode = 0
 
 [node name="character" parent="Main3D" instance=ExtResource("2_3sgbv")]

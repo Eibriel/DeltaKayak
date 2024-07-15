@@ -71,6 +71,7 @@ func handle_cameras(delta)->void:
 	var new_camera = false
 	if current_camera != previous_camera or initial_positioning:
 		current_camera.current = true
+		Global.character.hide_head_if_needed()
 		new_camera = true
 		initial_positioning = false
 		previous_camera = current_camera

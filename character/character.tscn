@@ -1,4 +1,4 @@
-[gd_scene load_steps=50 format=3 uid="uid://r0o1qsmlq84u"]
+[gd_scene load_steps=60 format=3 uid="uid://r0o1qsmlq84u"]
 
 [ext_resource type="Script" path="res://character/character.gd" id="1_mnv7b"]
 [ext_resource type="Texture2D" uid="uid://dbr6od55galv2" path="res://models/world_textures/BoteMadera_diffuse.png" id="2_j3chf"]
@@ -163,7 +163,6 @@ loop_mode = 1
 [sub_resource type="AnimationNodeTimeScale" id="AnimationNodeTimeScale_xdsem"]
 
 [sub_resource type="AnimationNodeBlendTree" id="AnimationNodeBlendTree_br1pl"]
-graph_offset = Vector2(-59, 64)
 nodes/Add2/node = SubResource("AnimationNodeAdd2_xg8hx")
 nodes/Add2/position = Vector2(400, 140)
 nodes/Animation/node = SubResource("AnimationNodeAnimation_71kq4")
@@ -175,6 +174,43 @@ nodes/TimeScale/position = Vector2(560, 60)
 nodes/output/position = Vector2(740, 140)
 node_connections = [&"Add2", 0, &"Animation", &"Add2", 1, &"Animation 2", &"TimeScale", 0, &"Add2", &"output", 0, &"TimeScale"]
 
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_pm3kf"]
+animation = &"character_anims/LeftPaddle"
+use_custom_timeline = true
+timeline_length = 1.0
+stretch_time_scale = true
+start_offset = 0.0
+loop_mode = 0
+
+[sub_resource type="AnimationNodeTimeScale" id="AnimationNodeTimeScale_igred"]
+
+[sub_resource type="AnimationNodeBlendTree" id="AnimationNodeBlendTree_fbafd"]
+graph_offset = Vector2(-241.8, 14.3)
+nodes/Animation/node = SubResource("AnimationNodeAnimation_pm3kf")
+nodes/Animation/position = Vector2(-100, 100)
+nodes/TimeScale/node = SubResource("AnimationNodeTimeScale_igred")
+nodes/TimeScale/position = Vector2(236.545, 88.4545)
+nodes/output/position = Vector2(420, 140)
+node_connections = [&"TimeScale", 0, &"Animation", &"output", 0, &"TimeScale"]
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_hlgus"]
+animation = &"character_anims/RightPaddle_old"
+use_custom_timeline = true
+timeline_length = 1.0
+stretch_time_scale = true
+start_offset = 0.0
+loop_mode = 0
+
+[sub_resource type="AnimationNodeTimeScale" id="AnimationNodeTimeScale_spqqg"]
+
+[sub_resource type="AnimationNodeBlendTree" id="AnimationNodeBlendTree_n8pip"]
+graph_offset = Vector2(-1383, 8)
+nodes/Animation/node = SubResource("AnimationNodeAnimation_hlgus")
+nodes/Animation/position = Vector2(-140, 100)
+nodes/TimeScale/node = SubResource("AnimationNodeTimeScale_spqqg")
+nodes/TimeScale/position = Vector2(140, 120)
+node_connections = [&"TimeScale", 0, &"Animation", &"output", 0, &"TimeScale"]
+
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_rkenj"]
 animation = &"character_anims/Idle"
 use_custom_timeline = true
@@ -183,24 +219,50 @@ stretch_time_scale = true
 start_offset = 0.0
 loop_mode = 1
 
-[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_mej27"]
-advance_mode = 2
-advance_condition = &"forward"
-
-[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_yuhqn"]
-advance_mode = 2
-advance_condition = &"idle"
-
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_i1tmv"]
 advance_mode = 2
 
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_ak7rn"]
+xfade_time = 0.5
+advance_mode = 2
+advance_condition = &"left"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_u4jqm"]
+xfade_time = 0.5
+advance_mode = 2
+advance_condition = &"idle"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_vxqbh"]
+xfade_time = 0.1
+advance_mode = 2
+advance_condition = &"right"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_phedv"]
+xfade_time = 0.1
+advance_mode = 2
+advance_condition = &"left"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_41avv"]
+xfade_time = 0.5
+advance_mode = 2
+advance_condition = &"idle"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_m1s3w"]
+xfade_time = 0.5
+advance_mode = 2
+advance_condition = &"right"
+
 [sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_wkph0"]
 states/BlendForward/node = SubResource("AnimationNodeBlendTree_br1pl")
-states/BlendForward/position = Vector2(700, 100)
+states/BlendForward/position = Vector2(776, -8)
+states/BlendLeft/node = SubResource("AnimationNodeBlendTree_fbafd")
+states/BlendLeft/position = Vector2(674, 57)
+states/BlendRight/node = SubResource("AnimationNodeBlendTree_n8pip")
+states/BlendRight/position = Vector2(674, 184)
 states/Start/position = Vector2(218, 20)
 states/character_anims_Idle/node = SubResource("AnimationNodeAnimation_rkenj")
 states/character_anims_Idle/position = Vector2(450, 100)
-transitions = ["character_anims_Idle", "BlendForward", SubResource("AnimationNodeStateMachineTransition_mej27"), "BlendForward", "character_anims_Idle", SubResource("AnimationNodeStateMachineTransition_yuhqn"), "Start", "character_anims_Idle", SubResource("AnimationNodeStateMachineTransition_i1tmv")]
+transitions = ["Start", "character_anims_Idle", SubResource("AnimationNodeStateMachineTransition_i1tmv"), "character_anims_Idle", "BlendLeft", SubResource("AnimationNodeStateMachineTransition_ak7rn"), "BlendLeft", "character_anims_Idle", SubResource("AnimationNodeStateMachineTransition_u4jqm"), "BlendLeft", "BlendRight", SubResource("AnimationNodeStateMachineTransition_vxqbh"), "BlendRight", "BlendLeft", SubResource("AnimationNodeStateMachineTransition_phedv"), "BlendRight", "character_anims_Idle", SubResource("AnimationNodeStateMachineTransition_41avv"), "character_anims_Idle", "BlendRight", SubResource("AnimationNodeStateMachineTransition_m1s3w")]
 graph_offset = Vector2(66, -57)
 
 [sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_oxp1s"]
@@ -331,6 +393,7 @@ top_level = true
 [node name="CharacterCamera3D" type="Camera3D" parent="Marker3D"]
 unique_name_in_owner = true
 transform = Transform3D(1, 0, 0, 0, 0.853332, 0.521367, 0, -0.521367, 0.853332, 0, 13.0076, 11.27)
+current = true
 fov = 90.0
 
 [node name="GrabbingPosition" type="Marker3D" parent="."]
@@ -382,10 +445,11 @@ root_node = NodePath("%AnimationTree/../character")
 tree_root = SubResource("AnimationNodeStateMachine_wkph0")
 anim_player = NodePath("../AnimationPlayer")
 parameters/current_length = 1.0
-parameters/current_position = 0.975802
-parameters/current_delta = 0.00833333
-parameters/conditions/forward = false
+parameters/current_position = 0.069461
+parameters/current_delta = 0.00256921
 parameters/conditions/idle = false
+parameters/conditions/left = false
+parameters/conditions/right = false
 parameters/BlendForward/current_length = 1.0
 parameters/BlendForward/current_position = 0.30167
 parameters/BlendForward/current_delta = 0.0166667
@@ -406,6 +470,32 @@ parameters/BlendForward/TimeScale/scale = 1.0
 parameters/BlendForward/output/current_length = 1.0
 parameters/BlendForward/output/current_position = 0.30167
 parameters/BlendForward/output/current_delta = 0.0166667
+parameters/BlendLeft/current_length = 1.0
+parameters/BlendLeft/current_position = 0.369538
+parameters/BlendLeft/current_delta = 0.0166667
+parameters/BlendLeft/Animation/current_length = 1.0
+parameters/BlendLeft/Animation/current_position = 0.369538
+parameters/BlendLeft/Animation/current_delta = 0.0166667
+parameters/BlendLeft/TimeScale/current_length = 1.0
+parameters/BlendLeft/TimeScale/current_position = 0.369538
+parameters/BlendLeft/TimeScale/current_delta = 0.0166667
+parameters/BlendLeft/TimeScale/scale = 1.0
+parameters/BlendLeft/output/current_length = 1.0
+parameters/BlendLeft/output/current_position = 0.369538
+parameters/BlendLeft/output/current_delta = 0.0166667
+parameters/BlendRight/current_length = 1.0
+parameters/BlendRight/current_position = 0.0
+parameters/BlendRight/current_delta = 0.0
+parameters/BlendRight/Animation/current_length = 1.0
+parameters/BlendRight/Animation/current_position = 0.0
+parameters/BlendRight/Animation/current_delta = 0.0
+parameters/BlendRight/TimeScale/current_length = 1.0
+parameters/BlendRight/TimeScale/current_position = 0.0
+parameters/BlendRight/TimeScale/current_delta = 0.0
+parameters/BlendRight/TimeScale/scale = 1.0
+parameters/BlendRight/output/current_length = 1.0
+parameters/BlendRight/output/current_position = 0.0
+parameters/BlendRight/output/current_delta = 0.0
 parameters/End/current_length = null
 parameters/End/current_position = null
 parameters/End/current_delta = null
@@ -413,8 +503,8 @@ parameters/Start/current_length = 0.0
 parameters/Start/current_position = 0.0
 parameters/Start/current_delta = 0.0
 parameters/character_anims_Idle/current_length = 1.0
-parameters/character_anims_Idle/current_position = 0.975802
-parameters/character_anims_Idle/current_delta = 0.00833333
+parameters/character_anims_Idle/current_position = 0.069461
+parameters/character_anims_Idle/current_delta = 0.00256921
 
 [node name="KriketsAudio" type="AudioStreamPlayer3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.05414, -16.3561)
@@ -465,5 +555,6 @@ unique_name_in_owner = true
 
 [node name="AudioListener3D" type="AudioListener3D" parent="POVCameraController"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.091613, 0.044735)
+current = true
 
 [connection signal="area_entered" from="InteractionArea" to="." method="_on_interaction_area_area_entered"]
