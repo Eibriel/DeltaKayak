@@ -1,4 +1,4 @@
-[gd_scene load_steps=39 format=3 uid="uid://ce6e8v1saxjr5"]
+[gd_scene load_steps=40 format=3 uid="uid://ce6e8v1saxjr5"]
 
 [ext_resource type="Environment" uid="uid://xpf4ng2ym0n4" path="res://environments/main_environment.tres" id="1_ekqa4"]
 [ext_resource type="Script" path="res://main.gd" id="1_xxenq"]
@@ -10,6 +10,7 @@
 [ext_resource type="Texture2D" uid="uid://31mrm2ajeyll" path="res://textures/dialogue_box.png" id="4_kkvku"]
 [ext_resource type="Texture2D" uid="uid://bue181jtwq3fu" path="res://textures/smoke.png" id="4_ob3me"]
 [ext_resource type="CompositorEffect" uid="uid://b45j2vp4hks5x" path="res://compositor/datamosh/datamosh_compositor_effect_2.tres" id="6_02wi3"]
+[ext_resource type="Script" path="res://pause_menu.gd" id="6_dfvsb"]
 [ext_resource type="PackedScene" uid="uid://t23rsw74uei8" path="res://scenes/long_box.tscn" id="9_kolyd"]
 [ext_resource type="PackedScene" uid="uid://dsppfk5r8xdm7" path="res://scenes/L_floating_box.tscn" id="10_tov8v"]
 [ext_resource type="PackedScene" uid="uid://ccwbpjnygckmy" path="res://scenes/door.tscn" id="11_mh163"]
@@ -258,6 +259,7 @@ metadata/_edit_use_anchors_ = true
 [node name="IntroChatLabel" type="RichTextLabel" parent="Control"]
 unique_name_in_owner = true
 auto_translate_mode = 1
+visible = false
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.101667
@@ -400,6 +402,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("6_dfvsb")
 
 [node name="PauseMenuContainer" type="VBoxContainer" parent="Control/PauseMenu"]
 unique_name_in_owner = true

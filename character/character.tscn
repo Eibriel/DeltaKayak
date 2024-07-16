@@ -1,4 +1,4 @@
-[gd_scene load_steps=60 format=3 uid="uid://r0o1qsmlq84u"]
+[gd_scene load_steps=61 format=3 uid="uid://r0o1qsmlq84u"]
 
 [ext_resource type="Script" path="res://character/character.gd" id="1_mnv7b"]
 [ext_resource type="Texture2D" uid="uid://dbr6od55galv2" path="res://models/world_textures/BoteMadera_diffuse.png" id="2_j3chf"]
@@ -28,6 +28,12 @@ friction = 0.2
 shading_mode = 0
 albedo_color = Color(1, 0.883333, 0.3, 1)
 albedo_texture = ExtResource("2_j3chf")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_pxhn7"]
+render_priority = 3
+no_depth_test = true
+shading_mode = 0
+albedo_color = Color(0.826, 1, 0.13, 1)
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_ogamo"]
 radius = 0.271211
@@ -302,6 +308,14 @@ radius = 0.02
 height = 1.0
 material = SubResource("StandardMaterial3D_e56vi")
 
+[node name="GrabIndicator" type="Node3D" parent="."]
+unique_name_in_owner = true
+
+[node name="CSGSphere3D" type="CSGSphere3D" parent="GrabIndicator"]
+cast_shadow = 0
+radius = 0.15
+material = SubResource("StandardMaterial3D_pxhn7")
+
 [node name="CSGCylinder3D2" type="CSGCylinder3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.29791, -0.808935)
 visible = false
@@ -343,9 +357,8 @@ transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 
 shape = SubResource("CapsuleShape3D_b8fg3")
 
 [node name="CSGBox3D" type="CSGBox3D" parent="."]
-top_level = true
 visible = false
-size = Vector3(0.5, 0.5, 0.5)
+size = Vector3(0.3, 0.3, 0.3)
 
 [node name="pillow" parent="." instance=ExtResource("4_81u6e")]
 transform = Transform3D(-2, 0, 1.74845e-07, 0, 2, 0, -1.74845e-07, 0, -2, 0.0136361, 0.200965, -1.04693)
@@ -403,7 +416,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.9674)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.72403)
 enabled = false
 target_position = Vector3(0, 0, -3)
-collision_mask = 15
+collision_mask = 4
 
 [node name="DamageIndicator" type="CSGSphere3D" parent="."]
 unique_name_in_owner = true
@@ -445,8 +458,8 @@ root_node = NodePath("%AnimationTree/../character")
 tree_root = SubResource("AnimationNodeStateMachine_wkph0")
 anim_player = NodePath("../AnimationPlayer")
 parameters/current_length = 1.0
-parameters/current_position = 0.069461
-parameters/current_delta = 0.00256921
+parameters/current_position = 0.746551
+parameters/current_delta = 0.009802
 parameters/conditions/idle = false
 parameters/conditions/left = false
 parameters/conditions/right = false
@@ -503,8 +516,8 @@ parameters/Start/current_length = 0.0
 parameters/Start/current_position = 0.0
 parameters/Start/current_delta = 0.0
 parameters/character_anims_Idle/current_length = 1.0
-parameters/character_anims_Idle/current_position = 0.069461
-parameters/character_anims_Idle/current_delta = 0.00256921
+parameters/character_anims_Idle/current_position = 0.746551
+parameters/character_anims_Idle/current_delta = 0.009802
 
 [node name="KriketsAudio" type="AudioStreamPlayer3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.05414, -16.3561)

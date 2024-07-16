@@ -51,12 +51,12 @@ func _ready() -> void:
 	
 	Global.main_scene = self
 	Global.grab_joint = %GrabJoint3D
-	Global.grab_joint.set_param_x(Generic6DOFJoint3D.PARAM_LINEAR_LIMIT_SOFTNESS, 0.01)
-	Global.grab_joint.set_param_y(Generic6DOFJoint3D.PARAM_LINEAR_LIMIT_SOFTNESS, 0.01)
-	Global.grab_joint.set_param_z(Generic6DOFJoint3D.PARAM_LINEAR_LIMIT_SOFTNESS, 0.01)
-	Global.grab_joint.set_param_x(Generic6DOFJoint3D.PARAM_ANGULAR_SPRING_STIFFNESS, 0.01)
-	Global.grab_joint.set_param_y(Generic6DOFJoint3D.PARAM_ANGULAR_SPRING_STIFFNESS, 0.01)
-	Global.grab_joint.set_param_z(Generic6DOFJoint3D.PARAM_ANGULAR_SPRING_STIFFNESS, 0.01)
+	#Global.grab_joint.set_param_x(Generic6DOFJoint3D.PARAM_LINEAR_LIMIT_SOFTNESS, 0.01)
+	#Global.grab_joint.set_param_y(Generic6DOFJoint3D.PARAM_LINEAR_LIMIT_SOFTNESS, 0.01)
+	#Global.grab_joint.set_param_z(Generic6DOFJoint3D.PARAM_LINEAR_LIMIT_SOFTNESS, 0.01)
+	#Global.grab_joint.set_param_x(Generic6DOFJoint3D.PARAM_ANGULAR_SPRING_STIFFNESS, 0.01)
+	#Global.grab_joint.set_param_y(Generic6DOFJoint3D.PARAM_ANGULAR_SPRING_STIFFNESS, 0.01)
+	#Global.grab_joint.set_param_z(Generic6DOFJoint3D.PARAM_ANGULAR_SPRING_STIFFNESS, 0.01)
 	
 	Global.grab_kayak = %GrabKayak
 	Global.grab_kayak2 = %GrabKayak2
@@ -96,7 +96,7 @@ func _ready() -> void:
 		if c.name == "Enemy":
 			Global.enemy = c
 	
-	%IntroChatLabel.visible = true
+	#%IntroChatLabel.visible = true
 	intro_animation()
 	#Global.character.camera.current = true
 	
@@ -111,6 +111,8 @@ func _ready() -> void:
 		%FullScreenButton.set_pressed_no_signal(false)
 	%MouseSensibilitySlider.value = Global.mouse_sensibility
 	%FPSSpinbox.set_value_no_signal(Engine.max_fps)
+	
+	%PauseMenu.main_scene = self
 
 func pause():
 	#player.about_to_pause()
@@ -135,7 +137,7 @@ func intro_animation():
 func end_intro_animation():
 	character.camera.current = true
 	dk_world.select_cameras = true
-	%IntroChatLabel.visible = false
+	#%IntroChatLabel.visible = false
 	say_dialogue("demo_start_point")
 
 func _process(delta: float) -> void:
@@ -314,21 +316,26 @@ func _input(event: InputEvent) -> void:
 			return
 		for id in in_trigger:
 			execute_trigger("primary_action", id)
-	elif event.is_action_pressed("secondary_action"):
-		if is_saying_dialogue():
-			skip_dialogue()
-			return
-		for id in in_trigger:
-			execute_trigger("secondary_action", id)
+		if in_trigger.size() == 0:
+			say_dialogue("describe_night")
+	#elif event.is_action_pressed("secondary_action"):
+		#if is_saying_dialogue():
+			#skip_dialogue()
+			#return
+		#for id in in_trigger:
+			#execute_trigger("secondary_action", id)
 	elif event.is_action_pressed("pepa"):
-		say_dialogue("¡¡Pepa!!")
-	elif event.is_action_pressed("compicactus"):
-		on_compicactus()
+		on_pepa()
+	#elif event.is_action_pressed("compicactus"):
+	#	on_compicactus()
 	elif event.is_action_pressed("quit"):
 		#get_tree().quit()
 		pause()
 	elif event.is_action_pressed("help"):
 		%HelpLabel.visible = !%HelpLabel.visible
+
+func on_pepa():
+	say_dialogue("pepa_001")
 
 func on_compicactus():
 	say_dialogue("compi_im_here")

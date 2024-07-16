@@ -5,6 +5,7 @@ extends RigidBody3D
 @onready var camera: Camera3D = %POVCamera3D
 @onready var marker_3d: Marker3D = $Marker3D
 @onready var grabbing_position: Marker3D = $GrabbingPosition
+@onready var grab_indicator: Node3D = %GrabIndicator
 
 var soft_camera_rotation: float
 var speed := 0.0
@@ -109,11 +110,21 @@ func _process(delta: float) -> void:
 			trail_velocity.pop_back()
 	handle_animations()
 	hide_head_if_needed()
+	_handle_controller_camera()
 
 var _mouse_input:bool
 var _mouse_rotation:Vector3
 var _rotation_input:float
 var _tilt_input:float
+
+func _handle_controller_camera()->void:
+	var input_dir:Vector2 = Input.get_vector("camera_left", "camera_right", "camera_up", "camera_down")
+	_rotation_input = -input_dir.x * 3.0
+	_tilt_input = -input_dir.y * 3.0
+
+func _input(event: InputEvent) -> void:
+	if event.is_action_pressed("reset_camera"):
+		reset_camera_rotation()
 
 func _unhandled_input(event: InputEvent) -> void:
 	_mouse_input = event is InputEventMouseMotion \
@@ -122,13 +133,18 @@ func _unhandled_input(event: InputEvent) -> void:
 		_rotation_input = -event.relative.x * Global.mouse_sensibility
 		_tilt_input = -event.relative.y * Global.mouse_sensibility
 
+func reset_camera_rotation():
+	_mouse_rotation = Vector3.ZERO
+	%POVCameraController.transform.basis = Basis.from_euler(_mouse_rotation)
+	%POVCameraController.rotation.z = 0.0
+	_rotation_input = 0.0
+	_tilt_input = 0.0
+
 func _update_camera(delta:float)->void:
 	_mouse_rotation.x += _tilt_input * delta
 	_mouse_rotation.y += _rotation_input * delta
-	
 	%POVCameraController.transform.basis = Basis.from_euler(_mouse_rotation)
 	%POVCameraController.rotation.z = 0.0
-	
 	_rotation_input = 0.0
 	_tilt_input = 0.0
 
@@ -228,14 +244,14 @@ func handle_paddling(delta:float) -> void:
 				%AnimationTree["parameters/conditions/idle"] = false
 				%AnimationTree["parameters/conditions/left"] = false
 				%AnimationTree["parameters/conditions/right"] = true
-				%AnimationTree.set("parameters/BlendRight/TimeScale/scale", paddle_speed)
+				%AnimationTree.set("parameters/BlendRight/TimeScale/scale", left_sample*paddle_speed)
 			else:
 				padling_side = PADDLE_SIDE.LEFT
 				paddle_time = right_sample*paddle_speed
 				%AnimationTree["parameters/conditions/idle"] = false
 				%AnimationTree["parameters/conditions/right"] = false
 				%AnimationTree["parameters/conditions/left"] = true
-				%AnimationTree.set("parameters/BlendLeft/TimeScale/scale", paddle_speed)
+				%AnimationTree.set("parameters/BlendLeft/TimeScale/scale", right_sample*paddle_speed)
 		else:
 			if original_highest_contributor != previous_highest_contributor:
 				paddle_time = 0
@@ -442,6 +458,16 @@ func get_derivative(_error) -> float:
 
 func handle_grabbing():
 	if is_grab_locked: return
+	
+	# Test if something to grab
+	if grabbing_state == GRABBING.NO:
+		grab_indicator.scale = Vector3.ONE * 1.0
+		$RayCast3D.force_raycast_update()
+		if $RayCast3D.is_colliding():
+			grab_indicator.visible = true
+			grab_indicator.global_position = $RayCast3D.get_collision_point()
+		else:
+			grab_indicator.visible = false
 	if Input.is_action_just_pressed("grab") and grabbing_state == GRABBING.NO:
 		match grabbing_state:
 			GRABBING.NO:
@@ -449,8 +475,9 @@ func handle_grabbing():
 				$RayCast3D.force_raycast_update()
 				if $RayCast3D.is_colliding():
 					grabbing_state = GRABBING.YES
-					%GrabRay.visible = true
-					%GrabRay.scale.z = $RayCast3D.get_collision_point().distance_to(%GrabRay.global_position)
+					grab_indicator.scale = Vector3.ONE * 0.5
+					#%GrabRay.visible = true
+					#%GrabRay.scale.z = $RayCast3D.get_collision_point().distance_to(%GrabRay.global_position)
 					var body = $RayCast3D.get_collider()
 					Global.grab_joint.global_position = $GrabbingPosition.global_position
 					Global.grab_joint.set_node_a(get_path())

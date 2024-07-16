@@ -206,7 +206,7 @@ func add_lands(lands: Array, sector_id:String, main_node:Node3D):
 			var p_position := Vector2(p[0][0], p[0][2])
 			points.append(p_position)
 		land_polygon.polygon = points
-		land_polygon.depth = 0.5
+		land_polygon.depth = 0.55
 
 func add_triggers(triggers: Array, sector_id:String, main_node:Node3D):
 	for trigger in triggers:
