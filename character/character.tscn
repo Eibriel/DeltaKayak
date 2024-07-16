@@ -375,6 +375,7 @@ transform = Transform3D(-0.75, 0, -1.13247e-07, 0, 0.75, 0, 1.13247e-07, 0, -0.7
 
 [node name="OmniLight3D" type="OmniLight3D" parent="."]
 transform = Transform3D(-1, 0, 8.74227e-08, 0, 1, 0, -8.74227e-08, 0, -1, 1.81245e-08, 1.35318, 0.104708)
+visible = false
 light_energy = 0.05
 omni_range = 4.0
 omni_attenuation = 0.0
@@ -389,6 +390,7 @@ omni_attenuation = 0.0
 
 [node name="SpotLight3D" type="SpotLight3D" parent="."]
 transform = Transform3D(1, -1.4164e-08, 1.15512e-09, 1.4164e-08, 0.986788, -0.162017, 1.15495e-09, 0.162017, 0.986788, 1.50834e-07, 0.397435, -1.41331)
+visible = false
 light_energy = 20.0
 light_volumetric_fog_energy = 0.2
 light_projector = ExtResource("3_xitmn")
@@ -458,8 +460,8 @@ root_node = NodePath("%AnimationTree/../character")
 tree_root = SubResource("AnimationNodeStateMachine_wkph0")
 anim_player = NodePath("../AnimationPlayer")
 parameters/current_length = 1.0
-parameters/current_position = 0.746551
-parameters/current_delta = 0.009802
+parameters/current_position = 0.927545
+parameters/current_delta = 0.051665
 parameters/conditions/idle = false
 parameters/conditions/left = false
 parameters/conditions/right = false
@@ -516,8 +518,8 @@ parameters/Start/current_length = 0.0
 parameters/Start/current_position = 0.0
 parameters/Start/current_delta = 0.0
 parameters/character_anims_Idle/current_length = 1.0
-parameters/character_anims_Idle/current_position = 0.746551
-parameters/character_anims_Idle/current_delta = 0.009802
+parameters/character_anims_Idle/current_position = 0.927545
+parameters/character_anims_Idle/current_delta = 0.051665
 
 [node name="KriketsAudio" type="AudioStreamPlayer3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.05414, -16.3561)
@@ -562,6 +564,25 @@ bus = &"Kayak"
 [node name="POVCameraController" type="Node3D" parent="."]
 unique_name_in_owner = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.602387, 0.319483)
+
+[node name="SpotLight3D2" type="SpotLight3D" parent="POVCameraController"]
+transform = Transform3D(1, -1.41718e-08, -1.05431e-09, 1.4164e-08, 0.999975, -0.00710326, 1.15495e-09, 0.00710326, 0.999975, 1.4103e-07, 0.340071, 0.0719605)
+light_energy = 20.0
+light_volumetric_fog_energy = 0.2
+light_projector = ExtResource("3_xitmn")
+light_specular = 0.0
+shadow_enabled = true
+spot_range = 13.9665
+spot_angle = 41.0167
+
+[node name="SpotLight3D3" type="SpotLight3D" parent="POVCameraController"]
+transform = Transform3D(1, -1.41718e-08, -1.05431e-09, 1.4164e-08, 0.999975, -0.00710326, 1.15495e-09, 0.00710326, 0.999975, 1.41226e-07, 0.341395, -0.114481)
+light_energy = 5.0
+light_volumetric_fog_energy = 0.2
+light_projector = ExtResource("3_xitmn")
+light_specular = 0.0
+spot_range = 50.0
+spot_angle = 58.47
 
 [node name="POVCamera3D" type="Camera3D" parent="POVCameraController"]
 unique_name_in_owner = true

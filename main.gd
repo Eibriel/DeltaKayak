@@ -233,7 +233,8 @@ func handle_dialogue(delta:float) -> void:
 	var d: DialogueResource = dialogue_queue.pop_front() as DialogueResource
 	var key: String = "%s_dialogue_text" % d.resource_scene_unique_id
 	var character_string:String = d.Character.keys()[d.character]
-	dialogue_label.text = "%s:\n\t%s" % [tr(character_string), tr(key)]
+	%CharNameLabel.text = tr(character_string)
+	dialogue_label.text = tr(key)
 	dialogue_label.visible_ratio = 0
 	if is_dialogue_animating():
 		dialogue_tween.stop()

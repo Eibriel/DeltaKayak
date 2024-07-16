@@ -1,7 +1,7 @@
 [gd_resource type="Environment" load_steps=3 format=3 uid="uid://xpf4ng2ym0n4"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_gamhf"]
-sky_top_color = Color(0.211402, 0.311857, 0.447819, 1)
+sky_top_color = Color(0.14, 0.14, 0.14, 1)
 sky_horizon_color = Color(0.285546, 0.239385, 0.277246, 1)
 sky_curve = 0.0256133
 sky_energy_multiplier = 0.2
@@ -20,9 +20,9 @@ sky_material = SubResource("ProceduralSkyMaterial_gamhf")
 background_mode = 2
 sky = SubResource("Sky_iph5d")
 ambient_light_source = 2
-ambient_light_color = Color(0.744167, 0.94, 0.47, 1)
+ambient_light_color = Color(1, 1, 1, 1)
 ambient_light_sky_contribution = 0.0
-ambient_light_energy = 0.08
+ambient_light_energy = 0.0
 reflected_light_source = 1
 tonemap_mode = 2
 ssao_enabled = true
@@ -34,7 +34,6 @@ glow_levels/2 = 0.5
 glow_levels/3 = 0.0
 glow_levels/5 = 0.0
 glow_bloom = 0.08
-fog_enabled = true
 fog_light_color = Color(0.39, 0.21801, 0.1443, 1)
 fog_light_energy = 0.21
 fog_density = 0.0025
@@ -43,13 +42,8 @@ fog_height_density = 0.5129
 fog_depth_curve = 0.5
 volumetric_fog_enabled = true
 volumetric_fog_density = 0.03
-volumetric_fog_albedo = Color(1, 0.84, 0.925333, 1)
 volumetric_fog_anisotropy = 0.0
 volumetric_fog_length = 200.0
 volumetric_fog_detail_spread = 3.95852
 volumetric_fog_ambient_inject = 0.2
-volumetric_fog_sky_affect = 0.845
 adjustment_enabled = true
-adjustment_brightness = 1.05
-adjustment_contrast = 1.1
-adjustment_saturation = 0.85

@@ -1,4 +1,4 @@
-[gd_scene load_steps=40 format=3 uid="uid://ce6e8v1saxjr5"]
+[gd_scene load_steps=44 format=3 uid="uid://ce6e8v1saxjr5"]
 
 [ext_resource type="Environment" uid="uid://xpf4ng2ym0n4" path="res://environments/main_environment.tres" id="1_ekqa4"]
 [ext_resource type="Script" path="res://main.gd" id="1_xxenq"]
@@ -11,6 +11,8 @@
 [ext_resource type="Texture2D" uid="uid://bue181jtwq3fu" path="res://textures/smoke.png" id="4_ob3me"]
 [ext_resource type="CompositorEffect" uid="uid://b45j2vp4hks5x" path="res://compositor/datamosh/datamosh_compositor_effect_2.tres" id="6_02wi3"]
 [ext_resource type="Script" path="res://pause_menu.gd" id="6_dfvsb"]
+[ext_resource type="Theme" uid="uid://clx0ueeeofo5w" path="res://themes/dialogue_label_theme.tres" id="6_j55a8"]
+[ext_resource type="Theme" uid="uid://cr0d6atb52k54" path="res://themes/dialogue_name_theme.tres" id="6_xj3c2"]
 [ext_resource type="PackedScene" uid="uid://t23rsw74uei8" path="res://scenes/long_box.tscn" id="9_kolyd"]
 [ext_resource type="PackedScene" uid="uid://dsppfk5r8xdm7" path="res://scenes/L_floating_box.tscn" id="10_tov8v"]
 [ext_resource type="PackedScene" uid="uid://ccwbpjnygckmy" path="res://scenes/door.tscn" id="11_mh163"]
@@ -23,6 +25,14 @@
 [ext_resource type="AudioStream" uid="uid://ctm601sbah8df" path="res://music/494981__original_sound__risers-horror-whooshes-tension-builder-1.mp3" id="18_akxex"]
 [ext_resource type="AudioStream" uid="uid://css74q0cr7wrf" path="res://sounds/679400__adviseme333__fast-water-flutter.wav" id="19_7efqm"]
 [ext_resource type="PackedScene" uid="uid://dt7sihp44khg1" path="res://scenes/carpincho.tscn" id="20_wsws0"]
+
+[sub_resource type="Gradient" id="Gradient_bg2pt"]
+colors = PackedColorArray(0, 0, 0, 1, 0, 0, 0, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_aintq"]
+gradient = SubResource("Gradient_bg2pt")
+fill_from = Vector2(0, 1)
+fill_to = Vector2(0, 0)
 
 [sub_resource type="Compositor" id="Compositor_lm6bj"]
 compositor_effects = Array[CompositorEffect]([ExtResource("6_02wi3"), ExtResource("2_f4rcp")])
@@ -305,18 +315,41 @@ metadata/_edit_use_anchors_ = true
 [node name="DialogueControl" type="Control" parent="Control"]
 unique_name_in_owner = true
 layout_mode = 1
-anchor_left = 0.1025
-anchor_top = 0.63625
-anchor_right = 0.885833
-anchor_bottom = 0.91375
+anchor_top = 0.67
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -3.05176e-05
+grow_horizontal = 2
+grow_vertical = 2
 metadata/_edit_use_anchors_ = true
 
-[node name="NinePatchRect" type="NinePatchRect" parent="Control/DialogueControl"]
+[node name="DialogueBackground" type="TextureRect" parent="Control/DialogueControl"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("GradientTexture2D_aintq")
+
+[node name="Control" type="Control" parent="Control/DialogueControl"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 73.0
+offset_right = -97.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="NinePatchRect" type="NinePatchRect" parent="Control/DialogueControl/Control"]
 visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_right = 69.0
+offset_bottom = 68.0
 grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("4_kkvku")
@@ -325,7 +358,7 @@ patch_margin_top = 53
 patch_margin_right = 52
 patch_margin_bottom = 55
 
-[node name="MarginContainer" type="Control" parent="Control/DialogueControl"]
+[node name="MarginContainer" type="Control" parent="Control/DialogueControl/Control"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -333,18 +366,35 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="DialogueLabel" type="RichTextLabel" parent="Control/DialogueControl/MarginContainer"]
+[node name="CharNameLabel" type="Label" parent="Control/DialogueControl/Control/MarginContainer"]
 unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.0478723
-anchor_top = 0.18018
-anchor_right = 0.952128
-anchor_bottom = 0.810811
+anchor_left = 0.0797302
+anchor_top = 0.127731
+anchor_right = 0.0797302
+anchor_bottom = 0.127731
+offset_left = -0.23
+offset_top = -14.2907
+offset_right = 246.77
+offset_bottom = 30.7093
+grow_vertical = 2
+theme = ExtResource("6_xj3c2")
+text = "Character Name"
+
+[node name="DialogueLabel" type="RichTextLabel" parent="Control/DialogueControl/Control/MarginContainer"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.12381
+anchor_top = 0.30303
+anchor_right = 0.952381
+anchor_bottom = 0.813131
 grow_horizontal = 2
 grow_vertical = 2
-text = "Narrator:
-	This is a sample text"
+theme = ExtResource("6_j55a8")
+bbcode_enabled = true
+text = "This is a sample text"
 metadata/_edit_use_anchors_ = true
 
 [node name="Debug" type="Control" parent="Control"]
@@ -521,9 +571,11 @@ compositor = SubResource("Compositor_lm6bj")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="Main3D"]
 transform = Transform3D(-0.703072, 0.436428, 0.561445, -8.66841e-09, -0.789524, 0.61372, 0.711119, 0.431489, 0.555092, 0, 18.834, 0)
-light_color = Color(0.429084, 0.569185, 0.473505, 1)
-light_energy = 0.5
+visible = false
+light_energy = 0.7
+light_volumetric_fog_energy = 0.05
 shadow_enabled = true
+shadow_opacity = 0.9
 directional_shadow_mode = 0
 
 [node name="character" parent="Main3D" instance=ExtResource("2_3sgbv")]

@@ -1,0 +1,14 @@
+[gd_resource type="Theme" load_steps=2 format=3 uid="uid://clx0ueeeofo5w"]
+
+[ext_resource type="FontFile" uid="uid://dmy8udd4w80r2" path="res://fonts/Rosario-Bold.otf" id="1_pb22h"]
+
+[resource]
+RichTextLabel/colors/default_color = Color(1, 0.74902, 0.439216, 1)
+RichTextLabel/colors/font_outline_color = Color(1, 0.45098, 0, 1)
+RichTextLabel/colors/font_shadow_color = Color(0.0936, 0.13, 0.113013, 0.533333)
+RichTextLabel/constants/outline_size = 2
+RichTextLabel/constants/shadow_outline_size = 6
+RichTextLabel/font_sizes/bold_italics_font_size = 32
+RichTextLabel/font_sizes/italics_font_size = 32
+RichTextLabel/font_sizes/normal_font_size = 32
+RichTextLabel/fonts/normal_font = ExtResource("1_pb22h")
