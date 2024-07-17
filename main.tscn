@@ -1,11 +1,12 @@
-[gd_scene load_steps=44 format=3 uid="uid://ce6e8v1saxjr5"]
+[gd_scene load_steps=45 format=3 uid="uid://ce6e8v1saxjr5"]
 
+[ext_resource type="Theme" uid="uid://1kj8fi5pat0v" path="res://themes/default_theme.tres" id="1_7eei4"]
 [ext_resource type="Environment" uid="uid://xpf4ng2ym0n4" path="res://environments/main_environment.tres" id="1_ekqa4"]
 [ext_resource type="Script" path="res://main.gd" id="1_xxenq"]
 [ext_resource type="PackedScene" uid="uid://r0o1qsmlq84u" path="res://character/character.tscn" id="2_3sgbv"]
 [ext_resource type="CompositorEffect" uid="uid://o01yk1gb130b" path="res://compositor/screen/screen_compositor_effect.tres" id="2_f4rcp"]
 [ext_resource type="Resource" uid="uid://bcsic7fi7dxee" path="res://GamePreference.tres" id="2_wexnt"]
-[ext_resource type="PackedScene" uid="uid://uyhmturoq7o8" path="res://world_definition.dkworld" id="3_7foso"]
+[ext_resource type="PackedScene" uid="uid://dubd2tgwyjgm5" path="res://world_definition.dkworld" id="3_7foso"]
 [ext_resource type="Resource" uid="uid://bi1rugic742u0" path="res://dkdata/dkdata.tres" id="3_nh3h6"]
 [ext_resource type="Texture2D" uid="uid://31mrm2ajeyll" path="res://textures/dialogue_box.png" id="4_kkvku"]
 [ext_resource type="Texture2D" uid="uid://bue181jtwq3fu" path="res://textures/smoke.png" id="4_ob3me"]
@@ -156,10 +157,11 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 1
+theme = ExtResource("1_7eei4")
 script = ExtResource("1_xxenq")
 game_preferences = ExtResource("2_wexnt")
 game_state = ExtResource("3_nh3h6")
-initial_position = NodePath("Main3D/InitialPosition")
+initial_position = NodePath("Main3D/InitialPositionOtherSide")
 
 [node name="Node2D" type="Node2D" parent="."]
 
@@ -182,138 +184,9 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 1
 
-[node name="InteractiveLabels" type="Control" parent="Control"]
-unique_name_in_owner = true
-anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
-
-[node name="LabelDemo" type="Label" parent="Control"]
-visible = false
-layout_mode = 1
-anchors_preset = 2
-anchor_top = 1.0
-anchor_bottom = 1.0
-offset_left = 25.0
-offset_top = -38.0
-offset_right = 134.0
-offset_bottom = -15.0
-grow_vertical = 0
-text = "Demo Version"
-
-[node name="LabelHelp" type="Label" parent="Control"]
-auto_translate_mode = 1
-visible = false
-layout_mode = 1
-anchors_preset = 3
-anchor_left = 1.0
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -211.0
-offset_top = -46.0
-offset_right = -15.0
-offset_bottom = -16.0
-grow_horizontal = 0
-grow_vertical = 0
-text = "Esc: Salir - F1: Ayuda"
-
-[node name="LabelTemporizador" type="Label" parent="Control"]
-unique_name_in_owner = true
-auto_translate_mode = 1
-layout_mode = 1
-anchors_preset = 1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -224.0
-offset_top = 9.0
-offset_right = -13.0
-offset_bottom = 39.0
-grow_horizontal = 0
-text = "Esc: Salir - F1: Ayuda"
-
-[node name="LabelThanks" type="Label" parent="Control"]
-unique_name_in_owner = true
-auto_translate_mode = 1
-visible = false
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -98.0
-offset_top = -15.0
-offset_right = 98.0
-offset_bottom = 15.0
-grow_horizontal = 2
-grow_vertical = 2
-text = "THANKS FOR PLAYING"
-
-[node name="LogLabel" type="RichTextLabel" parent="Control"]
-unique_name_in_owner = true
-auto_translate_mode = 1
-visible = false
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.101667
-anchor_top = 0.0725
-anchor_right = 0.914167
-anchor_bottom = 0.61125
-grow_horizontal = 2
-grow_vertical = 0
-mouse_filter = 2
-text = "..."
-metadata/_edit_use_anchors_ = true
-
-[node name="IntroChatLabel" type="RichTextLabel" parent="Control"]
-unique_name_in_owner = true
-auto_translate_mode = 1
-visible = false
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.101667
-anchor_top = 0.0725
-anchor_right = 0.914167
-anchor_bottom = 0.61125
-grow_horizontal = 2
-grow_vertical = 0
-text = "INTRO TEXT"
-metadata/_edit_use_anchors_ = true
-
-[node name="HelpLabel" type="RichTextLabel" parent="Control"]
-unique_name_in_owner = true
-auto_translate_mode = 1
-visible = false
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.10125
-anchor_top = 0.0733333
-anchor_right = 0.91375
-anchor_bottom = 0.816667
-grow_horizontal = 2
-grow_vertical = 0
-text = "HELP TEXT"
-metadata/_edit_use_anchors_ = true
-
-[node name="TaskListLabel" type="RichTextLabel" parent="Control"]
-unique_name_in_owner = true
-auto_translate_mode = 1
-visible = false
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.10125
-anchor_top = 0.0733333
-anchor_right = 0.91375
-anchor_bottom = 0.816667
-grow_horizontal = 2
-grow_vertical = 0
-text = "Tareas:
-- "
-metadata/_edit_use_anchors_ = true
-
 [node name="DialogueControl" type="Control" parent="Control"]
 unique_name_in_owner = true
+visible = false
 layout_mode = 1
 anchor_top = 0.67
 anchor_right = 1.0
@@ -397,6 +270,109 @@ bbcode_enabled = true
 text = "This is a sample text"
 metadata/_edit_use_anchors_ = true
 
+[node name="InteractiveLabels" type="Control" parent="Control"]
+unique_name_in_owner = true
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="LabelHelp" type="Label" parent="Control"]
+auto_translate_mode = 1
+visible = false
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -211.0
+offset_top = -46.0
+offset_right = -15.0
+offset_bottom = -16.0
+grow_horizontal = 0
+grow_vertical = 0
+text = "Esc: Salir - F1: Ayuda"
+
+[node name="LabelThanks" type="Label" parent="Control"]
+unique_name_in_owner = true
+auto_translate_mode = 1
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -98.0
+offset_top = -15.0
+offset_right = 98.0
+offset_bottom = 15.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "THANKS FOR PLAYING"
+
+[node name="LogLabel" type="RichTextLabel" parent="Control"]
+unique_name_in_owner = true
+auto_translate_mode = 1
+visible = false
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.101667
+anchor_top = 0.0725
+anchor_right = 0.914167
+anchor_bottom = 0.61125
+grow_horizontal = 2
+grow_vertical = 0
+mouse_filter = 2
+text = "..."
+metadata/_edit_use_anchors_ = true
+
+[node name="IntroChatLabel" type="RichTextLabel" parent="Control"]
+unique_name_in_owner = true
+auto_translate_mode = 1
+visible = false
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.101667
+anchor_top = 0.0725
+anchor_right = 0.914167
+anchor_bottom = 0.61125
+grow_horizontal = 2
+grow_vertical = 0
+text = "INTRO TEXT"
+metadata/_edit_use_anchors_ = true
+
+[node name="HelpLabel" type="RichTextLabel" parent="Control"]
+unique_name_in_owner = true
+auto_translate_mode = 1
+visible = false
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.10125
+anchor_top = 0.0733333
+anchor_right = 0.91375
+anchor_bottom = 0.816667
+grow_horizontal = 2
+grow_vertical = 0
+text = "HELP TEXT"
+metadata/_edit_use_anchors_ = true
+
+[node name="TaskListLabel" type="RichTextLabel" parent="Control"]
+unique_name_in_owner = true
+auto_translate_mode = 1
+visible = false
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.10125
+anchor_top = 0.0733333
+anchor_right = 0.91375
+anchor_bottom = 0.816667
+grow_horizontal = 2
+grow_vertical = 0
+text = "Tareas:
+- "
+metadata/_edit_use_anchors_ = true
+
 [node name="Debug" type="Control" parent="Control"]
 anchors_preset = 0
 offset_right = 40.0
@@ -470,9 +446,9 @@ offset_bottom = 33.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="ResumeButton" type="Button" parent="Control/PauseMenu/PauseMenuContainer"]
+[node name="MenuButton" type="Button" parent="Control/PauseMenu/PauseMenuContainer"]
 layout_mode = 2
-text = "RESUME"
+text = "MAIN MENU"
 
 [node name="GameSettingsButton" type="Button" parent="Control/PauseMenu/PauseMenuContainer"]
 layout_mode = 2
@@ -481,9 +457,9 @@ text = "GAME SETTINGS"
 [node name="HSeparator" type="HSeparator" parent="Control/PauseMenu/PauseMenuContainer"]
 layout_mode = 2
 
-[node name="MenuButton" type="Button" parent="Control/PauseMenu/PauseMenuContainer"]
+[node name="ResumeButton" type="Button" parent="Control/PauseMenu/PauseMenuContainer"]
 layout_mode = 2
-text = "MAIN MENU"
+text = "RESUME"
 
 [node name="QuitButton" type="Button" parent="Control/PauseMenu/PauseMenuContainer"]
 visible = false
@@ -562,6 +538,33 @@ layout_mode = 2
 layout_mode = 2
 text = "BACK"
 
+[node name="LabelDemo" type="Label" parent="Control"]
+visible = false
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 25.0
+offset_top = -38.0
+offset_right = 134.0
+offset_bottom = -15.0
+grow_vertical = 0
+text = "Demo Version"
+
+[node name="LabelTemporizador" type="Label" parent="Control"]
+unique_name_in_owner = true
+auto_translate_mode = 1
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -224.0
+offset_top = 9.0
+offset_right = -13.0
+offset_bottom = 39.0
+grow_horizontal = 0
+text = "Esc: Salir - F1: Ayuda"
+
 [node name="Main3D" type="Node3D" parent="."]
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="Main3D"]
@@ -570,12 +573,12 @@ environment = ExtResource("1_ekqa4")
 compositor = SubResource("Compositor_lm6bj")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="Main3D"]
-transform = Transform3D(-0.703072, 0.436428, 0.561445, -8.66841e-09, -0.789524, 0.61372, 0.711119, 0.431489, 0.555092, 0, 18.834, 0)
-visible = false
-light_energy = 0.7
-light_volumetric_fog_energy = 0.05
+transform = Transform3D(-0.979372, -0.124014, -0.159538, -3.01012e-08, -0.789524, 0.61372, -0.202069, 0.60106, 0.773237, 0, 18.834, 0)
+light_energy = 2.0
+light_volumetric_fog_energy = 0.0
 shadow_enabled = true
 shadow_opacity = 0.9
+editor_only = true
 directional_shadow_mode = 0
 
 [node name="character" parent="Main3D" instance=ExtResource("2_3sgbv")]
@@ -1593,7 +1596,7 @@ omni_range = 7.211
 
 [node name="OmniLight3D2" type="OmniLight3D" parent="Main3D/DemoElements"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16.2877, 5.01654, -15.4993)
-light_color = Color(0.99, 0.9603, 0.693, 1)
+light_color = Color(0.693, 0.72765, 0.99, 1)
 light_volumetric_fog_energy = 2.61
 omni_range = 19.4934
 
@@ -1715,9 +1718,9 @@ bus = &"Music"
 [connection signal="drag_ended" from="Control/Debug/VBoxContainer/ProportionalSlider" to="." method="_on_slider_drag_ended"]
 [connection signal="drag_ended" from="Control/Debug/VBoxContainer/IntegralSlider" to="." method="_on_slider_drag_ended"]
 [connection signal="drag_ended" from="Control/Debug/VBoxContainer/DerivativeSlider" to="." method="_on_slider_drag_ended"]
-[connection signal="button_up" from="Control/PauseMenu/PauseMenuContainer/ResumeButton" to="." method="_on_resume_button_button_up"]
-[connection signal="button_up" from="Control/PauseMenu/PauseMenuContainer/GameSettingsButton" to="." method="_on_game_settings_button_up"]
 [connection signal="button_up" from="Control/PauseMenu/PauseMenuContainer/MenuButton" to="." method="_on_menu_button_button_up"]
+[connection signal="button_up" from="Control/PauseMenu/PauseMenuContainer/GameSettingsButton" to="." method="_on_game_settings_button_up"]
+[connection signal="button_up" from="Control/PauseMenu/PauseMenuContainer/ResumeButton" to="." method="_on_resume_button_button_up"]
 [connection signal="button_up" from="Control/PauseMenu/PauseMenuContainer/QuitButton" to="." method="_on_quit_button_button_up"]
 [connection signal="toggled" from="Control/PauseMenu/GameSettingsContainer/FullScreenButton" to="." method="_on_full_screen_toggled"]
 [connection signal="toggled" from="Control/PauseMenu/GameSettingsContainer/VSyncButton" to="." method="_on_v_sync_toggled"]

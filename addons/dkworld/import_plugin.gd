@@ -7,12 +7,6 @@ const gltf_document_extension_class = preload("./gltf_extension.gd")
 
 const WATER_PATCH = preload("res://scenes/water_patch.tscn")
 
-const TREES := [
-	"Tree001",
-	"Tree003",
-	"Tree021"
-]
-	
 enum Presets { DEFAULT }
 
 var packed_scenes: Dictionary
@@ -172,7 +166,9 @@ func add_colliders(colliders: Array, sector_id:String, main_node:Node3D):
 
 func add_lands(lands: Array, sector_id:String, main_node:Node3D):
 	# Lands
+	var count := -1
 	for land in lands:
+		count += 1
 		var static_body := Node3D.new()
 		var land_polygon := CSGPolygon3D.new()
 		main_node.add_child(static_body)
@@ -180,13 +176,14 @@ func add_lands(lands: Array, sector_id:String, main_node:Node3D):
 		static_body.add_child(land_polygon)
 		land_polygon.set_owner(main_node)
 		
+		static_body.name = "Land_%s" % str(count)
 		
 		#var material := StandardMaterial3D.new()
 		#material.albedo_color = Color.GREEN
 		#land_polygon.material = material
 		land_polygon.material = preload("res://materials/land_material_2.tres")
 		land_polygon.use_collision = true
-		land_polygon.smooth_faces = true
+		#land_polygon.smooth_faces = true
 		land_polygon.set_collision_mask_value(1, true) # Walls
 		land_polygon.set_collision_mask_value(2, true) # Character
 		land_polygon.set_collision_mask_value(3, true) # Grabbable
@@ -207,6 +204,54 @@ func add_lands(lands: Array, sector_id:String, main_node:Node3D):
 			points.append(p_position)
 		land_polygon.polygon = points
 		land_polygon.depth = 0.55
+		
+		# Dress with grass
+		var dressing_meshes :=[]
+		if land["biome"] == "dry":
+			dressing_meshes = [
+				"BranchesTangled"
+			]
+		else:
+			dressing_meshes = [
+				"GrassCone",
+				"BranchesTangled"
+			]
+			
+		for dressing_mesh in dressing_meshes:
+			var multimesh_instance := MultiMeshInstance3D.new()
+			var multimesh := MultiMesh.new()
+			multimesh_instance.set_name("LandDressing_%s_%s" % [str(count), dressing_mesh])
+			static_body.add_child(multimesh_instance)
+			multimesh_instance.set_owner(main_node)
+			multimesh_instance.multimesh = multimesh
+			multimesh.transform_format = MultiMesh.TRANSFORM_3D
+			multimesh.mesh = load_tree_meshes(dressing_mesh)
+			var mm_points := []
+			for pp_id in land.points.size()-1:
+				var pp_a := array_to_vector3(land.points[pp_id][0])
+				var pp_b := array_to_vector3(land.points[pp_id+1][0])
+				var dist:float = pp_a.distance_to(pp_b)*randf_range(1, 3)
+				for dist_amount in int(dist):
+					var lerp_weight = float(dist_amount)/dist
+					var pp_lerp = lerp(pp_a, pp_b, lerp_weight)
+					#mm_points.append(pp)
+					#var point := Vector3.ONE
+					var t_point := Transform3D(Basis(), pp_lerp)
+					var rand_rotation := randf_range(deg_to_rad(-180), deg_to_rad(180))
+					var rand_scale := Vector3.ONE*randf_range(0.25, 1.0)
+					t_point = t_point.rotated_local(Vector3.UP, rand_rotation)
+					if dressing_mesh == "BranchesTangled":
+						t_point = t_point.rotated_local(Vector3.FORWARD, randf_range(deg_to_rad(-180), deg_to_rad(180)))
+						t_point = t_point.rotated_local(Vector3.RIGHT, randf_range(deg_to_rad(-180), deg_to_rad(180)))
+					t_point = t_point.scaled_local(rand_scale)
+					mm_points.append(t_point)
+			
+			multimesh.instance_count = mm_points.size()
+			var tree_n := 0
+			for p in mm_points:
+				multimesh.set_instance_transform(tree_n, p)
+				tree_n += 1
+		
 
 func add_triggers(triggers: Array, sector_id:String, main_node:Node3D):
 	for trigger in triggers:
@@ -260,27 +305,42 @@ func add_water(main_node:Node3D):
 	water.set_owner(main_node)
 
 func add_trees(trees: Dictionary, sector_id:String, main_node:Node3D):
-	# TODO this creates one MultiMeshInstance for al trees in the sector
-	# must create smaller chunks
+	# TODO mix different types of trees in a better way
 	for tree_id in trees:
-		for tree_type in TREES:
-			#var amount_trees: int = trees.keys().size()
-			#if amount_trees < 1: return
-			var multimesh_instance := MultiMeshInstance3D.new()
-			var multimesh := MultiMesh.new()
-			multimesh_instance.set_name("Trees_%s_%s" % [sector_id, tree_id])
-			main_node.add_child(multimesh_instance)
-			multimesh_instance.set_owner(main_node)
-			multimesh_instance.multimesh = multimesh
-			multimesh.transform_format = MultiMesh.TRANSFORM_3D
-			multimesh.mesh = load_tree_meshes(tree_type)
-			var points := get_trees_positions(trees[tree_id], "%s%s" % [tree_id, tree_type])
-			multimesh.instance_count = points.size()
-			
-			var tree_n := 0
-			for p in points:
-				multimesh.set_instance_transform(tree_n, p)
-				tree_n += 1
+		var selected_meshes = []
+		if trees[tree_id]["biome"] == "dry":
+			selected_meshes = [
+				"TreeOld_003"
+			]
+		elif trees[tree_id]["biome"] == "camalote":
+			selected_meshes = [
+				"CamaloteField",
+			]
+		else:
+			selected_meshes = [
+				"Tree001",
+				"Tree003",
+				"Tree021"
+			]
+		#for tree_type in TREES:
+		var tree_type:String = selected_meshes.pick_random()
+		#var amount_trees: int = trees.keys().size()
+		#if amount_trees < 1: return
+		var multimesh_instance := MultiMeshInstance3D.new()
+		var multimesh := MultiMesh.new()
+		multimesh_instance.set_name("Trees_%s_%s" % [sector_id, tree_id])
+		main_node.add_child(multimesh_instance)
+		multimesh_instance.set_owner(main_node)
+		multimesh_instance.multimesh = multimesh
+		multimesh.transform_format = MultiMesh.TRANSFORM_3D
+		multimesh.mesh = load_tree_meshes(tree_type)
+		var points := get_trees_positions(trees[tree_id], "%s%s" % [tree_id, tree_type])
+		multimesh.instance_count = points.size()
+		
+		var tree_n := 0
+		for p in points:
+			multimesh.set_instance_transform(tree_n, p)
+			tree_n += 1
 
 func get_trees_positions(tree:Dictionary, my_seed:String) -> Array:
 	#var tree_n := 0
@@ -327,9 +387,10 @@ func get_trees_positions(tree:Dictionary, my_seed:String) -> Array:
 	return points
 
 var tree_mesh_cache := {}
-func load_tree_meshes(tree_type:String):
-	for tree_id in TREES:
-		if tree_id in tree_mesh_cache.keys(): continue
+# NOTE Works for any 3d model, not just trees
+func load_tree_meshes(tree_id:String):
+	#for tree_id in TREES:
+	if tree_id not in tree_mesh_cache.keys():
 		var gltf_loader := GLTFDocument.new()
 		var convert_mesh_extension := GLTFDocumentExtensionConvertImporterMesh.new()
 		gltf_loader.register_gltf_document_extension(convert_mesh_extension, true)
@@ -348,8 +409,9 @@ func load_tree_meshes(tree_type:String):
 				mat.albedo_texture = TREE_001_DIFFUSE
 				mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA_HASH
 				mat.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
+				mat.cull_mode = BaseMaterial3D.CULL_DISABLED
 				tree_mesh_cache[tree_id] = c.mesh
-	return tree_mesh_cache[tree_type]
+	return tree_mesh_cache[tree_id]
 
 func add_camera(camera:Dictionary, camera_id:String, main_node:Node3D):
 	#print(camera)
@@ -639,6 +701,9 @@ func _configure_lod(gltf_instance:Node, json:Dictionary) -> void:
 			mesh_instance.visibility_range_begin= dkt_data.range_begin
 			mesh_instance.visibility_range_begin_margin = 1.0
 			mesh_instance.set_meta("visibility_range_begin", dkt_data.range_begin)
+			# BUG objects not visible due to range still cast unwanted shadows
+			if dkt_data.range_begin > 0:
+				mesh_instance.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 		if dkt_data.has("range_end"):
 			mesh_instance.visibility_range_end= dkt_data.range_end
 			mesh_instance.visibility_range_end_margin = 1.0

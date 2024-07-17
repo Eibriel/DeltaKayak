@@ -1,16 +1,12 @@
-[gd_resource type="Theme" load_steps=3 format=3 uid="uid://cr0d6atb52k54"]
+[gd_resource type="Theme" load_steps=2 format=3 uid="uid://cr0d6atb52k54"]
 
-[ext_resource type="FontFile" uid="uid://dmy8udd4w80r2" path="res://fonts/Rosario-Bold.otf" id="1_5mplu"]
-
-[sub_resource type="FontVariation" id="FontVariation_fe21c"]
-base_font = ExtResource("1_5mplu")
-variation_transform = Transform2D(1, 0.38, 0, 1, 0, 0)
+[ext_resource type="FontFile" uid="uid://21aigjf1ch82" path="res://fonts/Rosario-SemiBoldItalic.otf" id="1_usqjo"]
 
 [resource]
-Label/colors/font_color = Color(1, 0.748, 0.44, 1)
-Label/colors/font_outline_color = Color(1, 0.45, 0, 1)
+Label/colors/font_color = Color(0.731, 0.7905, 0.85, 1)
+Label/colors/font_outline_color = Color(0.67, 0.47302, 0.3417, 1)
 Label/colors/font_shadow_color = Color(0.0941176, 0.129412, 0.113725, 0.635294)
 Label/constants/outline_size = 2
 Label/constants/shadow_outline_size = 2
 Label/font_sizes/font_size = 36
-Label/fonts/font = SubResource("FontVariation_fe21c")
+Label/fonts/font = ExtResource("1_usqjo")

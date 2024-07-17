@@ -190,7 +190,8 @@ class DKT_OT_ExportWorld(bpy.types.Operator):
             trees_def[tree_obj.name] = {
                 "position": self.location_to_godot(tree_obj.location),
                 "rotation": self.rotation_to_godot(tree_obj.rotation_euler),
-                "scale": self.scale_to_godot(tree_obj.scale)
+                "scale": self.scale_to_godot(tree_obj.scale),
+                "biome": tree_obj.dkt_worldproperties.tree_types
             }
         return trees_def
 
@@ -308,7 +309,10 @@ class DKT_OT_ExportWorld(bpy.types.Operator):
         land_name = "Land_" + sector.name.split("_")[1]
         if not land_name in sector.children: return lands_def
         for land in sector.children[land_name].objects:
-            lands_def.append(self.get_curve_data(land))
+            data = self.get_curve_data(land)
+            data["biome"]= land.dkt_worldproperties.tree_types
+            lands_def.append(data)
+                
         return lands_def
 
     def get_navmesh(self, sector):
@@ -362,7 +366,8 @@ class DKT_OT_ExportWorld(bpy.types.Operator):
             "lock_rotation_z": camera_obj.dkt_worldproperties.camera_lock_rotation_z,
             "vertical_compensation": camera_obj.dkt_worldproperties.camera_vertical_compensation,
             "horizontal_compensation": camera_obj.dkt_worldproperties.camera_horizontal_compensation,
-            "fog_density": camera_obj.dkt_worldproperties.camera_fog_density
+            "fog_density": camera_obj.dkt_worldproperties.camera_fog_density,
+            #"tree_group": camera_obj.dkt_worldproperties.tree_types,
         }
         #camera_obj.rotation_euler[0] += math.radians(90.0)
         #bpy.context.view_layer.update()
@@ -611,6 +616,10 @@ class DKT_PT_ExportWorld(bpy.types.Panel):
             col.prop(obj.dkt_worldproperties, "camera_vertical_compensation")
             col.prop(obj.dkt_worldproperties, "camera_horizontal_compensation")
             col.prop(obj.dkt_worldproperties, "camera_fog_density")
+        elif obj is not None and obj.name.startswith("TreeGizmo"):
+            col.prop(obj.dkt_worldproperties, "tree_types")
+        elif obj is not None and obj.name.startswith("land_"):
+            col.prop(obj.dkt_worldproperties, "tree_types")
         
 
 
@@ -1372,6 +1381,12 @@ class DKT_PG_WorldObjectProperties(bpy.types.PropertyGroup):
         max=1.,
         step=0.001,
         precision=4
+    ) # type: ignore
+
+    tree_types: StringProperty(
+        name="Tree Types",
+        description="Coma separated tree types to use",
+        default=""
     ) # type: ignore
 
 class DKT_PG_StencilProperties(bpy.types.PropertyGroup):

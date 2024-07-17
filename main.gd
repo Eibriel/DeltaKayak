@@ -515,9 +515,9 @@ func grab_kayak():
 		Global.grab_kayak.set_node_b(Global.character.get_path())
 		#
 		Global.character.release_grab()
-		Global.grab_kayak2.global_position = kayak_k1.global_position
-		Global.grab_kayak2.set_node_a(%KayakGrabber.get_path())
-		Global.grab_kayak2.set_node_b(kayak_k1.get_path())
+		#Global.grab_kayak2.global_position = kayak_k1.global_position
+		#Global.grab_kayak2.set_node_a(%KayakGrabber.get_path())
+		#Global.grab_kayak2.set_node_b(kayak_k1.get_path())
 	
 	%BlockPathOtherSide.position.y = -20
 	

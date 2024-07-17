@@ -5,6 +5,9 @@
 [ext_resource type="Texture2D" uid="uid://b47qxvqte0vmk" path="res://textures/Grass_12-512x512.png" id="3_akwk0"]
 
 [sub_resource type="Gradient" id="Gradient_dovyq"]
+interpolation_color_space = 1
+offsets = PackedFloat32Array(0.613139, 0.733577)
+colors = PackedColorArray(1, 1, 1, 1, 0, 0, 0, 1)
 
 [sub_resource type="GradientTexture1D" id="GradientTexture1D_uk2lq"]
 gradient = SubResource("Gradient_dovyq")

@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://d0tr6a6tk4d8r"]
+
+[ext_resource type="Material" uid="uid://c4xik0byek3pw" path="res://materials/land_material_2.tres" id="1_l10en"]
+
+[node name="ShaderTesting" type="Node3D"]
+
+[node name="CSGBox3D" type="CSGBox3D" parent="."]
+material = ExtResource("1_l10en")

@@ -1,45 +1,45 @@
-key,updated,es_AR,es_ES,en
-Resource_ga3d1_item_label,0,"Weird Tree","",""
-Resource_4afsv_action_label,0,"Weird Tree","",""
-Resource_e5p6k_item_label,0,"Mascot","",""
-Resource_4j7tt_action_label,0,"Look mascot","",""
-Resource_7a2sk_item_label,0,"Roller Coaster","",""
-Resource_a35dc_action_label,0,"","",""
-Resource_l8snq_item_label,0,"","",""
-Resource_1pyr4_item_label,0,"","",""
-Resource_dy1ah_item_label,0,"","",""
-Resource_5rue2_item_label,0,"","",""
-Resource_3hrbs_dialogue_text,0,"Un arbol muy raro","Un arbol muy raro","A weird tree"
-Resource_i4hx2_dialogue_text,0,"La mascota del parque de diversiones. Los hierros atravesándolo no son parte del diseño.","La mascota del parque de diversiones. Los hierros atravesándolo no son parte del diseño.",""
-Resource_120jh_dialogue_text,0,"¡Se hicieron pelota!","¡Se hicieron pelota!",""
-Resource_y4463_dialogue_text,0,"Una vaca muerta. Está toda enredada en alambre de púa ¡Pobre!","Una vaca muerta. Está toda enredada en alambre de púa ¡Pobre!",""
-Resource_b8f76_dialogue_text,0,"¡Oh por Dios! ¡Hay un muerto acá abajo!","¡Oh por Dios! ¡Hay un muerto acá abajo!",""
-Resource_6dyss_dialogue_text,0,"¡Hay una persona muerta acá atrás!","¡Hay una persona muerta acá atrás!",""
-Resource_c2kmg_dialogue_text,0,"No de puede pasar","No de puede pasar",""
-Resource_uvbog_dialogue_text,0,"Hay un cuchillo. Lo voy a agarrar por si acaso.","Hay un cuchillo. Lo voy a agarrar por si acaso.",""
-Resource_dfg6u_dialogue_text,0,"La prefectura. Por alguna razón me da escalofríos.","La prefectura. Por alguna razón me da escalofríos.",""
-Resource_x06et_dialogue_text,0,"Primero: traer las pelotas de fútbol para acá","Primero: traer las pelotas de fútbol para acá","First: bring the soccer balls here"
-Resource_kctts_dialogue_text,0,"¡Ese lugar me daba escalofríos!","¡Ese lugar me daba escalofríos!","That place gave me the shibbers!"
-Resource_rtasq_dialogue_text,0,"Esta puerta está cerrada por algún tipo de mecanismo","Esta puerta está cerrada por algún tipo de mecanismo",""
-Resource_mgkwo_dialogue_text,0,"Una estatua muy rara representando a la Tierra","Una estatua muy rara representando a la Tierra",""
-Resource_f5cul_dialogue_text,0,"Una escultura representando a la Carne. Me revuelve el estómago.","Una escultura representando a la Carne. Me revuelve el estómago.",""
-Resource_weff2_dialogue_text,0,"Una estatua representando al Vino","Una estatua representando al Vino",""
-Resource_g28fn_dialogue_text,0,"¡¿Que es esa cosa horrible?!","¡¿Que es esa cosa horrible?!","What is that terrifying thing?!"
-Resource_iybrk_dialogue_text,0,"¿Que fue eso?","¿Que fue eso?","What was that?!"
-Resource_kaj3s_dialogue_text,0,"¡AAahhhhhhhhhh!","¡AAahhhhhhhhhh!","Aaahhhhhhhhhhh!"
-Resource_vjei8_dialogue_text,0,"¡Pepa!","¡Pepa!","Pepa!"
-Resource_as2nt_dialogue_text,0,"¿Qué hacías ahí escondida?","¿Qué hacías ahí escondida?",""
-Resource_yfiv7_dialogue_text,0,"¡Pepa, no te muevas!","¡Pepa, no te muevas!","Pepa, dont move like that!"
-Resource_mccnv_dialogue_text,0,"¡Pepa! ¿Donde estás?","¡Pepa! ¿Donde estás?","¡Pepa! ¿Where are you?"
-Resource_d66k7_dialogue_text,0,"Tengo que encontrar a Pepa.","Tengo que encontrar a Pepa.","I must find Pepa."
-Resource_kqdnr_dialogue_text,0,"¡Aahhhhhhh!","¡Aahhhhhhh!","Aahhhhhh!"
-Resource_yhhpc_dialogue_text,0,"¡Mierdaaaaaaaa!","¡Mierdaaaaaaaa!","Shiiiiiiiiiiiiiiitt!"
-Resource_6j43o_dialogue_text,0,"¡Casi me matás de un susto!","¡Casi me matás de un susto!","You scared me to death!"
-Resource_g4lg1_dialogue_text,0,"Vas a tener que venir conmigo también","Vas a tener que venir conmigo también","You come with me"
-Resource_gkviw_dialogue_text,0,"Que silencio que hace","Que silencio que hace","The night is so quiet"
-Resource_wayrf_dialogue_text,0,"Ahora a buscar la miel en la casa de allá adelante.","Ahora a buscar la miel en la casa de allá adelante.","Now I must go get honey on that house ahead"
-Resource_exawk_dialogue_text,0,"Debería volver y agarrar el kayak de mi hermano","Debería volver y agarrar el kayak de mi hermano",""
-Resource_ygrxt_dialogue_text,0,"Ana me pidió que lo lleve","Ana me pidió que lo lleve",""
-Resource_hgasi_dialogue_text,0,"Ana todavía no está. Me da tiempo de ir a buscar el kayak de mi hermano.","Ana todavía no está. Me da tiempo de ir a buscar el kayak de mi hermano.",""
-Resource_l1nq4_dialogue_text,0,"¡Pepa hermosa!","",""
-Resource_niw0c_dialogue_text,0,"La noche está clara, puedo ver bastante lejos.","",""
+"key","updated","es_AR","es_ES","en"
+"Resource_ga3d1_item_label",0,"Weird Tree",,
+"Resource_4afsv_action_label",0,"Weird Tree",,
+"Resource_e5p6k_item_label",0,"Mascot",,
+"Resource_4j7tt_action_label",0,"Look mascot",,
+"Resource_7a2sk_item_label",0,"Roller Coaster",,
+"Resource_a35dc_action_label",0,,,
+"Resource_l8snq_item_label",0,,,
+"Resource_1pyr4_item_label",0,,,
+"Resource_dy1ah_item_label",0,,,
+"Resource_5rue2_item_label",0,,,
+"Resource_3hrbs_dialogue_text",0,"Un arbol muy raro","Un arbol muy raro","A weird tree"
+"Resource_i4hx2_dialogue_text",0,"La mascota del parque de diversiones. Los hierros atravesándolo no son parte del diseño.","La mascota del parque de diversiones. Los hierros atravesándolo no son parte del diseño.",
+"Resource_120jh_dialogue_text",0,"¡Se hicieron pelota!","¡Se hicieron pelota!",
+"Resource_y4463_dialogue_text",0,"Una vaca muerta. Está toda enredada en alambre de púa ¡Pobre!","Una vaca muerta. Está toda enredada en alambre de púa ¡Pobre!",
+"Resource_b8f76_dialogue_text",0,"¡Oh por Dios! ¡Hay un muerto acá abajo!","¡Oh por Dios! ¡Hay un muerto acá abajo!",
+"Resource_6dyss_dialogue_text",0,"¡Hay una persona muerta acá atrás!","¡Hay una persona muerta acá atrás!",
+"Resource_c2kmg_dialogue_text",0,"No de puede pasar","No de puede pasar",
+"Resource_uvbog_dialogue_text",0,"Hay un cuchillo. Lo voy a agarrar por si acaso.","Hay un cuchillo. Lo voy a agarrar por si acaso.",
+"Resource_dfg6u_dialogue_text",0,"La prefectura. Por alguna razón me da escalofríos.","La prefectura. Por alguna razón me da escalofríos.",
+"Resource_x06et_dialogue_text",0,"Primero: traer las pelotas de fútbol para acá","Primero: traer las pelotas de fútbol para acá","First: bring the soccer balls here"
+"Resource_kctts_dialogue_text",0,"¡Ese lugar me daba escalofríos!","¡Ese lugar me daba escalofríos!","That place gave me the shibbers!"
+"Resource_rtasq_dialogue_text",0,"Esta puerta está cerrada por algún tipo de mecanismo","Esta puerta está cerrada por algún tipo de mecanismo",
+"Resource_mgkwo_dialogue_text",0,"Una estatua muy rara representando a la Tierra","Una estatua muy rara representando a la Tierra",
+"Resource_f5cul_dialogue_text",0,"Una escultura representando a la Carne. Me revuelve el estómago.","Una escultura representando a la Carne. Me revuelve el estómago.",
+"Resource_weff2_dialogue_text",0,"Una estatua representando al Vino","Una estatua representando al Vino",
+"Resource_g28fn_dialogue_text",0,"¡¿Que es esa cosa horrible?!","¡¿Que es esa cosa horrible?!","What is that terrifying thing?!"
+"Resource_iybrk_dialogue_text",0,"¿Que fue eso?","¿Que fue eso?","What was that?!"
+"Resource_kaj3s_dialogue_text",0,"¡AAahhhhhhhhhh!","¡AAahhhhhhhhhh!","Aaahhhhhhhhhhh!"
+"Resource_vjei8_dialogue_text",0,"¡Pepa!","¡Pepa!","Pepa!"
+"Resource_as2nt_dialogue_text",0,"¿Qué hacías ahí escondida?","¿Qué hacías ahí escondida?",
+"Resource_yfiv7_dialogue_text",0,"¡Pepa, no te muevas!","¡Pepa, no te muevas!","Pepa, dont move like that!"
+"Resource_mccnv_dialogue_text",0,"¡Pepa! ¿Donde estás?","¡Pepa! ¿Donde estás?","¡Pepa! ¿Where are you?"
+"Resource_d66k7_dialogue_text",0,"Tengo que encontrar a Pepa.","Tengo que encontrar a Pepa.","I must find Pepa."
+"Resource_kqdnr_dialogue_text",0,"¡Aahhhhhhh!","¡Aahhhhhhh!","Aahhhhhh!"
+"Resource_yhhpc_dialogue_text",0,"¡Mierdaaaaaaaa!","¡Mierdaaaaaaaa!","Shiiiiiiiiiiiiiiitt!"
+"Resource_6j43o_dialogue_text",0,"¡Casi me matás de un susto!","¡Casi me matás de un susto!","You scared me to death!"
+"Resource_g4lg1_dialogue_text",0,"Vas a tener que venir conmigo también","Vas a tener que venir conmigo también","You come with me"
+"Resource_gkviw_dialogue_text",0,"Que silencio que hace","Que silencio que hace","The night is so quiet"
+"Resource_wayrf_dialogue_text",0,"Ahora a buscar la miel en la casa de allá adelante.","Ahora a buscar la miel en la casa de allá adelante.","Now I must go get honey on that house ahead"
+"Resource_exawk_dialogue_text",0,"Debería volver y agarrar el kayak de mi hermano","Debería volver y agarrar el kayak de mi hermano",
+"Resource_ygrxt_dialogue_text",0,"Ana me pidió que lo lleve","Ana me pidió que lo lleve",
+"Resource_hgasi_dialogue_text",0,"Ana todavía no está. Me da tiempo de ir a buscar el kayak de mi hermano.","Ana todavía no está. Me da tiempo de ir a buscar el kayak de mi hermano.",
+"Resource_l1nq4_dialogue_text",0,"¡Pepa hermosa!","¡Pepa hermosa!","Who is a good dog?"
+"Resource_niw0c_dialogue_text",0,"La noche está clara, puedo ver bastante lejos.","La noche está clara, puedo ver bastante lejos.","The night is lit, I can see far away."

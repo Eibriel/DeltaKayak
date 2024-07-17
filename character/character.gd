@@ -141,6 +141,7 @@ func reset_camera_rotation():
 	_tilt_input = 0.0
 
 func _update_camera(delta:float)->void:
+	if not %POVCamera3D.current: return
 	_mouse_rotation.x += _tilt_input * delta
 	_mouse_rotation.y += _rotation_input * delta
 	%POVCameraController.transform.basis = Basis.from_euler(_mouse_rotation)
