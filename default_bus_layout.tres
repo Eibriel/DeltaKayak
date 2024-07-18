@@ -7,7 +7,6 @@ damping = 0.35
 wet = 0.3
 
 [resource]
-bus/0/mute = true
 bus/1/name = &"FX"
 bus/1/solo = false
 bus/1/mute = false
@@ -46,3 +45,9 @@ bus/6/mute = false
 bus/6/bypass_fx = false
 bus/6/volume_db = 0.0
 bus/6/send = &"Master"
+bus/7/name = &"UI"
+bus/7/solo = false
+bus/7/mute = false
+bus/7/bypass_fx = false
+bus/7/volume_db = 0.0
+bus/7/send = &"Master"

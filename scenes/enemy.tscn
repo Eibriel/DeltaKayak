@@ -1,25 +1,23 @@
-[gd_scene load_steps=46 format=3 uid="uid://mvc5qr5igrlq"]
+[gd_scene load_steps=44 format=3 uid="uid://mvc5qr5igrlq"]
 
 [ext_resource type="Script" path="res://scenes/enemy.gd" id="1_ht45k"]
 [ext_resource type="Texture2D" uid="uid://cdex8bqdmulf8" path="res://textures/flashlight.jpg" id="2_1pota"]
 [ext_resource type="PackedScene" uid="uid://b8olueufru4tm" path="res://models/enemy/enemy.glb" id="3_ididr"]
-[ext_resource type="AudioStream" uid="uid://bavkx8beygeiq" path="res://sounds/LanchaColectivaB.wav" id="4_ikrfw"]
+[ext_resource type="AudioStream" uid="uid://dhy70nc4g38qp" path="res://sounds/wood_crack_02.mp3" id="4_7ac4c"]
 [ext_resource type="AudioStream" uid="uid://b0rnwooo50rbv" path="res://sounds/Engine_shift.wav" id="5_60emu"]
 [ext_resource type="AudioStream" uid="uid://k7e3hcppivtd" path="res://sounds/Engine_1.wav" id="5_icqa8"]
+[ext_resource type="AudioStream" uid="uid://nmce04ybg1fa" path="res://sounds/howl_01.mp3" id="5_k6263"]
 [ext_resource type="AudioStream" uid="uid://c6xds28wxycim" path="res://sounds/Engine_2.wav" id="6_5o4j6"]
 [ext_resource type="AudioStream" uid="uid://blbee7otbp6bd" path="res://sounds/Engine_3.wav" id="7_ochvj"]
 [ext_resource type="AudioStream" uid="uid://cuoam0giruryn" path="res://sounds/Engine_4.wav" id="8_85ycd"]
 [ext_resource type="AudioStream" uid="uid://dobcxmrmht81r" path="res://sounds/Engine_5.wav" id="9_26owm"]
 [ext_resource type="AudioStream" uid="uid://dtnhnqpdonxj7" path="res://sounds/Engine_6.wav" id="10_3oiay"]
 [ext_resource type="AudioStream" uid="uid://ddl18qpqdqdqs" path="res://sounds/Engine_7.wav" id="11_j8owj"]
-[ext_resource type="AudioStream" uid="uid://cc6y2c8m6u60" path="res://sounds/hit1.mp3" id="13_vjfw1"]
-[ext_resource type="AudioStream" uid="uid://dkqyvaop4y4xh" path="res://sounds/hit2.mp3" id="14_wsgj4"]
-[ext_resource type="AudioStream" uid="uid://b6vvw2om552u" path="res://sounds/hit3.mp3" id="15_f2crf"]
-[ext_resource type="AudioStream" uid="uid://bh78ed7n2w0xm" path="res://sounds/hit4.mp3" id="16_o4325"]
-[ext_resource type="AudioStream" uid="uid://bcrjqoihaab8" path="res://sounds/hit5.mp3" id="17_0lwtd"]
-[ext_resource type="AudioStream" uid="uid://dlf31kjxooese" path="res://sounds/hit6.mp3" id="18_4yx0i"]
-[ext_resource type="AudioStream" uid="uid://cscgy1o1ghfal" path="res://sounds/hit7.mp3" id="19_o2rft"]
-[ext_resource type="AudioStream" uid="uid://c5c82h1jr2wf4" path="res://sounds/hit8.mp3" id="20_50hpc"]
+[ext_resource type="AudioStream" uid="uid://bkgbg3ew1wgl" path="res://sounds/hit_wood_01.mp3" id="13_r2g5u"]
+[ext_resource type="AudioStream" uid="uid://cbwy1lq2s5ui1" path="res://sounds/hit_wood_02.mp3" id="14_5rsnb"]
+[ext_resource type="AudioStream" uid="uid://db51hjc7hb1on" path="res://sounds/hit_wood_03.mp3" id="15_n52wv"]
+[ext_resource type="AudioStream" uid="uid://qokf1gbv8nu7" path="res://sounds/hit_wood_04.mp3" id="16_by2st"]
+[ext_resource type="AudioStream" uid="uid://nboi2cqq2oab" path="res://sounds/hit_wood_05.mp3" id="17_64am1"]
 [ext_resource type="AudioStream" uid="uid://cf34gcxjry6te" path="res://music/535963__klankbeeld__horror-ambience-hell.wav" id="21_a13hk"]
 [ext_resource type="Texture2D" uid="uid://bue181jtwq3fu" path="res://textures/smoke.png" id="22_pdnyu"]
 
@@ -88,15 +86,12 @@ stream_6/volume = -29.1
 
 [sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_3dauc"]
 random_pitch = 1.28
-streams_count = 8
-stream_0/stream = ExtResource("13_vjfw1")
-stream_1/stream = ExtResource("14_wsgj4")
-stream_2/stream = ExtResource("15_f2crf")
-stream_3/stream = ExtResource("16_o4325")
-stream_4/stream = ExtResource("17_0lwtd")
-stream_5/stream = ExtResource("18_4yx0i")
-stream_6/stream = ExtResource("19_o2rft")
-stream_7/stream = ExtResource("20_50hpc")
+streams_count = 5
+stream_0/stream = ExtResource("13_r2g5u")
+stream_1/stream = ExtResource("14_5rsnb")
+stream_2/stream = ExtResource("15_n52wv")
+stream_3/stream = ExtResource("16_by2st")
+stream_4/stream = ExtResource("17_64am1")
 
 [sub_resource type="Curve" id="Curve_wu0in"]
 _data = [Vector2(0, 0.0328095), 0.0, 0.0, 0, 0, Vector2(0.68932, 0.128928), 0.0, 0.0, 0, 0, Vector2(1, 0.0388169), 0.0, 0.0, 0, 0]
@@ -281,7 +276,14 @@ unique_name_in_owner = true
 [node name="MotorAudio" type="AudioStreamPlayer3D" parent="."]
 unique_name_in_owner = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.362514, 4.14038)
-stream = ExtResource("4_ikrfw")
+stream = ExtResource("4_7ac4c")
+autoplay = true
+bus = &"Monster"
+
+[node name="Vocalizations" type="AudioStreamPlayer3D" parent="."]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.362514, 4.14038)
+stream = ExtResource("5_k6263")
 bus = &"Monster"
 
 [node name="ShiftAudio" type="AudioStreamPlayer3D" parent="."]

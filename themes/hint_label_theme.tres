@@ -1,0 +1,14 @@
+[gd_resource type="Theme" load_steps=2 format=3 uid="uid://i2watan4uqvs"]
+
+[ext_resource type="FontFile" uid="uid://c6fojss71a4mx" path="res://fonts/Rosario-SemiBold.otf" id="1_rt5am"]
+
+[resource]
+RichTextLabel/colors/default_color = Color(0.729412, 0.792157, 0.85098, 1)
+RichTextLabel/colors/font_outline_color = Color(0.670588, 0.47451, 0.341176, 1)
+RichTextLabel/colors/font_shadow_color = Color(0.0936, 0.13, 0.113013, 0.533333)
+RichTextLabel/constants/outline_size = 2
+RichTextLabel/constants/shadow_outline_size = 6
+RichTextLabel/font_sizes/bold_italics_font_size = 24
+RichTextLabel/font_sizes/italics_font_size = 24
+RichTextLabel/font_sizes/normal_font_size = 24
+RichTextLabel/fonts/normal_font = ExtResource("1_rt5am")

@@ -234,7 +234,7 @@ func select_best_camera():
 			area_amount[camera_array.size()] = cam
 	
 	for n in range(3, -1, -1):
-		if area_amount[n] != null:
+		if area_amount[n] != null and n == 3:
 			selected_camera = area_amount[n]
 			break
 	

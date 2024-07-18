@@ -38,9 +38,7 @@ Control
 Analógico: avanzar
 Atrás: salir
 RB: agarrar
-A: observar
-
-Meta: Abrirte camino por el río","Teclado
+A: observar","Teclado
 A,W,S,D: avanzar
 Esc: salir
 Space: agarrar
@@ -50,9 +48,7 @@ Control
 Analógico: avanzar
 Atrás: salir
 RB: agarrar
-A: observar
-
-Meta: Abrirte camino por el río","Keyboard
+A: observar","Keyboard
 A,W,S,D: move
 Esc: pause
 Space: grab
@@ -62,14 +58,17 @@ Control
 Analog: move
 Back: pause
 RB: grab
-A: look
-
-Goal: Find your way back home"
+A: look"
 "FEEDBACK","Dejá un comentario","Deja un comentario","Provide feedback"
 "GAME SETTINGS","Opciones de juego","Opciones de juego","Game settings"
 "FULL SCREEN","Pantalla completa","Pantalla completa","Full screen"
 "VSYNC","V-Sync","V-Sync","V-Sync"
 "MOUSE SENSIBILITY","Sensibilidad del ratón","Sensibilidad del ratón","Mouse sensibility"
 "BACK","Volver","Volver","Back"
+"CONTROLS","Controles","Controles","Controls"
 "FOLLOW","Seguime","Sígueme","Follow me"
 "MASTER VOLUME","Volumen maestro","Volumen maestro","Master volume"
+"MOVEMENT HINT","A,W,S,D - Analog para avanzar","A,W,S,D - Analog para avanzar","A,W,S,D - Analog to move"
+"PEPA BUTTON HINT","F - (B) para hablar con Pepa","F - (B) para hablar con Pepa","F - (B) to talk to Pepa"
+"LOOK BUTTON HINT","E - (A) para observar el entorno","E - (A) para observar el entorno","E - (A) to look around"
+"GRAB HINT","Space - (Y) para agarrar un objeto","Space - (Y) para agarrar un objeto","Space - (Y) to grab an object"

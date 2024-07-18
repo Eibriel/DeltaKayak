@@ -332,6 +332,8 @@ func add_trees(trees: Dictionary, sector_id:String, main_node:Node3D):
 		main_node.add_child(multimesh_instance)
 		multimesh_instance.set_owner(main_node)
 		multimesh_instance.multimesh = multimesh
+		multimesh_instance.position = array_to_vector3(trees[tree_id].position)
+		multimesh_instance.visibility_range_end = 100
 		multimesh.transform_format = MultiMesh.TRANSFORM_3D
 		multimesh.mesh = load_tree_meshes(tree_type)
 		var points := get_trees_positions(trees[tree_id], "%s%s" % [tree_id, tree_type])
@@ -350,7 +352,8 @@ func get_trees_positions(tree:Dictionary, my_seed:String) -> Array:
 	seed(my_seed.hash())
 	#print(tree_id)
 	#var tree:Dictionary = trees[tree_id] as Dictionary
-	var set_position:= array_to_vector3(tree.position)
+	#var set_position:= array_to_vector3(tree.position)
+	var set_position:= Vector3.ZERO
 	var set_rotation:= array_to_vector3(tree.rotation)
 	var set_scale:= array_to_vector3(tree.scale)
 	var t := Transform3D(Basis(), set_position)

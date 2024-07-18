@@ -1,4 +1,4 @@
-[gd_scene load_steps=61 format=3 uid="uid://r0o1qsmlq84u"]
+[gd_scene load_steps=67 format=3 uid="uid://r0o1qsmlq84u"]
 
 [ext_resource type="Script" path="res://character/character.gd" id="1_mnv7b"]
 [ext_resource type="Texture2D" uid="uid://dbr6od55galv2" path="res://models/world_textures/BoteMadera_diffuse.png" id="2_j3chf"]
@@ -143,9 +143,49 @@ tracks/1/keys = {
 }
 tracks/1/use_blend = true
 
+[sub_resource type="Animation" id="Animation_augtv"]
+resource_name = "LeftPaddleSounds"
+length = 2.5
+tracks/0/type = "audio"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("../LeftPaddleAudio")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"clips": [{
+"end_offset": 0.0,
+"start_offset": 0.0,
+"stream": ExtResource("8_fdves")
+}],
+"times": PackedFloat32Array(1.53333)
+}
+tracks/0/use_blend = true
+
+[sub_resource type="Animation" id="Animation_34fho"]
+resource_name = "RightPaddleSounds"
+length = 2.5
+tracks/0/type = "audio"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("../RightPaddleAudio")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"clips": [{
+"end_offset": 0.0,
+"start_offset": 0.0,
+"stream": ExtResource("8_fdves")
+}],
+"times": PackedFloat32Array(1.53333)
+}
+tracks/0/use_blend = true
+
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_5hwsr"]
 _data = {
-"ForwardPaddleSounds": SubResource("Animation_ik2gb")
+"ForwardPaddleSounds": SubResource("Animation_ik2gb"),
+"LeftPaddleSounds": SubResource("Animation_augtv"),
+"RightPaddleSounds": SubResource("Animation_34fho")
 }
 
 [sub_resource type="AnimationNodeAdd2" id="AnimationNodeAdd2_xg8hx"]
@@ -180,6 +220,16 @@ nodes/TimeScale/position = Vector2(560, 60)
 nodes/output/position = Vector2(740, 140)
 node_connections = [&"Add2", 0, &"Animation", &"Add2", 1, &"Animation 2", &"TimeScale", 0, &"Add2", &"output", 0, &"TimeScale"]
 
+[sub_resource type="AnimationNodeAdd2" id="AnimationNodeAdd2_a1kxx"]
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_w1krl"]
+animation = &"sync_sounds/LeftPaddleSounds"
+use_custom_timeline = true
+timeline_length = 1.0
+stretch_time_scale = true
+start_offset = 0.0
+loop_mode = 0
+
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_pm3kf"]
 animation = &"character_anims/LeftPaddle"
 use_custom_timeline = true
@@ -191,13 +241,27 @@ loop_mode = 0
 [sub_resource type="AnimationNodeTimeScale" id="AnimationNodeTimeScale_igred"]
 
 [sub_resource type="AnimationNodeBlendTree" id="AnimationNodeBlendTree_fbafd"]
-graph_offset = Vector2(-241.8, 14.3)
+graph_offset = Vector2(-267, 51)
+nodes/Add2/node = SubResource("AnimationNodeAdd2_a1kxx")
+nodes/Add2/position = Vector2(200, 140)
 nodes/Animation/node = SubResource("AnimationNodeAnimation_pm3kf")
 nodes/Animation/position = Vector2(-100, 100)
+"nodes/Animation 2/node" = SubResource("AnimationNodeAnimation_w1krl")
+"nodes/Animation 2/position" = Vector2(-120, 280)
 nodes/TimeScale/node = SubResource("AnimationNodeTimeScale_igred")
-nodes/TimeScale/position = Vector2(236.545, 88.4545)
-nodes/output/position = Vector2(420, 140)
-node_connections = [&"TimeScale", 0, &"Animation", &"output", 0, &"TimeScale"]
+nodes/TimeScale/position = Vector2(360, 100)
+nodes/output/position = Vector2(540, 140)
+node_connections = [&"Add2", 0, &"Animation", &"Add2", 1, &"Animation 2", &"TimeScale", 0, &"Add2", &"output", 0, &"TimeScale"]
+
+[sub_resource type="AnimationNodeAdd2" id="AnimationNodeAdd2_p4coy"]
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_nnfus"]
+animation = &"sync_sounds/RightPaddleSounds"
+use_custom_timeline = true
+timeline_length = 1.0
+stretch_time_scale = true
+start_offset = 0.0
+loop_mode = 0
 
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_hlgus"]
 animation = &"character_anims/RightPaddle_old"
@@ -210,12 +274,16 @@ loop_mode = 0
 [sub_resource type="AnimationNodeTimeScale" id="AnimationNodeTimeScale_spqqg"]
 
 [sub_resource type="AnimationNodeBlendTree" id="AnimationNodeBlendTree_n8pip"]
-graph_offset = Vector2(-1383, 8)
+graph_offset = Vector2(-594, -10)
+nodes/Add2/node = SubResource("AnimationNodeAdd2_p4coy")
+nodes/Add2/position = Vector2(-120, 80)
 nodes/Animation/node = SubResource("AnimationNodeAnimation_hlgus")
-nodes/Animation/position = Vector2(-140, 100)
+nodes/Animation/position = Vector2(-460, 60)
+"nodes/Animation 2/node" = SubResource("AnimationNodeAnimation_nnfus")
+"nodes/Animation 2/position" = Vector2(-460, 200)
 nodes/TimeScale/node = SubResource("AnimationNodeTimeScale_spqqg")
-nodes/TimeScale/position = Vector2(140, 120)
-node_connections = [&"TimeScale", 0, &"Animation", &"output", 0, &"TimeScale"]
+nodes/TimeScale/position = Vector2(80, 120)
+node_connections = [&"Add2", 0, &"Animation", &"Add2", 1, &"Animation 2", &"TimeScale", 0, &"Add2", &"output", 0, &"TimeScale"]
 
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_rkenj"]
 animation = &"character_anims/Idle"
@@ -459,11 +527,11 @@ root_node = NodePath("%AnimationTree/../character")
 tree_root = SubResource("AnimationNodeStateMachine_wkph0")
 anim_player = NodePath("../AnimationPlayer")
 parameters/current_length = 1.0
-parameters/current_position = 0.809726
-parameters/current_delta = 0.025937
+parameters/current_position = 1.0
+parameters/current_delta = 0.0
 parameters/conditions/idle = false
 parameters/conditions/left = false
-parameters/conditions/right = false
+parameters/conditions/right = true
 parameters/BlendForward/current_length = 1.0
 parameters/BlendForward/current_position = 0.30167
 parameters/BlendForward/current_delta = 0.0166667
@@ -485,30 +553,44 @@ parameters/BlendForward/output/current_length = 1.0
 parameters/BlendForward/output/current_position = 0.30167
 parameters/BlendForward/output/current_delta = 0.0166667
 parameters/BlendLeft/current_length = 1.0
-parameters/BlendLeft/current_position = 0.369538
-parameters/BlendLeft/current_delta = 0.0166667
+parameters/BlendLeft/current_position = 1.0
+parameters/BlendLeft/current_delta = 0.0
+parameters/BlendLeft/Add2/current_length = 1.0
+parameters/BlendLeft/Add2/current_position = 1.0
+parameters/BlendLeft/Add2/current_delta = 0.0
+parameters/BlendLeft/Add2/add_amount = 1.0
 parameters/BlendLeft/Animation/current_length = 1.0
-parameters/BlendLeft/Animation/current_position = 0.369538
-parameters/BlendLeft/Animation/current_delta = 0.0166667
+parameters/BlendLeft/Animation/current_position = 1.0
+parameters/BlendLeft/Animation/current_delta = 0.0
+"parameters/BlendLeft/Animation 2/current_length" = 1.0
+"parameters/BlendLeft/Animation 2/current_position" = 1.0
+"parameters/BlendLeft/Animation 2/current_delta" = 0.0
 parameters/BlendLeft/TimeScale/current_length = 1.0
-parameters/BlendLeft/TimeScale/current_position = 0.369538
-parameters/BlendLeft/TimeScale/current_delta = 0.0166667
+parameters/BlendLeft/TimeScale/current_position = 1.0
+parameters/BlendLeft/TimeScale/current_delta = 0.0
 parameters/BlendLeft/TimeScale/scale = 1.0
 parameters/BlendLeft/output/current_length = 1.0
-parameters/BlendLeft/output/current_position = 0.369538
-parameters/BlendLeft/output/current_delta = 0.0166667
+parameters/BlendLeft/output/current_position = 1.0
+parameters/BlendLeft/output/current_delta = 0.0
 parameters/BlendRight/current_length = 1.0
-parameters/BlendRight/current_position = 0.0
+parameters/BlendRight/current_position = 1.0
 parameters/BlendRight/current_delta = 0.0
+parameters/BlendRight/Add2/current_length = 1.0
+parameters/BlendRight/Add2/current_position = 1.0
+parameters/BlendRight/Add2/current_delta = 0.0
+parameters/BlendRight/Add2/add_amount = null
 parameters/BlendRight/Animation/current_length = 1.0
-parameters/BlendRight/Animation/current_position = 0.0
+parameters/BlendRight/Animation/current_position = 1.0
 parameters/BlendRight/Animation/current_delta = 0.0
+"parameters/BlendRight/Animation 2/current_length" = 1.0
+"parameters/BlendRight/Animation 2/current_position" = 1.0
+"parameters/BlendRight/Animation 2/current_delta" = 0.0
 parameters/BlendRight/TimeScale/current_length = 1.0
-parameters/BlendRight/TimeScale/current_position = 0.0
+parameters/BlendRight/TimeScale/current_position = 1.0
 parameters/BlendRight/TimeScale/current_delta = 0.0
 parameters/BlendRight/TimeScale/scale = 1.0
 parameters/BlendRight/output/current_length = 1.0
-parameters/BlendRight/output/current_position = 0.0
+parameters/BlendRight/output/current_position = 1.0
 parameters/BlendRight/output/current_delta = 0.0
 parameters/End/current_length = null
 parameters/End/current_position = null
@@ -517,8 +599,8 @@ parameters/Start/current_length = 0.0
 parameters/Start/current_position = 0.0
 parameters/Start/current_delta = 0.0
 parameters/character_anims_Idle/current_length = 1.0
-parameters/character_anims_Idle/current_position = 0.809726
-parameters/character_anims_Idle/current_delta = 0.025937
+parameters/character_anims_Idle/current_position = 0.525128
+parameters/character_anims_Idle/current_delta = 0.0180556
 
 [node name="KriketsAudio" type="AudioStreamPlayer3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.05414, -16.3561)
@@ -543,13 +625,13 @@ bus = &"Kayak"
 
 [node name="RightPaddleAudio" type="AudioStreamPlayer3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.25613, 0, 0)
-volume_db = 10.0
+volume_db = 20.0
 max_polyphony = 5
 bus = &"Kayak"
 
 [node name="LeftPaddleAudio" type="AudioStreamPlayer3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.35202, 0, 0)
-volume_db = 13.846
+volume_db = 20.0
 max_polyphony = 5
 bus = &"Kayak"
 

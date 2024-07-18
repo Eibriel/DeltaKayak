@@ -15,6 +15,8 @@ var damage := 0.0
 var damage_timer := 0.0
 var max_damage := 10.0
 
+var is_paddling_locked:=false
+
 var kayak_speed := 0.17
 var speed_mult := 5.0
 var torque_mult := 3.0
@@ -160,6 +162,9 @@ func hide_head_if_needed()->void:
 		$character/Armature/Skeleton3D/capucha.visible = true
 		$character/Armature/Skeleton3D/head.visible = true
 
+func lock_paddling(value:bool=true) -> void:
+	is_paddling_locked=value
+
 func handle_animations()->void:
 	return
 	var input_dir:Vector2 = Input.get_vector("left", "right", "up", "down")
@@ -195,6 +200,7 @@ func reset_rotation()->void:
 	angular_velocity = Vector3.ZERO
 
 func handle_controls(delta:float) -> void:
+	if is_paddling_locked: return
 	var input_dir:Vector2 = Input.get_vector("left", "right", "up", "down")
 	padling_intent = input_dir
 	
@@ -642,6 +648,7 @@ func set_damage():
 	if damage_timer > 0: return
 	damage += 1.0
 	damage_timer = 1.0
+	Global.main_scene.set_player_state("monster_damage")
 	#var tween := create_tween()
 	#tween.tween_callback(Global.main_scene.set_datamosh.bind(true))
 	#tween.tween_property(%DamageIndicator, "scale", Vector3.ZERO, 0.1)

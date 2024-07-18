@@ -20,6 +20,8 @@ var dialogue_time: float
 var dialogue_tween: Tween
 var write_speed: float
 
+var player_state:Array=[]
+
 var temporizador:= 0.0
 var grabbed := false
 var moved := false
@@ -113,16 +115,22 @@ func _ready() -> void:
 	%FPSSpinbox.set_value_no_signal(Engine.max_fps)
 	
 	%PauseMenu.main_scene = self
+	%BlockPath.position.y = -20
+	
+	%HintLabel.visible = false
 
 func pause():
 	#player.about_to_pause()
 	get_tree().paused = true
 	%PauseMenu.show()
+	%ResumeButton.grab_focus()
+	%MenuCoinAudio.play()
 	#$StatsMenu.show()
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 
 func unpause():
 	%PauseMenu.hide()
+	%MenuCoinAudio.play()
 	#$StatsMenu.hide()
 	get_tree().paused = false
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
@@ -131,19 +139,53 @@ func intro_animation():
 	if SKIP_INTRO:
 		end_intro_animation()
 	else:
+		character.lock_paddling(true)
 		%CameraIntro.current = true
 		%IntroAnimationPlayer.play("intro_animation")
+		say_dialogue("demo_start_point")
 
 func end_intro_animation():
+	character.lock_paddling(false)
 	character.camera.current = true
 	dk_world.select_cameras = true
 	#%IntroChatLabel.visible = false
-	say_dialogue("demo_start_point")
+	say_hint("MOVEMENT HINT", 5)
+	#say_dialogue("demo_start_point")
+
+var hint_time:=0.0
+var tween_hint:Tween
+func say_hint(text:String, time:float=30)->void:
+	%HintAudio.play()
+	hint_time = time
+	%HintLabel.text = "[p align=right]%s[/p]" % tr(text)
+	if tween_hint:
+		tween_hint.kill()
+	tween_hint = create_tween()
+	%HintLabel.visible = true
+	%HintLabel.modulate.a = 0.0
+	tween_hint.tween_property(%HintLabel, "modulate:a", 1.0, 5.0)
+
+func handle_hint(delta:float)->void:
+	if hint_time != -1:
+		hint_time -= delta
+		hint_time = max(0, hint_time)
+	if hint_time == 0:
+		hint_time = -1
+		if tween_hint:
+			tween_hint.kill()
+		tween_hint = create_tween()
+		%HintLabel.modulate.a = 1.0
+		tween_hint.tween_property(%HintLabel, "modulate:a", 0.0, 3.0)
+		tween_hint.tween_callback(%HintLabel.set_visible.bind(false))
+
+func hide_hint()->void:
+	hint_time = 0
 
 func _process(delta: float) -> void:
 	handle_triggers(delta)
 	handle_dialogue(delta)
 	handle_stats(delta)
+	handle_hint(delta)
 	handle_demo_puzzle()
 	handle_enemy_direction_indicator(delta)
 	log_label.text = Global.log_text
@@ -156,6 +198,12 @@ func _process(delta: float) -> void:
 		if Global.camera.has_meta("fog_density"):
 			%WorldEnvironment.environment.volumetric_fog_density = float(Global.camera.get_meta("fog_density"))
 			Global.log_text = "\nFog:%f" % %WorldEnvironment.environment.volumetric_fog_density
+		if %CameraIntro.current == true:
+			%WorldEnvironment.environment.ambient_light_energy = 0.03
+		elif Global.camera == Global.character.camera:
+			%WorldEnvironment.environment.ambient_light_energy = 0.0
+		else:
+			%WorldEnvironment.environment.ambient_light_energy = 0.02
 
 func handle_enemy_direction_indicator(_delta:float) -> void:
 	if Global.enemy == null: return
@@ -204,8 +252,16 @@ func handle_demo_puzzle():
 						#print("Espada y Carne")
 						%CarneIndicador.visible = true
 						match_count += 1
+	if match_count > 0:
+		set_player_state("puzzle_progress")
 	if match_count == 3:
 		puzzle_solved = true
+		del_player_state("puzzle_progress")
+		del_player_state("puzzle_door")
+		del_player_state("puzzle_tierra")
+		del_player_state("puzzle_carne")
+		del_player_state("puzzle_vino")
+		set_player_state("puzzle_solved")
 		#%DemoExitDoor.position.y = -20
 		#print("OpenDoor")
 		var tween := create_tween()
@@ -315,10 +371,18 @@ func _input(event: InputEvent) -> void:
 		if is_saying_dialogue():
 			skip_dialogue()
 			return
+		if Global.is_near_carpincho:
+			Global.carpincho_near.pet()
+			set_player_state("carpincho")
+			say_dialogue("pet_carpincho")
+			return
+		var handled := false
 		for id in in_trigger:
-			execute_trigger("primary_action", id)
-		if in_trigger.size() == 0:
-			say_dialogue("describe_night")
+			var this_handled := execute_trigger("primary_action", id)
+			if this_handled:
+				handled = true
+		if not handled:
+			say_some_dialogue()
 	#elif event.is_action_pressed("secondary_action"):
 		#if is_saying_dialogue():
 			#skip_dialogue()
@@ -332,11 +396,47 @@ func _input(event: InputEvent) -> void:
 	elif event.is_action_pressed("quit"):
 		#get_tree().quit()
 		pause()
-	elif event.is_action_pressed("help"):
-		%HelpLabel.visible = !%HelpLabel.visible
+	#elif event.is_action_pressed("help"):
+	#	%HelpLabel.visible = !%HelpLabel.visible
+
+func say_some_dialogue()->void:
+	if player_state.size() > 0:
+		var last_thougth:String = player_state.pop_back()
+		match last_thougth:
+			"gol":
+				say_dialogue("think_gol")
+			"carpincho":
+				say_dialogue("think_carpincho")
+			"puzzle_door":
+				say_dialogue("think_puzzle_door")
+			"puzzle_tierra":
+				say_dialogue("think_puzzle_tierra")
+			"puzzle_carne":
+				say_dialogue("think_puzzle_carne")
+			"puzzle_vino":
+				say_dialogue("think_puzzle_vino")
+			"puzzle_progress":
+				say_dialogue("think_puzzle_progress")
+			"puzzle_solved":
+				say_dialogue("think_puzzle_solved")
+			"gauchito_gil":
+				say_dialogue("think_gauchito_gil")
+			"monster_damage":
+				say_dialogue("think_monster_damage")
+			"monster":
+				say_dialogue("think_monster")
+	else:
+		say_dialogue("describe_night")
 
 func on_pepa():
-	say_dialogue("pepa_001")
+	if player_state.has("other_side"):
+		var pepa_dialogues := [
+			"pepa_002",
+			"pepa_003"
+		]
+		say_dialogue(player_state.pick_random())
+	else:
+		say_dialogue("pepa_001")
 
 func on_compicactus():
 	say_dialogue("compi_im_here")
@@ -353,9 +453,9 @@ func on_trigger_exited(id:String):
 		in_trigger.erase(id)
 	execute_trigger("trigger_exited", id)
 
-func execute_trigger(trigger_type:String, trigger_id:String):
+func execute_trigger(trigger_type:String, trigger_id:String)->bool:
 	# var index := "%s:%s" % [type, trigger_id]
-	if not is_closest_trigger(trigger_id): return
+	if not is_closest_trigger(trigger_id): return false
 	var handled := false
 	for i in game_state.items:
 		if not i.active: continue
@@ -385,9 +485,10 @@ func execute_trigger(trigger_type:String, trigger_id:String):
 				if i.logic != null:
 					var l_script = i.logic.new()
 					l_script._on_trigger(self, game_state, trigger_type)
-	if not handled and trigger_type == "primary_action":
+	if not handled:
 		var unhandled_logic := UnhandledTriggers.new()
-		unhandled_logic._on_unhandled_trigger(self, game_state, trigger_id)
+		handled = unhandled_logic._on_unhandled_trigger(self, game_state, trigger_id, trigger_type)
+	return handled
 
 func is_in_trigger(id:String) -> bool:
 	return id in in_trigger
@@ -541,6 +642,7 @@ func grab_kayak():
 	tween.tween_callback(Global.character.apply_central_impulse.bind(Vector3(-1, 0, 1)*3))
 	tween.tween_interval(3)
 	tween.tween_callback(connect_grab)
+	tween.tween_callback(set_player_state.bind("grabbed"))
 	tween.set_ease(Tween.EASE_IN_OUT)
 	tween.set_trans(Tween.TRANS_CUBIC)
 	tween.tween_property(%KayakGrabber, "global_position", Vector3(-16, 0, -139), 1.3)
@@ -562,6 +664,20 @@ func grab_kayak():
 	tween.tween_interval(3.0)
 	tween.tween_callback(say_dialogue.bind("demo_other_side"))
 	tween.tween_callback(set_datamosh.bind(false))
+	tween.tween_callback(block_backtracking)
+	tween.tween_callback(del_player_state.bind("grabbed"))
+	tween.tween_callback(set_player_state.bind("other_side"))
+
+func set_player_state(value:String):
+	if not player_state.has(value):
+		player_state.append(value)
+
+func del_player_state(value:String):
+	if player_state.has(value):
+		player_state.erase(value)
+
+func block_backtracking():
+	%BlockPath.position.y = 0
 
 func set_datamosh(value:bool):
 	#%WorldEnvironment.compositor.compositor_effects[0].enabled = value
@@ -597,6 +713,7 @@ func _on_first_grab_kayak_body_entered(body: Node3D) -> void:
 	tween.tween_interval(0.3)
 	tween.tween_callback(Global.character.apply_central_impulse.bind(Vector3(-1, 0, 1)))
 	tween.tween_callback(say_dialogue.bind("demo2_kayak_movement"))
+	tween.tween_callback(say_hint.bind("LOOK BUTTON HINT"))
 	if false:
 		tween.tween_interval(10)
 		tween.tween_callback(%JumpscareAudio2.set_pitch_scale.bind(0.8))
@@ -667,11 +784,13 @@ func _on_menu_button_button_up() -> void:
 func _on_game_settings_button_up() -> void:
 	%PauseMenuContainer.visible = false
 	%GameSettingsContainer.visible = true
+	%BackButton.grab_focus()
 
 
 func _on_back_button_up() -> void:
 	%PauseMenuContainer.visible = true
 	%GameSettingsContainer.visible = false
+	%ResumeButton.grab_focus()
 
 
 func _on_full_screen_toggled(toggled_on: bool) -> void:
@@ -708,3 +827,14 @@ func _on_master_volume_slider_drag_ended(value_changed: bool) -> void:
 		AudioServer.set_bus_mute(sfx_index, true)
 	else:
 		AudioServer.set_bus_mute(sfx_index, false)
+
+
+func _on_game_controls_button_up() -> void:
+	%HelpLabel.visible = !%HelpLabel.visible
+
+
+func _on_gol_area_body_entered(body: Node3D) -> void:
+	var dist:= Global.character.global_position.distance_to(body.global_position)
+	if body.has_node("Football") and dist < 3:
+		say_dialogue("gol")
+	

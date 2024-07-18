@@ -1,4 +1,4 @@
-[gd_scene load_steps=45 format=3 uid="uid://ce6e8v1saxjr5"]
+[gd_scene load_steps=50 format=3 uid="uid://ce6e8v1saxjr5"]
 
 [ext_resource type="Theme" uid="uid://1kj8fi5pat0v" path="res://themes/default_theme.tres" id="1_7eei4"]
 [ext_resource type="Environment" uid="uid://xpf4ng2ym0n4" path="res://environments/main_environment.tres" id="1_ekqa4"]
@@ -12,8 +12,8 @@
 [ext_resource type="Texture2D" uid="uid://bue181jtwq3fu" path="res://textures/smoke.png" id="4_ob3me"]
 [ext_resource type="CompositorEffect" uid="uid://b45j2vp4hks5x" path="res://compositor/datamosh/datamosh_compositor_effect_2.tres" id="6_02wi3"]
 [ext_resource type="Script" path="res://pause_menu.gd" id="6_dfvsb"]
-[ext_resource type="Theme" uid="uid://clx0ueeeofo5w" path="res://themes/dialogue_label_theme.tres" id="6_j55a8"]
 [ext_resource type="Theme" uid="uid://cr0d6atb52k54" path="res://themes/dialogue_name_theme.tres" id="6_xj3c2"]
+[ext_resource type="Theme" uid="uid://i2watan4uqvs" path="res://themes/hint_label_theme.tres" id="8_wuuph"]
 [ext_resource type="PackedScene" uid="uid://t23rsw74uei8" path="res://scenes/long_box.tscn" id="9_kolyd"]
 [ext_resource type="PackedScene" uid="uid://dsppfk5r8xdm7" path="res://scenes/L_floating_box.tscn" id="10_tov8v"]
 [ext_resource type="PackedScene" uid="uid://ccwbpjnygckmy" path="res://scenes/door.tscn" id="11_mh163"]
@@ -26,6 +26,8 @@
 [ext_resource type="AudioStream" uid="uid://ctm601sbah8df" path="res://music/494981__original_sound__risers-horror-whooshes-tension-builder-1.mp3" id="18_akxex"]
 [ext_resource type="AudioStream" uid="uid://css74q0cr7wrf" path="res://sounds/679400__adviseme333__fast-water-flutter.wav" id="19_7efqm"]
 [ext_resource type="PackedScene" uid="uid://dt7sihp44khg1" path="res://scenes/carpincho.tscn" id="20_wsws0"]
+[ext_resource type="AudioStream" uid="uid://crud8scfcqn51" path="res://sounds/TinCoin.mp3" id="27_00yc6"]
+[ext_resource type="AudioStream" uid="uid://0a4k1bclukk0" path="res://sounds/197860__ladystarlightnyc__bow-tapping-violin-thru-delay-pedal.mp3" id="28_a3my4"]
 
 [sub_resource type="Gradient" id="Gradient_bg2pt"]
 colors = PackedColorArray(0, 0, 0, 1, 0, 0, 0, 0)
@@ -73,6 +75,12 @@ albedo_color = Color(0, 1, 0.133333, 1)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_i81n0"]
 size = Vector3(53.7158, 7.51904, 4.34125)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_eaywd"]
+size = Vector3(0.13501, 1, 3.4668)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ckk6w"]
+size = Vector3(0.570068, 1, 0.40625)
 
 [sub_resource type="Animation" id="Animation_ddu3q"]
 length = 0.001
@@ -148,6 +156,9 @@ _data = {
 "RESET": SubResource("Animation_ddu3q"),
 "intro_animation": SubResource("Animation_w3qoh")
 }
+
+[sub_resource type="BoxOccluder3D" id="BoxOccluder3D_gtuj1"]
+size = Vector3(155.256, 42, 10)
 
 [node name="Control" type="Control" node_paths=PackedStringArray("initial_position")]
 layout_mode = 3
@@ -265,7 +276,7 @@ anchor_right = 0.952381
 anchor_bottom = 0.813131
 grow_horizontal = 2
 grow_vertical = 2
-theme = ExtResource("6_j55a8")
+theme = ExtResource("8_wuuph")
 bbcode_enabled = true
 text = "This is a sample text"
 metadata/_edit_use_anchors_ = true
@@ -275,6 +286,24 @@ unique_name_in_owner = true
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
+
+[node name="HintLabel" type="RichTextLabel" parent="Control"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -495.0
+offset_top = 27.0
+offset_right = -29.0
+offset_bottom = 102.0
+grow_horizontal = 0
+mouse_filter = 1
+theme = ExtResource("8_wuuph")
+bbcode_enabled = true
+text = "[p align=right]Sample hint[/p]"
+fit_content = true
+scroll_active = false
 
 [node name="LabelHelp" type="Label" parent="Control"]
 auto_translate_mode = 1
@@ -432,7 +461,6 @@ script = ExtResource("6_dfvsb")
 
 [node name="PauseMenuContainer" type="VBoxContainer" parent="Control/PauseMenu"]
 unique_name_in_owner = true
-visible = false
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -448,17 +476,24 @@ grow_vertical = 2
 
 [node name="MenuButton" type="Button" parent="Control/PauseMenu/PauseMenuContainer"]
 layout_mode = 2
+focus_neighbor_top = NodePath("../ResumeButton")
 text = "MAIN MENU"
 
 [node name="GameSettingsButton" type="Button" parent="Control/PauseMenu/PauseMenuContainer"]
 layout_mode = 2
 text = "GAME SETTINGS"
 
+[node name="GameControlsButton" type="Button" parent="Control/PauseMenu/PauseMenuContainer"]
+layout_mode = 2
+text = "CONTROLS"
+
 [node name="HSeparator" type="HSeparator" parent="Control/PauseMenu/PauseMenuContainer"]
 layout_mode = 2
 
 [node name="ResumeButton" type="Button" parent="Control/PauseMenu/PauseMenuContainer"]
+unique_name_in_owner = true
 layout_mode = 2
+focus_neighbor_bottom = NodePath("../MenuButton")
 text = "RESUME"
 
 [node name="QuitButton" type="Button" parent="Control/PauseMenu/PauseMenuContainer"]
@@ -468,6 +503,7 @@ text = "QUIT"
 
 [node name="GameSettingsContainer" type="VBoxContainer" parent="Control/PauseMenu"]
 unique_name_in_owner = true
+visible = false
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -484,6 +520,7 @@ grow_vertical = 2
 [node name="FullScreenButton" type="CheckButton" parent="Control/PauseMenu/GameSettingsContainer"]
 unique_name_in_owner = true
 layout_mode = 2
+focus_neighbor_top = NodePath("../BackButton")
 text = "FULL SCREEN"
 
 [node name="VSyncButton" type="CheckButton" parent="Control/PauseMenu/GameSettingsContainer"]
@@ -535,7 +572,9 @@ ticks_on_borders = true
 layout_mode = 2
 
 [node name="BackButton" type="Button" parent="Control/PauseMenu/GameSettingsContainer"]
+unique_name_in_owner = true
 layout_mode = 2
+focus_neighbor_bottom = NodePath("../FullScreenButton")
 text = "BACK"
 
 [node name="LabelDemo" type="Label" parent="Control"]
@@ -555,15 +594,11 @@ text = "Demo Version"
 unique_name_in_owner = true
 auto_translate_mode = 1
 layout_mode = 1
-anchors_preset = 1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -224.0
-offset_top = 9.0
-offset_right = -13.0
-offset_bottom = 39.0
-grow_horizontal = 0
-text = "Esc: Salir - F1: Ayuda"
+offset_left = 15.0
+offset_top = 16.0
+offset_right = 226.0
+offset_bottom = 46.0
+text = "00:00"
 
 [node name="Main3D" type="Node3D" parent="."]
 
@@ -1431,20 +1466,20 @@ transform = Transform3D(0.0233155, 0, 0.999728, 0, 1, 0, -0.999728, 0, 0.0233155
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14.6896, 0, 50.0311)
 
 [node name="LShapedFloatingBox" parent="Main3D/PysicsObjects" instance=ExtResource("10_tov8v")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -145.849, 0, -174.405)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14.1148, 0, 25.5145)
 
 [node name="Switch" parent="Main3D/PysicsObjects" instance=ExtResource("12_uwfp4")]
-transform = Transform3D(0.009669, 0, -0.999953, 0, 1, 0, 0.999953, 0, 0.009669, -127.681, 0, -212.302)
+transform = Transform3D(-0.753242, 0, 0.657743, 0, 1, 0, -0.657743, 0, -0.753242, -171.368, 0, -415.956)
 state = true
 
 [node name="Door" parent="Main3D/PysicsObjects" instance=ExtResource("11_mh163")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -19.3699, 0, 63.087)
 
 [node name="Door2" parent="Main3D/PysicsObjects" instance=ExtResource("11_mh163")]
-transform = Transform3D(0.03319, 0, -0.999449, 0, 1, 0, 0.999449, 0, 0.03319, -108.909, 0, -175.395)
+transform = Transform3D(0.03319, 0, -0.999449, 0, 1, 0, 0.999449, 0, 0.03319, -18.2657, 0, 74.5898)
 
 [node name="Door3" parent="Main3D/PysicsObjects" instance=ExtResource("11_mh163")]
-transform = Transform3D(-0.112822, 0, -0.993615, 0, 1, 0, 0.993615, 0, -0.112822, -108.615, 0, -165.911)
+transform = Transform3D(-0.112822, 0, -0.993615, 0, 1, 0, 0.993615, 0, -0.112822, -5.56785, 0, 40.1833)
 
 [node name="Chain" parent="Main3D/PysicsObjects" instance=ExtResource("13_60n28")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13.4676, 0, 59.2215)
@@ -1495,7 +1530,7 @@ transform = Transform3D(0.108988, 0, -2.99802, 0, 3, 0, 2.99802, 0, 0.108988, 1.
 
 [node name="BlockPath" type="StaticBody3D" parent="Main3D/DemoElements"]
 unique_name_in_owner = true
-transform = Transform3D(-0.626577, 0, 0.77936, 0, 1, 0, -0.77936, 0, -0.626577, -14.1926, 0, 30.201)
+transform = Transform3D(-0.999972, 0, -0.00757489, 0, 1, 0, 0.00757489, 0, -0.999972, -198.445, 0, -146.974)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Main3D/DemoElements/BlockPath"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.748719, 0, 0.28206)
@@ -1572,6 +1607,34 @@ pixel_size = 0.02
 text = "Tierra"
 font_size = 64
 
+[node name="SpotLight3D" type="SpotLight3D" parent="Main3D/DemoElements"]
+transform = Transform3D(0.673206, -0.317365, -0.667887, 0, 0.903216, -0.429187, 0.739455, 0.288931, 0.60805, -213.271, 2.63235, -368.103)
+light_energy = 5.0
+distance_fade_enabled = true
+spot_range = 6.58398
+spot_angle = 39.2659
+
+[node name="SpotLight3D2" type="SpotLight3D" parent="Main3D/DemoElements"]
+transform = Transform3D(0.775562, 0.270934, 0.570174, -1.03087e-08, 0.903215, -0.429187, -0.631271, 0.332861, 0.7005, -190.689, 2.63, -367.228)
+light_energy = 5.0
+distance_fade_enabled = true
+spot_range = 6.58398
+spot_angle = 39.2659
+
+[node name="SpotLight3D3" type="SpotLight3D" parent="Main3D/DemoElements"]
+transform = Transform3D(-0.72369, -0.296193, -0.623331, -6.54921e-08, 0.903215, -0.429187, 0.690125, -0.310599, -0.653648, -210.908, 2.63, -389.634)
+light_energy = 5.0
+distance_fade_enabled = true
+spot_range = 6.58398
+spot_angle = 39.2659
+
+[node name="SpotLight3D4" type="SpotLight3D" parent="Main3D/DemoElements"]
+transform = Transform3D(-0.707243, -0.174789, 0.685023, -1.04308e-07, 0.968955, 0.247236, -0.706971, 0.174856, -0.685286, -161.463, 5.69959, -418.161)
+light_energy = 5.0
+distance_fade_enabled = true
+spot_range = 11.9277
+spot_angle = 23.4021
+
 [node name="InstruccionLabel" type="Label3D" parent="Main3D/DemoElements"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 104.443, 2.85102, -202.56)
 pixel_size = 0.02
@@ -1592,12 +1655,16 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -39.8452, 8.96545, -201.684)
 light_color = Color(0.993349, 0.925205, 0.696236, 1)
 light_energy = 9.654
 light_volumetric_fog_energy = 2.61
+distance_fade_enabled = true
+distance_fade_begin = 200.0
 omni_range = 7.211
 
 [node name="OmniLight3D2" type="OmniLight3D" parent="Main3D/DemoElements"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16.2877, 5.01654, -15.4993)
 light_color = Color(0.693, 0.72765, 0.99, 1)
 light_volumetric_fog_energy = 2.61
+distance_fade_enabled = true
+distance_fade_begin = 200.0
 omni_range = 19.4934
 
 [node name="GrabArea3D" type="Area3D" parent="Main3D/DemoElements"]
@@ -1650,6 +1717,28 @@ metadata/strength = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.18132, 1.48492, 1.23257)
 shape = SubResource("BoxShape3D_i81n0")
 
+[node name="GolArea" type="Area3D" parent="Main3D/DemoElements"]
+transform = Transform3D(0.906794, 0, -0.421574, 0, 1, 0, 0.421574, 0, 0.906794, -173.93, 0, -316.701)
+collision_layer = 0
+collision_mask = 4
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Main3D/DemoElements/GolArea"]
+shape = SubResource("BoxShape3D_eaywd")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Main3D/DemoElements/GolArea"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0768738, 0, -1.71216)
+collision_mask = 4
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Main3D/DemoElements/GolArea/StaticBody3D"]
+shape = SubResource("BoxShape3D_ckk6w")
+
+[node name="StaticBody3D2" type="StaticBody3D" parent="Main3D/DemoElements/GolArea"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0222778, 0, 1.7699)
+collision_mask = 4
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Main3D/DemoElements/GolArea/StaticBody3D2"]
+shape = SubResource("BoxShape3D_ckk6w")
+
 [node name="IntroElements" type="Node3D" parent="Main3D"]
 
 [node name="CameraIntro" type="Camera3D" parent="Main3D/IntroElements"]
@@ -1677,11 +1766,15 @@ transform = Transform3D(0.998732, 0, -0.0503483, 0, 1, 0, 0.0503483, 0, 0.998732
 gizmo_extents = 5.0
 
 [node name="InitialPositionOtherSide" type="Marker3D" parent="Main3D"]
-transform = Transform3D(0.998732, 0, -0.0503483, 0, 1, 0, 0.0503483, 0, 0.998732, -209.733, 0, -176.028)
+transform = Transform3D(0.998823, 0, 0.0485017, 0, 1, 0, -0.0485017, 0, 0.998823, -207.957, 0, -159.8)
 gizmo_extents = 5.0
 
 [node name="InitialPositionPuzzle" type="Marker3D" parent="Main3D"]
-transform = Transform3D(0.998732, 0, -0.0503483, 0, 1, 0, 0.0503483, 0, 0.998732, -182.723, 0, -316.332)
+transform = Transform3D(0.998732, 0, -0.0503483, 0, 1, 0, 0.0503483, 0, 0.998732, -179.393, 0, -337.978)
+gizmo_extents = 5.0
+
+[node name="InitialPositionCarpincho" type="Marker3D" parent="Main3D"]
+transform = Transform3D(-0.141213, 0, 0.98998, 0, 1, 0, -0.98998, 0, -0.141213, -235.741, 0, -317.922)
 gizmo_extents = 5.0
 
 [node name="FinishPositionDemo" type="Marker3D" parent="Main3D"]
@@ -1692,7 +1785,18 @@ gizmo_extents = 5.0
 [node name="Carpinchos" type="Node3D" parent="Main3D"]
 
 [node name="Carpincho" parent="Main3D/Carpinchos" instance=ExtResource("20_wsws0")]
-transform = Transform3D(0.948655, 0, 0.316311, 0, 1, 0, -0.316311, 0, 0.948655, -248.634, 0.449756, -314.622)
+transform = Transform3D(0.836276, 0, 0.548307, 0, 1, 0, -0.548307, 0, 0.836276, -244.574, 0.1, -316.598)
+
+[node name="Carpincho2" parent="Main3D/Carpinchos" instance=ExtResource("20_wsws0")]
+transform = Transform3D(0.943512, 0, -0.331338, 0, 1, 0, 0.331338, 0, 0.943512, -21.269, 0.1, -32.296)
+
+[node name="OccluderInstance3D" type="OccluderInstance3D" parent="Main3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -131.317, 0, -101.865)
+occluder = SubResource("BoxOccluder3D_gtuj1")
+
+[node name="OccluderInstance3D2" type="OccluderInstance3D" parent="Main3D"]
+transform = Transform3D(0.008936, 0, 0.99996, 0, 1, 0, -0.99996, 0, 0.008936, -72.4639, 0, -13.3386)
+occluder = SubResource("BoxOccluder3D_gtuj1")
 
 [node name="MusicBackground" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("16_dvrax")
@@ -1715,11 +1819,26 @@ unique_name_in_owner = true
 stream = ExtResource("19_7efqm")
 bus = &"Music"
 
+[node name="MenuCoinAudio" type="AudioStreamPlayer" parent="."]
+unique_name_in_owner = true
+process_mode = 3
+stream = ExtResource("27_00yc6")
+volume_db = -8.0
+bus = &"UI"
+
+[node name="HintAudio" type="AudioStreamPlayer" parent="."]
+unique_name_in_owner = true
+process_mode = 3
+stream = ExtResource("28_a3my4")
+volume_db = -8.0
+bus = &"UI"
+
 [connection signal="drag_ended" from="Control/Debug/VBoxContainer/ProportionalSlider" to="." method="_on_slider_drag_ended"]
 [connection signal="drag_ended" from="Control/Debug/VBoxContainer/IntegralSlider" to="." method="_on_slider_drag_ended"]
 [connection signal="drag_ended" from="Control/Debug/VBoxContainer/DerivativeSlider" to="." method="_on_slider_drag_ended"]
 [connection signal="button_up" from="Control/PauseMenu/PauseMenuContainer/MenuButton" to="." method="_on_menu_button_button_up"]
 [connection signal="button_up" from="Control/PauseMenu/PauseMenuContainer/GameSettingsButton" to="." method="_on_game_settings_button_up"]
+[connection signal="button_up" from="Control/PauseMenu/PauseMenuContainer/GameControlsButton" to="." method="_on_game_controls_button_up"]
 [connection signal="button_up" from="Control/PauseMenu/PauseMenuContainer/ResumeButton" to="." method="_on_resume_button_button_up"]
 [connection signal="button_up" from="Control/PauseMenu/PauseMenuContainer/QuitButton" to="." method="_on_quit_button_button_up"]
 [connection signal="toggled" from="Control/PauseMenu/GameSettingsContainer/FullScreenButton" to="." method="_on_full_screen_toggled"]
@@ -1733,3 +1852,4 @@ bus = &"Music"
 [connection signal="body_entered" from="Main3D/DemoElements/AnaArea3D" to="." method="_on_ana_body_entered"]
 [connection signal="body_entered" from="Main3D/DemoElements/FirstGrabArea3D" to="." method="_on_first_grab_kayak_body_entered"]
 [connection signal="body_entered" from="Main3D/DemoElements/HeavyKayakArea3D" to="." method="_on_heavy_kayak_body_entered"]
+[connection signal="body_entered" from="Main3D/DemoElements/GolArea" to="." method="_on_gol_area_body_entered"]

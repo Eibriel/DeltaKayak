@@ -68,11 +68,11 @@ func handle_sounds():
 		%ShiftAudio.play()
 	forward_force = new_forward_force
 	#print(forward_force)
-	var pitch := remap(abs(forward_force), 0, 15, 0.2, 1.0)
+	#var pitch := remap(abs(forward_force), 0, 15, 0.2, 1.0)
 	#Global.log_text += "\nforward_force: %f" % forward_force
-	%MotorAudio.pitch_scale = pitch
-	var volume := remap(abs(forward_force), 0, 15, -20.0, 0.0)
-	%MotorAudio.volume_db = volume
+	#%MotorAudio.pitch_scale = pitch
+	#var volume := remap(abs(forward_force), 0, 15, -20.0, 0.0)
+	#%MotorAudio.volume_db = volume
 	
 	var engine_speed := remap(abs(forward_force), 0, 15, 0.0, 1.0)
 	var samples := [

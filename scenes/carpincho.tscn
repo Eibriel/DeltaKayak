@@ -1,7 +1,126 @@
-[gd_scene load_steps=2 format=3 uid="uid://dt7sihp44khg1"]
+[gd_scene load_steps=10 format=3 uid="uid://dt7sihp44khg1"]
 
+[ext_resource type="Script" path="res://scenes/carpincho.gd" id="1_cv6ch"]
 [ext_resource type="PackedScene" uid="uid://dx6st1sljwj66" path="res://models/carpincho/carpincho.glb" id="1_jg23j"]
+[ext_resource type="PackedScene" uid="uid://b2upxlbvq2a2j" path="res://models/character.glb" id="2_yub8j"]
+[ext_resource type="PackedScene" uid="uid://bspb1us40iknb" path="res://models/world/Pole.glb" id="4_0t2bi"]
+
+[sub_resource type="Animation" id="Animation_fl0e1"]
+resource_name = "pet_carpincho"
+length = 2.3
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("character:position")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.4, 0.766667, 1.2, 1.56667, 1.93333, 2.3),
+"transitions": PackedFloat32Array(2.21914, 1, 1.7411, 1, 1.7411, 1, 1.7411),
+"update": 0,
+"values": [Vector3(0.856157, -0.411684, -0.0947236), Vector3(0.856157, -0.382538, -0.0947236), Vector3(0.856157, -0.411684, -0.0947236), Vector3(0.856157, -0.382538, -0.0947236), Vector3(0.856157, -0.411684, -0.0947236), Vector3(0.856157, -0.382538, -0.0947236), Vector3(0.856157, -0.411684, -0.0947236)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("character:visible")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 2.3),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [true, false]
+}
+tracks/2/type = "method"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath(".")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(2.3),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [],
+"method": &"end_pet"
+}]
+}
+
+[sub_resource type="Animation" id="Animation_qmo1w"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("character:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0.856157, -0.411684, -0.0947236)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("character:visible")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_4uxy0"]
+_data = {
+"RESET": SubResource("Animation_qmo1w"),
+"pet_carpincho": SubResource("Animation_fl0e1")
+}
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_vg6mn"]
+size = Vector3(3.52551, 1.93848, 4.07812)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_qukky"]
+size = Vector3(1, 1.53265, 1.01648)
 
 [node name="Carpincho" type="Node3D"]
+script = ExtResource("1_cv6ch")
 
 [node name="carpincho" parent="." instance=ExtResource("1_jg23j")]
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(0.685962, -0.320422, 0.653289, 0.116368, 0.934574, 0.336198, -0.718273, -0.154597, 0.678369, 0.648009, 0.53778, 0.47983)
+fov = 39.1
+
+[node name="character" parent="." instance=ExtResource("2_yub8j")]
+transform = Transform3D(0.946666, 0.322216, 0, -0.322216, 0.946666, 0, 0, 0, 1, 0.856157, -0.411684, -0.0947236)
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_4uxy0")
+}
+
+[node name="Area3D" type="Area3D" parent="."]
+collision_layer = 0
+collision_mask = 2
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.26276, 0, 0)
+shape = SubResource("BoxShape3D_vg6mn")
+
+[node name="Pole" parent="." instance=ExtResource("4_0t2bi")]
+transform = Transform3D(3.01138, 0, 0, 0, 0.263193, 0, 0, 0, 2.9142, 0.00751781, -0.862893, 0.0067572)
+
+[node name="StaticBody3D" type="StaticBody3D" parent="."]
+collision_layer = 16
+collision_mask = 14
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.0896301, 0.00823975)
+shape = SubResource("BoxShape3D_qukky")
+
+[connection signal="body_entered" from="Area3D" to="." method="_on_area_3d_body_entered"]
+[connection signal="body_exited" from="Area3D" to="." method="_on_area_3d_body_exited"]

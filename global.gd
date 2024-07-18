@@ -12,10 +12,14 @@ var log_text: String = ""
 
 var mouse_sensibility := 0.5
 
+var is_near_carpincho:bool
+var carpincho_near:Node3D
+
 # NOTE Needed for datamosh_compositior
 var refresh_frame: bool
 var datamosh_mount: float = 0.0
 var force_datamosh:float = 0.0
+#
 
 func is_demo():
 	var _is_demo:bool = OS.has_feature("demo")
