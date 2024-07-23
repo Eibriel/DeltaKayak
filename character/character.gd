@@ -15,6 +15,8 @@ var damage := 0.0
 var damage_timer := 0.0
 var max_damage := 10.0
 
+var energy := 100.0
+
 var is_paddling_locked:=false
 
 var kayak_speed := 0.17
@@ -90,11 +92,16 @@ func _ready():
 	kayak_mat.emission = kayak_mat.albedo_color * 0.1
 	#kayak_mat.emission_intensity = 1.0
 	
+	%BreathingPlayer.play()
+	
 
 func _process(delta: float) -> void:
 	trail_time += delta
 	temp_time -= delta
 	temp_time = max(0.0, temp_time)
+	# Energy
+	energy += delta
+	energy = min(100.0, energy)
 	# Damage
 	damage_timer -= delta
 	damage_timer = max(0, damage_timer)
@@ -113,11 +120,47 @@ func _process(delta: float) -> void:
 	handle_animations()
 	hide_head_if_needed()
 	_handle_controller_camera()
+	handle_brathing()
 
 var _mouse_input:bool
 var _mouse_rotation:Vector3
 var _rotation_input:float
 var _tilt_input:float
+
+func play_left_paddle():
+	#if %LeftPaddleAudio.playing: return
+	%LeftPaddleAudio.play()
+
+func play_right_paddle():
+	#if %RightPaddleAudio.playing: return
+	%RightPaddleAudio.play()
+
+func handle_brathing():
+	#print(energy)
+	if false:
+		# NOTE This don't work for some reason
+		if energy > 80:
+			%BreathingPlayer["parameters/switch_to_clip"] = 0
+			#%BreathingPlayer.stream.switch_to_clip(0)
+		elif energy > 40:
+			%BreathingPlayer["parameters/switch_to_clip"] = 1
+			#%BreathingPlayer.stream.switch_to_clip(1)
+		elif energy > 0:
+			%BreathingPlayer["parameters/switch_to_clip"] = 2
+			#%BreathingPlayer.stream.switch_to_clip(2)
+		#print(%BreathingPlayer["parameters/switch_to_clip"])
+	if energy > 80:
+		if %BreathingPlayer.stream != preload("res://sounds/breathing/breathing_01.ogg"):
+			%BreathingPlayer.stream = preload("res://sounds/breathing/breathing_01.ogg")
+			%BreathingPlayer.play()
+	elif energy > 40:
+		if %BreathingPlayer.stream != preload("res://sounds/breathing/breathing_02.ogg"):
+			%BreathingPlayer.stream = preload("res://sounds/breathing/breathing_02.ogg")
+			%BreathingPlayer.play()
+	elif energy > 0:
+		if %BreathingPlayer.stream != preload("res://sounds/breathing/breathing_03.ogg"):
+			%BreathingPlayer.stream = preload("res://sounds/breathing/breathing_03.ogg")
+			%BreathingPlayer.play()
 
 func _handle_controller_camera()->void:
 	var input_dir:Vector2 = Input.get_vector("camera_left", "camera_right", "camera_up", "camera_down")
@@ -246,6 +289,7 @@ func handle_paddling(delta:float) -> void:
 	else:
 		if paddle_time == 0:
 			if padling_side == PADDLE_SIDE.LEFT or padling_side == PADDLE_SIDE.IDLE:
+				energy -= 2.0
 				padling_side = PADDLE_SIDE.RIGHT
 				paddle_time = left_sample*paddle_speed
 				%AnimationTree["parameters/conditions/idle"] = false
@@ -253,6 +297,7 @@ func handle_paddling(delta:float) -> void:
 				%AnimationTree["parameters/conditions/right"] = true
 				%AnimationTree.set("parameters/BlendRight/TimeScale/scale", left_sample*paddle_speed)
 			else:
+				energy -= 2.0
 				padling_side = PADDLE_SIDE.LEFT
 				paddle_time = right_sample*paddle_speed
 				%AnimationTree["parameters/conditions/idle"] = false
@@ -656,4 +701,4 @@ func set_damage():
 	#tween.tween_property(%DamageIndicator, "scale", Vector3.ZERO, 0.1)
 	#tween.tween_callback(Global.main_scene.set_datamosh.bind(false))
 	if damage > max_damage:
-		get_tree().quit()
+		Global.main_scene.game_over()

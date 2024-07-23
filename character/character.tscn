@@ -1,4 +1,4 @@
-[gd_scene load_steps=67 format=3 uid="uid://r0o1qsmlq84u"]
+[gd_scene load_steps=71 format=3 uid="uid://r0o1qsmlq84u"]
 
 [ext_resource type="Script" path="res://character/character.gd" id="1_mnv7b"]
 [ext_resource type="Texture2D" uid="uid://dbr6od55galv2" path="res://models/world_textures/BoteMadera_diffuse.png" id="2_j3chf"]
@@ -20,6 +20,9 @@
 [ext_resource type="AudioStream" uid="uid://dg2cu6vudgrba" path="res://sounds/collision_06.mp3" id="17_egvyw"]
 [ext_resource type="AudioStream" uid="uid://bycfel2ioa5po" path="res://sounds/collision_07.mp3" id="18_euw5c"]
 [ext_resource type="AudioStream" uid="uid://dpj8ejx1m2mmr" path="res://sounds/collision_08.mp3" id="19_u5rwt"]
+[ext_resource type="AudioStream" uid="uid://niydc1k8qspc" path="res://sounds/breathing/breathing_01.ogg" id="21_606bt"]
+[ext_resource type="AudioStream" uid="uid://coy1qbholkcw4" path="res://sounds/breathing/breathing_02.ogg" id="22_3tyeg"]
+[ext_resource type="AudioStream" uid="uid://dyqwvmon87aal" path="res://sounds/breathing/breathing_03.ogg" id="23_bgndq"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_p6dmh"]
 friction = 0.2
@@ -103,7 +106,8 @@ turbulence_noise_scale = 3.0
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_vgkea"]
 shading_mode = 2
-albedo_color = Color(0.120083, 0.105364, 0.0145188, 1)
+albedo_color = Color(0.02, 0.01888, 0.0144, 1)
+metallic_specular = 0.0
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_ko0bq"]
 material = SubResource("StandardMaterial3D_vgkea")
@@ -146,40 +150,38 @@ tracks/1/use_blend = true
 [sub_resource type="Animation" id="Animation_augtv"]
 resource_name = "LeftPaddleSounds"
 length = 2.5
-tracks/0/type = "audio"
+tracks/0/type = "method"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("../LeftPaddleAudio")
+tracks/0/path = NodePath("..")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"clips": [{
-"end_offset": 0.0,
-"start_offset": 0.0,
-"stream": ExtResource("8_fdves")
-}],
-"times": PackedFloat32Array(1.53333)
+"times": PackedFloat32Array(1.53333),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [],
+"method": &"play_left_paddle"
+}]
 }
-tracks/0/use_blend = true
 
 [sub_resource type="Animation" id="Animation_34fho"]
 resource_name = "RightPaddleSounds"
 length = 2.5
-tracks/0/type = "audio"
+tracks/0/type = "method"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("../RightPaddleAudio")
+tracks/0/path = NodePath("..")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"clips": [{
-"end_offset": 0.0,
-"start_offset": 0.0,
-"stream": ExtResource("8_fdves")
-}],
-"times": PackedFloat32Array(1.53333)
+"times": PackedFloat32Array(1.53333),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [],
+"method": &"play_right_paddle"
+}]
 }
-tracks/0/use_blend = true
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_5hwsr"]
 _data = {
@@ -274,7 +276,7 @@ loop_mode = 0
 [sub_resource type="AnimationNodeTimeScale" id="AnimationNodeTimeScale_spqqg"]
 
 [sub_resource type="AnimationNodeBlendTree" id="AnimationNodeBlendTree_n8pip"]
-graph_offset = Vector2(-594, -10)
+graph_offset = Vector2(-565.264, 29.6544)
 nodes/Add2/node = SubResource("AnimationNodeAdd2_p4coy")
 nodes/Add2/position = Vector2(-120, 80)
 nodes/Animation/node = SubResource("AnimationNodeAnimation_hlgus")
@@ -351,6 +353,50 @@ stream_4/stream = ExtResource("16_kto82")
 stream_5/stream = ExtResource("17_egvyw")
 stream_6/stream = ExtResource("18_euw5c")
 stream_7/stream = ExtResource("19_u5rwt")
+
+[sub_resource type="AudioStreamInteractive" id="AudioStreamInteractive_dpwjr"]
+clip_count = 3
+clip_0/name = &"Breathing 01"
+clip_0/stream = ExtResource("21_606bt")
+clip_0/auto_advance = 0
+clip_1/name = &"Breathing 02"
+clip_1/stream = ExtResource("22_3tyeg")
+clip_1/auto_advance = 0
+clip_2/name = &"Breathing 03"
+clip_2/stream = ExtResource("23_bgndq")
+clip_2/auto_advance = 0
+_transitions = {
+Vector2i(-1, -1): {
+"fade_beats": 1,
+"fade_mode": 4,
+"from_time": 0,
+"to_time": 0
+},
+Vector2i(0, 1): {
+"fade_beats": 1,
+"fade_mode": 4,
+"from_time": 0,
+"to_time": 1
+},
+Vector2i(1, 0): {
+"fade_beats": 1,
+"fade_mode": 4,
+"from_time": 0,
+"to_time": 1
+},
+Vector2i(1, 2): {
+"fade_beats": 1,
+"fade_mode": 4,
+"from_time": 0,
+"to_time": 1
+},
+Vector2i(2, 1): {
+"fade_beats": 1,
+"fade_mode": 4,
+"from_time": 0,
+"to_time": 1
+}
+}
 
 [node name="character" type="RigidBody3D"]
 collision_layer = 2
@@ -503,7 +549,7 @@ process_material = SubResource("ParticleProcessMaterial_nmsp7")
 draw_pass_1 = SubResource("TubeTrailMesh_6cpm0")
 
 [node name="GPUParticles3D2" type="GPUParticles3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.95959, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.95959, -5.73199)
 cast_shadow = 0
 amount = 1000
 lifetime = 20.0
@@ -578,7 +624,7 @@ parameters/BlendRight/current_delta = 0.0
 parameters/BlendRight/Add2/current_length = 1.0
 parameters/BlendRight/Add2/current_position = 1.0
 parameters/BlendRight/Add2/current_delta = 0.0
-parameters/BlendRight/Add2/add_amount = null
+parameters/BlendRight/Add2/add_amount = 1.0
 parameters/BlendRight/Animation/current_length = 1.0
 parameters/BlendRight/Animation/current_position = 1.0
 parameters/BlendRight/Animation/current_delta = 0.0
@@ -599,40 +645,41 @@ parameters/Start/current_length = 0.0
 parameters/Start/current_position = 0.0
 parameters/Start/current_delta = 0.0
 parameters/character_anims_Idle/current_length = 1.0
-parameters/character_anims_Idle/current_position = 0.525128
-parameters/character_anims_Idle/current_delta = 0.0180556
+parameters/character_anims_Idle/current_position = 0.507656
+parameters/character_anims_Idle/current_delta = 0.0166667
 
 [node name="KriketsAudio" type="AudioStreamPlayer3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.05414, -16.3561)
 stream = ExtResource("8_3egmi")
 volume_db = -7.111
-autoplay = true
 bus = &"Ambient"
 
 [node name="RiverAudio" type="AudioStreamPlayer3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -13.1346, 0.515442)
 stream = ExtResource("10_e5eh0")
 volume_db = -5.0
-autoplay = true
 bus = &"Ambient"
 
 [node name="KayakAudio" type="AudioStreamPlayer3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -6.58295, 0.215637)
 stream = ExtResource("11_j3wxn")
 volume_db = -20.0
-autoplay = true
 bus = &"Kayak"
 
 [node name="RightPaddleAudio" type="AudioStreamPlayer3D" parent="."]
+unique_name_in_owner = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.25613, 0, 0)
+stream = ExtResource("8_fdves")
 volume_db = 20.0
-max_polyphony = 5
+max_polyphony = 2
 bus = &"Kayak"
 
 [node name="LeftPaddleAudio" type="AudioStreamPlayer3D" parent="."]
+unique_name_in_owner = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.35202, 0, 0)
+stream = ExtResource("8_fdves")
 volume_db = 20.0
-max_polyphony = 5
+max_polyphony = 2
 bus = &"Kayak"
 
 [node name="CollisionAudio" type="AudioStreamPlayer3D" parent="."]
@@ -670,8 +717,10 @@ spot_angle = 58.47
 unique_name_in_owner = true
 metadata/fog_density = 0.005
 
-[node name="AudioListener3D" type="AudioListener3D" parent="POVCameraController"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.091613, 0.044735)
-current = true
+[node name="BreathingPlayer" type="AudioStreamPlayer" parent="."]
+unique_name_in_owner = true
+stream = SubResource("AudioStreamInteractive_dpwjr")
+max_polyphony = 3
+bus = &"Voice"
 
 [connection signal="area_entered" from="InteractionArea" to="." method="_on_interaction_area_area_entered"]

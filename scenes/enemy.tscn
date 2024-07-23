@@ -306,7 +306,6 @@ bus = &"Monster"
 unique_name_in_owner = true
 stream = ExtResource("21_a13hk")
 volume_db = -54.154
-autoplay = true
 bus = &"Music"
 
 [node name="SmokeParticles" type="GPUParticles3D" parent="."]

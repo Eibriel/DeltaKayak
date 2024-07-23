@@ -17,7 +17,7 @@ enum Character {
 #@export_group("Character")
 @export var character: Character = Character.PROTAGONIST
 @export var image: String
-
+@export var enabled: bool = true
 #@export_group("Text")
 @export_multiline var text: String
 

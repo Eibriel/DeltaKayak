@@ -11,7 +11,8 @@ func _on_unhandled_trigger(main_scene, _game_state, trigger_id:String, trigger_t
 			"triggerpath_wrong_way_003":
 				main_scene.say_dialogue("wrong_way_001", true)
 			"triggerpath_wrong_wayb_003":
-				main_scene.say_dialogue("wrong_way_002", true)
+				if main_scene.other_side:
+					main_scene.say_dialogue("wrong_way_002", true)
 			"triggerpath_demo_tierra_003":
 				main_scene.say_hint("LOOK BUTTON HINT", 10)
 			"triggerpath_grab_tutorial_003":
@@ -19,6 +20,13 @@ func _on_unhandled_trigger(main_scene, _game_state, trigger_id:String, trigger_t
 			"triggerpath_monster_003":
 				main_scene.say_dialogue("look_monster")
 				main_scene.set_player_state("monster")
+			"triggerpath_demo_door_003":
+				if main_scene.puzzle_solved:
+					main_scene.animate_puzzle_door()
+			"triggerpath_othersided_003":
+				main_scene.other_side = true
+			_:
+				handled = false
 	elif trigger_type == "primary_action":
 		match trigger_id:
 			"look_key":
@@ -44,8 +52,11 @@ func _on_unhandled_trigger(main_scene, _game_state, trigger_id:String, trigger_t
 			"triggerpath_gate_003":
 				main_scene.say_dialogue("look_gate")
 			"triggerpath_demo_door_003":
-				main_scene.say_dialogue("demo_door")
-				main_scene.set_player_state("puzzle_door")
+				if main_scene.puzzle_solved:
+					main_scene.say_dialogue("demo_door_solved")
+				else:
+					main_scene.say_dialogue("demo_door")
+					main_scene.set_player_state("puzzle_door")
 			"triggerpath_demo_tierra_003":
 				main_scene.say_dialogue("demo_tierra")
 				main_scene.set_player_state("puzzle_tierra")
@@ -65,5 +76,5 @@ func _on_unhandled_trigger(main_scene, _game_state, trigger_id:String, trigger_t
 				handled = false
 	else:
 		handled = false
-	print(handled)
+	#print(handled)
 	return handled

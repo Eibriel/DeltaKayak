@@ -68,11 +68,11 @@ func _get_target(_delta: float):
 #
 func get_torque_rotation(_target_position:Vector3):
 	var rotation_vector := global_position.direction_to(_target_position)
-	var angle_to_target := Vector3.BACK.signed_angle_to(rotation_vector, Vector3.UP)
-	last_angle_to_target = -angle_to_target
+	var _angle_to_target := Vector3.BACK.signed_angle_to(rotation_vector, Vector3.UP)
+	last_angle_to_target = -_angle_to_target
 	
 	#Global.log_text += "\nangle_to_target: %f" % angle_to_target
-	var error := angle_difference(angle_to_target, rotation.y)
+	var error := angle_difference(_angle_to_target, rotation.y)
 	#Global.log_text += "\nrotation.y: %f" % rotation.y
 	#Global.log_text += "\nerror: %f" % error
 	var poportional := get_proportional(error)
@@ -139,7 +139,7 @@ func _physics_process(delta: float):
 		var _max_force := calculate_parameters(time_horizon)
 	var t := time/time_horizon
 	#print(t)
-	var cb := cubic_bezier_curve(p0, p1, p2, p3, t)
+	var _cb := cubic_bezier_curve(p0, p1, p2, p3, t)
 	#%CSGSphere3D2.position = Vector3(cb.x, 0, cb.y)*1
 	
 	var der := second_derivaive_cubic_bezier(p0, p1, p2, p3, t)
@@ -213,23 +213,23 @@ func _integrate_forces(state:PhysicsDirectBodyState3D):
 	calculated_velocity += current
 	state.linear_velocity = calculated_velocity
 
-func _handle_contacts(state: PhysicsDirectBodyState3D):
+func _handle_contacts(_state: PhysicsDirectBodyState3D):
 	pass
 
 func _get_sensor_data() -> Dictionary:
 	return {}
 
 # Cubic Bezier path planning
-func calculate_parameters(time_horizon:float) -> float:
+func calculate_parameters(_time_horizon:float) -> float:
 	var start_pos := Global.tri_to_bi(position)
 	var start_vel := Global.tri_to_bi(linear_velocity)
-	#var predicted_pos: Vector3= target_position+(target_velocity*time_horizon)
+	#var predicted_pos: Vector3= target_position+(target_velocity*_time_horizon)
 	#var end_pos := Global.tri_to_bi(predicted_pos)
 	var end_pos := Global.tri_to_bi(target_position)
 	var end_vel :=  Global.tri_to_bi(target_velocity)
 	p0 = start_pos
-	p1 = start_pos + (start_vel * (time_horizon/3.0) )
-	p2 = end_pos - (end_vel * (time_horizon/3.0) )
+	p1 = start_pos + (start_vel * (_time_horizon/3.0) )
+	p2 = end_pos - (end_vel * (_time_horizon/3.0) )
 	p3 = end_pos
 	path_visualization.curve.set_point_position(0, Global.bi_to_tri(p0, 0.2))
 	path_visualization.curve.set_point_out(0, Global.bi_to_tri(p1)-Global.bi_to_tri(p0))
@@ -241,17 +241,17 @@ func calculate_parameters(time_horizon:float) -> float:
 	var forward_component: Vector3 = forward_direction * max_force_a.dot(forward_direction)
 	return forward_component.length()
 	
-func cubic_bezier_curve(p0:Vector2, p1:Vector2, p2:Vector2, p3:Vector2, i:float) -> Vector2:
-	var xya:Vector2 = lerp(p0, p1, i)
-	var xyb:Vector2 = lerp(p1, p2, i)
-	var xyc:Vector2 = lerp(p2, p3, i)
+func cubic_bezier_curve(_p0:Vector2, _p1:Vector2, _p2:Vector2, _p3:Vector2, i:float) -> Vector2:
+	var xya:Vector2 = lerp(_p0, _p1, i)
+	var xyb:Vector2 = lerp(_p1, _p2, i)
+	var xyc:Vector2 = lerp(_p2, _p3, i)
 	var xym:Vector2 = lerp(xya, xyb, i)
 	var xyn:Vector2 = lerp(xyb, xyc, i)
 	var xy:Vector2 = lerp(xym, xyn, i)
 	return xy
 
-func second_derivaive_cubic_bezier(p0:Vector2, p1:Vector2, p2:Vector2, p3:Vector2, i:float) -> Vector2:
+func second_derivaive_cubic_bezier(_p0:Vector2, _p1:Vector2, _p2:Vector2, _p3:Vector2, i:float) -> Vector2:
 	var der:=Vector2.ZERO
-	der.x = (6.0*(1.0-i)*(p2.x-(2.0*p1.x)+p0.x)) + (6.0*i*(p3.x - (2.0*p2.x) + p1.x))
-	der.y = (6.0*(1.0-i)*(p2.y-(2.0*p1.y)+p0.y)) + (6.0*i*(p3.y - (2.0*p2.y) + p1.y))
+	der.x = (6.0*(1.0-i)*(_p2.x-(2.0*_p1.x)+_p0.x)) + (6.0*i*(_p3.x - (2.0*_p2.x) + _p1.x))
+	der.y = (6.0*(1.0-i)*(_p2.y-(2.0*_p1.y)+_p0.y)) + (6.0*i*(_p3.y - (2.0*_p2.y) + _p1.y))
 	return der

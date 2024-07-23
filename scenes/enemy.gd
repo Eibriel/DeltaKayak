@@ -370,7 +370,7 @@ func _get_sensor_data() -> Dictionary:
 	}
 
 
-func _on_phantom_area_1_body_entered(body: Node3D) -> void:
+func _on_phantom_area_1_body_entered(_body: Node3D) -> void:
 	return
 	if current_state == STATE.AVOID_COLLISION: return
 	about_to_collide = true

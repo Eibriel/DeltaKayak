@@ -1,4 +1,4 @@
-[gd_scene load_steps=50 format=3 uid="uid://ce6e8v1saxjr5"]
+[gd_scene load_steps=52 format=3 uid="uid://ce6e8v1saxjr5"]
 
 [ext_resource type="Theme" uid="uid://1kj8fi5pat0v" path="res://themes/default_theme.tres" id="1_7eei4"]
 [ext_resource type="Environment" uid="uid://xpf4ng2ym0n4" path="res://environments/main_environment.tres" id="1_ekqa4"]
@@ -15,6 +15,7 @@
 [ext_resource type="Theme" uid="uid://cr0d6atb52k54" path="res://themes/dialogue_name_theme.tres" id="6_xj3c2"]
 [ext_resource type="Theme" uid="uid://i2watan4uqvs" path="res://themes/hint_label_theme.tres" id="8_wuuph"]
 [ext_resource type="PackedScene" uid="uid://t23rsw74uei8" path="res://scenes/long_box.tscn" id="9_kolyd"]
+[ext_resource type="Script" path="res://game_over_menu.gd" id="10_rympc"]
 [ext_resource type="PackedScene" uid="uid://dsppfk5r8xdm7" path="res://scenes/L_floating_box.tscn" id="10_tov8v"]
 [ext_resource type="PackedScene" uid="uid://ccwbpjnygckmy" path="res://scenes/door.tscn" id="11_mh163"]
 [ext_resource type="PackedScene" uid="uid://cq7dkdx262hcs" path="res://scenes/switch.tscn" id="12_uwfp4"]
@@ -26,6 +27,7 @@
 [ext_resource type="AudioStream" uid="uid://ctm601sbah8df" path="res://music/494981__original_sound__risers-horror-whooshes-tension-builder-1.mp3" id="18_akxex"]
 [ext_resource type="AudioStream" uid="uid://css74q0cr7wrf" path="res://sounds/679400__adviseme333__fast-water-flutter.wav" id="19_7efqm"]
 [ext_resource type="PackedScene" uid="uid://dt7sihp44khg1" path="res://scenes/carpincho.tscn" id="20_wsws0"]
+[ext_resource type="PackedScene" uid="uid://b8olueufru4tm" path="res://models/enemy/enemy.glb" id="23_3o5cm"]
 [ext_resource type="AudioStream" uid="uid://crud8scfcqn51" path="res://sounds/TinCoin.mp3" id="27_00yc6"]
 [ext_resource type="AudioStream" uid="uid://0a4k1bclukk0" path="res://sounds/197860__ladystarlightnyc__bow-tapping-violin-thru-delay-pedal.mp3" id="28_a3my4"]
 
@@ -52,7 +54,7 @@ size = Vector3(1.96265, 7.51904, 1.8761)
 size = Vector3(1, 0.831177, 1)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_cach1"]
-size = Vector3(1, 1, 6.0647)
+size = Vector3(3.03564, 1, 3.5419)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_rdra4"]
 size = Vector3(1, 1, 15.3396)
@@ -172,7 +174,7 @@ theme = ExtResource("1_7eei4")
 script = ExtResource("1_xxenq")
 game_preferences = ExtResource("2_wexnt")
 game_state = ExtResource("3_nh3h6")
-initial_position = NodePath("Main3D/InitialPositionOtherSide")
+initial_position = NodePath("Main3D/InitialPositionPuzzle")
 
 [node name="Node2D" type="Node2D" parent="."]
 
@@ -451,6 +453,7 @@ max_value = 10000.0
 [node name="PauseMenu" type="Control" parent="Control"]
 unique_name_in_owner = true
 process_mode = 2
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -577,6 +580,49 @@ layout_mode = 2
 focus_neighbor_bottom = NodePath("../FullScreenButton")
 text = "BACK"
 
+[node name="GameOverMenu" type="Control" parent="Control"]
+unique_name_in_owner = true
+process_mode = 2
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("10_rympc")
+
+[node name="ColorRect" type="ColorRect" parent="Control/GameOverMenu"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.878431)
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Control/GameOverMenu"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="GameOverLabel" type="Label" parent="Control/GameOverMenu/VBoxContainer"]
+layout_mode = 2
+text = "GAME OVER"
+
+[node name="ContinueButton" type="Button" parent="Control/GameOverMenu/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "CONTINUE"
+
 [node name="LabelDemo" type="Label" parent="Control"]
 visible = false
 layout_mode = 1
@@ -588,7 +634,7 @@ offset_top = -38.0
 offset_right = 134.0
 offset_bottom = -15.0
 grow_vertical = 0
-text = "Demo Version"
+text = "DEMO VERSION"
 
 [node name="LabelTemporizador" type="Label" parent="Control"]
 unique_name_in_owner = true
@@ -1469,7 +1515,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14.6896, 0, 50.0311)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14.1148, 0, 25.5145)
 
 [node name="Switch" parent="Main3D/PysicsObjects" instance=ExtResource("12_uwfp4")]
-transform = Transform3D(-0.753242, 0, 0.657743, 0, 1, 0, -0.657743, 0, -0.753242, -171.368, 0, -415.956)
+transform = Transform3D(-0.753242, 0, 0.657743, 0, 1, 0, -0.657743, 0, -0.753242, -82.8801, 0, -409.929)
 state = true
 
 [node name="Door" parent="Main3D/PysicsObjects" instance=ExtResource("11_mh163")]
@@ -1514,10 +1560,10 @@ shape = SubResource("BoxShape3D_d47b7")
 
 [node name="DemoExitDoor" type="StaticBody3D" parent="Main3D/DemoElements"]
 unique_name_in_owner = true
-transform = Transform3D(0.719703, 0, 0.694282, 0, 1, 0, -0.694282, 0, 0.719703, -166.224, 0, -412.89)
+transform = Transform3D(0.719703, 0, 0.694282, 0, 1, 0, -0.694282, 0, 0.719703, -168.384, 0, -411.076)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Main3D/DemoElements/DemoExitDoor"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.10352e-05, 0, -0.479645)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.01776, 0, -0.542938)
 shape = SubResource("BoxShape3D_cach1")
 
 [node name="CSGBox3D" type="CSGBox3D" parent="Main3D/DemoElements/DemoExitDoor"]
@@ -1528,9 +1574,16 @@ size = Vector3(1, 2.01664, 6.10846)
 [node name="PuzzleStatueDoor" parent="Main3D/DemoElements/DemoExitDoor" instance=ExtResource("17_y0syq")]
 transform = Transform3D(0.108988, 0, -2.99802, 0, 3, 0, 2.99802, 0, 0.108988, 1.30937, -0.625061, -0.845612)
 
+[node name="ExitDoorLight" type="OmniLight3D" parent="Main3D/DemoElements/DemoExitDoor"]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.158737, 10.0557, -0.418518)
+visible = false
+light_color = Color(0.278244, 0.663233, 1.92523e-07, 1)
+light_energy = 10.0
+
 [node name="BlockPath" type="StaticBody3D" parent="Main3D/DemoElements"]
 unique_name_in_owner = true
-transform = Transform3D(-0.999972, 0, -0.00757489, 0, 1, 0, 0.00757489, 0, -0.999972, -198.445, 0, -146.974)
+transform = Transform3D(-0.999972, 0, -0.00757489, 0, 1, 0, 0.00757489, 0, -0.999972, -198.327, 0, -146.974)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Main3D/DemoElements/BlockPath"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.748719, 0, 0.28206)
@@ -1565,11 +1618,23 @@ transform = Transform3D(0.0152537, 0, 0.999884, 0, 1, 0, -0.999884, 0, 0.0152537
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.74872, 0, 0.28206)
 shape = SubResource("BoxShape3D_icihu")
 
+[node name="Enemydummy" type="Node3D" parent="Main3D/DemoElements"]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -11.969, 0, -143.174)
+
+[node name="enemy" parent="Main3D/DemoElements/Enemydummy" instance=ExtResource("23_3o5cm")]
+transform = Transform3D(0.0826839, 0, -1.19715, 0, 1.2, 0, 1.19715, 0, 0.0826839, 8.11646, 0.2, -2.24095)
+
 [node name="VinoIndicador" type="CSGSphere3D" parent="Main3D/DemoElements"]
 unique_name_in_owner = true
 transform = Transform3D(0.739455, 0, 0.673206, 0, 1, 0, -0.673206, 0, 0.739455, -193.235, 5.94782, -370.267)
+cast_shadow = 0
 radius = 0.235075
 material = SubResource("StandardMaterial3D_xingp")
+
+[node name="OmniLight3D" type="OmniLight3D" parent="Main3D/DemoElements/VinoIndicador"]
+light_color = Color(0.278244, 0.663233, 1.92523e-07, 1)
+light_energy = 10.0
 
 [node name="VinoLabel" type="Label3D" parent="Main3D/DemoElements"]
 unique_name_in_owner = true
@@ -1585,6 +1650,10 @@ transform = Transform3D(0.739455, 0, 0.673206, 0, 1, 0, -0.673206, 0, 0.739455, 
 radius = 0.265138
 material = SubResource("StandardMaterial3D_xingp")
 
+[node name="OmniLight3D" type="OmniLight3D" parent="Main3D/DemoElements/CarneIndicador"]
+light_color = Color(0.278244, 0.663233, 1.92523e-07, 1)
+light_energy = 10.0
+
 [node name="CarneLabel" type="Label3D" parent="Main3D/DemoElements"]
 unique_name_in_owner = true
 transform = Transform3D(-0.739455, 0, -0.673206, 0, 1, 0, 0.673206, 0, -0.739455, -207.955, 4.90522, -386.662)
@@ -1598,6 +1667,11 @@ unique_name_in_owner = true
 transform = Transform3D(0.739455, 0, 0.673206, 0, 1, 0, -0.673206, 0, 0.739455, -209.811, 5.9369, -370.369)
 radius = 0.248745
 material = SubResource("StandardMaterial3D_xingp")
+
+[node name="OmniLight3D" type="OmniLight3D" parent="Main3D/DemoElements/TierraIndicador"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.184402, 0, -0.167908)
+light_color = Color(0.278244, 0.663233, 1.92523e-07, 1)
+light_energy = 10.0
 
 [node name="TierraLabel" type="Label3D" parent="Main3D/DemoElements"]
 unique_name_in_owner = true
@@ -1629,10 +1703,10 @@ spot_range = 6.58398
 spot_angle = 39.2659
 
 [node name="SpotLight3D4" type="SpotLight3D" parent="Main3D/DemoElements"]
-transform = Transform3D(-0.707243, -0.174789, 0.685023, -1.04308e-07, 0.968955, 0.247236, -0.706971, 0.174856, -0.685286, -161.463, 5.69959, -418.161)
+transform = Transform3D(0.702178, 0.262857, -0.661704, -1.49012e-07, 0.929358, 0.36918, 0.712001, -0.25923, 0.652575, -173.277, 3.82575, -407.262)
 light_energy = 5.0
 distance_fade_enabled = true
-spot_range = 11.9277
+spot_range = 10.1255
 spot_angle = 23.4021
 
 [node name="InstruccionLabel" type="Label3D" parent="Main3D/DemoElements"]
@@ -1668,7 +1742,7 @@ distance_fade_begin = 200.0
 omni_range = 19.4934
 
 [node name="GrabArea3D" type="Area3D" parent="Main3D/DemoElements"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -17.3393, 0, -135.942)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -17.3393, 0, -150.009)
 collision_layer = 0
 collision_mask = 2
 metadata/strength = true
@@ -1800,7 +1874,6 @@ occluder = SubResource("BoxOccluder3D_gtuj1")
 
 [node name="MusicBackground" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("16_dvrax")
-autoplay = true
 bus = &"Music"
 
 [node name="JumpscareAudio" type="AudioStreamPlayer" parent="."]
@@ -1833,6 +1906,10 @@ stream = ExtResource("28_a3my4")
 volume_db = -8.0
 bus = &"UI"
 
+[node name="VoicePlayer" type="AudioStreamPlayer" parent="."]
+unique_name_in_owner = true
+bus = &"Voice"
+
 [connection signal="drag_ended" from="Control/Debug/VBoxContainer/ProportionalSlider" to="." method="_on_slider_drag_ended"]
 [connection signal="drag_ended" from="Control/Debug/VBoxContainer/IntegralSlider" to="." method="_on_slider_drag_ended"]
 [connection signal="drag_ended" from="Control/Debug/VBoxContainer/DerivativeSlider" to="." method="_on_slider_drag_ended"]
@@ -1847,6 +1924,7 @@ bus = &"UI"
 [connection signal="drag_ended" from="Control/PauseMenu/GameSettingsContainer/MouseSensibilitySlider" to="." method="_on_mouse_sensibility_slider_drag_ended"]
 [connection signal="drag_ended" from="Control/PauseMenu/GameSettingsContainer/MasterVolumeSlider" to="." method="_on_master_volume_slider_drag_ended"]
 [connection signal="button_up" from="Control/PauseMenu/GameSettingsContainer/BackButton" to="." method="_on_back_button_up"]
+[connection signal="button_up" from="Control/GameOverMenu/VBoxContainer/ContinueButton" to="." method="_on_continue_button_up"]
 [connection signal="body_entered" from="Main3D/DemoElements/GrabArea3D" to="." method="_on_grab_kayak_body_entered"]
 [connection signal="body_entered" from="Main3D/DemoElements/ForeshadowingArea3D" to="." method="_on_foreshadowing_body_entered"]
 [connection signal="body_entered" from="Main3D/DemoElements/AnaArea3D" to="." method="_on_ana_body_entered"]

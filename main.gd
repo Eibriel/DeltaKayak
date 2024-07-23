@@ -24,10 +24,10 @@ var player_state:Array=[]
 
 var temporizador:= 0.0
 var grabbed := false
-var moved := false
+var moved := true # NOTE first sare disabed
 var is_intro := true
 var foreshadowing := false
-
+var other_side := false
 var kayak_k1: RigidBody3D
 
 var SKIP_INTRO = true
@@ -39,6 +39,7 @@ func _ready() -> void:
 		#DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_MAXIMIZED)
 		pass
 	else:
+		%LabelTemporizador.visible = false
 		%LogLabel.visible = false
 		var sfx_index := AudioServer.get_bus_index("Master")
 		AudioServer.set_bus_volume_db(sfx_index, 0.0)
@@ -50,6 +51,7 @@ func _ready() -> void:
 	%GameSettingsContainer.visible = false
 	%PauseMenuContainer.visible = true
 	%PauseMenu.visible = false
+	%GameOverMenu.visible = false
 	
 	Global.main_scene = self
 	Global.grab_joint = %GrabJoint3D
@@ -118,6 +120,8 @@ func _ready() -> void:
 	%BlockPath.position.y = -20
 	
 	%HintLabel.visible = false
+	
+	%Enemydummy.visible = false
 
 func pause():
 	#player.about_to_pause()
@@ -217,6 +221,7 @@ func handle_enemy_direction_indicator(_delta:float) -> void:
 	%EnemyIndicatorIcon.scale = Vector2.ONE * clampf(remap(dist, 0, 40, 1, 0), 0, 1)
 
 var puzzle_solved := false
+var puzzle_progress := false
 func handle_demo_puzzle():
 	if Global.character.position.distance_to(%FinishPositionDemo.global_position) < 6 \
 	 and not %LabelThanks.visible:
@@ -252,10 +257,12 @@ func handle_demo_puzzle():
 						#print("Espada y Carne")
 						%CarneIndicador.visible = true
 						match_count += 1
-	if match_count > 0:
+	if match_count > 0 and not puzzle_progress:
+		puzzle_progress = true
 		set_player_state("puzzle_progress")
 	if match_count == 3:
 		puzzle_solved = true
+		%ExitDoorLight.visible = true
 		del_player_state("puzzle_progress")
 		del_player_state("puzzle_door")
 		del_player_state("puzzle_tierra")
@@ -264,8 +271,13 @@ func handle_demo_puzzle():
 		set_player_state("puzzle_solved")
 		#%DemoExitDoor.position.y = -20
 		#print("OpenDoor")
-		var tween := create_tween()
-		tween.tween_property(%DemoExitDoor, "position:y", -1.7, 10)
+
+var door_open:=false
+func animate_puzzle_door():
+	if door_open: return
+	door_open = true
+	var tween := create_tween()
+	tween.tween_property(%DemoExitDoor, "position:y", -2.7, 7)
 
 func handle_stats(_delta):
 	#
@@ -287,20 +299,35 @@ func handle_dialogue(delta:float) -> void:
 	dialogue_label.text = ""
 	if dialogue_queue.size() < 1: return
 	var d: DialogueResource = dialogue_queue.pop_front() as DialogueResource
+	if d.id.begins_with("disabled_"):
+		return
 	var key: String = "%s_dialogue_text" % d.resource_scene_unique_id
 	var character_string:String = d.Character.keys()[d.character]
 	%CharNameLabel.text = tr(character_string)
 	dialogue_label.text = tr(key)
 	dialogue_label.visible_ratio = 0
-	if is_dialogue_animating():
-		dialogue_tween.stop()
-	dialogue_tween = create_tween()
 	write_speed = dialogue_label.text.length() * 0.08
-	dialogue_tween.tween_property(dialogue_label, "visible_ratio", 1., 1)
 	dialogue_time = write_speed + (dialogue_label.text.length() * 0.08)
-	# TODO
-	# - Skip animation
-	# - Skip text
+	
+	# Voice
+	if key in Global.voice_id:
+		var idx = Global.voice_id.find(key)
+		%VoicePlayer.stop()
+		%VoicePlayer.stream = Global.voice_files[idx]
+		dialogue_time = %VoicePlayer.stream.get_length()
+		%VoicePlayer.play()
+	# NOTE this don't work when exported
+	#var audio_path := "res://sounds/voice/character/%s.ogg" % key
+	#if FileAccess.file_exists(audio_path):
+	#	%VoicePlayer.stop()
+	#	%VoicePlayer.stream = load(audio_path)
+	#	dialogue_time = %VoicePlayer.stream.get_length()
+	#	%VoicePlayer.play()
+	#
+	if is_dialogue_animating():
+		dialogue_tween.kill()
+	dialogue_tween = create_tween()
+	dialogue_tween.tween_property(dialogue_label, "visible_ratio", 1., 1)
 
 func handle_triggers(_delta:float) -> void:
 	if Global.camera == null: return
@@ -426,15 +453,18 @@ func say_some_dialogue()->void:
 			"monster":
 				say_dialogue("think_monster")
 	else:
-		say_dialogue("describe_night")
+		if other_side:
+			say_dialogue("describe_other_side")
+		else:
+			say_dialogue("describe_night")
 
 func on_pepa():
-	if player_state.has("other_side"):
+	if other_side:
 		var pepa_dialogues := [
 			"pepa_002",
 			"pepa_003"
 		]
-		say_dialogue(player_state.pick_random())
+		say_dialogue(pepa_dialogues.pick_random())
 	else:
 		say_dialogue("pepa_001")
 
@@ -455,7 +485,7 @@ func on_trigger_exited(id:String):
 
 func execute_trigger(trigger_type:String, trigger_id:String)->bool:
 	# var index := "%s:%s" % [type, trigger_id]
-	if not is_closest_trigger(trigger_id): return false
+	#if not is_closest_trigger(trigger_id): return false
 	var handled := false
 	for i in game_state.items:
 		if not i.active: continue
@@ -629,38 +659,44 @@ func grab_kayak():
 		Vector3(-2, 0, -0.5),
 	]
 	Global.character.lock_grab()
+	%Enemydummy.visible =true
+	%Enemydummy.global_position = Global.character.global_position
 	var tween := create_tween()
 	tween.set_process_mode(Tween.TWEEN_PROCESS_PHYSICS)
+	tween.tween_callback(%JumpscareAudio.play)
 	tween.tween_callback(%JumpscareAudio3.play)
-	tween.tween_callback(Global.character.apply_central_impulse.bind(Vector3(0, 0, 1)*3))
-	tween.tween_interval(1.0)
-	tween.tween_callback(Global.character.apply_central_impulse.bind(Vector3(-1, 0, 1)*3))
-	tween.tween_callback(say_dialogue.bind("demo2_kayak_movement_3"))
-	tween.tween_interval(0.3)
-	tween.tween_callback(Global.character.apply_central_impulse.bind(Vector3(1, 0, 1)*4))
-	tween.tween_interval(0.3)
-	tween.tween_callback(Global.character.apply_central_impulse.bind(Vector3(-1, 0, 1)*3))
-	tween.tween_interval(3)
 	tween.tween_callback(connect_grab)
 	tween.tween_callback(set_player_state.bind("grabbed"))
-	tween.set_ease(Tween.EASE_IN_OUT)
-	tween.set_trans(Tween.TRANS_CUBIC)
-	tween.tween_property(%KayakGrabber, "global_position", Vector3(-16, 0, -139), 1.3)
-	tween.parallel().tween_property(%KayakGrabber, "global_rotation:y", 0, 0.2)
 	tween.tween_callback(say_dialogue.bind("demo_scream"))
-	for t in tt:
-		tween.tween_property(%KayakGrabber, "global_position", Vector3(-16, 0, -139)+t, 0.6)
-		tween.parallel().tween_property(%KayakGrabber, "global_rotation:y", deg_to_rad(randi_range(-90, 90)), 0.8)
-	tween.tween_property(%KayakGrabber, "global_position", Vector3(-38.872, 0, -146.022), 0.6)
-	tween.parallel().tween_property(%KayakGrabber, "global_rotation:y", deg_to_rad(-90+45), 0.7)
-	tween.tween_interval(1.0)
+	if false:
+		tween.tween_callback(Global.character.apply_central_impulse.bind(Vector3(0, 0, 1)*3))
+		tween.tween_interval(1.0)
+		tween.tween_callback(Global.character.apply_central_impulse.bind(Vector3(-1, 0, 1)*3))
+		tween.tween_callback(say_dialogue.bind("demo2_kayak_movement_3"))
+		tween.tween_interval(0.3)
+		tween.tween_callback(Global.character.apply_central_impulse.bind(Vector3(1, 0, 1)*4))
+		tween.tween_interval(0.3)
+		tween.tween_callback(Global.character.apply_central_impulse.bind(Vector3(-1, 0, 1)*3))
+		tween.tween_interval(3)
+		tween.tween_callback(connect_grab)
+		tween.tween_callback(set_player_state.bind("grabbed"))
+		tween.set_ease(Tween.EASE_IN_OUT)
+		tween.set_trans(Tween.TRANS_CUBIC)
+		tween.tween_property(%KayakGrabber, "global_position", Vector3(-16, 0, -139), 1.3)
+		tween.parallel().tween_property(%KayakGrabber, "global_rotation:y", 0, 0.2)
+		tween.tween_callback(say_dialogue.bind("demo_scream"))
+		tween.tween_property(%KayakGrabber, "global_position", Vector3(-38.872, 0, -146.022), 0.6)
+		tween.parallel().tween_property(%KayakGrabber, "global_rotation:y", deg_to_rad(-90+45), 0.7)
+		tween.tween_interval(1.0)
 	tween.set_trans(Tween.TRANS_LINEAR)
 	tween.tween_callback(set_datamosh.bind(true))
-	tween.tween_property(%KayakGrabber, "global_position", Vector3(-196.017, 0, -147.396), 6.0)
-	tween.parallel().tween_property(%KayakGrabber, "global_rotation:y", deg_to_rad(-90+60), 6.0)
+	tween.tween_property(%KayakGrabber, "global_position", Vector3(-196.017, 0, -147.396), 4.0)
+	tween.parallel().tween_property(%KayakGrabber, "global_rotation:y", deg_to_rad(-90+60), 4.0)
+	tween.parallel().tween_property(%Enemydummy, "global_position", Vector3(-196.017, 0, -147.396), 4.0)
 	tween.tween_callback(ungrab_kayak)
 	#tween.tween_callback(kayak_k1.queue_free)
 	tween.tween_callback(Global.character.hide_pepa)
+	tween.tween_callback(%Enemydummy.set_visible.bind(false))
 	tween.tween_interval(3.0)
 	tween.tween_callback(say_dialogue.bind("demo_other_side"))
 	tween.tween_callback(set_datamosh.bind(false))
@@ -838,3 +874,17 @@ func _on_gol_area_body_entered(body: Node3D) -> void:
 	if body.has_node("Football") and dist < 3:
 		say_dialogue("gol")
 	
+func game_over():
+	Global.enemy.global_position = Global.enemy.home_position
+	Global.enemy.current_state = Global.enemy.STATE.SLEEPING
+	Global.character.damage = 0.0
+	%GameOverMenu.visible = true
+	%ContinueButton.grab_focus()
+	get_tree().paused = true
+	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+
+
+func _on_continue_button_up() -> void:
+	%GameOverMenu.visible = false
+	get_tree().paused = false
+	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED

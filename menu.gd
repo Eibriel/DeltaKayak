@@ -30,7 +30,7 @@ func _ready() -> void:
 	black_tween.tween_property(%BlackColor, "modulate:a", 0.0, 1.0)
 	
 
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	_scene_load_status = ResourceLoader.load_threaded_get_status(scene_name, _progress)
 	var progress_val:float = _progress[0]*100.0
 	%GameLoadProgressBar.value = progress_val
