@@ -1,13 +1,20 @@
-# DeltaKayak
-Horror game, Godot 4
+# Delta Kayak
+Horror game, made in Godot 4
 
-Wishlist on Steam: https://store.steampowered.com/app/2632680/Delta_Kayak/
+Wishlist on [Steam](https://store.steampowered.com/app/2632680/Delta_Kayak/) ❤️
+
+![Delta Kayak Logo](textures/menu_background.jpg)
 
 ### Attributions
+Note that not all items in the list are currently in use.
 
 #### Fonts
 
 - [Rosario Font](https://github.com/Omnibus-Type/Rosario)
+
+#### Godot Addons
+
+ - [Godot Resource Groups](https://github.com/derkork/godot-resource-groups)
 
 #### Sounds
 

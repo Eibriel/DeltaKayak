@@ -1,16 +1,20 @@
-[gd_resource type="AudioStreamRandomizer" load_steps=6 format=3 uid="uid://dvxr7lplyacmm"]
+[gd_resource type="AudioStreamRandomizer" load_steps=8 format=3 uid="uid://dvxr7lplyacmm"]
 
-[ext_resource type="AudioStream" uid="uid://dmug28wo52gn1" path="res://sounds/paddle_01.mp3" id="1_eii5e"]
-[ext_resource type="AudioStream" uid="uid://dabb42albk8np" path="res://sounds/paddle_02.mp3" id="2_ew3cs"]
-[ext_resource type="AudioStream" uid="uid://b47rjw1xs7oqj" path="res://sounds/paddle_03.mp3" id="3_jqiq5"]
-[ext_resource type="AudioStream" uid="uid://sxtjioduow1b" path="res://sounds/paddle_08.mp3" id="8_lo378"]
-[ext_resource type="AudioStream" uid="uid://dshspeq03rbm0" path="res://sounds/paddle_09.mp3" id="9_n3y7a"]
+[ext_resource type="AudioStream" uid="uid://dmug28wo52gn1" path="res://sounds/kayak/paddle_01.mp3" id="1_eii5e"]
+[ext_resource type="AudioStream" uid="uid://dabb42albk8np" path="res://sounds/kayak/paddle_02.mp3" id="2_ew3cs"]
+[ext_resource type="AudioStream" uid="uid://b47rjw1xs7oqj" path="res://sounds/kayak/paddle_03.mp3" id="3_jqiq5"]
+[ext_resource type="AudioStream" uid="uid://2qqrah5v2fxd" path="res://sounds/kayak/paddle_06.mp3" id="6_lbntp"]
+[ext_resource type="AudioStream" uid="uid://lfhnmfqkq8n6" path="res://sounds/kayak/paddle_07.mp3" id="7_iopwn"]
+[ext_resource type="AudioStream" uid="uid://sxtjioduow1b" path="res://sounds/kayak/paddle_08.mp3" id="8_lo378"]
+[ext_resource type="AudioStream" uid="uid://dshspeq03rbm0" path="res://sounds/kayak/paddle_09.mp3" id="9_n3y7a"]
 
 [resource]
 random_pitch = 1.2
-streams_count = 5
+streams_count = 7
 stream_0/stream = ExtResource("1_eii5e")
 stream_1/stream = ExtResource("2_ew3cs")
 stream_2/stream = ExtResource("3_jqiq5")
-stream_3/stream = ExtResource("8_lo378")
-stream_4/stream = ExtResource("9_n3y7a")
+stream_3/stream = ExtResource("6_lbntp")
+stream_4/stream = ExtResource("7_iopwn")
+stream_5/stream = ExtResource("8_lo378")
+stream_6/stream = ExtResource("9_n3y7a")

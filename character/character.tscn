@@ -8,18 +8,18 @@
 [ext_resource type="PackedScene" uid="uid://dnempkm0ot1g4" path="res://models/pepa/pepa.glb" id="4_bo5nj"]
 [ext_resource type="PackedScene" uid="uid://b2upxlbvq2a2j" path="res://models/character.glb" id="5_v01ah"]
 [ext_resource type="AnimationLibrary" uid="uid://c74x8dp0qiahp" path="res://models/character_anims.glb" id="7_2v7p3"]
-[ext_resource type="AudioStream" uid="uid://3iyaylcuo8g" path="res://sounds/112339__alyceobvious__6_27_07-cricket-1.mp3" id="8_3egmi"]
+[ext_resource type="AudioStream" uid="uid://3iyaylcuo8g" path="res://sounds/ambient/112339__alyceobvious__6_27_07-cricket-1.mp3" id="8_3egmi"]
 [ext_resource type="AudioStream" uid="uid://dvxr7lplyacmm" path="res://character/paddle_streams.tres" id="8_fdves"]
-[ext_resource type="AudioStream" uid="uid://de4v7ug7ys7hi" path="res://sounds/river.mp3" id="10_e5eh0"]
-[ext_resource type="AudioStream" uid="uid://mv6ajuqoy1h0" path="res://sounds/kayak.mp3" id="11_j3wxn"]
-[ext_resource type="AudioStream" uid="uid://bp36tqi0aij8q" path="res://sounds/collision_01.mp3" id="12_olbxk"]
-[ext_resource type="AudioStream" uid="uid://bp6slwbbgwucv" path="res://sounds/collision_02.mp3" id="13_4mmsu"]
-[ext_resource type="AudioStream" uid="uid://b7m2ewd4p5h8x" path="res://sounds/collision_03.mp3" id="14_o4wqp"]
-[ext_resource type="AudioStream" uid="uid://cgir6repirstg" path="res://sounds/collision_04.mp3" id="15_hr5p7"]
-[ext_resource type="AudioStream" uid="uid://c8ys0ahbx3bmn" path="res://sounds/collision_05.mp3" id="16_kto82"]
-[ext_resource type="AudioStream" uid="uid://dg2cu6vudgrba" path="res://sounds/collision_06.mp3" id="17_egvyw"]
-[ext_resource type="AudioStream" uid="uid://bycfel2ioa5po" path="res://sounds/collision_07.mp3" id="18_euw5c"]
-[ext_resource type="AudioStream" uid="uid://dpj8ejx1m2mmr" path="res://sounds/collision_08.mp3" id="19_u5rwt"]
+[ext_resource type="AudioStream" uid="uid://de4v7ug7ys7hi" path="res://sounds/ambient/river.mp3" id="10_e5eh0"]
+[ext_resource type="AudioStream" uid="uid://mv6ajuqoy1h0" path="res://sounds/kayak/kayak.mp3" id="11_j3wxn"]
+[ext_resource type="AudioStream" uid="uid://bp36tqi0aij8q" path="res://sounds/kayak/collision_01.mp3" id="12_olbxk"]
+[ext_resource type="AudioStream" uid="uid://bp6slwbbgwucv" path="res://sounds/kayak/collision_02.mp3" id="13_4mmsu"]
+[ext_resource type="AudioStream" uid="uid://b7m2ewd4p5h8x" path="res://sounds/kayak/collision_03.mp3" id="14_o4wqp"]
+[ext_resource type="AudioStream" uid="uid://cgir6repirstg" path="res://sounds/kayak/collision_04.mp3" id="15_hr5p7"]
+[ext_resource type="AudioStream" uid="uid://c8ys0ahbx3bmn" path="res://sounds/kayak/collision_05.mp3" id="16_kto82"]
+[ext_resource type="AudioStream" uid="uid://dg2cu6vudgrba" path="res://sounds/kayak/collision_06.mp3" id="17_egvyw"]
+[ext_resource type="AudioStream" uid="uid://bycfel2ioa5po" path="res://sounds/kayak/collision_07.mp3" id="18_euw5c"]
+[ext_resource type="AudioStream" uid="uid://dpj8ejx1m2mmr" path="res://sounds/kayak/collision_08.mp3" id="19_u5rwt"]
 [ext_resource type="AudioStream" uid="uid://niydc1k8qspc" path="res://sounds/breathing/breathing_01.ogg" id="21_606bt"]
 [ext_resource type="AudioStream" uid="uid://coy1qbholkcw4" path="res://sounds/breathing/breathing_02.ogg" id="22_3tyeg"]
 [ext_resource type="AudioStream" uid="uid://dyqwvmon87aal" path="res://sounds/breathing/breathing_03.ogg" id="23_bgndq"]
@@ -474,14 +474,18 @@ shape = SubResource("CapsuleShape3D_b8fg3")
 visible = false
 size = Vector3(0.3, 0.3, 0.3)
 
-[node name="pillow" parent="." instance=ExtResource("4_81u6e")]
-transform = Transform3D(-2, 0, 1.74845e-07, 0, 2, 0, -1.74845e-07, 0, -2, 0.0136361, 0.200965, -1.04693)
-
-[node name="pepa" parent="." instance=ExtResource("4_bo5nj")]
+[node name="Kayak" type="Node3D" parent="."]
 unique_name_in_owner = true
-transform = Transform3D(1.69991, 0, -0.0178913, 0, 1.7, 0, 0.0178913, 0, 1.69991, -0.100474, 0.452791, -1.02231)
 
-[node name="kayak_detailed" parent="." instance=ExtResource("2_qknmv")]
+[node name="pepa" parent="Kayak" instance=ExtResource("4_bo5nj")]
+unique_name_in_owner = true
+transform = Transform3D(1.7, 0, 0, 0, 1.7, 0, 0, 0, 1.7, -0.135225, 0.44278, -1.02231)
+
+[node name="pillow" parent="Kayak" instance=ExtResource("4_81u6e")]
+transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, -0.000173245, 0.201537, -1.04693)
+
+[node name="kayak_detailed" parent="Kayak" instance=ExtResource("2_qknmv")]
+unique_name_in_owner = true
 transform = Transform3D(0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, 0.0386806, 0.312028)
 
 [node name="character" parent="." instance=ExtResource("5_v01ah")]
@@ -645,7 +649,7 @@ parameters/Start/current_length = 0.0
 parameters/Start/current_position = 0.0
 parameters/Start/current_delta = 0.0
 parameters/character_anims_Idle/current_length = 1.0
-parameters/character_anims_Idle/current_position = 0.507656
+parameters/character_anims_Idle/current_position = 0.506898
 parameters/character_anims_Idle/current_delta = 0.0166667
 
 [node name="KriketsAudio" type="AudioStreamPlayer3D" parent="."]
@@ -654,16 +658,11 @@ stream = ExtResource("8_3egmi")
 volume_db = -7.111
 bus = &"Ambient"
 
-[node name="RiverAudio" type="AudioStreamPlayer3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -13.1346, 0.515442)
-stream = ExtResource("10_e5eh0")
-volume_db = -5.0
-bus = &"Ambient"
-
 [node name="KayakAudio" type="AudioStreamPlayer3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -6.58295, 0.215637)
 stream = ExtResource("11_j3wxn")
 volume_db = -20.0
+autoplay = true
 bus = &"Kayak"
 
 [node name="RightPaddleAudio" type="AudioStreamPlayer3D" parent="."]
@@ -688,6 +687,19 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.35202, 0, 0)
 stream = SubResource("AudioStreamRandomizer_oxp1s")
 unit_size = 20.0
 bus = &"Kayak"
+
+[node name="RiverAudio" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("10_e5eh0")
+volume_db = -10.0
+pitch_scale = 0.3
+bus = &"Ambient"
+
+[node name="BreathingPlayer" type="AudioStreamPlayer" parent="."]
+unique_name_in_owner = true
+stream = SubResource("AudioStreamInteractive_dpwjr")
+volume_db = 10.0
+max_polyphony = 3
+bus = &"Voice"
 
 [node name="POVCameraController" type="Node3D" parent="."]
 unique_name_in_owner = true
@@ -716,11 +728,5 @@ spot_angle = 58.47
 [node name="POVCamera3D" type="Camera3D" parent="POVCameraController"]
 unique_name_in_owner = true
 metadata/fog_density = 0.005
-
-[node name="BreathingPlayer" type="AudioStreamPlayer" parent="."]
-unique_name_in_owner = true
-stream = SubResource("AudioStreamInteractive_dpwjr")
-max_polyphony = 3
-bus = &"Voice"
 
 [connection signal="area_entered" from="InteractionArea" to="." method="_on_interaction_area_area_entered"]

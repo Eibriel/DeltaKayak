@@ -81,7 +81,7 @@ func _ready():
 	#char_anim.get_animation("character_anims/Idle").loop_mode = Animation.LOOP_LINEAR
 	#char_anim.play("character_anims/ForwardPaddle", -1, 2.0)
 	
-	var kayak_mat:StandardMaterial3D = $kayak_detailed.get_node("Kayak_001").mesh.surface_get_material(0)
+	var kayak_mat:StandardMaterial3D = %kayak_detailed.get_node("Kayak_001").mesh.surface_get_material(0)
 	#kayak_mat.albedo_color = Color(0.81, 0.31, 0.25, 1.0) # Pink
 	#kayak_mat.albedo_color = Color(0.50, 0.74, 0.72, 1.0) # Light blue
 	#kayak_mat.albedo_color = Color(0.18, 0.41, 0.21, 1.0) # Green
@@ -121,6 +121,7 @@ func _process(delta: float) -> void:
 	hide_head_if_needed()
 	_handle_controller_camera()
 	handle_brathing()
+	handle_buoyancy(delta)
 
 var _mouse_input:bool
 var _mouse_rotation:Vector3
@@ -161,6 +162,21 @@ func handle_brathing():
 		if %BreathingPlayer.stream != preload("res://sounds/breathing/breathing_03.ogg"):
 			%BreathingPlayer.stream = preload("res://sounds/breathing/breathing_03.ogg")
 			%BreathingPlayer.play()
+
+var buoyancy_time:=0.0
+var buoyancy_instability:=1.0
+func handle_buoyancy(delta:float):
+	buoyancy_time += delta
+	if buoyancy_time > PI*2:
+		buoyancy_time = 0.0
+	buoyancy_instability -= delta
+	buoyancy_instability = max(1.0, buoyancy_instability)
+	var rotation_amount = sin(buoyancy_time*buoyancy_instability)
+	%Kayak.rotation.z = deg_to_rad(2) * rotation_amount
+	#%Kayak.rotation.x = deg_to_rad(2) * rotation_amount
+	var rotated_velocity := linear_velocity.rotated(Vector3.UP, rotation.y+deg_to_rad(-90))
+	buoyancy_instability += linear_velocity.length()*0.1*delta
+	#print(buoyancy_instability)
 
 func _handle_controller_camera()->void:
 	var input_dir:Vector2 = Input.get_vector("camera_left", "camera_right", "camera_up", "camera_down")
@@ -634,6 +650,8 @@ func handle_contacts(state: PhysicsDirectBodyState3D):
 			%CollisionAudio.global_position = state.get_contact_collider_position(0)
 			%CollisionAudio.volume_db = collision_impulse * 50
 			%CollisionAudio.play(0.03)
+			shake_camera(state.get_contact_impulse(0)*0.005, true)
+			buoyancy_instability += 0.5
 		var body = state.get_contact_collider_object(0)
 		if body.has_meta("grabbable"):
 			if grabbing_state == GRABBING.WANTS_TO:
@@ -689,11 +707,12 @@ func _on_interaction_area_area_entered(area: Area3D) -> void:
 		area.free()
 		strength += 1
 
-func set_damage():
+func set_damage()->void:
 	if damage_timer > 0: return
 	damage += 1.0
 	damage_timer = 1.0
 	Global.main_scene.set_player_state("monster_damage")
+	buoyancy_instability += 2.0
 	#var tween := create_tween()
 	#tween.tween_callback(Global.main_scene.set_datamosh.bind(true))
 	#tween.tween_property(%DamageIndicator, "scale", Vector3.ZERO, 0.1)
@@ -702,3 +721,22 @@ func set_damage():
 	#tween.tween_callback(Global.main_scene.set_datamosh.bind(false))
 	if damage > max_damage:
 		Global.main_scene.game_over()
+
+var camera_tween:Tween
+func shake_camera(amount:Vector3, global:=false)->void:
+	if camera_tween and camera_tween.is_running(): return
+	if camera_tween:
+		camera_tween.kill()
+	camera_tween = create_tween()
+	var current_pos:Vector3= %POVCameraController.position
+	amount = amount.clamp(Vector3(-0.1, -0.1, -0.1), Vector3(0.1, 0.1, 0.1))
+	if global:
+		amount.rotated(Vector3.UP, %POVCameraController.rotation.y+deg_to_rad(90))
+	var new_pos:Vector3 = current_pos + amount
+	var new_pos_inv:Vector3 = current_pos - amount
+	camera_tween.set_trans(Tween.TRANS_LINEAR)
+	camera_tween.tween_property(%POVCameraController, "position", new_pos, 0.05)
+	camera_tween.tween_property(%POVCameraController, "position", lerp(current_pos, new_pos_inv, 0.7), 0.08)
+	camera_tween.tween_property(%POVCameraController, "position", lerp(current_pos, new_pos, 0.2), 0.07)
+	camera_tween.tween_property(%POVCameraController, "position", current_pos, 0.02)
+	

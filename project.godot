@@ -45,7 +45,7 @@ window/vsync/vsync_mode=0
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/dkdata_inspector/plugin.cfg", "res://addons/dkworld/plugin.cfg")
+enabled=PackedStringArray("res://addons/dkdata_inspector/plugin.cfg", "res://addons/dkworld/plugin.cfg", "res://addons/godot_resource_groups/plugin.cfg")
 
 [file_customization]
 
@@ -54,6 +54,10 @@ folder_colors={
 "res://dkdata/": "red",
 "res://interactives/": "green"
 }
+
+[godot_resource_groups]
+
+auto_rebuild=true
 
 [gui]
 

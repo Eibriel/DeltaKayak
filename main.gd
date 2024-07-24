@@ -310,10 +310,13 @@ func handle_dialogue(delta:float) -> void:
 	dialogue_time = write_speed + (dialogue_label.text.length() * 0.08)
 	
 	# Voice
-	if key in Global.voice_id:
-		var idx = Global.voice_id.find(key)
+	#var idx = Global.voice_id.find(key)
+	var resource_group:ResourceGroup = load("res://sounds/all_voice_files.tres")
+	var resources = resource_group.load_matching(["**%s*" % key], [])
+	#print(resources)
+	if resources.size() > 0:
 		%VoicePlayer.stop()
-		%VoicePlayer.stream = Global.voice_files[idx]
+		%VoicePlayer.stream = resources[0]
 		dialogue_time = %VoicePlayer.stream.get_length()
 		%VoicePlayer.play()
 	# NOTE this don't work when exported
@@ -690,9 +693,9 @@ func grab_kayak():
 		tween.tween_interval(1.0)
 	tween.set_trans(Tween.TRANS_LINEAR)
 	tween.tween_callback(set_datamosh.bind(true))
-	tween.tween_property(%KayakGrabber, "global_position", Vector3(-196.017, 0, -147.396), 4.0)
-	tween.parallel().tween_property(%KayakGrabber, "global_rotation:y", deg_to_rad(-90+60), 4.0)
-	tween.parallel().tween_property(%Enemydummy, "global_position", Vector3(-196.017, 0, -147.396), 4.0)
+	tween.tween_property(%KayakGrabber, "global_position", Vector3(-196.017, 0, -147.396), 5.0)
+	tween.parallel().tween_property(%KayakGrabber, "global_rotation:y", deg_to_rad(-90+60), 5.0)
+	tween.parallel().tween_property(%Enemydummy, "global_position", Vector3(-196.017, 0, -147.396), 5.0)
 	tween.tween_callback(ungrab_kayak)
 	#tween.tween_callback(kayak_k1.queue_free)
 	tween.tween_callback(Global.character.hide_pepa)

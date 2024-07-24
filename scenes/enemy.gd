@@ -342,8 +342,8 @@ func _handle_contacts(state: PhysicsDirectBodyState3D):
 		if collision_impulse > 0.5:
 			# TODO mode out of this function
 			%CollisionAudio.global_position = state.get_contact_collider_position(0)
-			var vol := remap(collision_impulse, 0.5, 40, -40, -20)
-			vol = clamp(vol, -40, -20)
+			var vol := remap(collision_impulse, 0.5, 40, -10, -3)
+			vol = clamp(vol, -10, -3)
 			#prints(collision_impulse, vol)
 			%CollisionAudio.volume_db = vol
 			#print(%CollisionAudio.volume_db)
