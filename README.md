@@ -10,7 +10,8 @@ Note that not all items in the list are currently in use.
 
 #### Fonts
 
-- [Rosario Font](https://github.com/Omnibus-Type/Rosario)
+- [Rosario Font](https://github.com/Omnibus-Type/Rosario) by Omnibus-Type
+- [Shortcut](http://www.misprintedtype.com/) by misprintedtype
 
 #### Godot Addons
 
@@ -31,3 +32,4 @@ Note that not all items in the list are currently in use.
 - "Lowpoly PS1 Basemesh Male, Unwrapped, Segmented" (https://skfb.ly/6XVJQ) by BitHack is licensed under Creative Commons Attribution (http://creativecommons.org/licenses/by/4.0/).
 - "Segmented lowpoly base female PS1 style" (https://skfb.ly/6XNRC) by BitHack is licensed under Creative Commons Attribution (http://creativecommons.org/licenses/by/4.0/).
 - "Capybara PS1 style" (https://skfb.ly/oAWtu) by Kabuum is licensed under Creative Commons Attribution (http://creativecommons.org/licenses/by/4.0/).
+- "Generator" (https://skfb.ly/oSKv6) by victorberdugo1 is licensed under Creative Commons Attribution (http://creativecommons.org/licenses/by/4.0/).

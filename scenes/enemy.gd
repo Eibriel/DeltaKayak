@@ -16,12 +16,16 @@ extends Boat3D
 var current_state := STATE.SLEEPING
 var attack_state := ATTACK_STATE.START
 
+var following_trail_time := 0.0
+var on_sleeping_time := 0.0
 var on_alert_time := 0.0
 var attack_start_time := 0.0
 var attack_charge_time := 0.0
 var attack_intimidate_time := 0.0
 var path_blocked_time := 0.0
 var avoid_collision_time := 0.0
+
+var is_character_visible:=false
 
 var forward_force := 0.0
 #var attack_position:Vector3
@@ -33,7 +37,8 @@ enum STATE {
 	SEARCHING_FOOD,
 	EATING,
 	STUCK,
-	AVOID_COLLISION
+	AVOID_COLLISION,
+	GO_HOME
 }
 
 enum ATTACK_STATE {
@@ -41,6 +46,19 @@ enum ATTACK_STATE {
 	INTIMIDATE,
 	CHARGE
 }
+
+func _ready() -> void:
+	set_physics_process(false)
+	#call_deferred("setup_physics")
+	NavigationServer3D.connect("map_changed", _on_map_changed)
+	super._ready()
+
+func _on_map_changed(map: RID):
+	#prints("MAP:", map)
+	setup_physics()
+
+func setup_physics():
+	set_physics_process(true)
 
 func _process(delta: float) -> void:
 	Global.log_text += "\nState: %s" % STATE.find_key(current_state)
@@ -99,7 +117,7 @@ func handle_sounds():
 
 func _get_target(delta: float) -> void:
 	change_state()
-	
+	is_character_visible = check_character_visible(delta)
 	if current_state == STATE.ATTACK:
 		%AttackIndicator.visible = true
 		%SpotLightEnemy.visible = true
@@ -125,14 +143,17 @@ func _get_target(delta: float) -> void:
 	if current_state == STATE.ALERT:
 		on_alert_time += delta
 		boat_speed = 0.4
-	if current_state == STATE.SLEEPING:
+	if current_state == STATE.SLEEPING or current_state == STATE.GO_HOME:
+		if current_state == STATE.SLEEPING:
+			on_sleeping_time += delta
 		%AttackIndicator.visible = false
 		%SpotLightEnemy.visible = false
 		%OmniLightEnemy.visible = false
-		#nav.target_position = home_position
-		#if nav.is_target_reachable():
-		#	target_position = nav.get_next_path_position()
-		target_position = global_position
+		nav.target_position = home_position
+		#NavigationServer3D.map_get_iteration_id()
+		if nav.is_target_reachable():
+			target_position = nav.get_next_path_position()
+		#target_position = global_position
 		boat_speed = 0.2
 		if global_position.distance_to(home_position) > 2.0:
 			waiting = false
@@ -201,32 +222,46 @@ func change_state():
 			check_alert_exit()
 		STATE.AVOID_COLLISION:
 			check_avoid_collision_exit()
+		STATE.GO_HOME:
+			check_go_home_exit()
 
 func check_sleeping_exit():
-	if is_character_visible():
+	if is_character_visible:
 		current_state = STATE.ATTACK
 		attack_state = ATTACK_STATE.START
 		waiting = false
 
 func check_attack_exit():
-	if not is_character_visible():
+	if following_trail_time > 5.0:
+		current_state = STATE.ALERT
+		on_alert_time = 0.0
+	if not is_character_visible:
 		current_state = STATE.ALERT
 		on_alert_time = 0.0
 
 func check_alert_exit():
-	if is_character_visible():
+	if is_character_visible:
 		current_state = STATE.ATTACK
 		attack_state = ATTACK_STATE.START
 		waiting = false
 	elif on_alert_time > 10.0:
 		current_state = STATE.SLEEPING
+		on_sleeping_time = 0.0
 		#waiting = true
+		waiting = false
+	elif following_trail_time > 5.0:
+		current_state = STATE.SLEEPING
+		on_sleeping_time = 0.0
 		waiting = false
 
 func check_avoid_collision_exit():
 	if avoid_collision_time > 5.0:
 		current_state = STATE.SLEEPING
+		on_sleeping_time = 0.0
 		avoid_collision_time = 0.0
+
+func check_go_home_exit():
+	pass
 
 func is_target_inside_rotation_radius() -> bool:
 	if target_position.distance_to(%RotRadiusRight.global_position) < 20.0:
@@ -255,11 +290,14 @@ func is_stuck(delta:float):
 			Global.log_text += "\nStuck Angular"
 	#current_state = STATE.STUCK
 
-func is_character_visible() -> bool:
+func check_character_visible(delta: float) -> bool:
 	if direct_sight_character():
+		following_trail_time = 0.0
 		return true
 	if is_trail_visible():
+		following_trail_time += delta
 		return true
+	following_trail_time = 0.0
 	return false
 
 func direct_sight_character() -> bool:
@@ -342,8 +380,8 @@ func _handle_contacts(state: PhysicsDirectBodyState3D):
 		if collision_impulse > 0.5:
 			# TODO mode out of this function
 			%CollisionAudio.global_position = state.get_contact_collider_position(0)
-			var vol := remap(collision_impulse, 0.5, 40, -10, -3)
-			vol = clamp(vol, -10, -3)
+			var vol := remap(collision_impulse, 0.5, 40, -20, -10)
+			vol = clamp(vol, -20, -10)
 			#prints(collision_impulse, vol)
 			%CollisionAudio.volume_db = vol
 			#print(%CollisionAudio.volume_db)

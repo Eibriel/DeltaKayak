@@ -1,13 +1,43 @@
-[gd_scene load_steps=7 format=3 uid="uid://13fm0bap5hxi"]
+[gd_scene load_steps=11 format=3 uid="uid://13fm0bap5hxi"]
 
 [ext_resource type="Script" path="res://scenes/demo_box.gd" id="1_0hjt7"]
-[ext_resource type="PackedScene" uid="uid://d0sak1gv4yypw" path="res://models/world/BoteMadera.glb" id="2_li2ae"]
-[ext_resource type="PackedScene" uid="uid://c4q0n4pfj1oln" path="res://models/world/PuzzleSword.glb" id="3_aibwc"]
-[ext_resource type="PackedScene" uid="uid://cyp5cfs2ippgd" path="res://models/world/PuzzleCup.glb" id="4_7erw4"]
-[ext_resource type="PackedScene" uid="uid://dih4j0703e8bg" path="res://models/world/PuzzleSun.glb" id="5_lwnpp"]
+[ext_resource type="PackedScene" uid="uid://cahxbt4vdp1s0" path="res://models/interactives/generator.glb" id="2_08alu"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_v311q"]
-size = Vector3(0.866943, 0.525146, 2.54333)
+size = Vector3(1.34467, 1.07025, 1.22395)
+
+[sub_resource type="Gradient" id="Gradient_ersr0"]
+offsets = PackedFloat32Array(0, 0.123711, 1)
+colors = PackedColorArray(1, 1, 1, 1, 0, 0.35, 1, 1, 0, 0, 0, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_6qdy2"]
+gradient = SubResource("Gradient_ersr0")
+
+[sub_resource type="Curve" id="Curve_olrfd"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), -1.40145, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_pa7yn"]
+curve = SubResource("Curve_olrfd")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_xqh8b"]
+direction = Vector3(0, 1, 0)
+initial_velocity_min = 1.0
+initial_velocity_max = 4.0
+scale_curve = SubResource("CurveTexture_pa7yn")
+color_ramp = SubResource("GradientTexture1D_6qdy2")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_84p6a"]
+vertex_color_use_as_albedo = true
+emission_enabled = true
+emission = Color(0, 0.983334, 1, 1)
+emission_energy_multiplier = 50.0
+billboard_mode = 1
+billboard_keep_scale = true
+
+[sub_resource type="QuadMesh" id="QuadMesh_ntfd7"]
+material = SubResource("StandardMaterial3D_84p6a")
+size = Vector2(0.05, 0.05)
 
 [node name="DemoBox" type="RigidBody3D"]
 collision_layer = 4
@@ -22,33 +52,19 @@ metadata/grabbable = true
 metadata/puzzle_item = true
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0918579, -0.293518)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0522156, 0.303741, 0.00673723)
 shape = SubResource("BoxShape3D_v311q")
 
-[node name="BoteMadera" parent="." instance=ExtResource("2_li2ae")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0918579, 0)
-
-[node name="Label3D" type="Label3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.90711, 0)
-visible = false
-pixel_size = 0.02
-billboard = 2
-shaded = true
-alpha_cut = 1
-text = "Texto"
-font_size = 64
-
-[node name="PuzzleSword" parent="." instance=ExtResource("3_aibwc")]
+[node name="generator" parent="." instance=ExtResource("2_08alu")]
 unique_name_in_owner = true
-transform = Transform3D(-1.31134e-07, 0, 3, 0, 3, 0, -3, 0, -1.31134e-07, 0.000412002, 0.221405, -0.186645)
-visible = false
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.141935, 0)
 
-[node name="PuzzleCup" parent="." instance=ExtResource("4_7erw4")]
+[node name="SparkParticles" type="GPUParticles3D" parent="."]
 unique_name_in_owner = true
-transform = Transform3D(4, 0, 0, 0, 4, 0, 0, 0, 4, -0.00232506, 0.286682, -0.172563)
-visible = false
-
-[node name="PuzzleSun" parent="." instance=ExtResource("5_lwnpp")]
-unique_name_in_owner = true
-transform = Transform3D(-1.74846e-07, 0, 4, 1.56119, 3.68276, 6.82417e-08, -3.68276, 1.56119, -1.60978e-07, 0, 1.33734, -0.201233)
-visible = false
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.295857, 2.59547, 0.134995)
+cast_shadow = 0
+explosiveness = 0.23
+randomness = 0.38
+fixed_fps = 15
+process_material = SubResource("ParticleProcessMaterial_xqh8b")
+draw_pass_1 = SubResource("QuadMesh_ntfd7")

@@ -48,7 +48,7 @@ func _ready():
 	last_rotation = rotation.y
 	last_position = position
 	set_physics_process(false)
-	call_deferred("setup_physics")
+	#call_deferred("setup_physics")
 	#path_target_indicator = CSGBox3D.new()
 	#add_child(path_target_indicator)
 	path_visualization = Path3D.new()
@@ -59,8 +59,8 @@ func _ready():
 	add_child(path_visualization)
 	
 
-func setup_physics():
-	set_physics_process(true)
+#func setup_physics():
+#	set_physics_process(true)
 
 func _get_target(_delta: float):
 	pass

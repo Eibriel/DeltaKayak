@@ -32,11 +32,26 @@ var kayak_k1: RigidBody3D
 
 var SKIP_INTRO = true
 
+var character_home_position:Vector3
+var character_home_rotation:Vector3
+
 const UnhandledTriggers = preload("res://interactives/unhandled_triggers.gd")
 
+var puzzle_items:=[]
+
 func _ready() -> void:
+	for c in dk_world.get_children():
+		if c.has_meta("is_pepa_kayak"):
+			kayak_k1 = c
+		if c.name == "Enemy":
+			Global.enemy = c
+		if c.has_meta("puzzle_item"):
+			puzzle_items.append(c)
+	
 	if OS.has_feature("editor"):
 		#DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_MAXIMIZED)
+		#Global.enemy.current_state = Global.enemy.STATE.GO_HOME
+		#Global.enemy.home_position = %EnemyHome03.global_position
 		pass
 	else:
 		%LabelTemporizador.visible = false
@@ -87,18 +102,15 @@ func _ready() -> void:
 	character.position = initial_position.position #Vector3(0, 0, 0)
 	character.rotation = initial_position.rotation #Vector3(0, 0, 0)
 	
+	character_home_position = %SaveTeleportStart.global_position
+	character_home_rotation = %SaveTeleportStart.global_rotation
+	
 	%ProportionalSlider.value = character.pid_proportional_par
 	%IntegralSlider.value = character.pid_integral_par
 	%DerivativeSlider.value = character.pid_derivative_par
 	
 	#Input.set_mouse_mode(Input.MOUSE_MODE_HIDDEN)
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
-	
-	for c in dk_world.get_children():
-		if c.has_meta("is_pepa_kayak"):
-			kayak_k1 = c
-		if c.name == "Enemy":
-			Global.enemy = c
 	
 	#%IntroChatLabel.visible = true
 	intro_animation()
@@ -120,10 +132,12 @@ func _ready() -> void:
 	%BlockPath.position.y = -20
 	
 	%HintLabel.visible = false
+	%MenuThanks.visible = false
 	
 	%Enemydummy.visible = false
 
 func pause():
+	if demo_completed: return
 	#player.about_to_pause()
 	get_tree().paused = true
 	%PauseMenu.show()
@@ -185,6 +199,44 @@ func handle_hint(delta:float)->void:
 func hide_hint()->void:
 	hint_time = 0
 
+func enemy_attack():
+	Global.enemy.current_state = Global.enemy.STATE.SLEEPING
+
+func enemy_set_home(val:int):
+	var homes := [
+		%EnemyHome01,
+		%EnemyHome02,
+		%EnemyHome03
+	]
+	Global.enemy.home_position = homes[val-1].global_position
+
+func teleport_enemy(val:int):
+	if Global.enemy.current_state != Global.enemy.STATE.SLEEPING:
+		print("Teleport: Enemy not sleeping")
+		return
+	if Global.enemy.on_sleeping_time < 10:
+		print("Teleport: Sleeping time < 10 %.2f" % Global.enemy.on_sleeping_time)
+		return
+	if not get_viewport().get_camera_3d().is_position_behind(Global.enemy.global_position):
+		print("Teleport: Enemy is in front")
+		return
+	var points := [
+		%EnemyTeleport00,
+		%EnemyTeleport01
+	]
+	if get_viewport().get_camera_3d().is_position_in_frustum(points[val].global_position):
+		print("Teleport: Teleport point is in camera")
+		return
+	print("Teleporting!")
+	set_enemy_home(points[val])
+
+func set_enemy_home(home:Node3D):
+	Global.enemy.home_position = home.global_position
+	Global.enemy.global_rotation = home.global_rotation
+	Global.enemy.global_position = Global.enemy.home_position
+	Global.enemy.current_state = Global.enemy.STATE.SLEEPING
+	Global.enemy.on_sleeping_time = 0.0
+
 func _process(delta: float) -> void:
 	handle_triggers(delta)
 	handle_dialogue(delta)
@@ -222,45 +274,57 @@ func handle_enemy_direction_indicator(_delta:float) -> void:
 
 var puzzle_solved := false
 var puzzle_progress := false
+var demo_completed := false
+func set_demo_completed():
+	if demo_completed: return
+	demo_completed = true
+	say_dialogue("demo_exit_point")
+	GamePlatform.set_achievement("demo_completed")
+	%MenuThanks.visible = true
+	%MenuThanks.modulate.a = 0.0
+	%LabelThanks.text = "%s\n\n%s" % [tr("THANKS FOR PLAYING"), %LabelTemporizador.text]
+	%WishlistEndButton.grab_focus()
+	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+	var sfx_index := AudioServer.get_bus_index("Master")
+	var current_db :float= AudioServer.get_bus_volume_db(sfx_index)
+	var demo_end_tween:=create_tween()
+	demo_end_tween.tween_property(%MenuThanks, "modulate:a", 1.0, 3.0)
+	var change_volume := func (vol_db:float):
+		AudioServer.set_bus_volume_db(sfx_index, vol_db)
+	demo_end_tween.parallel().tween_method(change_volume, current_db, -30.0, 3.0)
+
 func handle_demo_puzzle():
-	if Global.character.position.distance_to(%FinishPositionDemo.global_position) < 6 \
-	 and not %LabelThanks.visible:
-		GamePlatform.set_achievement("demo_completed")
-		%LabelThanks.visible = true
-		%LabelThanks.text = "%s\n\n%s" % [tr("THANKS FOR PLAYING"), %LabelTemporizador.text]
-		
 	if puzzle_solved: return
-	var match_count := 0
+	var match_count := []
 	%VinoIndicador.visible = false
 	%CarneIndicador.visible = false
 	%TierraIndicador.visible = false
-	for c in dk_world.get_children():
-		if c.has_meta("puzzle_item"):
-			#prints("Puzzle:", c.label_text)
-			var pos_a := Vector3(c.position.x, 0, c.position.z)
-			match c.label_text:
-				"Sol":
-					var pos_b := Vector3(%TierraLabel.position.x, 0, %TierraLabel.position.z)
-					if pos_a.distance_to(pos_b) < 5:
-						#print("Sol y Tierra")
-						%TierraIndicador.visible = true
-						match_count += 1
-				"Cáliz":
-					var pos_b := Vector3(%VinoLabel.position.x, 0, %VinoLabel.position.z)
-					if pos_a.distance_to(pos_b) < 5:
-						#print("Cáliz y Vino")
-						%VinoIndicador.visible = true
-						match_count += 1
-				"Espada":
-					var pos_b := Vector3(%CarneLabel.position.x, 0, %CarneLabel.position.z)
-					if pos_a.distance_to(pos_b) < 5:
-						#print("Espada y Carne")
-						%CarneIndicador.visible = true
-						match_count += 1
-	if match_count > 0 and not puzzle_progress:
+	for c in puzzle_items:
+		var pos_a := Vector3(c.position.x, 0, c.position.z)
+		var pos_b := Vector3(%TierraLabel.position.x, 0, %TierraLabel.position.z)
+		var pos_c := Vector3(%VinoLabel.position.x, 0, %VinoLabel.position.z)
+		var pos_d := Vector3(%CarneLabel.position.x, 0, %CarneLabel.position.z)
+		c.set_off()
+		if pos_a.distance_to(pos_b) < 5:
+			%TierraIndicador.visible = true
+			if not match_count.has("tierra"):
+				match_count.append("tierra")
+				c.set_on()
+		elif pos_a.distance_to(pos_c) < 5:
+			%VinoIndicador.visible = true
+			if not match_count.has("vino"):
+				match_count.append("vino")
+				c.set_on()
+		elif pos_a.distance_to(pos_d) < 5:
+			%CarneIndicador.visible = true
+			if not match_count.has("carne"):
+				match_count.append("carne")
+				c.set_on()
+		
+	if match_count.size() > 0 and not puzzle_progress:
 		puzzle_progress = true
 		set_player_state("puzzle_progress")
-	if match_count == 3:
+	if match_count.size() == 3:
 		puzzle_solved = true
 		%ExitDoorLight.visible = true
 		del_player_state("puzzle_progress")
@@ -291,7 +355,7 @@ func handle_stats(_delta):
 
 func handle_dialogue(delta:float) -> void:
 	dialogue_time -= delta
-	if dialogue_label.text == "":
+	if dialogue_label.text == "": # TODO remove this check
 		dialogue_control.visible = false
 	else:
 		dialogue_control.visible = true
@@ -299,7 +363,7 @@ func handle_dialogue(delta:float) -> void:
 	dialogue_label.text = ""
 	if dialogue_queue.size() < 1: return
 	var d: DialogueResource = dialogue_queue.pop_front() as DialogueResource
-	if d.id.begins_with("disabled_"):
+	if d.id.begins_with("disabled_"): # TODO remove this check
 		return
 	var key: String = "%s_dialogue_text" % d.resource_scene_unique_id
 	var character_string:String = d.Character.keys()[d.character]
@@ -401,8 +465,9 @@ func _input(event: InputEvent) -> void:
 		if is_saying_dialogue():
 			skip_dialogue()
 			return
-		if Global.is_near_carpincho:
+		if Global.is_near_carpincho and not Global.carpincho_near.is_petting():
 			Global.carpincho_near.pet()
+			Global.character.damage = 0.0
 			set_player_state("carpincho")
 			say_dialogue("pet_carpincho")
 			return
@@ -428,6 +493,10 @@ func _input(event: InputEvent) -> void:
 		pause()
 	#elif event.is_action_pressed("help"):
 	#	%HelpLabel.visible = !%HelpLabel.visible
+	elif event.is_action_pressed("ui_text_backspace"):
+		if OS.has_feature("editor"):
+			#teleport_enemy(1)
+			game_over()
 
 func say_some_dialogue()->void:
 	if player_state.size() > 0:
@@ -717,6 +786,9 @@ func del_player_state(value:String):
 
 func block_backtracking():
 	%BlockPath.position.y = 0
+	set_enemy_home(%EnemyHome00)
+	Global.enemy.home_position = %EnemyHome01.global_position
+	Global.enemy.current_state = Global.enemy.STATE.GO_HOME
 
 func set_datamosh(value:bool):
 	#%WorldEnvironment.compositor.compositor_effects[0].enabled = value
@@ -729,9 +801,11 @@ func set_datamosh(value:bool):
 func ungrab_kayak():
 	Global.grab_kayak.set_node_a(NodePath(""))
 	Global.grab_kayak.set_node_b(NodePath(""))
+	Global.grab_kayak.free()
 	#
 	Global.grab_kayak2.set_node_a(NodePath(""))
 	Global.grab_kayak2.set_node_b(NodePath(""))
+	Global.grab_kayak2.free()
 	
 	Global.character.lock_grab(false)
 
@@ -874,13 +948,25 @@ func _on_game_controls_button_up() -> void:
 
 func _on_gol_area_body_entered(body: Node3D) -> void:
 	var dist:= Global.character.global_position.distance_to(body.global_position)
-	if body.has_node("Football") and dist < 3:
+	# TODO improve logic
+	# maybe should be looking the ball?
+	if body.has_node("Football") and dist < 6:
 		say_dialogue("gol")
-	
+
+func _on_save():
+	character_home_position = %SaveTeleportGil.global_position
+	character_home_rotation = %SaveTeleportGil.global_rotation
+
 func game_over():
-	Global.enemy.global_position = Global.enemy.home_position
-	Global.enemy.current_state = Global.enemy.STATE.SLEEPING
-	Global.character.damage = 0.0
+	if demo_completed: return
+	var points := [
+		%EnemyTeleport00,
+		%EnemyTeleport01
+	]
+	set_enemy_home(points.pick_random())
+	character.global_position = character_home_position
+	character.global_rotation = character_home_rotation
+	character.damage = 0.0
 	%GameOverMenu.visible = true
 	%ContinueButton.grab_focus()
 	get_tree().paused = true
@@ -891,3 +977,7 @@ func _on_continue_button_up() -> void:
 	%GameOverMenu.visible = false
 	get_tree().paused = false
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+
+
+func _on_wishlist_button_up() -> void:
+	GlobalSteam.open_url("https://store.steampowered.com/app/2632680/Delta_Kayak/?utm_source=demo&utm_content=end_demo")

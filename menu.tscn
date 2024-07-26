@@ -1,7 +1,9 @@
-[gd_scene load_steps=3 format=3 uid="uid://ci58gbma0337h"]
+[gd_scene load_steps=5 format=3 uid="uid://ci58gbma0337h"]
 
+[ext_resource type="Theme" uid="uid://1kj8fi5pat0v" path="res://themes/default_theme.tres" id="1_hhxbb"]
 [ext_resource type="Script" path="res://menu.gd" id="1_svl0y"]
 [ext_resource type="Texture2D" uid="uid://dhjmhck7neiex" path="res://textures/menu_background.jpg" id="2_hv612"]
+[ext_resource type="Texture2D" uid="uid://cjibgq277ikpk" path="res://textures/menu_logo.png" id="4_yecay"]
 
 [node name="Control" type="Control"]
 layout_mode = 3
@@ -10,10 +12,11 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme = ExtResource("1_hhxbb")
 script = ExtResource("1_svl0y")
 
 [node name="MenuBackground" type="TextureRect" parent="."]
-modulate = Color(0.180005, 0.180005, 0.180005, 1)
+texture_filter = 2
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -23,6 +26,21 @@ grow_vertical = 2
 texture = ExtResource("2_hv612")
 expand_mode = 1
 stretch_mode = 6
+
+[node name="MenuTitle" type="TextureRect" parent="."]
+texture_filter = 2
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.495
+anchor_right = 0.495
+offset_left = -191.0
+offset_top = -22.0
+offset_right = 188.0
+offset_bottom = 191.0
+grow_horizontal = 2
+texture = ExtResource("4_yecay")
+expand_mode = 1
+stretch_mode = 4
 
 [node name="Control" type="Control" parent="."]
 layout_mode = 1
@@ -66,11 +84,16 @@ popup/item_1/id = 1
 popup/item_2/text = "Español España"
 popup/item_2/id = 2
 
+[node name="WishlistButton" type="Button" parent="Control/VBoxContainer"]
+layout_mode = 2
+text = "WISHLIST NOW"
+
 [node name="QuitButton" type="Button" parent="Control/VBoxContainer"]
 layout_mode = 2
 text = "QUIT"
 
 [node name="VBoxContainer2" type="VBoxContainer" parent="."]
+visible = false
 layout_mode = 1
 anchors_preset = 3
 anchor_left = 1.0
@@ -84,25 +107,23 @@ offset_bottom = -17.0
 grow_horizontal = 0
 grow_vertical = 0
 
-[node name="WishlistButton" type="Button" parent="VBoxContainer2"]
-layout_mode = 2
-text = "WISHLIST NOW"
-
-[node name="NewsletterButton" type="Button" parent="VBoxContainer2"]
-layout_mode = 2
-focus_neighbor_bottom = NodePath("../../Control/VBoxContainer/StartButton")
-text = "JOIN THE NEWSLETTER"
-
 [node name="VBoxContainer3" type="VBoxContainer" parent="."]
 layout_mode = 1
-anchors_preset = 2
-anchor_top = 1.0
-anchor_bottom = 1.0
-offset_left = 11.0
-offset_top = -47.0
-offset_right = 99.0
-offset_bottom = -16.0
-grow_vertical = 0
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -83.0
+offset_top = 119.0
+offset_right = 83.0
+offset_bottom = 187.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="NewsletterButton" type="Button" parent="VBoxContainer3"]
+layout_mode = 2
+text = "JOIN THE NEWSLETTER"
 
 [node name="FeedbackButton" type="Button" parent="VBoxContainer3"]
 layout_mode = 2
@@ -118,19 +139,18 @@ text = "FOLLOW"
 [node name="GameLoadProgressBar" type="ProgressBar" parent="."]
 unique_name_in_owner = true
 layout_mode = 1
-anchors_preset = 7
-anchor_left = 0.5
+anchors_preset = 12
 anchor_top = 1.0
-anchor_right = 0.5
+anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -123.0
-offset_top = -27.0
-offset_right = 123.0
+offset_top = -20.0
 grow_horizontal = 2
 grow_vertical = 0
+show_percentage = false
 
 [node name="BlackColor" type="ColorRect" parent="."]
 unique_name_in_owner = true
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -142,8 +162,8 @@ color = Color(0, 0, 0, 1)
 
 [connection signal="button_up" from="Control/VBoxContainer/StartButton" to="." method="_on_start_button_button_up"]
 [connection signal="item_selected" from="Control/VBoxContainer/LocaleOption" to="." method="_on_option_button_item_selected"]
+[connection signal="button_up" from="Control/VBoxContainer/WishlistButton" to="." method="_on_wishlist_button_button_up"]
 [connection signal="button_up" from="Control/VBoxContainer/QuitButton" to="." method="_on_quit_button_button_up"]
-[connection signal="button_up" from="VBoxContainer2/WishlistButton" to="." method="_on_wishlist_button_button_up"]
-[connection signal="button_up" from="VBoxContainer2/NewsletterButton" to="." method="_on_newsletter_button_up"]
+[connection signal="button_up" from="VBoxContainer3/NewsletterButton" to="." method="_on_newsletter_button_up"]
 [connection signal="button_up" from="VBoxContainer3/FeedbackButton" to="." method="_on_feedback_button_up"]
 [connection signal="button_up" from="VBoxContainer3/FollowButton" to="." method="_on_follow_button_up"]

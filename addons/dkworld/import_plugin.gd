@@ -127,8 +127,8 @@ func add_navmesh(navmesh_array: Array, sector_id:String, main_node:Node3D):
 		for v in navmesh.vertices:
 			packed_vertices.append(Vector3(v[0], 0.0, v[1]))
 		navigation_mesh.set_vertices(packed_vertices)
-		for v in navmesh.polygons:
-			navigation_mesh.add_polygon(PackedInt32Array(v))
+		for p in navmesh.polygons:
+			navigation_mesh.add_polygon(PackedInt32Array(p))
 
 func add_colliders(colliders: Array, sector_id:String, main_node:Node3D):
 	# Collider
@@ -207,15 +207,18 @@ func add_lands(lands: Array, sector_id:String, main_node:Node3D):
 		
 		# Dress with grass
 		var dressing_meshes :=[]
-		if land["biome"] == "dry":
-			dressing_meshes = [
-				"BranchesTangled"
-			]
-		else:
-			dressing_meshes = [
-				"GrassCone",
-				"BranchesTangled"
-			]
+		match land["biome"]:
+			"dry":
+				dressing_meshes = [
+					"BranchesTangled"
+				]
+			"concrete":
+				dressing_meshes = []
+			_:
+				dressing_meshes = [
+					"GrassCone",
+					"BranchesTangled"
+				]
 			
 		for dressing_mesh in dressing_meshes:
 			var multimesh_instance := MultiMeshInstance3D.new()

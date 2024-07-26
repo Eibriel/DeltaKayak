@@ -1,7 +1,8 @@
-[gd_scene load_steps=53 format=3 uid="uid://ce6e8v1saxjr5"]
+[gd_scene load_steps=55 format=3 uid="uid://ce6e8v1saxjr5"]
 
 [ext_resource type="Theme" uid="uid://1kj8fi5pat0v" path="res://themes/default_theme.tres" id="1_7eei4"]
 [ext_resource type="Environment" uid="uid://xpf4ng2ym0n4" path="res://environments/main_environment.tres" id="1_ekqa4"]
+[ext_resource type="Theme" uid="uid://dw0j8yxfhjb06" path="res://themes/game_label_theme.tres" id="1_qo26v"]
 [ext_resource type="Script" path="res://main.gd" id="1_xxenq"]
 [ext_resource type="PackedScene" uid="uid://r0o1qsmlq84u" path="res://character/character.tscn" id="2_3sgbv"]
 [ext_resource type="CompositorEffect" uid="uid://o01yk1gb130b" path="res://compositor/screen/screen_compositor_effect.tres" id="2_f4rcp"]
@@ -30,6 +31,7 @@
 [ext_resource type="PackedScene" uid="uid://b8olueufru4tm" path="res://models/enemy/enemy.glb" id="23_3o5cm"]
 [ext_resource type="AudioStream" uid="uid://crud8scfcqn51" path="res://sounds/extradiegetic/TinCoin.mp3" id="27_00yc6"]
 [ext_resource type="AudioStream" uid="uid://0a4k1bclukk0" path="res://sounds/ambient/197860__ladystarlightnyc__bow-tapping-violin-thru-delay-pedal.mp3" id="28_a3my4"]
+[ext_resource type="AudioStream" uid="uid://c3i2vqifxd6ka" path="res://sounds/voice/character/Resource_6ynwi_dialogue_text.ogg" id="31_xviah"]
 
 [sub_resource type="Gradient" id="Gradient_bg2pt"]
 colors = PackedColorArray(0, 0, 0, 1, 0, 0, 0, 0)
@@ -60,7 +62,7 @@ size = Vector3(3.03564, 1, 3.5419)
 size = Vector3(1, 1, 16.1516)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_pvo78"]
-size = Vector3(2.60632, 1, 25.838)
+size = Vector3(2.60632, 1, 14.9575)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_pirlk"]
 size = Vector3(1, 1, 15.5098)
@@ -173,11 +175,11 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 1
-theme = ExtResource("1_7eei4")
+theme = ExtResource("1_qo26v")
 script = ExtResource("1_xxenq")
 game_preferences = ExtResource("2_wexnt")
 game_state = ExtResource("3_nh3h6")
-initial_position = NodePath("Main3D/InitialPosition")
+initial_position = NodePath("Main3D/InitialPositionPuzzle")
 
 [node name="Node2D" type="Node2D" parent="."]
 
@@ -199,6 +201,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 1
+theme = ExtResource("1_7eei4")
 
 [node name="DialogueControl" type="Control" parent="Control"]
 unique_name_in_owner = true
@@ -312,7 +315,6 @@ scroll_active = false
 
 [node name="LabelHelp" type="Label" parent="Control"]
 auto_translate_mode = 1
-visible = false
 layout_mode = 1
 anchors_preset = 3
 anchor_left = 1.0
@@ -325,12 +327,31 @@ offset_right = -15.0
 offset_bottom = -16.0
 grow_horizontal = 0
 grow_vertical = 0
+theme = ExtResource("1_qo26v")
 text = "Esc: Salir - F1: Ayuda"
 
-[node name="LabelThanks" type="Label" parent="Control"]
+[node name="MenuThanks" type="Control" parent="Control"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ColorRect" type="ColorRect" parent="Control/MenuThanks"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 1)
+
+[node name="LabelThanks" type="Label" parent="Control/MenuThanks"]
 unique_name_in_owner = true
 auto_translate_mode = 1
-visible = false
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -344,11 +365,44 @@ offset_bottom = 15.0
 grow_horizontal = 2
 grow_vertical = 2
 text = "THANKS FOR PLAYING"
+horizontal_alignment = 1
+
+[node name="WishlistEndButton" type="Button" parent="Control/MenuThanks"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 0.646667
+anchor_right = 0.5
+anchor_bottom = 0.646667
+offset_left = -59.0
+offset_top = -14.0
+offset_right = 59.0
+offset_bottom = 14.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "WISHLIST NOW"
+metadata/_edit_use_anchors_ = true
+
+[node name="MenuEndButton" type="Button" parent="Control/MenuThanks"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 0.768333
+anchor_right = 0.5
+anchor_bottom = 0.768333
+offset_left = -59.0
+offset_top = -14.0
+offset_right = 59.0
+offset_bottom = 14.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "MAIN MENU"
+metadata/_edit_use_anchors_ = true
 
 [node name="LogLabel" type="RichTextLabel" parent="Control"]
 unique_name_in_owner = true
 auto_translate_mode = 1
-visible = false
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.101667
@@ -465,8 +519,18 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("6_dfvsb")
 
+[node name="ColorRect" type="ColorRect" parent="Control/PauseMenu"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.607843)
+
 [node name="PauseMenuContainer" type="VBoxContainer" parent="Control/PauseMenu"]
 unique_name_in_owner = true
+visible = false
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -509,7 +573,6 @@ text = "QUIT"
 
 [node name="GameSettingsContainer" type="VBoxContainer" parent="Control/PauseMenu"]
 unique_name_in_owner = true
-visible = false
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -586,6 +649,7 @@ text = "BACK"
 [node name="GameOverMenu" type="Control" parent="Control"]
 unique_name_in_owner = true
 process_mode = 2
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -627,7 +691,6 @@ layout_mode = 2
 text = "CONTINUE"
 
 [node name="LabelDemo" type="Label" parent="Control"]
-visible = false
 layout_mode = 1
 anchors_preset = 2
 anchor_top = 1.0
@@ -637,6 +700,7 @@ offset_top = -38.0
 offset_right = 134.0
 offset_bottom = -15.0
 grow_vertical = 0
+theme = ExtResource("1_qo26v")
 text = "DEMO VERSION"
 
 [node name="LabelTemporizador" type="Label" parent="Control"]
@@ -647,6 +711,7 @@ offset_left = 15.0
 offset_top = 16.0
 offset_right = 226.0
 offset_bottom = 46.0
+theme = ExtResource("1_qo26v")
 text = "00:00"
 
 [node name="Main3D" type="Node3D" parent="."]
@@ -1592,11 +1657,31 @@ transform = Transform3D(-0.999972, 0, -0.00757489, 0, 1, 0, 0.00757489, 0, -0.99
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.748779, 0, 0.306305)
 shape = SubResource("BoxShape3D_rdra4")
 
+[node name="BlockPath3" type="StaticBody3D" parent="Main3D/DemoElements"]
+unique_name_in_owner = true
+transform = Transform3D(-0.966449, 0, 0.256863, 0, 1, 0, -0.256863, 0, -0.966449, -157.456, 0, -353.286)
+collision_layer = 32
+collision_mask = 2
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Main3D/DemoElements/BlockPath3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.748779, 0, 0.306305)
+shape = SubResource("BoxShape3D_rdra4")
+
+[node name="BlockPath5" type="StaticBody3D" parent="Main3D/DemoElements"]
+unique_name_in_owner = true
+transform = Transform3D(-0.593504, 0, 0.804832, 0, 1, 0, -0.804832, 0, -0.593504, -244.234, 0, -428.226)
+collision_layer = 32
+collision_mask = 2
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Main3D/DemoElements/BlockPath5"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.748779, 0, 0.306305)
+shape = SubResource("BoxShape3D_rdra4")
+
 [node name="CoastStrength" type="StaticBody3D" parent="Main3D/DemoElements"]
-transform = Transform3D(-0.995743, 0, -0.0921797, 0, 1, 0, 0.0921797, 0, -0.995743, -219.517, 0, -146.781)
+transform = Transform3D(-0.999601, 0, -0.0282533, 0, 1, 0, 0.0282533, 0, -0.999601, -221.44, 0, -143.512)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Main3D/DemoElements/CoastStrength"]
-transform = Transform3D(0.999993, 0, -2.68221e-07, 0, 1, 0, 2.68221e-07, 0, 0.999993, 0.0544128, 0, 1.44272)
+transform = Transform3D(1, 0, -2.90577e-07, 0, 1, 0, 2.90577e-07, 0, 1, 0.0545197, 0, 1.37274)
 shape = SubResource("BoxShape3D_pvo78")
 
 [node name="BlockPathOtherSide" type="StaticBody3D" parent="Main3D/DemoElements"]
@@ -1645,6 +1730,7 @@ material = SubResource("StandardMaterial3D_xingp")
 [node name="OmniLight3D" type="OmniLight3D" parent="Main3D/DemoElements/VinoIndicador"]
 light_color = Color(0.278244, 0.663233, 1.92523e-07, 1)
 light_energy = 10.0
+omni_range = 2.0
 
 [node name="VinoLabel" type="Label3D" parent="Main3D/DemoElements"]
 unique_name_in_owner = true
@@ -1663,6 +1749,7 @@ material = SubResource("StandardMaterial3D_xingp")
 [node name="OmniLight3D" type="OmniLight3D" parent="Main3D/DemoElements/CarneIndicador"]
 light_color = Color(0.278244, 0.663233, 1.92523e-07, 1)
 light_energy = 10.0
+omni_range = 2.0
 
 [node name="CarneLabel" type="Label3D" parent="Main3D/DemoElements"]
 unique_name_in_owner = true
@@ -1682,6 +1769,7 @@ material = SubResource("StandardMaterial3D_xingp")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.184402, 0, -0.167908)
 light_color = Color(0.278244, 0.663233, 1.92523e-07, 1)
 light_energy = 10.0
+omni_range = 2.0
 
 [node name="TierraLabel" type="Label3D" parent="Main3D/DemoElements"]
 unique_name_in_owner = true
@@ -1866,6 +1954,46 @@ unique_name_in_owner = true
 transform = Transform3D(0.998732, 0, -0.0503483, 0, 1, 0, 0.0503483, 0, 0.998732, -159.177, 0, -419.987)
 gizmo_extents = 5.0
 
+[node name="EnemyHome03" type="Marker3D" parent="Main3D"]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -173.213, 0, -374.034)
+gizmo_extents = 5.0
+
+[node name="EnemyHome02" type="Marker3D" parent="Main3D"]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -217.99, 0, -414.915)
+gizmo_extents = 5.0
+
+[node name="EnemyHome01" type="Marker3D" parent="Main3D"]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -237.915, 0, -238.328)
+gizmo_extents = 5.0
+
+[node name="EnemyHome00" type="Marker3D" parent="Main3D"]
+unique_name_in_owner = true
+transform = Transform3D(0.995949, 0, 0.0899199, 0, 1, 0, -0.0899199, 0, 0.995949, -211.451, 0, -173.367)
+gizmo_extents = 5.0
+
+[node name="EnemyTeleport00" type="Marker3D" parent="Main3D"]
+unique_name_in_owner = true
+transform = Transform3D(0.755808, 0, 0.654794, 0, 1, 0, -0.654794, 0, 0.755808, -146.75, 0, -339.043)
+gizmo_extents = 5.0
+
+[node name="EnemyTeleport01" type="Marker3D" parent="Main3D"]
+unique_name_in_owner = true
+transform = Transform3D(-0.513496, 0, -0.858092, 0, 1, 0, 0.858092, 0, -0.513496, -263.324, 0, -440.128)
+gizmo_extents = 5.0
+
+[node name="SaveTeleportStart" type="Marker3D" parent="Main3D"]
+unique_name_in_owner = true
+transform = Transform3D(0.999376, 0, 0.0353183, 0, 1, 0, -0.0353183, 0, 0.999376, -223.899, 0, -273.29)
+gizmo_extents = 5.0
+
+[node name="SaveTeleportGil" type="Marker3D" parent="Main3D"]
+unique_name_in_owner = true
+transform = Transform3D(-0.216764, 0, 0.976224, 0, 1, 0, -0.976224, 0, -0.216764, -183.454, 0, -394.496)
+gizmo_extents = 5.0
+
 [node name="Carpinchos" type="Node3D" parent="Main3D"]
 
 [node name="Carpincho" parent="Main3D/Carpinchos" instance=ExtResource("20_wsws0")]
@@ -1918,8 +2046,11 @@ bus = &"UI"
 
 [node name="VoicePlayer" type="AudioStreamPlayer" parent="."]
 unique_name_in_owner = true
+stream = ExtResource("31_xviah")
 bus = &"Voice"
 
+[connection signal="button_up" from="Control/MenuThanks/WishlistEndButton" to="." method="_on_wishlist_button_up"]
+[connection signal="button_up" from="Control/MenuThanks/MenuEndButton" to="." method="_on_menu_button_button_up"]
 [connection signal="drag_ended" from="Control/Debug/VBoxContainer/ProportionalSlider" to="." method="_on_slider_drag_ended"]
 [connection signal="drag_ended" from="Control/Debug/VBoxContainer/IntegralSlider" to="." method="_on_slider_drag_ended"]
 [connection signal="drag_ended" from="Control/Debug/VBoxContainer/DerivativeSlider" to="." method="_on_slider_drag_ended"]

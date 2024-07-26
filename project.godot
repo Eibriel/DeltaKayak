@@ -160,6 +160,7 @@ locale/translations=PackedStringArray("res://dkdata_strings.en.translation", "re
 3d_physics/layer_3="grabbable"
 3d_physics/layer_4="enemy"
 3d_physics/layer_5="transparent"
+3d_physics/layer_6="blocks character"
 
 [rendering]
 

@@ -20,11 +20,22 @@ func _on_unhandled_trigger(main_scene, _game_state, trigger_id:String, trigger_t
 			"triggerpath_monster_003":
 				main_scene.say_dialogue("look_monster")
 				main_scene.set_player_state("monster")
+				main_scene.enemy_attack()
 			"triggerpath_demo_door_003":
 				if main_scene.puzzle_solved:
 					main_scene.animate_puzzle_door()
 			"triggerpath_othersided_003":
 				main_scene.other_side = true
+			"triggerpath_side_puzzle_003":
+				main_scene.enemy_set_home([2,3].pick_random())
+			"triggerpath_side_beginning_003":
+				main_scene.enemy_set_home(1)
+			"triggerpath_attack_section_a_003":
+				main_scene.teleport_enemy(0)
+			"triggerpath_attack_section_b_003":
+				main_scene.teleport_enemy(1)
+			"triggerpath_demo_exit_003":
+				main_scene.set_demo_completed()
 			_:
 				handled = false
 	elif trigger_type == "primary_action":
@@ -69,6 +80,8 @@ func _on_unhandled_trigger(main_scene, _game_state, trigger_id:String, trigger_t
 			"triggerpath_gauchito_gil_003":
 				main_scene.say_dialogue("gauchito_gil")
 				main_scene.set_player_state("gauchito_gil")
+				main_scene._on_save()
+				main_scene.say_hint("CHECKPOINT ADDED", 20)
 			"triggerpath_football_goal_003":
 				main_scene.say_dialogue("football_goal")
 				main_scene.set_player_state("gol")

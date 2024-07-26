@@ -166,6 +166,8 @@ shape = SubResource("CapsuleShape3D_c8bgx")
 
 [node name="NavigationAgent3D" type="NavigationAgent3D" parent="."]
 path_postprocessing = 1
+simplify_path = true
+simplify_epsilon = 5.0
 
 [node name="AttackIndicator" type="Node3D" parent="."]
 unique_name_in_owner = true

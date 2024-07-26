@@ -1,0 +1,11 @@
+[gd_resource type="Theme" load_steps=3 format=3 uid="uid://dw0j8yxfhjb06"]
+
+[ext_resource type="FontFile" uid="uid://dmy8udd4w80r2" path="res://fonts/Rosario-Bold.otf" id="1_w44g6"]
+[ext_resource type="FontFile" uid="uid://uowov1a8xuqe" path="res://fonts/Rosario-Regular.otf" id="2_f0bom"]
+
+[resource]
+default_font = ExtResource("2_f0bom")
+Label/colors/font_color = Color(0.92, 0.885653, 0.7912, 0.862745)
+Label/colors/font_shadow_color = Color(0.0941176, 0.129412, 0.113725, 0.635294)
+Label/constants/shadow_outline_size = 2
+Label/fonts/font = ExtResource("1_w44g6")
