@@ -1629,8 +1629,7 @@ shape = SubResource("BoxShape3D_d47b7")
 
 [node name="DemoExitDoor" type="StaticBody3D" parent="Main3D/DemoElements"]
 unique_name_in_owner = true
-transform = Transform3D(0.719703, 0, 0.694282, 0, 1, 0, -0.694282, 0, 0.719703, -168.384, 0, -411.076)
-visible = false
+transform = Transform3D(0.0130542, 0, 0.999915, 0, 1, 0, -0.999915, 0, 0.0130542, -128.934, 0, -452.951)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Main3D/DemoElements/DemoExitDoor"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.01776, 0, -0.542938)
@@ -1663,7 +1662,7 @@ shape = SubResource("BoxShape3D_rdra4")
 unique_name_in_owner = true
 transform = Transform3D(-0.966449, 0, 0.256863, 0, 1, 0, -0.256863, 0, -0.966449, -157.456, 0, -353.286)
 collision_layer = 32
-collision_mask = 2
+collision_mask = 6
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Main3D/DemoElements/BlockPath3"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.748779, 0, 0.306305)
@@ -1673,7 +1672,7 @@ shape = SubResource("BoxShape3D_rdra4")
 unique_name_in_owner = true
 transform = Transform3D(-0.593504, 0, 0.804832, 0, 1, 0, -0.804832, 0, -0.593504, -244.234, 0, -428.226)
 collision_layer = 32
-collision_mask = 2
+collision_mask = 6
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Main3D/DemoElements/BlockPath5"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.748779, 0, 0.306305)
@@ -1791,6 +1790,20 @@ distance_fade_enabled = true
 spot_range = 9.95568
 spot_angle = 39.2659
 
+[node name="SpotLight3D5" type="SpotLight3D" parent="Main3D/DemoElements"]
+transform = Transform3D(-0.658085, -0.69355, 0.293109, -7.76482e-09, 0.389284, 0.921118, -0.752944, 0.606174, -0.256182, -185.582, 6.5068, -391.368)
+light_energy = 5.0
+distance_fade_enabled = true
+spot_range = 9.95568
+spot_angle = 39.2659
+
+[node name="SpotLight3D6" type="SpotLight3D" parent="Main3D/DemoElements"]
+transform = Transform3D(-0.7401, -0.619448, 0.261792, -7.76482e-09, 0.389284, 0.921118, -0.672496, 0.68172, -0.288109, -245.95, 6.5068, -324.182)
+light_energy = 5.0
+distance_fade_enabled = true
+spot_range = 9.95568
+spot_angle = 39.2659
+
 [node name="SpotLight3D2" type="SpotLight3D" parent="Main3D/DemoElements"]
 transform = Transform3D(0.775562, -0.583053, 0.241974, 0, 0.383312, 0.923619, -0.631271, -0.716324, 0.297282, -189.885, 5.69786, -366.241)
 light_energy = 5.0
@@ -1799,7 +1812,7 @@ spot_range = 8.5132
 spot_angle = 39.2659
 
 [node name="SpotLight3D3" type="SpotLight3D" parent="Main3D/DemoElements"]
-transform = Transform3D(-0.72369, 0.517072, -0.457065, -8.9407e-08, 0.662293, 0.749244, 0.690125, 0.54222, -0.479295, -211.722, 3.96479, -390.488)
+transform = Transform3D(-0.72369, 0.517072, -0.457065, -8.9407e-08, 0.662294, 0.749244, 0.690125, 0.542221, -0.479295, -212.347, 3.96479, -392.021)
 light_energy = 5.0
 distance_fade_enabled = true
 spot_range = 8.59085
@@ -1947,11 +1960,11 @@ transform = Transform3D(0.998823, 0, 0.0485017, 0, 1, 0, -0.0485017, 0, 0.998823
 gizmo_extents = 5.0
 
 [node name="InitialPositionPuzzle" type="Marker3D" parent="Main3D"]
-transform = Transform3D(0.998732, 0, -0.0503483, 0, 1, 0, 0.0503483, 0, 0.998732, -179.393, 0, -337.978)
+transform = Transform3D(0.789128, 0, -0.61423, 0, 1, 0, 0.61423, 0, 0.789128, -172.031, 0, -403.6)
 gizmo_extents = 5.0
 
 [node name="InitialPositionCarpincho" type="Marker3D" parent="Main3D"]
-transform = Transform3D(-0.141213, 0, 0.98998, 0, 1, 0, -0.98998, 0, -0.141213, -235.741, 0, -317.922)
+transform = Transform3D(-0.141213, 0, 0.98998, 0, 1, 0, -0.98998, 0, -0.141213, -240.207, 0, -325.365)
 gizmo_extents = 5.0
 
 [node name="FinishPositionDemo" type="Marker3D" parent="Main3D"]
@@ -1996,13 +2009,13 @@ gizmo_extents = 5.0
 
 [node name="SaveTeleportGil" type="Marker3D" parent="Main3D"]
 unique_name_in_owner = true
-transform = Transform3D(-0.216764, 0, 0.976224, 0, 1, 0, -0.976224, 0, -0.216764, -183.454, 0, -394.496)
+transform = Transform3D(0.974757, 0, -0.223266, 0, 1, 0, 0.223266, 0, 0.974757, -213.947, 0, -361.737)
 gizmo_extents = 5.0
 
 [node name="Carpinchos" type="Node3D" parent="Main3D"]
 
 [node name="Carpincho" parent="Main3D/Carpinchos" instance=ExtResource("20_wsws0")]
-transform = Transform3D(0.836276, 0, 0.548307, 0, 1, 0, -0.548307, 0, 0.836276, -244.574, 0.1, -316.598)
+transform = Transform3D(0.728323, 0, 0.685233, 0, 1, 0, -0.685233, 0, 0.728323, -247.08, 0.1, -322.298)
 
 [node name="Carpincho2" parent="Main3D/Carpinchos" instance=ExtResource("20_wsws0")]
 transform = Transform3D(0.943512, 0, -0.331338, 0, 1, 0, 0.331338, 0, 0.943512, -21.269, 0.1, -32.296)

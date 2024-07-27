@@ -291,7 +291,7 @@ func set_demo_completed():
 	demo_end_tween.tween_property(%MenuThanks, "modulate:a", 1.0, 3.0)
 	var change_volume := func (vol_db:float):
 		AudioServer.set_bus_volume_db(sfx_index, vol_db)
-	demo_end_tween.parallel().tween_method(change_volume, current_db, -30.0, 3.0)
+	demo_end_tween.parallel().tween_method(change_volume, current_db, -60.0, 3.0)
 
 func handle_demo_puzzle():
 	if puzzle_solved: return
@@ -462,12 +462,17 @@ func get_interactive(id:String, primary_label:String, secondary_label:String, cr
 
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("primary_action"):
+		if %MenuThanks.visible:
+			var focused := get_viewport().gui_get_focus_owner()
+			if focused is Button:
+				focused.emit_signal("button_up")
 		if is_saying_dialogue():
 			skip_dialogue()
 			return
 		if Global.is_near_carpincho and not Global.carpincho_near.is_petting():
 			Global.carpincho_near.pet()
-			Global.character.damage = 0.0
+			character.damage = 0.0
+			character.energy = 100.0
 			set_player_state("carpincho")
 			say_dialogue("pet_carpincho")
 			return
@@ -959,6 +964,7 @@ func _on_save():
 
 func game_over():
 	if demo_completed: return
+	character.release_grab()
 	var points := [
 		%EnemyTeleport00,
 		%EnemyTeleport01
@@ -967,6 +973,7 @@ func game_over():
 	character.global_position = character_home_position
 	character.global_rotation = character_home_rotation
 	character.damage = 0.0
+	character.energy = 50.0
 	%GameOverMenu.visible = true
 	%ContinueButton.grab_focus()
 	get_tree().paused = true
@@ -974,9 +981,11 @@ func game_over():
 
 
 func _on_continue_button_up() -> void:
+	# NOTE from game over
 	%GameOverMenu.visible = false
 	get_tree().paused = false
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	var sfx_index := AudioServer.get_bus_index("Master")
 
 
 func _on_wishlist_button_up() -> void:

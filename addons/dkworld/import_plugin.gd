@@ -641,7 +641,8 @@ func add_physicsitem(item: Dictionary, item_id: String, main_node: Node3D):
 	#gltf_instance.name = item_id
 	main_node.add_child(gltf_instance)
 	gltf_instance.position = array_to_vector3(item.position)
-	gltf_instance.scale = array_to_vector3(item.scale)
+	# NOTE: Physics nodes should not be scaled
+	#gltf_instance.scale = array_to_vector3(item.scale)
 	gltf_instance.quaternion = array_to_quaternion(item.quaternion)
 	gltf_instance.set_owner(main_node)
 	#_recursively_set_owner(gltf_instance, main_node)

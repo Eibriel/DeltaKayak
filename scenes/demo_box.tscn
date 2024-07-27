@@ -1,10 +1,20 @@
-[gd_scene load_steps=11 format=3 uid="uid://13fm0bap5hxi"]
+[gd_scene load_steps=15 format=3 uid="uid://13fm0bap5hxi"]
 
+[ext_resource type="Texture2D" uid="uid://rtmhvk5iwxjr" path="res://textures/Dirt_04-512x512.png" id="1_8u1du"]
 [ext_resource type="PackedScene" uid="uid://cahxbt4vdp1s0" path="res://models/interactives/generator.glb" id="2_08alu"]
 [ext_resource type="PackedScene" uid="uid://d0a62d367b7bk" path="res://models/world/WoodBox001.glb" id="2_81pyd"]
+[ext_resource type="Texture2D" uid="uid://bjbap1jdrb25y" path="res://models/world_textures/PuzzleStatue_diffuse.png" id="2_hnfcp"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_v311q"]
-size = Vector3(1.34467, 1.07025, 1.22395)
+size = Vector3(2, 0.441977, 2)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_b5vhm"]
+albedo_texture = ExtResource("1_8u1du")
+metallic_specular = 0.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_sw0xr"]
+albedo_texture = ExtResource("2_hnfcp")
+metallic_specular = 0.0
 
 [sub_resource type="Gradient" id="Gradient_ersr0"]
 offsets = PackedFloat32Array(0, 0.123711, 1)
@@ -41,18 +51,31 @@ size = Vector2(0.05, 0.05)
 
 [node name="DemoBox" type="RigidBody3D"]
 collision_layer = 4
-collision_mask = 31
+collision_mask = 63
 axis_lock_linear_y = true
 axis_lock_angular_x = true
 axis_lock_angular_z = true
 mass = 0.5
 gravity_scale = 0.0
+continuous_cd = true
+linear_damp = 0.2
+angular_damp = 0.2
 metadata/grabbable = true
 metadata/puzzle_item = true
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0522156, 0.303741, 0.00673723)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0522156, -0.0102415, 0.00673723)
 shape = SubResource("BoxShape3D_v311q")
+
+[node name="CSGBox3D" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0421143, 0.00752532, 0)
+size = Vector3(2, 0.445414, 2)
+material = SubResource("StandardMaterial3D_b5vhm")
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0421143, 0.769516, 0)
+size = Vector3(0.5, 1.1123, 0.5)
+material = SubResource("StandardMaterial3D_sw0xr")
 
 [node name="generator" parent="." instance=ExtResource("2_08alu")]
 unique_name_in_owner = true
@@ -62,6 +85,7 @@ visible = false
 [node name="SparkParticles" type="GPUParticles3D" parent="."]
 unique_name_in_owner = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.295857, 2.59547, 0.134995)
+visible = false
 cast_shadow = 0
 explosiveness = 0.23
 randomness = 0.38
@@ -71,3 +95,4 @@ draw_pass_1 = SubResource("QuadMesh_ntfd7")
 
 [node name="WoodBox001" parent="." instance=ExtResource("2_81pyd")]
 transform = Transform3D(1.80367, 0, 0, 0, 1, 0, 0, 0, 2.10504, 0.0717153, 0.282533, -0.011995)
+visible = false

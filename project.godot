@@ -162,6 +162,10 @@ locale/translations=PackedStringArray("res://dkdata_strings.en.translation", "re
 3d_physics/layer_5="transparent"
 3d_physics/layer_6="blocks character"
 
+[physics]
+
+3d/solver/solver_iterations=32
+
 [rendering]
 
 textures/canvas_textures/default_texture_filter=0

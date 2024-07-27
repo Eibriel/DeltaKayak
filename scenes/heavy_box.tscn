@@ -1,29 +1,47 @@
-[gd_scene load_steps=4 format=3 uid="uid://ciqw2krhps7yw"]
+[gd_scene load_steps=7 format=3 uid="uid://ciqw2krhps7yw"]
 
 [ext_resource type="Script" path="res://classes/floating_element.gd" id="1_c4bad"]
+[ext_resource type="Texture2D" uid="uid://rtmhvk5iwxjr" path="res://textures/Dirt_04-512x512.png" id="2_035vv"]
 [ext_resource type="PackedScene" uid="uid://b6ps5srih65fp" path="res://models/world/AysaTank2.glb" id="2_b2uiu"]
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_v311q"]
-size = Vector3(4.94238, 2, 2)
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_t1srl"]
 
-[node name="FloatingBox" type="RigidBody3D" node_paths=PackedStringArray("model")]
-collision_layer = 4
+[sub_resource type="BoxShape3D" id="BoxShape3D_v311q"]
+size = Vector3(4.94238, 1.59949, 1.41504)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_xafum"]
+disable_fog = true
+albedo_texture = ExtResource("2_035vv")
+metallic_specular = 0.0
+uv1_scale = Vector3(0.5, 0.5, 0.5)
+uv1_triplanar = true
+texture_filter = 2
+
+[node name="HeavyBox" type="RigidBody3D" node_paths=PackedStringArray("model")]
 collision_mask = 31
 axis_lock_linear_y = true
 axis_lock_angular_x = true
 axis_lock_angular_z = true
-mass = 200.0
+mass = 100.0
+physics_material_override = SubResource("PhysicsMaterial_t1srl")
 gravity_scale = 0.0
-linear_damp = 5.0
+contact_monitor = true
+max_contacts_reported = 1
+linear_damp = 0.1
+angular_damp = 0.3
 script = ExtResource("1_c4bad")
 model = NodePath("Element")
+smart_damp = 0.5
 metadata/grabbable = true
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.200256, 0.0316162)
 shape = SubResource("BoxShape3D_v311q")
 
 [node name="CSGBox3D" type="CSGBox3D" parent="."]
-size = Vector3(4.90063, 2, 2)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.213318, 0.0445557)
+size = Vector3(4.90063, 1.57336, 1.4707)
+material = SubResource("StandardMaterial3D_xafum")
 
 [node name="Element" type="Node3D" parent="."]
 

@@ -19,6 +19,7 @@ contact_monitor = true
 max_contacts_reported = 2
 script = ExtResource("1_hx3oa")
 model = NodePath("Element")
+break_point = 5.0
 metadata/grabbable = true
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]

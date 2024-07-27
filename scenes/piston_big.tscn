@@ -1,15 +1,45 @@
-[gd_scene load_steps=11 format=3 uid="uid://dny4rawsyeh8b"]
+[gd_scene load_steps=14 format=3 uid="uid://dny4rawsyeh8b"]
 
+[ext_resource type="Texture2D" uid="uid://rtmhvk5iwxjr" path="res://textures/Dirt_04-512x512.png" id="1_27io0"]
 [ext_resource type="Texture2D" uid="uid://bjbap1jdrb25y" path="res://models/world_textures/PuzzleStatue_diffuse.png" id="1_xfgkv"]
+[ext_resource type="Script" path="res://scenes/piston_big.gd" id="2_ugwwr"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_o0blp"]
 size = Vector3(4.38843, 1, 1)
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ukh6i"]
+disable_fog = true
+albedo_texture = ExtResource("1_27io0")
+metallic_specular = 0.0
+uv1_scale = Vector3(0.5, 0.5, 0.5)
+uv1_triplanar = true
+texture_filter = 2
+
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_bcmhs"]
+disable_fog = true
 albedo_texture = ExtResource("1_xfgkv")
+metallic_specular = 0.0
+uv1_scale = Vector3(0.5, 0.5, 0.5)
+uv1_triplanar = true
+texture_filter = 2
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_qhd4n"]
 size = Vector3(4.37561, 1.23535, 1.10699)
+
+[sub_resource type="Animation" id="Animation_mfosy"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("AnimatableBody3D:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0, 0, 0)]
+}
 
 [sub_resource type="Animation" id="Animation_cp7ni"]
 resource_name = "piston_animation"
@@ -26,21 +56,6 @@ tracks/0/keys = {
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 0,
 "values": [Vector3(0, 0, 0), Vector3(3.85791, 0, 0), Vector3(0, 0, 0)]
-}
-
-[sub_resource type="Animation" id="Animation_mfosy"]
-length = 0.001
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("AnimatableBody3D:position")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector3(0, 0, 0)]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_6ml3v"]
@@ -63,6 +78,7 @@ transitions = ["Start", "piston_animation", SubResource("AnimationNodeStateMachi
 [node name="PistonBig" type="Node3D"]
 
 [node name="AnimatableBody3D" type="AnimatableBody3D" parent="."]
+collision_mask = 30
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="AnimatableBody3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.69421, 0, 0)
@@ -71,15 +87,42 @@ shape = SubResource("BoxShape3D_o0blp")
 [node name="CSGBox3D" type="CSGBox3D" parent="AnimatableBody3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.368164, 0, 0)
 size = Vector3(0.263672, 1, 1)
-material = SubResource("StandardMaterial3D_bcmhs")
+material = SubResource("StandardMaterial3D_ukh6i")
 
 [node name="CSGBox3D2" type="CSGBox3D" parent="AnimatableBody3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.69653, -0.0254517, -0.0438232)
-size = Vector3(4.39307, 0.377808, 0.348877)
+size = Vector3(4.2, 0.378, 0.349)
+material = SubResource("StandardMaterial3D_bcmhs")
+
+[node name="AnimatableBody3D2" type="RigidBody3D" parent="."]
+visible = false
+collision_layer = 0
+collision_mask = 0
+axis_lock_linear_y = true
+axis_lock_angular_x = true
+axis_lock_angular_y = true
+axis_lock_angular_z = true
+mass = 100.0
+gravity_scale = 0.0
+script = ExtResource("2_ugwwr")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="AnimatableBody3D2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.69421, 0, 0)
+shape = SubResource("BoxShape3D_o0blp")
+
+[node name="CSGBox3D" type="CSGBox3D" parent="AnimatableBody3D2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.368164, 0, 0)
+size = Vector3(0.263672, 1, 1)
+material = SubResource("StandardMaterial3D_bcmhs")
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="AnimatableBody3D2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.69653, -0.0254517, -0.0438232)
+size = Vector3(4.2, 0.378, 0.349)
 material = SubResource("StandardMaterial3D_bcmhs")
 
 [node name="StaticBody3D" type="StaticBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.3639, 0, 0)
+collision_mask = 31
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.600403, -0.0180664, 0.0149841)
@@ -88,7 +131,18 @@ shape = SubResource("BoxShape3D_qhd4n")
 [node name="CSGBox3D3" type="CSGBox3D" parent="StaticBody3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.591773, 0.00376892, 0.0263367)
 size = Vector3(4.39307, 1.24985, 1.11749)
-material = SubResource("StandardMaterial3D_bcmhs")
+material = SubResource("StandardMaterial3D_ukh6i")
+
+[node name="SliderJoint3D" type="SliderJoint3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.35789, 0, 0)
+node_a = NodePath("../StaticBody3D")
+node_b = NodePath("../AnimatableBody3D2")
+linear_limit/upper_distance = 3.35
+linear_limit/lower_distance = -3.35
+
+[node name="PinJoint3D" type="PinJoint3D" parent="."]
+node_a = NodePath("../AnimatableBody3D")
+node_b = NodePath("../AnimatableBody3D2")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
@@ -99,8 +153,8 @@ libraries = {
 tree_root = SubResource("AnimationNodeStateMachine_0m1pg")
 anim_player = NodePath("../AnimationPlayer")
 parameters/current_length = 20.0
-parameters/current_position = 8.80588
-parameters/current_delta = 0.0166667
+parameters/current_position = 2.39454
+parameters/current_delta = 0.016479
 parameters/End/current_length = null
 parameters/End/current_position = null
 parameters/End/current_delta = null
@@ -108,5 +162,5 @@ parameters/Start/current_length = 0.0
 parameters/Start/current_position = 0.0
 parameters/Start/current_delta = 0.0
 parameters/piston_animation/current_length = 20.0
-parameters/piston_animation/current_position = 8.80588
-parameters/piston_animation/current_delta = 0.0166667
+parameters/piston_animation/current_position = 2.39454
+parameters/piston_animation/current_delta = 0.016479

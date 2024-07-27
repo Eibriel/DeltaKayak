@@ -278,6 +278,8 @@ func handle_controls(delta:float) -> void:
 		right_sample = right_sample / total_sample
 	#Global.log_text += "\ninput_dir.x: %f" % input_dir.x
 	#Global.log_text += "\ninput_dir.y: %f" % input_dir.y
+	Global.log_text += "\nright_sample: %f" % right_sample
+	Global.log_text += "\nleft_sample: %f" % left_sample
 
 var paddle_time:= 0.0
 var padling_side:PADDLE_SIDE=PADDLE_SIDE.IDLE
@@ -308,18 +310,20 @@ func handle_paddling(delta:float) -> void:
 				energy -= 2.0
 				padling_side = PADDLE_SIDE.RIGHT
 				paddle_time = left_sample*paddle_speed
+				#paddle_time = right_sample*paddle_speed
 				%AnimationTree["parameters/conditions/idle"] = false
 				%AnimationTree["parameters/conditions/left"] = false
 				%AnimationTree["parameters/conditions/right"] = true
-				%AnimationTree.set("parameters/BlendRight/TimeScale/scale", left_sample*paddle_speed)
+				%AnimationTree.set("parameters/BlendRight/TimeScale/scale", paddle_time)
 			else:
 				energy -= 2.0
 				padling_side = PADDLE_SIDE.LEFT
+				#paddle_time = left_sample*paddle_speed
 				paddle_time = right_sample*paddle_speed
 				%AnimationTree["parameters/conditions/idle"] = false
 				%AnimationTree["parameters/conditions/right"] = false
 				%AnimationTree["parameters/conditions/left"] = true
-				%AnimationTree.set("parameters/BlendLeft/TimeScale/scale", right_sample*paddle_speed)
+				%AnimationTree.set("parameters/BlendLeft/TimeScale/scale", paddle_time)
 		else:
 			if original_highest_contributor != previous_highest_contributor:
 				paddle_time = 0
@@ -716,7 +720,7 @@ func collision_damage():
 	damage_timer = 1.0
 	buoyancy_instability += 2.0
 	if damage > max_damage:
-		Global.main_scene.game_over()
+		Global.main_scene.game_over.call_deferred()
 
 func set_damage()->void:
 	if damage_timer > 0: return
