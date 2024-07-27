@@ -45,8 +45,8 @@ func _ready() -> void:
 			kayak_k1 = c
 		if c.name == "Enemy":
 			Global.enemy = c
-		if c.has_meta("puzzle_item"):
-			puzzle_items.append(c)
+		#if c.has_meta("puzzle_item"):
+		#	puzzle_items.append(c)
 	
 	if OS.has_feature("editor"):
 		#DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_MAXIMIZED)
@@ -242,7 +242,7 @@ func _process(delta: float) -> void:
 	handle_dialogue(delta)
 	handle_stats(delta)
 	handle_hint(delta)
-	handle_demo_puzzle()
+	#handle_demo_puzzle()
 	handle_enemy_direction_indicator(delta)
 	log_label.text = Global.log_text
 	Global.log_text = ""
@@ -272,7 +272,7 @@ func handle_enemy_direction_indicator(_delta:float) -> void:
 	%EnemyDirectionIndicator.rotation = angle
 	%EnemyIndicatorIcon.scale = Vector2.ONE * clampf(remap(dist, 0, 40, 1, 0), 0, 1)
 
-var puzzle_solved := false
+var puzzle_solved := true #false NOTE: puzzle disabled
 var puzzle_progress := false
 var demo_completed := false
 func set_demo_completed():
@@ -494,7 +494,7 @@ func _input(event: InputEvent) -> void:
 	#elif event.is_action_pressed("help"):
 	#	%HelpLabel.visible = !%HelpLabel.visible
 	elif event.is_action_pressed("ui_text_backspace"):
-		if OS.has_feature("editor"):
+		if OS.has_feature("debug"):
 			#teleport_enemy(1)
 			game_over()
 

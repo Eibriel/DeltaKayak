@@ -1,0 +1,38 @@
+[gd_scene load_steps=5 format=3 uid="uid://brsci448tuady"]
+
+[ext_resource type="Script" path="res://classes/floating_element.gd" id="1_hx3oa"]
+[ext_resource type="PackedScene" uid="uid://b6ps5srih65fp" path="res://models/world/AysaTank2.glb" id="2_507ym"]
+[ext_resource type="PackedScene" uid="uid://bspb1us40iknb" path="res://models/world/Pole.glb" id="2_crruw"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_v311q"]
+size = Vector3(4.942, 0.66, 0.66)
+
+[node name="BranchBox" type="RigidBody3D" node_paths=PackedStringArray("model")]
+collision_layer = 4
+collision_mask = 31
+axis_lock_linear_y = true
+axis_lock_angular_x = true
+axis_lock_angular_z = true
+mass = 2.0
+gravity_scale = 0.0
+contact_monitor = true
+max_contacts_reported = 2
+script = ExtResource("1_hx3oa")
+model = NodePath("Element")
+metadata/grabbable = true
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("BoxShape3D_v311q")
+
+[node name="CSGBox3D" type="CSGBox3D" parent="."]
+visible = false
+size = Vector3(4.9, 0.66, 0.66)
+
+[node name="Element" type="Node3D" parent="."]
+
+[node name="Pole" parent="Element" instance=ExtResource("2_crruw")]
+transform = Transform3D(-7.40376e-08, -0.713436, 0, 1.69378, -3.11853e-08, 0, 0, 0, 1.6736, 0, 0, 0)
+
+[node name="AysaTank2" parent="Element" instance=ExtResource("2_507ym")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.02578, 0)
+visible = false

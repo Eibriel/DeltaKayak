@@ -616,7 +616,10 @@ func add_physicsitem(item: Dictionary, item_id: String, main_node: Node3D):
 		"demobox2": preload("res://scenes/demo_box.tscn"),
 		"demobox3": preload("res://scenes/demo_box.tscn"),
 		"kayakk1": preload("res://scenes/kayak_k1.tscn"),
-		"football": preload("res://scenes/football.tscn")
+		"football": preload("res://scenes/football.tscn"),
+		"pistonbig": preload("res://scenes/piston_big.tscn"),
+		"heavybox": preload("res://scenes/heavy_box.tscn"),
+		"branchbox": preload("res://scenes/branch_box.tscn"),
 	}
 	if not PHYSICS_ITEMS.has(item.instance): return
 	var gltf_instance = PHYSICS_ITEMS[item.instance].instantiate()
@@ -624,14 +627,17 @@ func add_physicsitem(item: Dictionary, item_id: String, main_node: Node3D):
 		"dogboat1":
 			gltf_instance.home_position = array_to_vector3(item.position)
 		"demobox1":
-			gltf_instance.label_text = "Cáliz"
+			#gltf_instance.label_text = "Cáliz"
 			#gltf_instance.get_node("PuzzleCup").visible = true
+			pass
 		"demobox2":
-			gltf_instance.label_text = "Espada"
+			#gltf_instance.label_text = "Espada"
 			#gltf_instance.get_node("PuzzleSword").visible = true
+			pass
 		"demobox3":
-			gltf_instance.label_text = "Sol"
+			#gltf_instance.label_text = "Sol"
 			#gltf_instance.get_node("PuzzleSun").visible = true
+			pass
 	#gltf_instance.name = item_id
 	main_node.add_child(gltf_instance)
 	gltf_instance.position = array_to_vector3(item.position)

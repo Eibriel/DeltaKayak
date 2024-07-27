@@ -645,6 +645,8 @@ func _integrate_forces(state: PhysicsDirectBodyState3D) -> void:
 func handle_contacts(state: PhysicsDirectBodyState3D):
 	if state.get_contact_count() > 0:
 		var collision_impulse:float = state.get_contact_impulse(0).length()
+		if collision_impulse > 10.0:
+			collision_damage.call_deferred()
 		if collision_impulse > 0.5:
 			#prints("collision", collision_impulse)
 			%CollisionAudio.global_position = state.get_contact_collider_position(0)
@@ -706,6 +708,15 @@ func _on_interaction_area_area_entered(area: Area3D) -> void:
 	elif area.has_meta("strength"):
 		area.free()
 		strength += 1
+
+func collision_damage():
+	# TODO join with set_damage
+	if damage_timer > 0: return
+	damage += 5.0
+	damage_timer = 1.0
+	buoyancy_instability += 2.0
+	if damage > max_damage:
+		Global.main_scene.game_over()
 
 func set_damage()->void:
 	if damage_timer > 0: return

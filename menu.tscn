@@ -138,6 +138,7 @@ text = "FOLLOW"
 
 [node name="GameLoadProgressBar" type="ProgressBar" parent="."]
 unique_name_in_owner = true
+modulate = Color(1, 1, 1, 0.588235)
 layout_mode = 1
 anchors_preset = 12
 anchor_top = 1.0
@@ -146,6 +147,7 @@ anchor_bottom = 1.0
 offset_top = -20.0
 grow_horizontal = 2
 grow_vertical = 0
+value = 50.0
 show_percentage = false
 
 [node name="BlackColor" type="ColorRect" parent="."]

@@ -1,7 +1,7 @@
 [gd_scene load_steps=11 format=3 uid="uid://13fm0bap5hxi"]
 
-[ext_resource type="Script" path="res://scenes/demo_box.gd" id="1_0hjt7"]
 [ext_resource type="PackedScene" uid="uid://cahxbt4vdp1s0" path="res://models/interactives/generator.glb" id="2_08alu"]
+[ext_resource type="PackedScene" uid="uid://d0a62d367b7bk" path="res://models/world/WoodBox001.glb" id="2_81pyd"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_v311q"]
 size = Vector3(1.34467, 1.07025, 1.22395)
@@ -47,7 +47,6 @@ axis_lock_angular_x = true
 axis_lock_angular_z = true
 mass = 0.5
 gravity_scale = 0.0
-script = ExtResource("1_0hjt7")
 metadata/grabbable = true
 metadata/puzzle_item = true
 
@@ -58,6 +57,7 @@ shape = SubResource("BoxShape3D_v311q")
 [node name="generator" parent="." instance=ExtResource("2_08alu")]
 unique_name_in_owner = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.141935, 0)
+visible = false
 
 [node name="SparkParticles" type="GPUParticles3D" parent="."]
 unique_name_in_owner = true
@@ -68,3 +68,6 @@ randomness = 0.38
 fixed_fps = 15
 process_material = SubResource("ParticleProcessMaterial_xqh8b")
 draw_pass_1 = SubResource("QuadMesh_ntfd7")
+
+[node name="WoodBox001" parent="." instance=ExtResource("2_81pyd")]
+transform = Transform3D(1.80367, 0, 0, 0, 1, 0, 0, 0, 2.10504, 0.0717153, 0.282533, -0.011995)

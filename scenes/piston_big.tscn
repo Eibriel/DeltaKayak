@@ -1,0 +1,112 @@
+[gd_scene load_steps=11 format=3 uid="uid://dny4rawsyeh8b"]
+
+[ext_resource type="Texture2D" uid="uid://bjbap1jdrb25y" path="res://models/world_textures/PuzzleStatue_diffuse.png" id="1_xfgkv"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_o0blp"]
+size = Vector3(4.38843, 1, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_bcmhs"]
+albedo_texture = ExtResource("1_xfgkv")
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_qhd4n"]
+size = Vector3(4.37561, 1.23535, 1.10699)
+
+[sub_resource type="Animation" id="Animation_cp7ni"]
+resource_name = "piston_animation"
+length = 20.0
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("AnimatableBody3D:position")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 10, 20),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector3(0, 0, 0), Vector3(3.85791, 0, 0), Vector3(0, 0, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_mfosy"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("AnimatableBody3D:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0, 0, 0)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_6ml3v"]
+_data = {
+"RESET": SubResource("Animation_mfosy"),
+"piston_animation": SubResource("Animation_cp7ni")
+}
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_60v0i"]
+animation = &"piston_animation"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_2e6rr"]
+advance_mode = 2
+
+[sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_0m1pg"]
+states/piston_animation/node = SubResource("AnimationNodeAnimation_60v0i")
+states/piston_animation/position = Vector2(380, 100)
+transitions = ["Start", "piston_animation", SubResource("AnimationNodeStateMachineTransition_2e6rr")]
+
+[node name="PistonBig" type="Node3D"]
+
+[node name="AnimatableBody3D" type="AnimatableBody3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="AnimatableBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.69421, 0, 0)
+shape = SubResource("BoxShape3D_o0blp")
+
+[node name="CSGBox3D" type="CSGBox3D" parent="AnimatableBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.368164, 0, 0)
+size = Vector3(0.263672, 1, 1)
+material = SubResource("StandardMaterial3D_bcmhs")
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="AnimatableBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.69653, -0.0254517, -0.0438232)
+size = Vector3(4.39307, 0.377808, 0.348877)
+material = SubResource("StandardMaterial3D_bcmhs")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.3639, 0, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.600403, -0.0180664, 0.0149841)
+shape = SubResource("BoxShape3D_qhd4n")
+
+[node name="CSGBox3D3" type="CSGBox3D" parent="StaticBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.591773, 0.00376892, 0.0263367)
+size = Vector3(4.39307, 1.24985, 1.11749)
+material = SubResource("StandardMaterial3D_bcmhs")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_6ml3v")
+}
+
+[node name="AnimationTree" type="AnimationTree" parent="."]
+tree_root = SubResource("AnimationNodeStateMachine_0m1pg")
+anim_player = NodePath("../AnimationPlayer")
+parameters/current_length = 20.0
+parameters/current_position = 8.80588
+parameters/current_delta = 0.0166667
+parameters/End/current_length = null
+parameters/End/current_position = null
+parameters/End/current_delta = null
+parameters/Start/current_length = 0.0
+parameters/Start/current_position = 0.0
+parameters/Start/current_delta = 0.0
+parameters/piston_animation/current_length = 20.0
+parameters/piston_animation/current_position = 8.80588
+parameters/piston_animation/current_delta = 0.0166667

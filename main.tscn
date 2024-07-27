@@ -403,6 +403,7 @@ metadata/_edit_use_anchors_ = true
 [node name="LogLabel" type="RichTextLabel" parent="Control"]
 unique_name_in_owner = true
 auto_translate_mode = 1
+visible = false
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.101667
@@ -1629,6 +1630,7 @@ shape = SubResource("BoxShape3D_d47b7")
 [node name="DemoExitDoor" type="StaticBody3D" parent="Main3D/DemoElements"]
 unique_name_in_owner = true
 transform = Transform3D(0.719703, 0, 0.694282, 0, 1, 0, -0.694282, 0, 0.719703, -168.384, 0, -411.076)
+visible = false
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Main3D/DemoElements/DemoExitDoor"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.01776, 0, -0.542938)
@@ -1723,6 +1725,7 @@ transform = Transform3D(0.0826839, 0, -1.19715, 0, 1.2, 0, 1.19715, 0, 0.0826839
 [node name="VinoIndicador" type="CSGSphere3D" parent="Main3D/DemoElements"]
 unique_name_in_owner = true
 transform = Transform3D(0.739455, 0, 0.673206, 0, 1, 0, -0.673206, 0, 0.739455, -193.235, 5.94782, -370.267)
+visible = false
 cast_shadow = 0
 radius = 0.235075
 material = SubResource("StandardMaterial3D_xingp")
@@ -1743,6 +1746,7 @@ font_size = 64
 [node name="CarneIndicador" type="CSGSphere3D" parent="Main3D/DemoElements"]
 unique_name_in_owner = true
 transform = Transform3D(0.739455, 0, 0.673206, 0, 1, 0, -0.673206, 0, 0.739455, -207.391, 6.05304, -385.968)
+visible = false
 radius = 0.265138
 material = SubResource("StandardMaterial3D_xingp")
 
@@ -1762,6 +1766,7 @@ font_size = 64
 [node name="TierraIndicador" type="CSGSphere3D" parent="Main3D/DemoElements"]
 unique_name_in_owner = true
 transform = Transform3D(0.739455, 0, 0.673206, 0, 1, 0, -0.673206, 0, 0.739455, -209.811, 5.9369, -370.369)
+visible = false
 radius = 0.248745
 material = SubResource("StandardMaterial3D_xingp")
 
@@ -1780,32 +1785,32 @@ text = "Tierra"
 font_size = 64
 
 [node name="SpotLight3D" type="SpotLight3D" parent="Main3D/DemoElements"]
-transform = Transform3D(0.673206, -0.317365, -0.667887, 0, 0.903216, -0.429187, 0.739455, 0.288931, 0.60805, -213.271, 2.63235, -368.103)
+transform = Transform3D(0.673206, 0.681125, -0.287858, -2.98023e-08, 0.389284, 0.921117, 0.739455, -0.620103, 0.262069, -214.482, 6.5068, -367.001)
 light_energy = 5.0
 distance_fade_enabled = true
-spot_range = 6.58398
+spot_range = 9.95568
 spot_angle = 39.2659
 
 [node name="SpotLight3D2" type="SpotLight3D" parent="Main3D/DemoElements"]
-transform = Transform3D(0.775562, 0.270934, 0.570174, -1.03087e-08, 0.903215, -0.429187, -0.631271, 0.332861, 0.7005, -190.689, 2.63, -367.228)
+transform = Transform3D(0.775562, -0.583053, 0.241974, 0, 0.383312, 0.923619, -0.631271, -0.716324, 0.297282, -189.885, 5.69786, -366.241)
 light_energy = 5.0
 distance_fade_enabled = true
-spot_range = 6.58398
+spot_range = 8.5132
 spot_angle = 39.2659
 
 [node name="SpotLight3D3" type="SpotLight3D" parent="Main3D/DemoElements"]
-transform = Transform3D(-0.72369, -0.296193, -0.623331, -6.54921e-08, 0.903215, -0.429187, 0.690125, -0.310599, -0.653648, -210.908, 2.63, -389.634)
+transform = Transform3D(-0.72369, 0.517072, -0.457065, -8.9407e-08, 0.662293, 0.749244, 0.690125, 0.54222, -0.479295, -211.722, 3.96479, -390.488)
 light_energy = 5.0
 distance_fade_enabled = true
-spot_range = 6.58398
+spot_range = 8.59085
 spot_angle = 39.2659
 
 [node name="SpotLight3D4" type="SpotLight3D" parent="Main3D/DemoElements"]
-transform = Transform3D(0.702178, 0.262857, -0.661704, -1.49012e-07, 0.929358, 0.36918, 0.712001, -0.25923, 0.652575, -173.277, 3.82575, -407.262)
+transform = Transform3D(0.702178, 0.262857, -0.661704, -1.49012e-07, 0.929358, 0.36918, 0.712001, -0.25923, 0.652575, -177.441, 6.14894, -403.155)
 light_energy = 5.0
 distance_fade_enabled = true
-spot_range = 10.1255
-spot_angle = 23.4021
+spot_range = 18.1181
+spot_angle = 42.7723
 
 [node name="InstruccionLabel" type="Label3D" parent="Main3D/DemoElements"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 104.443, 2.85102, -202.56)

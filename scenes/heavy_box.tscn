@@ -1,0 +1,32 @@
+[gd_scene load_steps=4 format=3 uid="uid://ciqw2krhps7yw"]
+
+[ext_resource type="Script" path="res://classes/floating_element.gd" id="1_c4bad"]
+[ext_resource type="PackedScene" uid="uid://b6ps5srih65fp" path="res://models/world/AysaTank2.glb" id="2_b2uiu"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_v311q"]
+size = Vector3(4.94238, 2, 2)
+
+[node name="FloatingBox" type="RigidBody3D" node_paths=PackedStringArray("model")]
+collision_layer = 4
+collision_mask = 31
+axis_lock_linear_y = true
+axis_lock_angular_x = true
+axis_lock_angular_z = true
+mass = 200.0
+gravity_scale = 0.0
+linear_damp = 5.0
+script = ExtResource("1_c4bad")
+model = NodePath("Element")
+metadata/grabbable = true
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("BoxShape3D_v311q")
+
+[node name="CSGBox3D" type="CSGBox3D" parent="."]
+size = Vector3(4.90063, 2, 2)
+
+[node name="Element" type="Node3D" parent="."]
+
+[node name="AysaTank2" parent="Element" instance=ExtResource("2_b2uiu")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.02578, 0)
+visible = false

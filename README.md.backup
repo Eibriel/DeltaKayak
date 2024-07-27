@@ -1,6 +1,8 @@
 # Delta Kayak
 Horror game, made in Godot 4
 
+Navigate an open-world island in your kayak, avoid the giant boat stalking you, and venture deep into the unknown to find your missing pet.
+
 Wishlist on [Steam](https://store.steampowered.com/app/2632680/Delta_Kayak/) ❤️
 
 ![Delta Kayak Logo](textures/menu_background.jpg)
@@ -10,7 +12,7 @@ Note that not all items in the list are currently in use.
 
 #### Fonts
 
-- [Rosario Font](https://github.com/Omnibus-Type/Rosario)
+- [Rosario Font](https://github.com/Omnibus-Type/Rosario) by Omnibus-Type
 - [Shortcut](http://www.misprintedtype.com/) by misprintedtype
 
 #### Godot Addons
