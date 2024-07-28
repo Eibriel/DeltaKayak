@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="ResourceGroup" load_steps=2 format=3 uid="uid://cw6duyncgnblh"]
+
+[ext_resource type="Script" path="res://addons/godot_resource_groups/resource_group.gd" id="1_lx44v"]
+
+[resource]
+script = ExtResource("1_lx44v")
+base_folder = "res://sounds/letters"
+includes = Array[String](["*.ogg"])
+excludes = Array[String]([])
+paths = Array[String](["res://sounds/letters/a.ogg", "res://sounds/letters/b.ogg", "res://sounds/letters/c_hard.ogg", "res://sounds/letters/c_soft.ogg", "res://sounds/letters/d.ogg", "res://sounds/letters/e.ogg", "res://sounds/letters/f.ogg", "res://sounds/letters/g_hard.ogg", "res://sounds/letters/g_soft.ogg", "res://sounds/letters/i.ogg", "res://sounds/letters/j.ogg", "res://sounds/letters/k.ogg", "res://sounds/letters/l.ogg", "res://sounds/letters/m.ogg", "res://sounds/letters/n.ogg", "res://sounds/letters/o.ogg", "res://sounds/letters/p.ogg", "res://sounds/letters/q.ogg", "res://sounds/letters/r.ogg", "res://sounds/letters/s.ogg", "res://sounds/letters/t.ogg", "res://sounds/letters/u.ogg", "res://sounds/letters/v.ogg", "res://sounds/letters/w.ogg", "res://sounds/letters/x.ogg", "res://sounds/letters/y.ogg", "res://sounds/letters/z.ogg"])

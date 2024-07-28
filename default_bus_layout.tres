@@ -1,4 +1,4 @@
-[gd_resource type="AudioBusLayout" load_steps=4 format=3 uid="uid://ega0sk1e2tw8"]
+[gd_resource type="AudioBusLayout" load_steps=6 format=3 uid="uid://ega0sk1e2tw8"]
 
 [sub_resource type="AudioEffectReverb" id="AudioEffectReverb_nch63"]
 resource_name = "Reverb"
@@ -13,7 +13,13 @@ resonance = 0.77
 
 [sub_resource type="AudioEffectAmplify" id="AudioEffectAmplify_idwlj"]
 resource_name = "Amplify"
-volume_db = 4.0
+
+[sub_resource type="AudioEffectPitchShift" id="AudioEffectPitchShift_5yu6v"]
+resource_name = "PitchShift"
+pitch_scale = 0.8
+
+[sub_resource type="AudioEffectPhaser" id="AudioEffectPhaser_c3thy"]
+resource_name = "Phaser"
 
 [resource]
 bus/1/name = &"FX"
@@ -52,12 +58,16 @@ bus/6/name = &"Voice"
 bus/6/solo = false
 bus/6/mute = false
 bus/6/bypass_fx = false
-bus/6/volume_db = -1.12373
+bus/6/volume_db = -1.12151
 bus/6/send = &"Master"
 bus/6/effect/0/effect = SubResource("AudioEffectLowPassFilter_31wq5")
-bus/6/effect/0/enabled = true
+bus/6/effect/0/enabled = false
 bus/6/effect/1/effect = SubResource("AudioEffectAmplify_idwlj")
-bus/6/effect/1/enabled = true
+bus/6/effect/1/enabled = false
+bus/6/effect/2/effect = SubResource("AudioEffectPitchShift_5yu6v")
+bus/6/effect/2/enabled = true
+bus/6/effect/3/effect = SubResource("AudioEffectPhaser_c3thy")
+bus/6/effect/3/enabled = true
 bus/7/name = &"UI"
 bus/7/solo = false
 bus/7/mute = false

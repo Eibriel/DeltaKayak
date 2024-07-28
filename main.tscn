@@ -1,4 +1,4 @@
-[gd_scene load_steps=55 format=3 uid="uid://ce6e8v1saxjr5"]
+[gd_scene load_steps=56 format=3 uid="uid://ce6e8v1saxjr5"]
 
 [ext_resource type="Theme" uid="uid://1kj8fi5pat0v" path="res://themes/default_theme.tres" id="1_7eei4"]
 [ext_resource type="Environment" uid="uid://xpf4ng2ym0n4" path="res://environments/main_environment.tres" id="1_ekqa4"]
@@ -167,6 +167,11 @@ _data = {
 [sub_resource type="BoxOccluder3D" id="BoxOccluder3D_gtuj1"]
 size = Vector3(155.256, 42, 10)
 
+[sub_resource type="AudioStreamPlaylist" id="AudioStreamPlaylist_4rlso"]
+loop = false
+fade_time = 0.01
+stream_count = 1
+
 [node name="Control" type="Control" node_paths=PackedStringArray("initial_position")]
 layout_mode = 3
 anchors_preset = 15
@@ -179,7 +184,7 @@ theme = ExtResource("1_qo26v")
 script = ExtResource("1_xxenq")
 game_preferences = ExtResource("2_wexnt")
 game_state = ExtResource("3_nh3h6")
-initial_position = NodePath("Main3D/InitialPositionPuzzle")
+initial_position = NodePath("Main3D/InitialPosition")
 
 [node name="Node2D" type="Node2D" parent="."]
 
@@ -2065,6 +2070,12 @@ bus = &"UI"
 [node name="VoicePlayer" type="AudioStreamPlayer" parent="."]
 unique_name_in_owner = true
 stream = ExtResource("31_xviah")
+bus = &"Voice"
+
+[node name="VoicePlayer2" type="AudioStreamPlayer" parent="."]
+unique_name_in_owner = true
+stream = SubResource("AudioStreamPlaylist_4rlso")
+pitch_scale = 0.5
 bus = &"Voice"
 
 [connection signal="button_up" from="Control/MenuThanks/WishlistEndButton" to="." method="_on_wishlist_button_up"]

@@ -30,7 +30,7 @@ var foreshadowing := false
 var other_side := false
 var kayak_k1: RigidBody3D
 
-var SKIP_INTRO = true
+var SKIP_INTRO = false
 
 var character_home_position:Vector3
 var character_home_rotation:Vector3
@@ -382,7 +382,7 @@ func handle_dialogue(delta:float) -> void:
 		%VoicePlayer.stop()
 		%VoicePlayer.stream = resources[0]
 		dialogue_time = %VoicePlayer.stream.get_length()
-		%VoicePlayer.play()
+		#%VoicePlayer.play() # NOTE moving to letter based
 	# NOTE this don't work when exported
 	#var audio_path := "res://sounds/voice/character/%s.ogg" % key
 	#if FileAccess.file_exists(audio_path):
@@ -391,10 +391,76 @@ func handle_dialogue(delta:float) -> void:
 	#	dialogue_time = %VoicePlayer.stream.get_length()
 	#	%VoicePlayer.play()
 	#
+	
+	var letters_group:ResourceGroup = load("res://sounds/all_letters_files.tres")
+	var playlist := AudioStreamPlaylist.new()
+	playlist.loop = false
+	playlist.fade_time = 0.001
+	%VoicePlayer2.stream = playlist
+	var stream_id := 0
+	var clean_text:Array[String]= []
+	var es_text := TranslationServer.get_translation_object("es_AR")
+	voice_text_cleaner(es_text.get_message(key).split(), clean_text)
+	for letter in clean_text:
+		if stream_id >= playlist.MAX_STREAMS:
+			break
+		#print(letter)
+		var letters_resources = letters_group.load_matching(["**%s.ogg" % letter], [])
+		if letters_resources.size() > 0:
+			#print(letters_resources[0])
+			playlist.set_list_stream(stream_id, letters_resources[0])
+			stream_id += 1
+	playlist.set_stream_count(stream_id)
+	%VoicePlayer2.play()
+	
 	if is_dialogue_animating():
 		dialogue_tween.kill()
 	dialogue_tween = create_tween()
 	dialogue_tween.tween_property(dialogue_label, "visible_ratio", 1., 1)
+
+func voice_text_cleaner(text:Array[String], result:Array[String]) -> void:
+	const remove_tilde = {
+		"á": "a",
+		"é": "e",
+		"í": "i",
+		"ó": "o",
+		"ú": "u",
+		"ü": "u",
+		"z": "s",
+	}
+	var next_letter = text.pop_front()
+	if not next_letter: return
+	next_letter = next_letter as String
+	next_letter = next_letter.to_lower()
+	if remove_tilde.has(next_letter):
+		next_letter = remove_tilde[next_letter]
+	if text.size() > 0:
+		if next_letter == "c":
+			if ["e", "i"].has(text[0].to_lower()):
+				next_letter = "c_soft"
+			elif text[0] == "h":
+				next_letter = "y"
+				text.pop_front()
+			else:
+				next_letter = "c_hard"
+		elif next_letter == "g":
+			if text[0].to_lower() == "ü":
+				# agüero -> ag(soft)uero
+				next_letter = "g_soft"
+			if text[0].to_lower() == "u":
+				# guitarra -> g(soft)itarra
+				if text.size() > 1:
+					if ["e", "i"].has(text[1].to_lower()):
+						next_letter = "g_soft"
+						text.pop_front()
+			elif ["e", "i"].has(text[0].to_lower()):
+				# gente -> g(hard)ente
+				next_letter = "g_hard"
+		elif next_letter == "q":
+			if text[0].to_lower() == "u":
+				text.pop_front()
+	result.append(next_letter)
+	voice_text_cleaner(text, result)
 
 func handle_triggers(_delta:float) -> void:
 	if Global.camera == null: return
