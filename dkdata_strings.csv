@@ -7,7 +7,6 @@
 "Resource_a35dc_action_label",0,,,
 "Resource_l8snq_item_label",0,,,
 "Resource_1pyr4_item_label",0,,,
-"Resource_dy1ah_item_label",0,,,
 "Resource_5rue2_item_label",0,,,
 "Resource_3hrbs_dialogue_text",0,"Un arbol muy raro",,
 "Resource_i4hx2_dialogue_text",0,"La mascota del parque de diversiones. Los hierros atravesándolo no son parte del diseño.",,
@@ -18,9 +17,9 @@
 "Resource_c2kmg_dialogue_text",0,"No de puede pasar",,
 "Resource_uvbog_dialogue_text",0,"Hay un cuchillo. Lo voy a agarrar por si acaso.",,
 "Resource_dfg6u_dialogue_text",0,"La prefectura. Por alguna razón me da escalofríos.",,
-"Resource_x06et_dialogue_text",0,"¡Pepa! ¡Venga para acá!","¡Pepa! ¡Venga para acá!",
-"Resource_hw8d6_dialogue_text",0,"¿Vamos a dar un paseo?",,
-"Resource_hesgk_dialogue_text",0,"Acompañame a buscar un frasco de miel.",,
+"Resource_x06et_dialogue_text",0,"¡Pepa! ¡Venga para acá!","¡Pepa! ¡Venga para acá!","Pepa! Come here!"
+"Resource_hw8d6_dialogue_text",0,"¿Vamos a dar un paseo?","¿Vamos a dar un paseo?","Let’s go for a ride!"
+"Resource_hesgk_dialogue_text",0,"Hay que volver antes de que refresque.","Hay que volver antes de que refresque.","We should be back before it gets too cold."
 "Resource_kctts_dialogue_text",0,"¡Ese lugar me daba escalofríos!","¡Ese lugar me daba escalofríos!","That place gave me the shibbers!"
 "Resource_rtasq_dialogue_text",0,"Esta estatua es similar a las otras tres. Y está bloqueando el camino.","Esta estatua es similar a las otras tres. Y está bloqueando el camino.",
 "Resource_mgkwo_dialogue_text",0,"Esta estatua está mirando el cielo.","Esta estatua está mirando el cielo.",
@@ -33,42 +32,42 @@
 "Resource_as2nt_dialogue_text",0,"¿Qué hacías ahí escondida?","¿Qué hacías ahí escondida?",
 "Resource_yfiv7_dialogue_text",0,"¡Pepa, no te muevas!","¡Pepa, no te muevas!","Pepa, dont move like that!"
 "Resource_mccnv_dialogue_text",0,"¡Pepa! ¿Donde estás?","¡Pepa! ¿Donde estás?","¡Pepa! ¿Where are you?"
-"Resource_d66k7_dialogue_text",0,"Tengo que encontrar a Pepa.","Tengo que encontrar a Pepa.","I must find Pepa."
+"Resource_d66k7_dialogue_text",0,"Tengo que encontrarla.","Tengo que encontrarla.","I must find her."
 "Resource_kqdnr_dialogue_text",0,"¡Aahhhhhhh!","¡Aahhhhhhh!","Aahhhhhh!"
 "Resource_yhhpc_dialogue_text",0,"¡Mierdaaaaaaaa!","¡Mierdaaaaaaaa!","Shiiiiiiiiiiiiiiitt!"
 "Resource_6j43o_dialogue_text",0,"¡Casi me matás de un susto!","¡Casi me matás de un susto!","You scared me to death!"
 "Resource_g4lg1_dialogue_text",0,"Vas a tener que venir conmigo también","Vas a tener que venir conmigo también","You come with me"
 "Resource_gkviw_dialogue_text",0,"Que silencio que hace","Que silencio que hace","The night is so quiet"
-"Resource_wayrf_dialogue_text",0,"A la casa de allá adelante hay que ir.","A la casa de allá adelante hay que ir.",
+"Resource_wayrf_dialogue_text",0,"A la casa de allá adelante hay que ir.","A la casa de allá adelante hay que ir.","We must go to that house."
 "Resource_exawk_dialogue_text",0,"Debería volver y agarrar el kayak de mi hermano","Debería volver y agarrar el kayak de mi hermano",
 "Resource_ygrxt_dialogue_text",0,"Ana me pidió que lo lleve","Ana me pidió que lo lleve",
 "Resource_hgasi_dialogue_text",0,"Ana todavía no está. Me da tiempo de ir a buscar el kayak de mi hermano.","Ana todavía no está. Me da tiempo de ir a buscar el kayak de mi hermano.",
-"Resource_l1nq4_dialogue_text",0,"¡Pepa hermosa!","¡Pepa hermosa!","Who is a good dog?"
+"Resource_l1nq4_dialogue_text",0,"¡Pepa linda!","¡Pepa linda!","Who is a good dog?"
 "Resource_niw0c_dialogue_text",0,"La noche está clara, puedo ver bastante lejos.","La noche está clara, puedo ver bastante lejos.","The night is lit, I can see far away."
-"Resource_hog5x_dialogue_text",0,"Tengo que ir para el otro lado","Tengo que ir para el otro lado",
-"Resource_ofr0y_dialogue_text",0,"No puedo pasar, está lleno de camalotes.","No puedo pasar, está lleno de camalotes.",
-"Resource_b2qif_dialogue_text",0,"¡Además tengo que encontrar a Pepa primero!","¡Además tengo que encontrar a Pepa primero!",
-"Resource_hql8m_dialogue_text",0,"Por favor Gauchito, ayudame a salir de esta.","Por favor Gauchito, ayudame a salir de esta.",
-"Resource_6ksbf_dialogue_text",0,"Esos dos palos arman un arco de fútbol.","Esos dos palos arman un arco de fútbol.",
-"Resource_qtmnn_dialogue_text",0,"El carpincho me transmite un poquito de paz.","El carpincho me transmite un poquito de paz.",
-"Resource_5tv27_dialogue_text",0,"¡Goooooooooooooooool!","¡Goooooooooooooooool!",
-"Resource_es55d_dialogue_text",0,"¡Que golazo que metí!","¡Que golazo que metí!",
-"Resource_6ynwi_dialogue_text",0,"Me hizo olvidar las penurias por un segundo.","Me hizo olvidar las penurias por un segundo.",
-"Resource_rx17p_dialogue_text",0,"¡Que bicho noble el carpincho!","¡Que bicho noble el carpincho!",
-"Resource_ooev8_dialogue_text",0,"¡Dan ganas de estrujarlo!","¡Dan ganas de estrujarlo!",
+"Resource_hog5x_dialogue_text",0,"Tengo que ir para el otro lado","Tengo que ir para el otro lado","I should be going the other way"
+"Resource_ofr0y_dialogue_text",0,"No puedo pasar, está lleno de camalotes.","No puedo pasar, está lleno de camalotes.","I can’t go through those camalotes"
+"Resource_b2qif_dialogue_text",0,"Y no puedo volver sin Pepa.","Y no puedo volver sin Pepa.","I can’t go back without Pepa."
+"Resource_hql8m_dialogue_text",0,"Por favor Gauchito, ayudame a salir de esta.","Por favor Gauchito, ayudame a salir de esta.","Please Gauchito, save me."
+"Resource_6ksbf_dialogue_text",0,"Esos dos palos arman un arco de fútbol.","Esos dos palos arman un arco de fútbol.","Those sticks make a football goal."
+"Resource_qtmnn_dialogue_text",0,"El carpincho me transmite un poquito de paz.","El carpincho me transmite un poquito de paz.","The capybara gives me some peace."
+"Resource_5tv27_dialogue_text",0,"¡Goooooooooooooooool!","¡Goooooooooooooooool!","Goooooooooaaaaaaal!"
+"Resource_es55d_dialogue_text",0,"¡Que golazo que metí!","¡Que golazo que metí!","Let’s go!"
+"Resource_6ynwi_dialogue_text",0,"Me hizo olvidar las penurias por un segundo.","Me hizo olvidar las penurias por un segundo.","It made me forget my bad luck for a moment."
+"Resource_rx17p_dialogue_text",0,"¡Que bicho noble el carpincho!","¡Que bicho noble el carpincho!","What a noble animal, the capybara!"
+"Resource_ooev8_dialogue_text",0,"¡Dan ganas de estrujarlo!","¡Dan ganas de estrujarlo!","I want to hug it!"
 "Resource_tnkfu_dialogue_text",0,"El canal que bloquea la estatua es posible que me lleve a Pepa.","El canal que bloquea la estatua es posible que me lleve a Pepa.",
 "Resource_p85l1_dialogue_text",0,"Una de las estatuas mira al cielo.","Una de las estatuas mira al cielo.",
 "Resource_8sirj_dialogue_text",0,"Una de las estatuas busca algo en su cintura.","Una de las estatuas busca algo en su cintura.",
 "Resource_l0nb5_dialogue_text",0,"Una de las estatuas mira su mano.","Una de las estatuas mira su mano.",
 "Resource_rvwc4_dialogue_text",0,"Creo que ya entiendo lo que quieren las estatuas.","Creo que ya entiendo lo que quieren las estatuas.",
 "Resource_xpsea_dialogue_text",0,"Todas las estatuas ya tienen su elemento correspondiente.","Todas las estatuas ya tienen su elemento correspondiente.",
-"Resource_ijug1_dialogue_text",0,"¡Gauchito, traeme a Pepa sana y salva!","¡Gauchito, traeme a Pepa sana y salva!",
-"Resource_4iing_dialogue_text",0,"¡Casi me saca un pedazo!","¡Casi me saca un pedazo!",
-"Resource_r4nqs_dialogue_text",0,"¿De donde salió esa lancha toda destruída?","¿De donde salió esa lancha toda destruída?",
-"Resource_e63sy_dialogue_text",0,"¡¿Que carajo es esa cosa?!","¡¿Que carajo es esa cosa?!",
-"Resource_sl1rs_dialogue_text",0,"¡Pepa!","¡Pepa!",
-"Resource_heion_dialogue_text",0,"¡Guau! ¡Guau!","¡Guau! ¡Guau!",
-"Resource_ai67n_dialogue_text",0,"¿Quién es la mas linda?","¿Quién es la mas linda?",
-"Resource_kx7gw_dialogue_text",0,"¡Pepa es la mas linda!","¡Pepa es la mas linda!",
+"Resource_ijug1_dialogue_text",0,"¡Gauchito, traeme a Pepa sana y salva!","¡Gauchito, traeme a Pepa sana y salva!","Gauchito, bring Pepa to me safe and sound!"
+"Resource_4iing_dialogue_text",0,"¡Casi me saca un pedazo!","¡Casi me saca un pedazo!","It almost took a chunk out of me!"
+"Resource_r4nqs_dialogue_text",0,"¿De donde salió esa lancha toda destruída?","¿De donde salió esa lancha toda destruída?","Where that destroyed boat comes from?"
+"Resource_e63sy_dialogue_text",0,"¡¿Que carajo es esa cosa?!","¡¿Que carajo es esa cosa?!","What is that thing?!"
+"Resource_sl1rs_dialogue_text",0,"¡Pepa!","¡Pepa!","Pepa! Where are you?"
+"Resource_heion_dialogue_text",0,"¡Guau! ¡Guau!","¡Guau! ¡Guau!","…"
+"Resource_ai67n_dialogue_text",0,"¿Quién es la mas linda?","¿Quién es la mas linda?","Who is the cutest dog?"
+"Resource_kx7gw_dialogue_text",0,"¡Pepa es la mas linda!","¡Pepa es la mas linda!","Pepa is the cutest!"
 "Resource_5ayvc_dialogue_text",0,"¡La estatua liberó el paso!","¡La estatua liberó el paso!",
-"Resource_51f2c_dialogue_text",0,"Necesito irme de acá ya mismo","Necesito irme de acá ya mismo",
+"Resource_51f2c_dialogue_text",0,"Necesito irme de acá ya mismo","Necesito irme de acá ya mismo","I must leave right now"

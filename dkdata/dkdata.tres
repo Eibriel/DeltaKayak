@@ -142,7 +142,7 @@ text = "¿Vamos a dar un paseo?"
 
 [sub_resource type="Resource" id="Resource_hesgk"]
 script = ExtResource("1_yf062")
-id = "disabled_"
+id = "new_item"
 character = 1
 image = ""
 enabled = null

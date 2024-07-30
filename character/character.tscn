@@ -649,7 +649,7 @@ parameters/Start/current_length = 0.0
 parameters/Start/current_position = 0.0
 parameters/Start/current_delta = 0.0
 parameters/character_anims_Idle/current_length = 1.0
-parameters/character_anims_Idle/current_position = 0.508139
+parameters/character_anims_Idle/current_position = 0.507511
 parameters/character_anims_Idle/current_delta = 0.0166667
 
 [node name="KriketsAudio" type="AudioStreamPlayer3D" parent="."]

@@ -13,6 +13,7 @@ resonance = 0.77
 
 [sub_resource type="AudioEffectAmplify" id="AudioEffectAmplify_idwlj"]
 resource_name = "Amplify"
+volume_db = -6.0
 
 [sub_resource type="AudioEffectPitchShift" id="AudioEffectPitchShift_5yu6v"]
 resource_name = "PitchShift"
@@ -63,7 +64,7 @@ bus/6/send = &"Master"
 bus/6/effect/0/effect = SubResource("AudioEffectLowPassFilter_31wq5")
 bus/6/effect/0/enabled = false
 bus/6/effect/1/effect = SubResource("AudioEffectAmplify_idwlj")
-bus/6/effect/1/enabled = false
+bus/6/effect/1/enabled = true
 bus/6/effect/2/effect = SubResource("AudioEffectPitchShift_5yu6v")
 bus/6/effect/2/enabled = true
 bus/6/effect/3/effect = SubResource("AudioEffectPhaser_c3thy")

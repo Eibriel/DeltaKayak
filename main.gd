@@ -278,7 +278,6 @@ var demo_completed := false
 func set_demo_completed():
 	if demo_completed: return
 	demo_completed = true
-	say_dialogue("demo_exit_point")
 	GamePlatform.set_achievement("demo_completed")
 	%MenuThanks.visible = true
 	%MenuThanks.modulate.a = 0.0
@@ -381,7 +380,7 @@ func handle_dialogue(delta:float) -> void:
 	if resources.size() > 0:
 		%VoicePlayer.stop()
 		%VoicePlayer.stream = resources[0]
-		dialogue_time = %VoicePlayer.stream.get_length()
+		#dialogue_time = %VoicePlayer.stream.get_length()
 		#%VoicePlayer.play() # NOTE moving to letter based
 	# NOTE this don't work when exported
 	#var audio_path := "res://sounds/voice/character/%s.ogg" % key
@@ -395,7 +394,7 @@ func handle_dialogue(delta:float) -> void:
 	var letters_group:ResourceGroup = load("res://sounds/all_letters_files.tres")
 	var playlist := AudioStreamPlaylist.new()
 	playlist.loop = false
-	playlist.fade_time = 0.001
+	playlist.fade_time = 0.01
 	%VoicePlayer2.stream = playlist
 	var stream_id := 0
 	var clean_text:Array[String]= []
@@ -459,6 +458,9 @@ func voice_text_cleaner(text:Array[String], result:Array[String]) -> void:
 		elif next_letter == "q":
 			if text[0].to_lower() == "u":
 				text.pop_front()
+		elif next_letter == "y":
+			if not ["a", "e", "i", "o", "u"].has(text[0].to_lower()):
+				next_letter = "i"
 	result.append(next_letter)
 	voice_text_cleaner(text, result)
 
@@ -567,7 +569,8 @@ func _input(event: InputEvent) -> void:
 	elif event.is_action_pressed("ui_text_backspace"):
 		if OS.has_feature("debug"):
 			#teleport_enemy(1)
-			game_over()
+			say_dialogue("demo_other_side")
+			#game_over()
 
 func say_some_dialogue()->void:
 	if player_state.size() > 0:
@@ -602,14 +605,14 @@ func say_some_dialogue()->void:
 			say_dialogue("describe_night")
 
 func on_pepa():
-	if other_side:
+	if not other_side:
 		var pepa_dialogues := [
-			"pepa_002",
+			"pepa_001",
 			"pepa_003"
 		]
 		say_dialogue(pepa_dialogues.pick_random())
 	else:
-		say_dialogue("pepa_001")
+		say_dialogue("pepa_002")
 
 func on_compicactus():
 	say_dialogue("compi_im_here")

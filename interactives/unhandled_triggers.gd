@@ -34,6 +34,8 @@ func _on_unhandled_trigger(main_scene, _game_state, trigger_id:String, trigger_t
 				main_scene.teleport_enemy(0)
 			"triggerpath_attack_section_b_003":
 				main_scene.teleport_enemy(1)
+			"triggerpath_demo_exita_003":
+				main_scene.say_dialogue("demo_exit_point")
 			"triggerpath_demo_exit_003":
 				main_scene.set_demo_completed()
 			_:
