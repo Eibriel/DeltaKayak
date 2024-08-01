@@ -2,6 +2,8 @@ extends RigidBody3D
 class_name FloatingElement
 
 @export var model:Node3D
+@export var break_sound:AudioStreamPlayer3D
+@export var break_particles:GPUParticles3D
 @export var break_point:float
 @export var smart_damp:float
 
@@ -23,4 +25,7 @@ func _integrate_forces(state: PhysicsDirectBodyState3D) -> void:
 
 func destroy() -> void:
 	Global.character.release_grab() # TODO only if is grabbing this item
-	queue_free()
+	#queue_free()
+	global_position.y = -3
+	break_particles.emitting = true
+	break_sound.play()

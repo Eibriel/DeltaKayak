@@ -87,6 +87,12 @@ func _on_unhandled_trigger(main_scene, _game_state, trigger_id:String, trigger_t
 			"triggerpath_football_goal_003":
 				main_scene.say_dialogue("football_goal")
 				main_scene.set_player_state("gol")
+			"triggerpath_demo_piston_003":
+				main_scene.say_dialogue("look_piston")
+			"triggerpath_grab_tutorial_003":
+				main_scene.say_dialogue("look_path")
+			"triggerpath_keep_out_signs_003":
+				main_scene.say_dialogue("keep_out_signs")
 			_:
 				handled = false
 	else:

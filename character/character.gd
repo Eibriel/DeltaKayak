@@ -54,6 +54,9 @@ var trail_time := 0.0
 
 @onready var character: Node3D = $character
 
+var TILT_LOWER_LIMIT = deg_to_rad(-45)
+var TILT_UPPER_LIMIT = deg_to_rad(45)
+
 enum GRABBING {
 	WANTS_TO,
 	YES,
@@ -204,6 +207,7 @@ func reset_camera_rotation():
 func _update_camera(delta:float)->void:
 	if not %POVCamera3D.current: return
 	_mouse_rotation.x += _tilt_input * delta
+	_mouse_rotation.x = clamp(_mouse_rotation.x, TILT_LOWER_LIMIT, TILT_UPPER_LIMIT)
 	_mouse_rotation.y += _rotation_input * delta
 	%POVCameraController.transform.basis = Basis.from_euler(_mouse_rotation)
 	%POVCameraController.rotation.z = 0.0
@@ -211,6 +215,7 @@ func _update_camera(delta:float)->void:
 	_tilt_input = 0.0
 
 func hide_pepa()->void:
+	%PepaPantingAudio.stop()
 	pepa.visible = false
 
 func hide_head_if_needed()->void:

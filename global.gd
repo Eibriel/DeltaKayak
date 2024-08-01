@@ -11,9 +11,13 @@ var grab_kayak2: Generic6DOFJoint3D
 var log_text: String = ""
 
 var mouse_sensibility := 0.5
+var master_volume := 0.5
+var voice_volume := 0.5
 
 var is_near_carpincho:bool
 var carpincho_near:Node3D
+
+var eibriel_logo = false
 
 # NOTE Needed for datamosh_compositior
 var refresh_frame: bool

@@ -1,4 +1,4 @@
-[gd_scene load_steps=59 format=3 uid="uid://ce6e8v1saxjr5"]
+[gd_scene load_steps=65 format=3 uid="uid://ce6e8v1saxjr5"]
 
 [ext_resource type="Theme" uid="uid://1kj8fi5pat0v" path="res://themes/default_theme.tres" id="1_7eei4"]
 [ext_resource type="Environment" uid="uid://xpf4ng2ym0n4" path="res://environments/main_environment.tres" id="1_ekqa4"]
@@ -29,8 +29,14 @@
 [ext_resource type="AudioStream" uid="uid://css74q0cr7wrf" path="res://sounds/ambient/679400__adviseme333__fast-water-flutter.wav" id="19_7efqm"]
 [ext_resource type="PackedScene" uid="uid://dt7sihp44khg1" path="res://scenes/carpincho.tscn" id="20_wsws0"]
 [ext_resource type="PackedScene" uid="uid://b8olueufru4tm" path="res://models/enemy/enemy.glb" id="23_3o5cm"]
+[ext_resource type="AudioStream" uid="uid://ctf315ve0125p" path="res://sounds/pepa/pepa_03.ogg" id="25_3bd5d"]
 [ext_resource type="AudioStream" uid="uid://crud8scfcqn51" path="res://sounds/extradiegetic/TinCoin.mp3" id="27_00yc6"]
+[ext_resource type="PackedScene" uid="uid://b2tyi1dosp4mx" path="res://models/extra/NoPasar02.glb" id="27_wufk5"]
+[ext_resource type="PackedScene" uid="uid://bcw048hds8sdf" path="res://models/extra/NoPasar03.glb" id="28_a0yc8"]
 [ext_resource type="AudioStream" uid="uid://0a4k1bclukk0" path="res://sounds/ambient/197860__ladystarlightnyc__bow-tapping-violin-thru-delay-pedal.mp3" id="28_a3my4"]
+[ext_resource type="PackedScene" uid="uid://bqk2abki3pguc" path="res://models/extra/NoPasar04.glb" id="29_7l0wb"]
+[ext_resource type="PackedScene" uid="uid://c1qu3mjlqy08v" path="res://models/extra/NoPasar05.glb" id="30_vi5x4"]
+[ext_resource type="PackedScene" uid="uid://c3v70eju1hh2u" path="res://models/extra/NoPasar.glb" id="31_tpcsj"]
 [ext_resource type="AudioStream" uid="uid://c3i2vqifxd6ka" path="res://sounds/voice/character/Resource_6ynwi_dialogue_text.ogg" id="31_xviah"]
 [ext_resource type="AudioStream" uid="uid://difqi5yet4myj" path="res://sounds/letters/o.ogg" id="33_qqrum"]
 [ext_resource type="AudioStream" uid="uid://bsrcf2jgmvlb4" path="res://sounds/letters/p.ogg" id="34_rclmj"]
@@ -153,13 +159,31 @@ tracks/2/path = NodePath("../..")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
-"times": PackedFloat32Array(10),
-"transitions": PackedFloat32Array(1),
+"times": PackedFloat32Array(1.46667, 10),
+"transitions": PackedFloat32Array(1, 1),
 "values": [{
+"args": ["demo_start_point"],
+"method": &"say_dialogue"
+}, {
 "args": [],
 "method": &"end_intro_animation"
 }]
 }
+tracks/3/type = "audio"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("%PepaPlayer")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"clips": [{
+"end_offset": 0.0,
+"start_offset": 0.0,
+"stream": ExtResource("25_3bd5d")
+}],
+"times": PackedFloat32Array(5.3)
+}
+tracks/3/use_blend = true
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_vbxsh"]
 _data = {
@@ -190,7 +214,7 @@ theme = ExtResource("1_qo26v")
 script = ExtResource("1_xxenq")
 game_preferences = ExtResource("2_wexnt")
 game_state = ExtResource("3_nh3h6")
-initial_position = NodePath("Main3D/InitialPositionPuzzle")
+initial_position = NodePath("Main3D/InitialPositionCarpincho")
 
 [node name="Node2D" type="Node2D" parent="."]
 
@@ -443,21 +467,6 @@ grow_vertical = 0
 text = "INTRO TEXT"
 metadata/_edit_use_anchors_ = true
 
-[node name="HelpLabel" type="RichTextLabel" parent="Control"]
-unique_name_in_owner = true
-auto_translate_mode = 1
-visible = false
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.10125
-anchor_top = 0.0733333
-anchor_right = 0.91375
-anchor_bottom = 0.816667
-grow_horizontal = 2
-grow_vertical = 0
-text = "HELP TEXT"
-metadata/_edit_use_anchors_ = true
-
 [node name="TaskListLabel" type="RichTextLabel" parent="Control"]
 unique_name_in_owner = true
 auto_translate_mode = 1
@@ -523,7 +532,6 @@ max_value = 10000.0
 [node name="PauseMenu" type="Control" parent="Control"]
 unique_name_in_owner = true
 process_mode = 2
-visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -586,6 +594,7 @@ text = "QUIT"
 
 [node name="GameSettingsContainer" type="VBoxContainer" parent="Control/PauseMenu"]
 unique_name_in_owner = true
+visible = false
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -644,9 +653,22 @@ text = "MASTER VOLUME"
 [node name="MasterVolumeSlider" type="HSlider" parent="Control/PauseMenu/GameSettingsContainer"]
 unique_name_in_owner = true
 layout_mode = 2
-max_value = 1.0
+min_value = -30.0
+max_value = 12.0
 step = 0.01
-value = 0.5
+tick_count = 9
+ticks_on_borders = true
+
+[node name="VoiceVolumeLabel" type="Label" parent="Control/PauseMenu/GameSettingsContainer"]
+layout_mode = 2
+text = "VOICE VOLUME"
+
+[node name="VoiceVolumeSlider" type="HSlider" parent="Control/PauseMenu/GameSettingsContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+min_value = -30.0
+max_value = 12.0
+step = 0.01
 tick_count = 9
 ticks_on_borders = true
 
@@ -658,6 +680,50 @@ unique_name_in_owner = true
 layout_mode = 2
 focus_neighbor_bottom = NodePath("../FullScreenButton")
 text = "BACK"
+
+[node name="HelpLabel" type="Control" parent="Control/PauseMenu"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+
+[node name="ControlsBackButton" type="Button" parent="Control/PauseMenu/HelpLabel"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -19.0
+offset_top = 187.0
+offset_right = 20.0
+offset_bottom = 207.0
+grow_horizontal = 2
+grow_vertical = 2
+focus_neighbor_bottom = NodePath("../FullScreenButton")
+text = "BACK"
+
+[node name="HelpLabel" type="RichTextLabel" parent="Control/PauseMenu/HelpLabel"]
+auto_translate_mode = 1
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.10125
+anchor_top = 0.0733333
+anchor_right = 0.91375
+anchor_bottom = 0.816667
+offset_left = 7.0
+offset_top = 7.00002
+offset_right = 1.0
+offset_bottom = -0.000213623
+grow_horizontal = 2
+grow_vertical = 0
+text = "HELP TEXT"
 
 [node name="GameOverMenu" type="Control" parent="Control"]
 unique_name_in_owner = true
@@ -1179,7 +1245,7 @@ transform = Transform3D(0.998732, 0, -0.0503483, 0, 1, 0, 0.0503483, 0, 0.998732
 gizmo_extents = 5.0
 
 [node name="InitialPositionOtherSide" type="Marker3D" parent="Main3D"]
-transform = Transform3D(0.998823, 0, 0.0485017, 0, 1, 0, -0.0485017, 0, 0.998823, -207.957, 0, -159.8)
+transform = Transform3D(-0.035842, 0, 0.999357, 0, 1, 0, -0.999357, 0, -0.035842, -210.627, 0, -134.058)
 gizmo_extents = 5.0
 
 [node name="InitialPositionPuzzle" type="Marker3D" parent="Main3D"]
@@ -1251,6 +1317,39 @@ occluder = SubResource("BoxOccluder3D_gtuj1")
 transform = Transform3D(0.008936, 0, 0.99996, 0, 1, 0, -0.99996, 0, 0.008936, -72.4639, 0, -13.3386)
 occluder = SubResource("BoxOccluder3D_gtuj1")
 
+[node name="CartelesNoPasar" type="Node3D" parent="Main3D"]
+transform = Transform3D(-1.35341, 0.323712, 2.65772, 0.51964, 2.95312, -0.0950717, -2.62645, 0.417462, -1.38834, -224.316, 0, -131.97)
+
+[node name="NoPasar02" parent="Main3D/CartelesNoPasar" instance=ExtResource("27_wufk5")]
+transform = Transform3D(0.924542, 0.00100949, -0.381079, 0.0255187, 0.997588, 0.0645539, 0.380226, -0.0694074, 0.922286, 3.57242, -0.737894, -3.39448)
+
+[node name="NoPasar09" parent="Main3D/CartelesNoPasar" instance=ExtResource("27_wufk5")]
+transform = Transform3D(-0.763637, 0.288457, -0.577625, 0.000726573, 0.895031, 0.446004, 0.645645, 0.340165, -0.683688, 19.6685, -3.4352, 1.67944)
+
+[node name="NoPasar03" parent="Main3D/CartelesNoPasar" instance=ExtResource("28_a0yc8")]
+transform = Transform3D(0.987595, -0.0582583, -0.145817, 0.0506871, 0.997193, -0.0551136, 0.148619, 0.0470388, 0.987775, 6.02258, -1.28209, -4.43305)
+
+[node name="NoPasar04" parent="Main3D/CartelesNoPasar" instance=ExtResource("29_7l0wb")]
+transform = Transform3D(0.761396, 0.495061, -0.418557, -0.509464, 0.856191, 0.0859219, 0.400902, 0.147819, 0.904117, 11.7111, -2.22887, -5.22348)
+
+[node name="NoPasar05" parent="Main3D/CartelesNoPasar" instance=ExtResource("30_vi5x4")]
+transform = Transform3D(0.929117, -0.20841, 0.305463, 0.121872, 0.95248, 0.279158, -0.349127, -0.222143, 0.910364, 0.119812, -0.000395775, -3.08867)
+
+[node name="NoPasar" parent="Main3D/CartelesNoPasar" instance=ExtResource("31_tpcsj")]
+transform = Transform3D(0.499528, 0.230755, -0.376389, -0.210505, 0.624079, 0.103234, 0.388078, 0.0414959, 0.54048, 1.38324, -0.273264, -0.927673)
+
+[node name="NoPasar06" parent="Main3D/CartelesNoPasar" instance=ExtResource("27_wufk5")]
+transform = Transform3D(-0.721941, 0.531186, -0.443445, 0.553508, 0.827903, 0.0905869, 0.415248, -0.180052, -0.891712, 19.8333, -3.32169, 6.78999)
+
+[node name="NoPasar07" parent="Main3D/CartelesNoPasar" instance=ExtResource("28_a0yc8")]
+transform = Transform3D(-0.721363, 0.300074, 0.624172, -0.0451131, 0.878983, -0.474714, -0.691086, -0.3706, -0.620529, 18.8422, -3.16465, 6.74124)
+
+[node name="NoPasar08" parent="Main3D/CartelesNoPasar" instance=ExtResource("29_7l0wb")]
+transform = Transform3D(-0.999782, -0.0201336, 0.00561237, -0.0172445, 0.946309, 0.322804, -0.0118105, 0.322637, -0.946449, 19.6018, -3.25579, 7.79537)
+
+[node name="NoPasar2" parent="Main3D/CartelesNoPasar" instance=ExtResource("31_tpcsj")]
+transform = Transform3D(-0.548242, -0.0525654, 0.375649, -0.0382119, 0.664529, 0.0372204, -0.377379, 0.00907733, -0.549497, 18.3618, -2.95565, 8.5525)
+
 [node name="MusicBackground" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("16_dvrax")
 bus = &"Music"
@@ -1295,6 +1394,10 @@ unique_name_in_owner = true
 stream = SubResource("AudioStreamPlaylist_4rlso")
 bus = &"Voice"
 
+[node name="PepaPlayer" type="AudioStreamPlayer" parent="."]
+unique_name_in_owner = true
+bus = &"Pepa"
+
 [connection signal="button_up" from="Control/MenuThanks/WishlistEndButton" to="." method="_on_wishlist_button_up"]
 [connection signal="button_up" from="Control/MenuThanks/MenuEndButton" to="." method="_on_menu_button_button_up"]
 [connection signal="drag_ended" from="Control/Debug/VBoxContainer/ProportionalSlider" to="." method="_on_slider_drag_ended"]
@@ -1310,7 +1413,9 @@ bus = &"Voice"
 [connection signal="value_changed" from="Control/PauseMenu/GameSettingsContainer/FPSSpinbox" to="." method="_on_fps_spinbox_value_changed"]
 [connection signal="drag_ended" from="Control/PauseMenu/GameSettingsContainer/MouseSensibilitySlider" to="." method="_on_mouse_sensibility_slider_drag_ended"]
 [connection signal="drag_ended" from="Control/PauseMenu/GameSettingsContainer/MasterVolumeSlider" to="." method="_on_master_volume_slider_drag_ended"]
+[connection signal="drag_ended" from="Control/PauseMenu/GameSettingsContainer/VoiceVolumeSlider" to="." method="_on_voice_volume_slider_drag_ended"]
 [connection signal="button_up" from="Control/PauseMenu/GameSettingsContainer/BackButton" to="." method="_on_back_button_up"]
+[connection signal="button_up" from="Control/PauseMenu/HelpLabel/ControlsBackButton" to="." method="_on_controls_back_button_up"]
 [connection signal="button_up" from="Control/GameOverMenu/VBoxContainer/ContinueButton" to="." method="_on_continue_button_up"]
 [connection signal="body_entered" from="Main3D/DemoElements/GrabArea3D" to="." method="_on_grab_kayak_body_entered"]
 [connection signal="body_entered" from="Main3D/DemoElements/ForeshadowingArea3D" to="." method="_on_foreshadowing_body_entered"]

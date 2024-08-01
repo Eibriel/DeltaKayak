@@ -18,9 +18,9 @@
 "Resource_uvbog_dialogue_text",0,"Hay un cuchillo. Lo voy a agarrar por si acaso.",,
 "Resource_dfg6u_dialogue_text",0,"La prefectura. Por alguna razón me da escalofríos.",,
 "Resource_x06et_dialogue_text",0,"¡Pepa! ¡Venga para acá!","¡Pepa! ¡Venga para acá!","Pepa! Come here!"
-"Resource_hw8d6_dialogue_text",0,"¿Vamos a dar un paseo?","¿Vamos a dar un paseo?","Let’s go for a ride!"
+"Resource_hw8d6_dialogue_text",0,"¡Vamos a dar un paseo!","¡Vamos a dar un paseo!","Let’s go for a ride!"
 "Resource_hesgk_dialogue_text",0,"Hay que volver antes de que refresque.","Hay que volver antes de que refresque.","We should be back before it gets too cold."
-"Resource_kctts_dialogue_text",0,"¡Ese lugar me daba escalofríos!","¡Ese lugar me daba escalofríos!","That place gave me the shibbers!"
+"Resource_kctts_dialogue_text",0,"Zafé. Por ahora.","Estoy a salvo. Por ahora.","I'm safe. For now."
 "Resource_rtasq_dialogue_text",0,"Esta estatua es similar a las otras tres. Y está bloqueando el camino.","Esta estatua es similar a las otras tres. Y está bloqueando el camino.",
 "Resource_mgkwo_dialogue_text",0,"Esta estatua está mirando el cielo.","Esta estatua está mirando el cielo.",
 "Resource_f5cul_dialogue_text",0,"Esta estatua está mirando su cintura.","Esta estatua está mirando su cintura.",
@@ -34,7 +34,6 @@
 "Resource_mccnv_dialogue_text",0,"¡Pepa! ¿Donde estás?","¡Pepa! ¿Donde estás?","¡Pepa! ¿Where are you?"
 "Resource_d66k7_dialogue_text",0,"Tengo que encontrarla.","Tengo que encontrarla.","I must find her."
 "Resource_kqdnr_dialogue_text",0,"¡Aahhhhhhh!","¡Aahhhhhhh!","Aahhhhhh!"
-"Resource_yhhpc_dialogue_text",0,"¡Mierdaaaaaaaa!","¡Mierdaaaaaaaa!","Shiiiiiiiiiiiiiiitt!"
 "Resource_6j43o_dialogue_text",0,"¡Casi me matás de un susto!","¡Casi me matás de un susto!","You scared me to death!"
 "Resource_g4lg1_dialogue_text",0,"Vas a tener que venir conmigo también","Vas a tener que venir conmigo también","You come with me"
 "Resource_gkviw_dialogue_text",0,"Que silencio que hace","Que silencio que hace","The night is so quiet"
@@ -43,7 +42,8 @@
 "Resource_ygrxt_dialogue_text",0,"Ana me pidió que lo lleve","Ana me pidió que lo lleve",
 "Resource_hgasi_dialogue_text",0,"Ana todavía no está. Me da tiempo de ir a buscar el kayak de mi hermano.","Ana todavía no está. Me da tiempo de ir a buscar el kayak de mi hermano.",
 "Resource_l1nq4_dialogue_text",0,"¡Pepa linda!","¡Pepa linda!","Who is a good dog?"
-"Resource_niw0c_dialogue_text",0,"La noche está clara, puedo ver bastante lejos.","La noche está clara, puedo ver bastante lejos.","The night is lit, I can see far away."
+"Resource_3nsmg_dialogue_text",0,"[Ladrido]","[Ladrido]","[Barking]"
+"Resource_niw0c_dialogue_text",1,"La noche se puso un poco fresca.","La noche está clara, puedo ver bastante lejos.","The night is lit, I can see far away."
 "Resource_hog5x_dialogue_text",0,"Tengo que ir para el otro lado","Tengo que ir para el otro lado","I should be going the other way"
 "Resource_ofr0y_dialogue_text",0,"No puedo pasar, está lleno de camalotes.","No puedo pasar, está lleno de camalotes.","I can’t go through those camalotes"
 "Resource_b2qif_dialogue_text",0,"Y no puedo volver sin Pepa.","Y no puedo volver sin Pepa.","I can’t go back without Pepa."
@@ -66,8 +66,14 @@
 "Resource_r4nqs_dialogue_text",0,"¿De donde salió esa lancha toda destruída?","¿De donde salió esa lancha toda destruída?","Where that destroyed boat comes from?"
 "Resource_e63sy_dialogue_text",0,"¡¿Que carajo es esa cosa?!","¡¿Que carajo es esa cosa?!","What is that thing?!"
 "Resource_sl1rs_dialogue_text",0,"¡Pepa!","¡Pepa!","Pepa! Where are you?"
-"Resource_heion_dialogue_text",0,"¡Guau! ¡Guau!","¡Guau! ¡Guau!","…"
+"Resource_heion_dialogue_text",0,"[Ladrido lejano]","[Ladrido lejano]","[Distant barking]"
 "Resource_ai67n_dialogue_text",0,"¿Quién es la mas linda?","¿Quién es la mas linda?","Who is the cutest dog?"
 "Resource_kx7gw_dialogue_text",0,"¡Pepa es la mas linda!","¡Pepa es la mas linda!","Pepa is the cutest!"
+"Resource_r8bny_dialogue_text",0,"[Ladrido]","[Ladrido]","[Barking]"
 "Resource_5ayvc_dialogue_text",0,"¡La estatua liberó el paso!","¡La estatua liberó el paso!",
 "Resource_51f2c_dialogue_text",0,"Necesito irme de acá ya mismo","Necesito irme de acá ya mismo","I must leave right now"
+"Resource_c657h_dialogue_text",0,"Este pistón abría la puerta, pero ahora no cumple ninguna función.","Este pistón abría la puerta, pero ahora no cumple ninguna función.","This piston used to open the door, but now has no function."
+"Resource_n2o0o_dialogue_text",0,"Parece que hay un camino por acá.","Parece que hay un camino por acá.","There seems to be a path this way."
+"Resource_eofrc_dialogue_text",0,"'No pasar, propiedad privada'","'No pasar, propiedad privada'","'No trespassing, private property’"
+"Resource_wbsxq_dialogue_text",0,"No quieren que entre nadie acá.","No quieren que entre nadie acá.","They don't want anyone to come in here."
+"Resource_7iywm_dialogue_text",0,"[Tosiendo agua]","[Tosiendo agua]","[Coughing water]"

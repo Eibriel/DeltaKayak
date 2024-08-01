@@ -1,4 +1,4 @@
-[gd_scene load_steps=71 format=3 uid="uid://r0o1qsmlq84u"]
+[gd_scene load_steps=72 format=3 uid="uid://r0o1qsmlq84u"]
 
 [ext_resource type="Script" path="res://character/character.gd" id="1_mnv7b"]
 [ext_resource type="Texture2D" uid="uid://dbr6od55galv2" path="res://models/world_textures/BoteMadera_diffuse.png" id="2_j3chf"]
@@ -20,6 +20,7 @@
 [ext_resource type="AudioStream" uid="uid://dg2cu6vudgrba" path="res://sounds/kayak/collision_06.mp3" id="17_egvyw"]
 [ext_resource type="AudioStream" uid="uid://bycfel2ioa5po" path="res://sounds/kayak/collision_07.mp3" id="18_euw5c"]
 [ext_resource type="AudioStream" uid="uid://dpj8ejx1m2mmr" path="res://sounds/kayak/collision_08.mp3" id="19_u5rwt"]
+[ext_resource type="AudioStream" uid="uid://dfngyu4c8yana" path="res://sounds/pepa/181767__keweldog__dog-panting.wav" id="20_t2p0p"]
 [ext_resource type="AudioStream" uid="uid://niydc1k8qspc" path="res://sounds/breathing/breathing_01.ogg" id="21_606bt"]
 [ext_resource type="AudioStream" uid="uid://coy1qbholkcw4" path="res://sounds/breathing/breathing_02.ogg" id="22_3tyeg"]
 [ext_resource type="AudioStream" uid="uid://dyqwvmon87aal" path="res://sounds/breathing/breathing_03.ogg" id="23_bgndq"]
@@ -649,7 +650,7 @@ parameters/Start/current_length = 0.0
 parameters/Start/current_position = 0.0
 parameters/Start/current_delta = 0.0
 parameters/character_anims_Idle/current_length = 1.0
-parameters/character_anims_Idle/current_position = 0.507511
+parameters/character_anims_Idle/current_position = 0.50124
 parameters/character_anims_Idle/current_delta = 0.0166667
 
 [node name="KriketsAudio" type="AudioStreamPlayer3D" parent="."]
@@ -688,6 +689,14 @@ stream = SubResource("AudioStreamRandomizer_oxp1s")
 unit_size = 20.0
 bus = &"Kayak"
 
+[node name="PepaPantingAudio" type="AudioStreamPlayer3D" parent="."]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0501602, 0.520744, -1.02847)
+stream = ExtResource("20_t2p0p")
+unit_size = 20.0
+autoplay = true
+bus = &"Pepa"
+
 [node name="RiverAudio" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("10_e5eh0")
 volume_db = -10.0
@@ -697,7 +706,7 @@ bus = &"Ambient"
 [node name="BreathingPlayer" type="AudioStreamPlayer" parent="."]
 unique_name_in_owner = true
 stream = SubResource("AudioStreamInteractive_dpwjr")
-volume_db = 10.0
+volume_db = 5.0
 max_polyphony = 3
 bus = &"Voice"
 

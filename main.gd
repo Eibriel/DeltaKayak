@@ -30,7 +30,7 @@ var foreshadowing := false
 var other_side := false
 var kayak_k1: RigidBody3D
 
-var SKIP_INTRO = false
+var SKIP_INTRO = true
 
 var character_home_position:Vector3
 var character_home_rotation:Vector3
@@ -127,6 +127,10 @@ func _ready() -> void:
 		%FullScreenButton.set_pressed_no_signal(false)
 	%MouseSensibilitySlider.value = Global.mouse_sensibility
 	%FPSSpinbox.set_value_no_signal(Engine.max_fps)
+	var master_index := AudioServer.get_bus_index("Master")
+	%MasterVolumeSlider.value = AudioServer.get_bus_volume_db(master_index)
+	var voice_index := AudioServer.get_bus_index("Voice")
+	%VoiceVolumeSlider.value = AudioServer.get_bus_volume_db(voice_index)
 	
 	%PauseMenu.main_scene = self
 	%BlockPath.position.y = -20
@@ -160,7 +164,7 @@ func intro_animation():
 		character.lock_paddling(true)
 		%CameraIntro.current = true
 		%IntroAnimationPlayer.play("intro_animation")
-		say_dialogue("demo_start_point")
+		#say_dialogue("demo_start_point")
 
 func end_intro_animation():
 	character.lock_paddling(false)
@@ -372,45 +376,57 @@ func handle_dialogue(delta:float) -> void:
 	write_speed = dialogue_label.text.length() * 0.08
 	dialogue_time = write_speed + (dialogue_label.text.length() * 0.08)
 	
-	# Voice
-	#var idx = Global.voice_id.find(key)
-	var resource_group:ResourceGroup = load("res://sounds/all_voice_files.tres")
-	var resources = resource_group.load_matching(["**%s*" % key], [])
-	#print(resources)
-	if resources.size() > 0:
-		%VoicePlayer.stop()
-		%VoicePlayer.stream = resources[0]
-		#dialogue_time = %VoicePlayer.stream.get_length()
-		#%VoicePlayer.play() # NOTE moving to letter based
-	# NOTE this don't work when exported
-	#var audio_path := "res://sounds/voice/character/%s.ogg" % key
-	#if FileAccess.file_exists(audio_path):
-	#	%VoicePlayer.stop()
-	#	%VoicePlayer.stream = load(audio_path)
-	#	dialogue_time = %VoicePlayer.stream.get_length()
-	#	%VoicePlayer.play()
-	#
-	
-	var letters_group:ResourceGroup = load("res://sounds/all_letters_files.tres")
-	var playlist := AudioStreamPlaylist.new()
-	playlist.loop = false
-	playlist.fade_time = 0.01
-	%VoicePlayer2.stream = playlist
-	var stream_id := 0
-	var clean_text:Array[String]= []
-	var es_text := TranslationServer.get_translation_object("es_AR")
-	voice_text_cleaner(es_text.get_message(key).split(), clean_text)
-	for letter in clean_text:
-		if stream_id >= playlist.MAX_STREAMS:
-			break
-		#print(letter)
-		var letters_resources = letters_group.load_matching(["**%s.ogg" % letter], [])
-		if letters_resources.size() > 0:
-			#print(letters_resources[0])
-			playlist.set_list_stream(stream_id, letters_resources[0])
-			stream_id += 1
-	playlist.set_stream_count(stream_id)
-	%VoicePlayer2.play()
+	# Pepa barks
+	if d.character == d.Character.PEPA:
+		var barks = [
+			preload("res://sounds/pepa/bark_01.mp3"),
+			preload("res://sounds/pepa/pepa_02.ogg"),
+			preload("res://sounds/pepa/pepa_03.ogg"),
+			preload("res://sounds/pepa/pepa_04.ogg"),
+		]
+		%PepaPlayer.stream = barks.pick_random()
+		%PepaPlayer.play()
+	else:
+		if true:
+			# Voice
+			#var idx = Global.voice_id.find(key)
+			var resource_group:ResourceGroup = load("res://sounds/all_voice_files.tres")
+			var resources = resource_group.load_matching(["**%s*" % key], [])
+			#print(resources)
+			if resources.size() > 0:
+				%VoicePlayer.stop()
+				%VoicePlayer.stream = resources[0]
+				dialogue_time = %VoicePlayer.stream.get_length() + 0.6
+				%VoicePlayer.play() # NOTE moving to letter based
+			# NOTE this don't work when exported
+			#var audio_path := "res://sounds/voice/character/%s.ogg" % key
+			#if FileAccess.file_exists(audio_path):
+			#	%VoicePlayer.stop()
+			#	%VoicePlayer.stream = load(audio_path)
+			#	dialogue_time = %VoicePlayer.stream.get_length()
+			#	%VoicePlayer.play()
+			#
+		else:
+			var letters_group:ResourceGroup = load("res://sounds/all_letters_files.tres")
+			var playlist := AudioStreamPlaylist.new()
+			playlist.loop = false
+			playlist.fade_time = 0.01
+			%VoicePlayer2.stream = playlist
+			var stream_id := 0
+			var clean_text:Array[String]= []
+			var es_text := TranslationServer.get_translation_object("es_AR")
+			voice_text_cleaner(es_text.get_message(key).split(), clean_text)
+			for letter in clean_text:
+				if stream_id >= playlist.MAX_STREAMS:
+					break
+				#print(letter)
+				var letters_resources = letters_group.load_matching(["**%s.ogg" % letter], [])
+				if letters_resources.size() > 0:
+					#print(letters_resources[0])
+					playlist.set_list_stream(stream_id, letters_resources[0])
+					stream_id += 1
+			playlist.set_stream_count(stream_id)
+			%VoicePlayer2.play()
 	
 	if is_dialogue_animating():
 		dialogue_tween.kill()
@@ -605,14 +621,21 @@ func say_some_dialogue()->void:
 			say_dialogue("describe_night")
 
 func on_pepa():
+	var pepa_idx := AudioServer.get_bus_index("Pepa")
+	var low_pass_idx := 0
 	if not other_side:
 		var pepa_dialogues := [
 			"pepa_001",
 			"pepa_003"
 		]
 		say_dialogue(pepa_dialogues.pick_random())
+		if AudioServer.is_bus_effect_enabled(pepa_idx, low_pass_idx):
+			AudioServer.set_bus_effect_enabled(pepa_idx, low_pass_idx, false)
 	else:
 		say_dialogue("pepa_002")
+		if not AudioServer.is_bus_effect_enabled(pepa_idx, low_pass_idx):
+			AudioServer.set_bus_effect_enabled(pepa_idx, low_pass_idx, true)
+	
 
 func on_compicactus():
 	say_dialogue("compi_im_here")
@@ -813,8 +836,8 @@ func grab_kayak():
 	tween.tween_callback(%JumpscareAudio3.play)
 	tween.tween_callback(connect_grab)
 	tween.tween_callback(set_player_state.bind("grabbed"))
-	tween.tween_callback(say_dialogue.bind("demo_scream"))
 	if false:
+		tween.tween_callback(say_dialogue.bind("demo_scream"))
 		tween.tween_callback(Global.character.apply_central_impulse.bind(Vector3(0, 0, 1)*3))
 		tween.tween_interval(1.0)
 		tween.tween_callback(Global.character.apply_central_impulse.bind(Vector3(-1, 0, 1)*3))
@@ -843,6 +866,7 @@ func grab_kayak():
 	#tween.tween_callback(kayak_k1.queue_free)
 	tween.tween_callback(Global.character.hide_pepa)
 	tween.tween_callback(%Enemydummy.set_visible.bind(false))
+	tween.tween_callback(say_dialogue.bind("coughing_water"))
 	tween.tween_interval(3.0)
 	tween.tween_callback(say_dialogue.bind("demo_other_side"))
 	tween.tween_callback(set_datamosh.bind(false))
@@ -1008,17 +1032,34 @@ func _on_fps_spinbox_value_changed(value: float) -> void:
 func _on_master_volume_slider_drag_ended(value_changed: bool) -> void:
 	if not value_changed: return
 	var sfx_index := AudioServer.get_bus_index("Master")
-	var value_in_db := remap(%MasterVolumeSlider.value, 0.0, 1.0, -30.0, 6.0)
+	#var value_in_db := remap(%MasterVolumeSlider.value, 0.0, 1.0, -30.0, 6.0)
+	var value_in_db:float = %MasterVolumeSlider.value
 	AudioServer.set_bus_volume_db(sfx_index, value_in_db)
 	if %MasterVolumeSlider.value == 0.0:
 		AudioServer.set_bus_mute(sfx_index, true)
 	else:
 		AudioServer.set_bus_mute(sfx_index, false)
 
+func _on_voice_volume_slider_drag_ended(value_changed: bool) -> void:
+	if not value_changed: return
+	var sfx_index := AudioServer.get_bus_index("Voice")
+	#var value_in_db := remap(%VoiceVolumeSlider.value, 0.0, 1.0, -30.0, 6.0)
+	var value_in_db:float = %VoiceVolumeSlider.value
+	AudioServer.set_bus_volume_db(sfx_index, value_in_db)
+	if %VoiceVolumeSlider.value == 0.0:
+		AudioServer.set_bus_mute(sfx_index, true)
+	else:
+		AudioServer.set_bus_mute(sfx_index, false)
 
 func _on_game_controls_button_up() -> void:
-	%HelpLabel.visible = !%HelpLabel.visible
+	%PauseMenuContainer.visible = false
+	%HelpLabel.visible = true
+	%ControlsBackButton.grab_focus()
 
+func _on_controls_back_button_up() -> void:
+	%PauseMenuContainer.visible = true
+	%HelpLabel.visible = false
+	%ResumeButton.grab_focus()
 
 func _on_gol_area_body_entered(body: Node3D) -> void:
 	var dist:= Global.character.global_position.distance_to(body.global_position)
@@ -1034,6 +1075,7 @@ func _on_save():
 func game_over():
 	if demo_completed: return
 	character.release_grab()
+	character.reset_camera_rotation()
 	var points := [
 		%EnemyTeleport00,
 		%EnemyTeleport01

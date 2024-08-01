@@ -29,6 +29,18 @@ func _ready() -> void:
 	black_tween = create_tween()
 	black_tween.tween_property(%BlackColor, "modulate:a", 0.0, 1.0)
 	
+	var pepa_anim:AnimationPlayer = $Node3D/pepa/AnimationPlayer
+	pepa_anim.get_animation("Sitting").loop_mode = Animation.LOOP_LINEAR
+	pepa_anim.play("Sitting")
+	
+	var kayak_mat:StandardMaterial3D = %kayak_detailed.get_node("Kayak_001").mesh.surface_get_material(0)
+	kayak_mat.albedo_color = Color(1.0, 0.8, 0.0, 1.0) # Yellow
+	
+	if not Global.eibriel_logo:
+		%LogoAnimationPlayer.play("logo_animation")
+		Global.eibriel_logo = true
+	else:
+		%LogoRect.visible = false
 
 func _process(_delta: float) -> void:
 	_scene_load_status = ResourceLoader.load_threaded_get_status(scene_name, _progress)
@@ -81,3 +93,6 @@ func _on_option_button_item_selected(index: int) -> void:
 
 func _on_follow_button_up() -> void:
 	GlobalSteam.open_url("https://store.steampowered.com/developer/eibriel/?utm_source=demo&utm_content=main_menu")
+
+func _logo_animation_completed():
+	%LogoRect.visible = false

@@ -1,9 +1,111 @@
-[gd_scene load_steps=5 format=3 uid="uid://ci58gbma0337h"]
+[gd_scene load_steps=20 format=3 uid="uid://ci58gbma0337h"]
 
 [ext_resource type="Theme" uid="uid://1kj8fi5pat0v" path="res://themes/default_theme.tres" id="1_hhxbb"]
 [ext_resource type="Script" path="res://menu.gd" id="1_svl0y"]
-[ext_resource type="Texture2D" uid="uid://dhjmhck7neiex" path="res://textures/menu_background.jpg" id="2_hv612"]
 [ext_resource type="Texture2D" uid="uid://cjibgq277ikpk" path="res://textures/menu_logo.png" id="4_yecay"]
+[ext_resource type="CompositorEffect" uid="uid://o01yk1gb130b" path="res://compositor/screen/screen_compositor_effect.tres" id="5_auw1c"]
+[ext_resource type="PackedScene" uid="uid://dnempkm0ot1g4" path="res://models/pepa/pepa.glb" id="7_1g1vs"]
+[ext_resource type="Texture2D" uid="uid://b47qxvqte0vmk" path="res://textures/Grass_12-512x512.png" id="7_vij5q"]
+[ext_resource type="PackedScene" uid="uid://b5n8cpa2p23cu" path="res://models/kayak_detailed.glb" id="8_4udfj"]
+[ext_resource type="AudioStream" uid="uid://3iyaylcuo8g" path="res://sounds/ambient/112339__alyceobvious__6_27_07-cricket-1.mp3" id="8_vkcjr"]
+[ext_resource type="PackedScene" uid="uid://dh3vucec7146d" path="res://models/extra/pepa_house.glb" id="9_8r8rd"]
+[ext_resource type="Texture2D" uid="uid://xbgy7n71no4r" path="res://textures/EibrielLogo.png" id="9_jlsaf"]
+[ext_resource type="AudioStream" uid="uid://dfngyu4c8yana" path="res://sounds/pepa/181767__keweldog__dog-panting.wav" id="11_jeneh"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_q5obi"]
+sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+ground_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+
+[sub_resource type="Sky" id="Sky_80phy"]
+sky_material = SubResource("ProceduralSkyMaterial_q5obi")
+
+[sub_resource type="Environment" id="Environment_htloc"]
+background_mode = 1
+sky = SubResource("Sky_80phy")
+tonemap_mode = 2
+glow_enabled = true
+
+[sub_resource type="Compositor" id="Compositor_mwrea"]
+compositor_effects = Array[CompositorEffect]([ExtResource("5_auw1c")])
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_51s74"]
+albedo_texture = ExtResource("7_vij5q")
+texture_filter = 2
+
+[sub_resource type="Animation" id="Animation_6j3qv"]
+resource_name = "logo_animation"
+length = 2.4
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("LogoRect/MenuBackground:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.333333, 1.3, 1.9),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 1), Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("LogoRect:modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(2.06667, 2.4),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
+}
+tracks/2/type = "method"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath(".")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(2.4),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [],
+"method": &"_logo_animation_completed"
+}]
+}
+
+[sub_resource type="Animation" id="Animation_cytai"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("LogoRect/MenuBackground:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 1)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("LogoRect:modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 1)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_edu7w"]
+_data = {
+"RESET": SubResource("Animation_cytai"),
+"logo_animation": SubResource("Animation_6j3qv")
+}
 
 [node name="Control" type="Control"]
 layout_mode = 3
@@ -14,18 +116,6 @@ grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("1_hhxbb")
 script = ExtResource("1_svl0y")
-
-[node name="MenuBackground" type="TextureRect" parent="."]
-texture_filter = 2
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-texture = ExtResource("2_hv612")
-expand_mode = 1
-stretch_mode = 6
 
 [node name="MenuTitle" type="TextureRect" parent="."]
 texture_filter = 2
@@ -47,6 +137,7 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_right = -515.0
 grow_horizontal = 2
 grow_vertical = 2
 
@@ -92,6 +183,35 @@ text = "WISHLIST NOW"
 layout_mode = 2
 text = "QUIT"
 
+[node name="VBoxContainer3" type="VBoxContainer" parent="Control"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -86.5
+offset_top = 138.0
+offset_right = 86.5
+offset_bottom = 206.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="NewsletterButton" type="Button" parent="Control/VBoxContainer3"]
+layout_mode = 2
+text = "JOIN THE NEWSLETTER"
+
+[node name="FeedbackButton" type="Button" parent="Control/VBoxContainer3"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+text = "FEEDBACK"
+
+[node name="FollowButton" type="Button" parent="Control/VBoxContainer3"]
+layout_mode = 2
+focus_neighbor_bottom = NodePath("../../VBoxContainer/StartButton")
+text = "FOLLOW"
+
 [node name="VBoxContainer2" type="VBoxContainer" parent="."]
 visible = false
 layout_mode = 1
@@ -106,35 +226,6 @@ offset_right = -17.0
 offset_bottom = -17.0
 grow_horizontal = 0
 grow_vertical = 0
-
-[node name="VBoxContainer3" type="VBoxContainer" parent="."]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -83.0
-offset_top = 119.0
-offset_right = 83.0
-offset_bottom = 187.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="NewsletterButton" type="Button" parent="VBoxContainer3"]
-layout_mode = 2
-text = "JOIN THE NEWSLETTER"
-
-[node name="FeedbackButton" type="Button" parent="VBoxContainer3"]
-layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 4
-text = "FEEDBACK"
-
-[node name="FollowButton" type="Button" parent="VBoxContainer3"]
-layout_mode = 2
-focus_neighbor_bottom = NodePath("../../Control/VBoxContainer/StartButton")
-text = "FOLLOW"
 
 [node name="GameLoadProgressBar" type="ProgressBar" parent="."]
 unique_name_in_owner = true
@@ -162,10 +253,86 @@ grow_vertical = 2
 mouse_filter = 2
 color = Color(0, 0, 0, 1)
 
+[node name="Node3D" type="Node3D" parent="."]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="Node3D"]
+environment = SubResource("Environment_htloc")
+compositor = SubResource("Compositor_mwrea")
+
+[node name="SpotLight3D" type="SpotLight3D" parent="Node3D"]
+transform = Transform3D(0.871109, 0.375379, -0.316639, 0.0437581, 0.582872, 0.811385, 0.489137, -0.72066, 0.491319, -1.01398, 2.02393, 1.53931)
+shadow_enabled = true
+spot_range = 5.38653
+spot_angle = 58.3945
+
+[node name="pepa_house" parent="Node3D" instance=ExtResource("9_8r8rd")]
+transform = Transform3D(-0.998206, 0, 0.0598813, 0, 1, 0, -0.0598813, 0, -0.998206, 0.302374, 0, 0.115224)
+
+[node name="Camera3D" type="Camera3D" parent="Node3D"]
+transform = Transform3D(0.588329, 0.148588, -0.794853, -0.0155413, 0.984868, 0.172606, 0.808472, -0.0891962, 0.581736, -2.18784, 0.986704, 0.639985)
+
+[node name="CSGBox3D" type="CSGBox3D" parent="Node3D"]
+transform = Transform3D(0.901667, 0, 0.432432, 0, 1, 0, -0.432432, 0, 0.901667, -0.286242, -0.244873, -1.4993)
+size = Vector3(4.77124, 0.510254, 12.6083)
+material = SubResource("StandardMaterial3D_51s74")
+
+[node name="pepa" parent="Node3D" instance=ExtResource("7_1g1vs")]
+unique_name_in_owner = true
+transform = Transform3D(-2.82003, 0, 1.02345, 0, 3, 0, -1.02345, 0, -2.82003, -0.123273, 0.386245, 0.143795)
+
+[node name="kayak_detailed" parent="Node3D" instance=ExtResource("8_4udfj")]
+unique_name_in_owner = true
+transform = Transform3D(0.190386, -0.132623, -0.325829, 0.228635, 0.328216, -1.90788e-08, 0.267356, -0.18624, 0.232025, 0.996618, 0.368896, 1.98239)
+
+[node name="LogoRect" type="ColorRect" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 1)
+
+[node name="MenuBackground" type="TextureRect" parent="LogoRect"]
+texture_filter = 2
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -825.5
+offset_top = -265.5
+offset_right = 825.5
+offset_bottom = 265.5
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(0.345, 0.345)
+pivot_offset = Vector2(825, 265)
+texture = ExtResource("9_jlsaf")
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("8_vkcjr")
+volume_db = -45.0
+pitch_scale = 0.89
+autoplay = true
+
+[node name="AudioStreamPlayer2" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("11_jeneh")
+volume_db = -5.0
+autoplay = true
+
+[node name="LogoAnimationPlayer" type="AnimationPlayer" parent="."]
+unique_name_in_owner = true
+libraries = {
+"": SubResource("AnimationLibrary_edu7w")
+}
+
 [connection signal="button_up" from="Control/VBoxContainer/StartButton" to="." method="_on_start_button_button_up"]
 [connection signal="item_selected" from="Control/VBoxContainer/LocaleOption" to="." method="_on_option_button_item_selected"]
 [connection signal="button_up" from="Control/VBoxContainer/WishlistButton" to="." method="_on_wishlist_button_button_up"]
 [connection signal="button_up" from="Control/VBoxContainer/QuitButton" to="." method="_on_quit_button_button_up"]
-[connection signal="button_up" from="VBoxContainer3/NewsletterButton" to="." method="_on_newsletter_button_up"]
-[connection signal="button_up" from="VBoxContainer3/FeedbackButton" to="." method="_on_feedback_button_up"]
-[connection signal="button_up" from="VBoxContainer3/FollowButton" to="." method="_on_follow_button_up"]
+[connection signal="button_up" from="Control/VBoxContainer3/NewsletterButton" to="." method="_on_newsletter_button_up"]
+[connection signal="button_up" from="Control/VBoxContainer3/FeedbackButton" to="." method="_on_feedback_button_up"]
+[connection signal="button_up" from="Control/VBoxContainer3/FollowButton" to="." method="_on_follow_button_up"]
