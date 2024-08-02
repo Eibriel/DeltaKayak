@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://c4q0n4pfj1oln"
-path="res://.godot/imported/PuzzleSword.glb-487ddbd177fb8e9d646ef43d18a4f0eb.scn"
+uid="uid://daww5y06f2sqe"
+path="res://.godot/imported/deltakayak_cd.glb-534b3f3942cfeaf69828793a502a3c65.scn"
 
 [deps]
 
-source_file="res://models/world/PuzzleSword.glb"
-dest_files=["res://.godot/imported/PuzzleSword.glb-487ddbd177fb8e9d646ef43d18a4f0eb.scn"]
+source_file="res://experiments/ps1_ad/deltakayak_cd.glb"
+dest_files=["res://.godot/imported/deltakayak_cd.glb-534b3f3942cfeaf69828793a502a3c65.scn"]
 
 [params]
 
@@ -30,7 +30,7 @@ animation/fps=30
 animation/trimming=false
 animation/remove_immutable_tracks=true
 animation/import_rest_as_RESET=false
-import_script/path="res://addons/dkworld/gltf_import_script.gd"
+import_script/path=""
 _subresources={}
 gltf/naming_version=1
 gltf/embedded_image_handling=1

@@ -32,6 +32,33 @@ compositor_effects = Array[CompositorEffect]([ExtResource("5_auw1c")])
 albedo_texture = ExtResource("7_vij5q")
 texture_filter = 2
 
+[sub_resource type="Animation" id="Animation_cytai"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("LogoRect/MenuBackground:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 1)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("LogoRect:modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 1)]
+}
+
 [sub_resource type="Animation" id="Animation_6j3qv"]
 resource_name = "logo_animation"
 length = 2.4
@@ -72,33 +99,6 @@ tracks/2/keys = {
 "args": [],
 "method": &"_logo_animation_completed"
 }]
-}
-
-[sub_resource type="Animation" id="Animation_cytai"]
-length = 0.001
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("LogoRect/MenuBackground:modulate")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Color(1, 1, 1, 1)]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("LogoRect:modulate")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Color(1, 1, 1, 1)]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_edu7w"]

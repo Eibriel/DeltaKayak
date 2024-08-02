@@ -214,7 +214,7 @@ theme = ExtResource("1_qo26v")
 script = ExtResource("1_xxenq")
 game_preferences = ExtResource("2_wexnt")
 game_state = ExtResource("3_nh3h6")
-initial_position = NodePath("Main3D/InitialPositionCarpincho")
+initial_position = NodePath("Main3D/InitialPositionGrab")
 
 [node name="Node2D" type="Node2D" parent="."]
 
@@ -1009,6 +1009,12 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -11.969, 0, -143.174)
 
 [node name="enemy" parent="Main3D/DemoElements/Enemydummy" instance=ExtResource("23_3o5cm")]
 transform = Transform3D(0.0826839, 0, -1.19715, 0, 1.2, 0, 1.19715, 0, 0.0826839, 8.11646, 0.2, -2.24095)
+
+[node name="OmniLight3D" type="OmniLight3D" parent="Main3D/DemoElements/Enemydummy"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6.42126, 4)
+light_color = Color(1, 0, 0, 1)
+light_energy = 10.0
+omni_range = 20.4977
 
 [node name="VinoIndicador" type="CSGSphere3D" parent="Main3D/DemoElements"]
 unique_name_in_owner = true

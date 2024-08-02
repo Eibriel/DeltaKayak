@@ -1,0 +1,222 @@
+[gd_scene load_steps=19 format=3 uid="uid://cj3nlhlnyv5l3"]
+
+[ext_resource type="PackedScene" uid="uid://dx6st1sljwj66" path="res://models/carpincho/carpincho.glb" id="1_mx63d"]
+[ext_resource type="CompositorEffect" uid="uid://o01yk1gb130b" path="res://compositor/screen/screen_compositor_effect.tres" id="1_uni8f"]
+[ext_resource type="Texture2D" uid="uid://b47qxvqte0vmk" path="res://textures/Grass_12-512x512.png" id="2_225rh"]
+[ext_resource type="Texture2D" uid="uid://bjidcrfqyyqkr" path="res://textures/DeltaKayak_CD.png" id="3_lurg6"]
+[ext_resource type="PackedScene" uid="uid://daww5y06f2sqe" path="res://experiments/ps1_ad/deltakayak_cd.glb" id="3_p8sa4"]
+[ext_resource type="PackedScene" uid="uid://dpilx5am3vils" path="res://models/world/Tree001.glb" id="6_3anv8"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_sffpr"]
+sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+ground_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+
+[sub_resource type="Sky" id="Sky_vobsg"]
+sky_material = SubResource("ProceduralSkyMaterial_sffpr")
+
+[sub_resource type="Environment" id="Environment_ntelv"]
+background_mode = 1
+sky = SubResource("Sky_vobsg")
+tonemap_mode = 2
+glow_enabled = true
+
+[sub_resource type="Compositor" id="Compositor_j3kfv"]
+compositor_effects = Array[CompositorEffect]([ExtResource("1_uni8f")])
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_m8d8s"]
+albedo_texture = ExtResource("2_225rh")
+texture_filter = 2
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_53ukb"]
+albedo_texture = ExtResource("3_lurg6")
+texture_filter = 2
+
+[sub_resource type="Animation" id="Animation_h3p3r"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Node3D/Node3D2/Node3D:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0, 0, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Node3D/Si_Label:modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 0, 0, 1)]
+}
+
+[sub_resource type="Animation" id="Animation_164tx"]
+resource_name = "ps1ad_animation"
+length = 4.0
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Node3D/Node3D2/Node3D:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 4),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector3(0, 0, 0), Vector3(0, 6.28319, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Node3D/Si_Label:modulate")
+tracks/1/interp = 0
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [Color(1, 0, 0, 1), Color(1, 1, 1, 1), Color(1, 0, 0, 1), Color(1, 1, 1, 1), Color(1, 0, 0, 1), Color(1, 1, 1, 1), Color(1, 0, 0, 1), Color(1, 1, 1, 1), Color(1, 0, 0, 1)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_13t3j"]
+_data = {
+"RESET": SubResource("Animation_h3p3r"),
+"ps1ad_animation": SubResource("Animation_164tx")
+}
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_owu3k"]
+animation = &"ps1ad_animation"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_4x4ve"]
+advance_mode = 2
+
+[sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_yipby"]
+states/ps1ad_animation/node = SubResource("AnimationNodeAnimation_owu3k")
+states/ps1ad_animation/position = Vector2(401, 90)
+transitions = ["Start", "ps1ad_animation", SubResource("AnimationNodeStateMachineTransition_4x4ve")]
+
+[node name="Ps1Ad" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Node3D" type="Node3D" parent="."]
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="Node3D"]
+transform = Transform3D(-0.866023, -0.433016, 0.250001, 0, 0.499998, 0.866027, -0.500003, 0.749999, -0.43301, 0, 0, 0)
+visible = false
+shadow_enabled = true
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="Node3D"]
+environment = SubResource("Environment_ntelv")
+compositor = SubResource("Compositor_j3kfv")
+
+[node name="CSGBox3D" type="CSGBox3D" parent="Node3D"]
+transform = Transform3D(1, 0, 0, 0, 0.950943, -0.309366, 0, 0.309366, 0.950944, -0.529219, 0.89841, -2.69287)
+size = Vector3(11.7689, 0.510254, 12.6083)
+material = SubResource("StandardMaterial3D_m8d8s")
+
+[node name="Tree001" parent="Node3D/CSGBox3D" instance=ExtResource("6_3anv8")]
+transform = Transform3D(1, 0, 0, 0, 0.950943, 0.309366, 0, -0.309365, 0.950943, 0.507264, -0.661455, 0.870827)
+
+[node name="carpincho" parent="Node3D/CSGBox3D" instance=ExtResource("1_mx63d")]
+transform = Transform3D(-0.986683, 0, -0.162654, 0, 1, -1.49012e-08, 0.162654, 0, -0.986683, 1.36759, 0.244873, 1.44808)
+
+[node name="Camera3D" type="Camera3D" parent="Node3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.729535, 1.86998)
+
+[node name="Node3D2" type="Node3D" parent="Node3D"]
+transform = Transform3D(0.848898, 0, -0.528557, -0.196777, 0.928116, -0.316037, 0.490563, 0.372291, 0.787875, -0.0142822, 1.19098, 0.636563)
+
+[node name="Node3D" type="Node3D" parent="Node3D/Node3D2"]
+
+[node name="deltakayak_cd" parent="Node3D/Node3D2/Node3D" instance=ExtResource("3_p8sa4")]
+transform = Transform3D(0.3, 0, 0, 0, 0.3, 0, 0, 0, 0.3, 0, 0, 0)
+
+[node name="CSGCylinder3D" type="CSGCylinder3D" parent="Node3D/Node3D2/Node3D"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0)
+visible = false
+radius = 0.2
+height = 0.01
+sides = 10
+material = SubResource("StandardMaterial3D_53ukb")
+
+[node name="CSGBox3D" type="CSGBox3D" parent="Node3D/Node3D2/Node3D"]
+visible = false
+size = Vector3(0.5, 0.5, 0.001)
+material = SubResource("StandardMaterial3D_53ukb")
+
+[node name="Si_Label" type="Label3D" parent="Node3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.459137, 1.13998, 0.66859)
+billboard = 1
+alpha_cut = 1
+modulate = Color(1, 0, 0, 1)
+outline_modulate = Color(0, 0, 0, 0)
+text = "Si"
+font_size = 24
+horizontal_alignment = 0
+
+[node name="Si_Label2" type="Label3D" parent="Node3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.459137, 0.998107, 0.66859)
+billboard = 1
+alpha_cut = 1
+modulate = Color(0.53, 0.53, 0.53, 1)
+outline_modulate = Color(0, 0, 0, 0)
+text = "No"
+font_size = 24
+horizontal_alignment = 0
+
+[node name="Label3D" type="Label3D" parent="Node3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.462433, 0.725066, 0.64563)
+billboard = 1
+alpha_cut = 1
+modulate = Color(0.166667, 1, 0, 1)
+outline_modulate = Color(0, 0, 0, 0)
+text = "Delta Kayak Demo"
+font_size = 18
+horizontal_alignment = 0
+
+[node name="Label3D2" type="Label3D" parent="Node3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.459137, 0.602203, 0.66859)
+billboard = 1
+alpha_cut = 1
+outline_modulate = Color(0, 0, 0, 0)
+text = "Quieres jugarlo?"
+font_size = 18
+horizontal_alignment = 0
+
+[node name="SpotLight3D" type="SpotLight3D" parent="Node3D"]
+transform = Transform3D(0.840046, -0.152489, 0.520643, 0.00214341, 0.96061, 0.277891, -0.54251, -0.232325, 0.807284, 2.45345, 1.69934, 0.522995)
+shadow_enabled = true
+spot_range = 6.75204
+spot_angle = 60.4688
+
+[node name="OmniLight3D" type="OmniLight3D" parent="Node3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.435277, 1.17501, 1.1694)
+omni_range = 0.839
+
+[node name="OmniLight3D2" type="OmniLight3D" parent="Node3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.224126, 1.17501, 0.972563)
+light_energy = 0.1
+omni_range = 0.839
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_13t3j")
+}
+
+[node name="AnimationTree" type="AnimationTree" parent="."]
+tree_root = SubResource("AnimationNodeStateMachine_yipby")
+anim_player = NodePath("../AnimationPlayer")
