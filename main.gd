@@ -131,6 +131,11 @@ func _ready() -> void:
 	%MasterVolumeSlider.value = AudioServer.get_bus_volume_db(master_index)
 	var voice_index := AudioServer.get_bus_index("Voice")
 	%VoiceVolumeSlider.value = AudioServer.get_bus_volume_db(voice_index)
+	var datamosh_effect:CompositorEffectDatamosh = %WorldEnvironment.compositor.compositor_effects[0]
+	if datamosh_effect.enabled:
+		%DatamoshButton.set_pressed_no_signal(true)
+	else:
+		%DatamoshButton.set_pressed_no_signal(false)
 	
 	%PauseMenu.main_scene = self
 	%BlockPath.position.y = -20
@@ -1101,3 +1106,11 @@ func _on_continue_button_up() -> void:
 
 func _on_wishlist_button_up() -> void:
 	GlobalSteam.open_url("https://store.steampowered.com/app/2632680/Delta_Kayak/?utm_source=demo&utm_content=end_demo")
+
+
+func _on_datamosh_button_toggled(toggled_on: bool) -> void:
+	var datamosh_effect:CompositorEffectDatamosh = %WorldEnvironment.compositor.compositor_effects[0]
+	if toggled_on:
+		datamosh_effect.enabled = true
+	else:
+		datamosh_effect.enabled = false

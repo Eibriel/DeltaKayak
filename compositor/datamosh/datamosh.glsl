@@ -23,9 +23,8 @@ float nrand(float x, float y) {
 void main() {
 	float time = params.time;
 	ivec2 size = params.size;
-        float amount = params.amount / 100.0;
+        float amount = float(params.amount) / 100.0;
 	amount = clamp(amount, 0.0, 1.0);
-
 	if (amount>0.0) {
 		ivec2 uv = ivec2(gl_GlobalInvocationID.xy);
 
@@ -46,16 +45,22 @@ void main() {
 				// (affected by motion)
 				vec4 color = imageLoad(previous_image, uv2);
 				imageStore(color_image, uv, color);
+				//imageStore(color_image, uv, vec4(0,0,0,1));
 			} else {
 		                // Reuse chunk of previous frame to this frame
 				// (not affected by motion)
 				vec4 color = imageLoad(previous_image, uv);
 				imageStore(color_image, uv, color);
+				//imageStore(color_image, uv, vec4(0,0,0,1));
 			}
 		}
 
 		//imageStore(color_image, uv, color_vel * -10.0);
 
 		//imageStore(color_image, uv, vec4(vec2(uv2)*0.001, 0.0, 1.0));
+
+		//int test_int = 10;
+		//float test_float = test_int / 100.0;
+		//imageStore(color_image, uv, vec4(test_float,0,0,1));
 	}
 }
