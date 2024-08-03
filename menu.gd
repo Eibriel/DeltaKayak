@@ -41,6 +41,9 @@ func _ready() -> void:
 		Global.eibriel_logo = true
 	else:
 		%LogoRect.visible = false
+	
+	Global.datamosh_mount = 0.0
+	Global.force_datamosh = 0.0
 
 func _process(_delta: float) -> void:
 	_scene_load_status = ResourceLoader.load_threaded_get_status(scene_name, _progress)

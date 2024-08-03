@@ -78,7 +78,7 @@ func _render_callback(p_effect_callback_type, p_render_data):
 				push_constant.push_back(size.x)
 				push_constant.push_back(size.y)
 				push_constant.push_back(Time.get_ticks_msec())
-				push_constant.push_back(0) # dummy value, array needs to be a multiple of 4
+				push_constant.push_back(int(Global.get_datamosh_amount()*100.0)) # dummy value, array needs to be a multiple of 4
 				
 				# Create a uniform set, this will be cached, the cache will be cleared if our viewports configuration is changed
 				var uniform : RDUniform = get_image_uniform(input_image)

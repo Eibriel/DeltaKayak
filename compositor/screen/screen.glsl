@@ -10,6 +10,7 @@ layout(rgba16f, set = 0, binding = 0) uniform image2D color_image;
 layout(push_constant, std430) uniform Params {
 	ivec2 size;
 	int time;
+        int amount;
 } params;
 
 // YPbPr tools
@@ -92,6 +93,7 @@ float dither(vec2 position, float brightness) {
 void main() {
 	float time = params.time;
 	ivec2 size = params.size;
+        int amount = params.amount;
 
 	ivec2 uv = ivec2(gl_GlobalInvocationID.xy);
 	ivec2 uvp = ivec2(gl_GlobalInvocationID.xy / 2.0) * 2;
@@ -132,7 +134,12 @@ void main() {
 	*/
 	//imageStore(color_image, uv, color);
 
-	vec3 quantized_color = color.rgb; //quantize_color(color.rgb, 255);
+	vec3 quantized_color = color.rgb;
+	//amount = 100;
+	amount *= 2;
+	if (amount > 0) {
+		quantized_color = quantize_color(color.rgb, 55+(200-amount));
+	}
 
 	float dither_strength = 0.05;
 	float brightness = dot(quantized_color, vec3(0.3, 0.59, 0.11));

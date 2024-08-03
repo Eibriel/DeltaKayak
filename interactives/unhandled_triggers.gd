@@ -17,6 +17,8 @@ func _on_unhandled_trigger(main_scene, _game_state, trigger_id:String, trigger_t
 				main_scene.say_hint("LOOK BUTTON HINT", 10)
 			"triggerpath_grab_tutorial_003":
 				main_scene.say_hint("GRAB HINT", 20)
+			"triggerpath_look_tutporial_003":
+				main_scene.say_hint("LOOK BUTTON HINT", 20)
 			"triggerpath_monster_003":
 				main_scene.say_dialogue("look_monster")
 				main_scene.set_player_state("monster")

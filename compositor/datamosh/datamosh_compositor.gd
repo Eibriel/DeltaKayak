@@ -108,7 +108,7 @@ func _render_callback(p_effect_callback_type, p_render_data):
 				push_constant.push_back(size.x)
 				push_constant.push_back(size.y)
 				push_constant.push_back(Time.get_ticks_msec())
-				push_constant.push_back(Global.get_datamosh_amount()*100.0)
+				push_constant.push_back(int(Global.get_datamosh_amount()*100.0))
 				
 				if not Global.refresh_frame:
 					# Create a uniform set, this will be cached, the cache will be cleared if our viewports configuration is changed

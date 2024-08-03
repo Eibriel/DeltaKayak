@@ -214,7 +214,7 @@ theme = ExtResource("1_qo26v")
 script = ExtResource("1_xxenq")
 game_preferences = ExtResource("2_wexnt")
 game_state = ExtResource("3_nh3h6")
-initial_position = NodePath("Main3D/InitialPositionGrab")
+initial_position = NodePath("Main3D/InitialPositionOtherSide")
 
 [node name="Node2D" type="Node2D" parent="."]
 
@@ -1093,7 +1093,7 @@ spot_angle = 39.2659
 
 [node name="SpotLight3D5" type="SpotLight3D" parent="Main3D/DemoElements"]
 transform = Transform3D(-0.658085, -0.69355, 0.293109, -7.76482e-09, 0.389284, 0.921118, -0.752944, 0.606174, -0.256182, -185.582, 6.5068, -391.368)
-light_energy = 5.0
+light_energy = 2.0
 distance_fade_enabled = true
 spot_range = 9.95568
 spot_angle = 39.2659
@@ -1107,24 +1107,26 @@ spot_angle = 39.2659
 
 [node name="SpotLight3D2" type="SpotLight3D" parent="Main3D/DemoElements"]
 transform = Transform3D(0.775562, -0.583053, 0.241974, 0, 0.383312, 0.923619, -0.631271, -0.716324, 0.297282, -189.885, 5.69786, -366.241)
-light_energy = 5.0
+light_energy = 2.0
 distance_fade_enabled = true
 spot_range = 8.5132
 spot_angle = 39.2659
 
 [node name="SpotLight3D3" type="SpotLight3D" parent="Main3D/DemoElements"]
 transform = Transform3D(-0.72369, 0.517072, -0.457065, -8.9407e-08, 0.662294, 0.749244, 0.690125, 0.542221, -0.479295, -212.347, 3.96479, -392.021)
-light_energy = 5.0
+light_energy = 2.0
 distance_fade_enabled = true
 spot_range = 8.59085
 spot_angle = 39.2659
 
 [node name="SpotLight3D4" type="SpotLight3D" parent="Main3D/DemoElements"]
-transform = Transform3D(0.702178, 0.262857, -0.661704, -1.49012e-07, 0.929358, 0.36918, 0.712001, -0.25923, 0.652575, -177.441, 6.14894, -403.155)
-light_energy = 5.0
+transform = Transform3D(0.409356, 0.459608, -0.788155, 0.135874, 0.823507, 0.550794, 0.902201, -0.332561, 0.274658, -177.441, 6.14894, -403.155)
+light_energy = 10.0
 distance_fade_enabled = true
+distance_fade_begin = 100.0
+distance_fade_length = 50.0
 spot_range = 18.1181
-spot_angle = 42.7723
+spot_angle = 69.8841
 
 [node name="InstruccionLabel" type="Label3D" parent="Main3D/DemoElements"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 104.443, 2.85102, -202.56)
