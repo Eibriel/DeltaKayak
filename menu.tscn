@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=3 uid="uid://ci58gbma0337h"]
+[gd_scene load_steps=26 format=3 uid="uid://ci58gbma0337h"]
 
 [ext_resource type="Theme" uid="uid://1kj8fi5pat0v" path="res://themes/default_theme.tres" id="1_hhxbb"]
 [ext_resource type="Script" path="res://menu.gd" id="1_svl0y"]
@@ -10,7 +10,9 @@
 [ext_resource type="AudioStream" uid="uid://3iyaylcuo8g" path="res://sounds/ambient/112339__alyceobvious__6_27_07-cricket-1.mp3" id="8_vkcjr"]
 [ext_resource type="PackedScene" uid="uid://dh3vucec7146d" path="res://models/extra/pepa_house.glb" id="9_8r8rd"]
 [ext_resource type="Texture2D" uid="uid://xbgy7n71no4r" path="res://textures/EibrielLogo.png" id="9_jlsaf"]
+[ext_resource type="Script" path="res://xr_ui.gd" id="10_3g4hs"]
 [ext_resource type="AudioStream" uid="uid://dfngyu4c8yana" path="res://sounds/pepa/181767__keweldog__dog-panting.wav" id="11_jeneh"]
+[ext_resource type="AudioStream" uid="uid://3memffj8rn2q" path="res://music/Horror_01_v2.wav" id="12_h11h2"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_q5obi"]
 sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
@@ -32,12 +34,27 @@ compositor_effects = Array[CompositorEffect]([ExtResource("5_auw1c")])
 albedo_texture = ExtResource("7_vij5q")
 texture_filter = 2
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_8syff"]
+shading_mode = 0
+
+[sub_resource type="BoxMesh" id="BoxMesh_uk1sq"]
+material = SubResource("StandardMaterial3D_8syff")
+size = Vector3(0.1, 0.1, 0.1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_by8sj"]
+shading_mode = 0
+
+[sub_resource type="SphereMesh" id="SphereMesh_ylh1b"]
+material = SubResource("StandardMaterial3D_by8sj")
+radius = 0.01
+height = 0.01
+
 [sub_resource type="Animation" id="Animation_cytai"]
 length = 0.001
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("LogoRect/MenuBackground:modulate")
+tracks/0/path = NodePath("SubViewportContainer/MainMenuSubViewport/Control/LogoRect/MenuBackground:modulate")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
@@ -49,7 +66,7 @@ tracks/0/keys = {
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("LogoRect:modulate")
+tracks/1/path = NodePath("SubViewportContainer/MainMenuSubViewport/Control/LogoRect:modulate")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
@@ -65,7 +82,7 @@ length = 2.4
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("LogoRect/MenuBackground:modulate")
+tracks/0/path = NodePath("SubViewportContainer/MainMenuSubViewport/Control/LogoRect/MenuBackground:modulate")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
@@ -77,7 +94,7 @@ tracks/0/keys = {
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("LogoRect:modulate")
+tracks/1/path = NodePath("SubViewportContainer/MainMenuSubViewport/Control/LogoRect:modulate")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
@@ -117,31 +134,61 @@ grow_vertical = 2
 theme = ExtResource("1_hhxbb")
 script = ExtResource("1_svl0y")
 
-[node name="MenuTitle" type="TextureRect" parent="."]
+[node name="SubViewportContainer" type="SubViewportContainer" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -400.0
+offset_top = -300.0
+offset_right = 400.0
+offset_bottom = 300.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MainMenuSubViewport" type="SubViewport" parent="SubViewportContainer"]
+unique_name_in_owner = true
+disable_3d = true
+transparent_bg = true
+size = Vector2i(800, 600)
+size_2d_override_stretch = true
+render_target_update_mode = 4
+
+[node name="Control" type="Control" parent="SubViewportContainer/MainMenuSubViewport"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MenuTitle" type="TextureRect" parent="SubViewportContainer/MainMenuSubViewport/Control"]
 texture_filter = 2
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.495
 anchor_right = 0.495
-offset_left = -191.0
+offset_left = -48.44
 offset_top = -22.0
-offset_right = 188.0
+offset_right = 330.56
 offset_bottom = 191.0
 grow_horizontal = 2
 texture = ExtResource("4_yecay")
 expand_mode = 1
 stretch_mode = 4
 
-[node name="Control" type="Control" parent="."]
+[node name="Control" type="Control" parent="SubViewportContainer/MainMenuSubViewport/Control"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_right = -515.0
+offset_right = -512.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Control"]
+[node name="VBoxContainer" type="VBoxContainer" parent="SubViewportContainer/MainMenuSubViewport/Control/Control"]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -155,19 +202,20 @@ offset_bottom = 50.5
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="StartButton" type="Button" parent="Control/VBoxContainer"]
+[node name="StartButton" type="Button" parent="SubViewportContainer/MainMenuSubViewport/Control/Control/VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "START"
 
-[node name="SettingsButton" type="Button" parent="Control/VBoxContainer"]
+[node name="SettingsButton" type="Button" parent="SubViewportContainer/MainMenuSubViewport/Control/Control/VBoxContainer"]
 visible = false
 layout_mode = 2
 text = "SETTINGS"
 
-[node name="LocaleOption" type="OptionButton" parent="Control/VBoxContainer"]
+[node name="LocaleOption" type="OptionButton" parent="SubViewportContainer/MainMenuSubViewport/Control/Control/VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
+action_mode = 1
 item_count = 3
 popup/item_0/text = "English"
 popup/item_1/text = "Español Argentina"
@@ -175,15 +223,15 @@ popup/item_1/id = 1
 popup/item_2/text = "Español España"
 popup/item_2/id = 2
 
-[node name="WishlistButton" type="Button" parent="Control/VBoxContainer"]
+[node name="WishlistButton" type="Button" parent="SubViewportContainer/MainMenuSubViewport/Control/Control/VBoxContainer"]
 layout_mode = 2
 text = "WISHLIST NOW"
 
-[node name="QuitButton" type="Button" parent="Control/VBoxContainer"]
+[node name="QuitButton" type="Button" parent="SubViewportContainer/MainMenuSubViewport/Control/Control/VBoxContainer"]
 layout_mode = 2
 text = "QUIT"
 
-[node name="VBoxContainer3" type="VBoxContainer" parent="Control"]
+[node name="VBoxContainer3" type="VBoxContainer" parent="SubViewportContainer/MainMenuSubViewport/Control/Control"]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -197,22 +245,22 @@ offset_bottom = 206.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="NewsletterButton" type="Button" parent="Control/VBoxContainer3"]
+[node name="NewsletterButton" type="Button" parent="SubViewportContainer/MainMenuSubViewport/Control/Control/VBoxContainer3"]
 layout_mode = 2
 text = "JOIN THE NEWSLETTER"
 
-[node name="FeedbackButton" type="Button" parent="Control/VBoxContainer3"]
+[node name="FeedbackButton" type="Button" parent="SubViewportContainer/MainMenuSubViewport/Control/Control/VBoxContainer3"]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 text = "FEEDBACK"
 
-[node name="FollowButton" type="Button" parent="Control/VBoxContainer3"]
+[node name="FollowButton" type="Button" parent="SubViewportContainer/MainMenuSubViewport/Control/Control/VBoxContainer3"]
 layout_mode = 2
 focus_neighbor_bottom = NodePath("../../VBoxContainer/StartButton")
 text = "FOLLOW"
 
-[node name="VBoxContainer2" type="VBoxContainer" parent="."]
+[node name="VBoxContainer2" type="VBoxContainer" parent="SubViewportContainer/MainMenuSubViewport/Control"]
 visible = false
 layout_mode = 1
 anchors_preset = 3
@@ -220,14 +268,14 @@ anchor_left = 1.0
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -142.0
-offset_top = -83.0
-offset_right = -17.0
-offset_bottom = -17.0
+offset_left = 146.0
+offset_top = 5.0
+offset_right = 271.0
+offset_bottom = 71.0
 grow_horizontal = 0
 grow_vertical = 0
 
-[node name="GameLoadProgressBar" type="ProgressBar" parent="."]
+[node name="GameLoadProgressBar" type="ProgressBar" parent="SubViewportContainer/MainMenuSubViewport/Control"]
 unique_name_in_owner = true
 modulate = Color(1, 1, 1, 0.588235)
 layout_mode = 1
@@ -235,13 +283,14 @@ anchors_preset = 12
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_top = -20.0
+offset_top = 68.0
+offset_bottom = 88.0
 grow_horizontal = 2
 grow_vertical = 0
 value = 50.0
 show_percentage = false
 
-[node name="BlackColor" type="ColorRect" parent="."]
+[node name="BlackColor" type="ColorRect" parent="SubViewportContainer/MainMenuSubViewport/Control"]
 unique_name_in_owner = true
 visible = false
 layout_mode = 1
@@ -252,6 +301,34 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 color = Color(0, 0, 0, 1)
+
+[node name="LogoRect" type="ColorRect" parent="SubViewportContainer/MainMenuSubViewport/Control"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 1)
+
+[node name="MenuBackground" type="TextureRect" parent="SubViewportContainer/MainMenuSubViewport/Control/LogoRect"]
+texture_filter = 2
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -825.5
+offset_top = -265.5
+offset_right = 825.5
+offset_bottom = 265.5
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(0.345, 0.345)
+pivot_offset = Vector2(825, 265)
+texture = ExtResource("9_jlsaf")
 
 [node name="Node3D" type="Node3D" parent="."]
 
@@ -284,33 +361,37 @@ transform = Transform3D(-2.82003, 0, 1.02345, 0, 3, 0, -1.02345, 0, -2.82003, -0
 unique_name_in_owner = true
 transform = Transform3D(0.190386, -0.132623, -0.325829, 0.228635, 0.328216, -1.90788e-08, 0.267356, -0.18624, 0.232025, 0.996618, 0.368896, 1.98239)
 
-[node name="LogoRect" type="ColorRect" parent="."]
-unique_name_in_owner = true
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-color = Color(0, 0, 0, 1)
+[node name="XROrigin3D" type="XROrigin3D" parent="Node3D"]
+transform = Transform3D(0.572461, 0, -0.819932, 0, 1, 0, 0.819932, 0, 0.572461, -2.18265, 1.01399, 0.635889)
 
-[node name="MenuBackground" type="TextureRect" parent="LogoRect"]
-texture_filter = 2
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -825.5
-offset_top = -265.5
-offset_right = 825.5
-offset_bottom = 265.5
-grow_horizontal = 2
-grow_vertical = 2
-scale = Vector2(0.345, 0.345)
-pivot_offset = Vector2(825, 265)
-texture = ExtResource("9_jlsaf")
+[node name="XRCamera3D" type="XRCamera3D" parent="Node3D/XROrigin3D"]
+
+[node name="XRLeftController3D" type="XRController3D" parent="Node3D/XROrigin3D"]
+transform = Transform3D(1, 0, -2.98023e-08, 0, 1, 0, 2.98023e-08, 0, 1, -1.44648, 0, -1.0099)
+tracker = &"left_hand"
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Node3D/XROrigin3D/XRLeftController3D"]
+mesh = SubResource("BoxMesh_uk1sq")
+
+[node name="XRRightController3D" type="XRController3D" parent="Node3D/XROrigin3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.859174, 0, 0.599859)
+tracker = &"right_hand"
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Node3D/XROrigin3D/XRRightController3D"]
+mesh = SubResource("BoxMesh_uk1sq")
+
+[node name="OpenXRCompositionLayerQuad" type="OpenXRCompositionLayerQuad" parent="Node3D/XROrigin3D" node_paths=PackedStringArray("layer_viewport", "controller")]
+transform = Transform3D(0.99402, 0, -0.109197, 0, 1, 0, 0.109197, 0, 0.99402, 0.0925952, -0.146087, -1.42355)
+layer_viewport = NodePath("../../../SubViewportContainer/MainMenuSubViewport")
+sort_order = -2
+alpha_blend = true
+enable_hole_punch = true
+quad_size = Vector2(2, 1.5)
+script = ExtResource("10_3g4hs")
+controller = NodePath("../XRLeftController3D")
+
+[node name="Pointer" type="MeshInstance3D" parent="Node3D/XROrigin3D/OpenXRCompositionLayerQuad"]
+mesh = SubResource("SphereMesh_ylh1b")
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("8_vkcjr")
@@ -323,16 +404,22 @@ stream = ExtResource("11_jeneh")
 volume_db = -5.0
 autoplay = true
 
+[node name="AudioStreamPlayer3" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("12_h11h2")
+volume_db = -5.0
+autoplay = true
+bus = &"Music"
+
 [node name="LogoAnimationPlayer" type="AnimationPlayer" parent="."]
 unique_name_in_owner = true
 libraries = {
 "": SubResource("AnimationLibrary_edu7w")
 }
 
-[connection signal="button_up" from="Control/VBoxContainer/StartButton" to="." method="_on_start_button_button_up"]
-[connection signal="item_selected" from="Control/VBoxContainer/LocaleOption" to="." method="_on_option_button_item_selected"]
-[connection signal="button_up" from="Control/VBoxContainer/WishlistButton" to="." method="_on_wishlist_button_button_up"]
-[connection signal="button_up" from="Control/VBoxContainer/QuitButton" to="." method="_on_quit_button_button_up"]
-[connection signal="button_up" from="Control/VBoxContainer3/NewsletterButton" to="." method="_on_newsletter_button_up"]
-[connection signal="button_up" from="Control/VBoxContainer3/FeedbackButton" to="." method="_on_feedback_button_up"]
-[connection signal="button_up" from="Control/VBoxContainer3/FollowButton" to="." method="_on_follow_button_up"]
+[connection signal="button_up" from="SubViewportContainer/MainMenuSubViewport/Control/Control/VBoxContainer/StartButton" to="." method="_on_start_button_button_up"]
+[connection signal="item_selected" from="SubViewportContainer/MainMenuSubViewport/Control/Control/VBoxContainer/LocaleOption" to="." method="_on_option_button_item_selected"]
+[connection signal="button_up" from="SubViewportContainer/MainMenuSubViewport/Control/Control/VBoxContainer/WishlistButton" to="." method="_on_wishlist_button_button_up"]
+[connection signal="button_up" from="SubViewportContainer/MainMenuSubViewport/Control/Control/VBoxContainer/QuitButton" to="." method="_on_quit_button_button_up"]
+[connection signal="button_up" from="SubViewportContainer/MainMenuSubViewport/Control/Control/VBoxContainer3/NewsletterButton" to="." method="_on_newsletter_button_up"]
+[connection signal="button_up" from="SubViewportContainer/MainMenuSubViewport/Control/Control/VBoxContainer3/FeedbackButton" to="." method="_on_feedback_button_up"]
+[connection signal="button_up" from="SubViewportContainer/MainMenuSubViewport/Control/Control/VBoxContainer3/FollowButton" to="." method="_on_follow_button_up"]

@@ -96,10 +96,12 @@ void main() {
         int amount = params.amount;
 
 	ivec2 uv = ivec2(gl_GlobalInvocationID.xy);
-	ivec2 uvp = ivec2(gl_GlobalInvocationID.xy / 2.0) * 2;
+	//ivec2 uvp = ivec2(gl_GlobalInvocationID.xy / 2.0) * 2;
+	ivec2 uvp = uv; // Disabling pixelation
 
+	ivec2 ghost_shift = ivec2(1,1);
 	vec4 color = imageLoad(color_image, uv);
-	vec4 colorb = imageLoad(color_image, uvp+ivec2(2,2));
+	vec4 colorb = imageLoad(color_image, uvp+ghost_shift);
 
 
 	vec3 color_yuv = simple_RGB_to_yuv(color.rgb);
@@ -141,7 +143,7 @@ void main() {
 		quantized_color = quantize_color(color.rgb, 55+(200-amount));
 	}
 
-	float dither_strength = 0.05;
+	float dither_strength = 0.5;
 	float brightness = dot(quantized_color, vec3(0.3, 0.59, 0.11));
 	brightness += dither_strength * (dither(uvp, brightness) - 0.5);
 	quantized_color *= (1.0 + dither_strength * (dither(uvp, brightness) - 0.5));

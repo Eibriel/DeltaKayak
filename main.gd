@@ -31,6 +31,7 @@ var other_side := false
 var kayak_k1: RigidBody3D
 
 var SKIP_INTRO = true
+var ENABLE_VR = false
 
 var character_home_position:Vector3
 var character_home_rotation:Vector3
@@ -551,7 +552,7 @@ func get_interactive(id:String, primary_label:String, secondary_label:String, cr
 
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("primary_action"):
-		if %MenuThanks.visible:
+		if %MenuThanks.visible and false:
 			var focused := get_viewport().gui_get_focus_owner()
 			if focused is Button:
 				focused.emit_signal("button_up")

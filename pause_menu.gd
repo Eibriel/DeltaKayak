@@ -3,6 +3,7 @@ extends Control
 var main_scene: Node
 
 func _input(event: InputEvent) -> void:
+	return
 	if not visible: return
 	if event.is_action_pressed("quit"):
 		# BUG this dont work for some reason

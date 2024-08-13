@@ -44,6 +44,7 @@ func _ready() -> void:
 	
 	Global.datamosh_mount = 0.0
 	Global.force_datamosh = 0.0
+	
 
 func _process(_delta: float) -> void:
 	_scene_load_status = ResourceLoader.load_threaded_get_status(scene_name, _progress)
@@ -64,12 +65,6 @@ func _change_scene():
 	#print("change_scene")
 	var new_scene = ResourceLoader.load_threaded_get(scene_name)
 	get_tree().change_scene_to_packed(new_scene)
-
-func _input(event: InputEvent) -> void:
-	if event.is_action_released("primary_action"):
-		var focused := get_viewport().gui_get_focus_owner()
-		if focused is Button:
-			focused.emit_signal("button_up")
 
 func _on_start_button_button_up() -> void:
 	_change_when_ready = true
