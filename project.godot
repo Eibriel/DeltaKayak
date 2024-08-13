@@ -27,7 +27,7 @@ general/text_to_speech=true
 Global="*res://global.gd"
 GlobalSteam="*res://steam.gd"
 GamePlatform="*res://game_platform.gd"
-Vr="*res://vr.gd"
+VR="*res://vr.gd"
 
 [debug]
 
@@ -179,6 +179,7 @@ locale/translations=PackedStringArray("res://dkdata_strings.en.translation", "re
 
 textures/canvas_textures/default_texture_filter=0
 textures/vram_compression/import_etc2_astc=true
+reflections/sky_reflections/texture_array_reflections=false
 anti_aliasing/screen_space_roughness_limiter/enabled=false
 textures/decals/filter=0
 textures/light_projectors/filter=0
