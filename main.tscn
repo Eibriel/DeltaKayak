@@ -214,7 +214,8 @@ theme = ExtResource("1_qo26v")
 script = ExtResource("1_xxenq")
 game_preferences = ExtResource("2_wexnt")
 game_state = ExtResource("3_nh3h6")
-initial_position = NodePath("Main3D/InitialPosition")
+initial_position = NodePath("Main3D/InitialPositionPuzzle")
+show_logs = true
 
 [node name="Node2D" type="Node2D" parent="."]
 
@@ -1014,7 +1015,7 @@ unique_name_in_owner = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -11.969, 0, -143.174)
 
 [node name="enemy" parent="Main3D/DemoElements/Enemydummy" instance=ExtResource("23_3o5cm")]
-transform = Transform3D(0.0826839, 0, -1.19715, 0, 1.2, 0, 1.19715, 0, 0.0826839, 8.11646, 0.2, -2.24095)
+transform = Transform3D(0.103355, 0, -1.49644, 0, 1.5, 0, 1.49644, 0, 0.103355, 9.33215, 0.2, -2.32491)
 
 [node name="OmniLight3D" type="OmniLight3D" parent="Main3D/DemoElements/Enemydummy"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6.42126, 4)
@@ -1130,6 +1131,7 @@ spot_angle = 69.8841
 
 [node name="InstruccionLabel" type="Label3D" parent="Main3D/DemoElements"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 104.443, 2.85102, -202.56)
+visible = false
 pixel_size = 0.02
 billboard = 1
 text = "Usa Espacio o RB
@@ -1138,19 +1140,20 @@ font_size = 64
 
 [node name="InstruccionLabel2" type="Label3D" parent="Main3D/DemoElements"]
 transform = Transform3D(-0.476576, 0, -0.879133, 0, 1, 0, 0.879133, 0, -0.476576, 104.422, 1.18638, -191.362)
+visible = false
 pixel_size = 0.02
 double_sided = false
 text = "¡Corré!"
 font_size = 64
 
 [node name="OmniLight3D" type="OmniLight3D" parent="Main3D/DemoElements"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -39.8452, 8.96545, -201.684)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -38.3501, 6.66869, -199.982)
 light_color = Color(0.993349, 0.925205, 0.696236, 1)
 light_energy = 9.654
 light_volumetric_fog_energy = 2.61
 distance_fade_enabled = true
 distance_fade_begin = 200.0
-omni_range = 7.211
+omni_range = 14.757
 
 [node name="OmniLight3D2" type="OmniLight3D" parent="Main3D/DemoElements"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16.2877, 5.01654, -15.4993)
@@ -1335,34 +1338,34 @@ occluder = SubResource("BoxOccluder3D_gtuj1")
 transform = Transform3D(-1.35341, 0.323712, 2.65772, 0.51964, 2.95312, -0.0950717, -2.62645, 0.417462, -1.38834, -224.316, 0, -131.97)
 
 [node name="NoPasar02" parent="Main3D/CartelesNoPasar" instance=ExtResource("27_wufk5")]
-transform = Transform3D(0.924542, 0.00100949, -0.381079, 0.0255187, 0.997588, 0.0645539, 0.380226, -0.0694074, 0.922286, 3.57242, -0.737894, -3.39448)
+transform = Transform3D(1.84908, 0.00201904, -0.76216, 0.0510374, 1.99518, 0.129108, 0.760452, -0.138815, 1.84457, 3.57242, -0.737894, -3.39448)
 
 [node name="NoPasar09" parent="Main3D/CartelesNoPasar" instance=ExtResource("27_wufk5")]
-transform = Transform3D(-0.763637, 0.288457, -0.577625, 0.000726573, 0.895031, 0.446004, 0.645645, 0.340165, -0.683688, 19.6685, -3.4352, 1.67944)
+transform = Transform3D(-1.52727, 0.576914, -1.15525, 0.00145315, 1.79006, 0.892007, 1.29129, 0.68033, -1.36738, 19.6685, -3.4352, 1.67944)
 
 [node name="NoPasar03" parent="Main3D/CartelesNoPasar" instance=ExtResource("28_a0yc8")]
-transform = Transform3D(0.987595, -0.0582583, -0.145817, 0.0506871, 0.997193, -0.0551136, 0.148619, 0.0470388, 0.987775, 6.02258, -1.28209, -4.43305)
+transform = Transform3D(1.97519, -0.116517, -0.291635, 0.101374, 1.99439, -0.110227, 0.297238, 0.0940776, 1.97555, 6.02258, -1.28209, -4.43305)
 
 [node name="NoPasar04" parent="Main3D/CartelesNoPasar" instance=ExtResource("29_7l0wb")]
-transform = Transform3D(0.761396, 0.495061, -0.418557, -0.509464, 0.856191, 0.0859219, 0.400902, 0.147819, 0.904117, 11.7111, -2.22887, -5.22348)
+transform = Transform3D(1.52279, 0.990123, -0.837115, -1.01893, 1.71238, 0.171844, 0.801804, 0.295638, 1.80823, 11.7111, -2.22887, -5.22348)
 
 [node name="NoPasar05" parent="Main3D/CartelesNoPasar" instance=ExtResource("30_vi5x4")]
 transform = Transform3D(0.929117, -0.20841, 0.305463, 0.121872, 0.95248, 0.279158, -0.349127, -0.222143, 0.910364, 0.119812, -0.000395775, -3.08867)
 
 [node name="NoPasar" parent="Main3D/CartelesNoPasar" instance=ExtResource("31_tpcsj")]
-transform = Transform3D(0.499528, 0.230755, -0.376389, -0.210505, 0.624079, 0.103234, 0.388078, 0.0414959, 0.54048, 1.38324, -0.273264, -0.927673)
+transform = Transform3D(1.49858, 0.692263, -1.12917, -0.631515, 1.87224, 0.309701, 1.16423, 0.124486, 1.62144, 1.4766, -0.312607, -0.855141)
 
 [node name="NoPasar06" parent="Main3D/CartelesNoPasar" instance=ExtResource("27_wufk5")]
-transform = Transform3D(-0.721941, 0.531186, -0.443445, 0.553508, 0.827903, 0.0905869, 0.415248, -0.180052, -0.891712, 19.8333, -3.32169, 6.78999)
+transform = Transform3D(-1.44388, 1.06237, -0.88689, 1.10702, 1.65581, 0.181174, 0.830496, -0.360104, -1.78342, 19.8333, -3.32169, 6.78999)
 
 [node name="NoPasar07" parent="Main3D/CartelesNoPasar" instance=ExtResource("28_a0yc8")]
-transform = Transform3D(-0.721363, 0.300074, 0.624172, -0.0451131, 0.878983, -0.474714, -0.691086, -0.3706, -0.620529, 18.8422, -3.16465, 6.74124)
+transform = Transform3D(-1.44273, 0.600149, 1.24834, -0.0902262, 1.75797, -0.949428, -1.38217, -0.741199, -1.24106, 18.8422, -3.16465, 6.74124)
 
 [node name="NoPasar08" parent="Main3D/CartelesNoPasar" instance=ExtResource("29_7l0wb")]
-transform = Transform3D(-0.999782, -0.0201336, 0.00561237, -0.0172445, 0.946309, 0.322804, -0.0118105, 0.322637, -0.946449, 19.6018, -3.25579, 7.79537)
+transform = Transform3D(-1.99956, -0.040267, 0.0112252, -0.034489, 1.89262, 0.645608, -0.0236209, 0.645274, -1.8929, 19.6018, -3.25579, 7.79537)
 
 [node name="NoPasar2" parent="Main3D/CartelesNoPasar" instance=ExtResource("31_tpcsj")]
-transform = Transform3D(-0.548242, -0.0525654, 0.375649, -0.0382119, 0.664529, 0.0372204, -0.377379, 0.00907733, -0.549497, 18.3618, -2.95565, 8.5525)
+transform = Transform3D(-1.64473, -0.157696, 1.12695, -0.114636, 1.99359, 0.111661, -1.13214, 0.0272321, -1.64849, 18.3618, -2.95565, 8.5525)
 
 [node name="MusicBackground" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("16_dvrax")

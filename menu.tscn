@@ -393,26 +393,27 @@ transform = Transform3D(-2.82003, 0, 1.02345, 0, 3, 0, -1.02345, 0, -2.82003, -0
 unique_name_in_owner = true
 transform = Transform3D(0.190386, -0.132623, -0.325829, 0.228635, 0.328216, -1.90788e-08, 0.267356, -0.18624, 0.232025, 0.996618, 0.368896, 1.98239)
 
-[node name="XROrigin3D" type="XROrigin3D" parent="Node3D"]
+[node name="MenuXROrigin3D" type="XROrigin3D" parent="Node3D"]
+unique_name_in_owner = true
 transform = Transform3D(0.572461, 0, -0.819932, 0, 1, 0, 0.819932, 0, 0.572461, -2.18265, 1.01399, 0.635889)
 
-[node name="XRCamera3D" type="XRCamera3D" parent="Node3D/XROrigin3D"]
+[node name="XRCamera3D" type="XRCamera3D" parent="Node3D/MenuXROrigin3D"]
 
-[node name="XRLeftController3D" type="XRController3D" parent="Node3D/XROrigin3D"]
+[node name="XRLeftController3D" type="XRController3D" parent="Node3D/MenuXROrigin3D"]
 transform = Transform3D(1, 0, -2.98023e-08, 0, 1, 0, 2.98023e-08, 0, 1, -1.44648, 0, -1.0099)
 tracker = &"left_hand"
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Node3D/XROrigin3D/XRLeftController3D"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Node3D/MenuXROrigin3D/XRLeftController3D"]
 mesh = SubResource("BoxMesh_uk1sq")
 
-[node name="XRRightController3D" type="XRController3D" parent="Node3D/XROrigin3D"]
+[node name="XRRightController3D" type="XRController3D" parent="Node3D/MenuXROrigin3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.859174, 0, 0.599859)
 tracker = &"right_hand"
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Node3D/XROrigin3D/XRRightController3D"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Node3D/MenuXROrigin3D/XRRightController3D"]
 mesh = SubResource("BoxMesh_uk1sq")
 
-[node name="OpenXRCompositionLayerQuad" type="OpenXRCompositionLayerQuad" parent="Node3D/XROrigin3D" node_paths=PackedStringArray("layer_viewport", "controller")]
+[node name="OpenXRCompositionLayerQuad" type="OpenXRCompositionLayerQuad" parent="Node3D/MenuXROrigin3D" node_paths=PackedStringArray("layer_viewport", "controller")]
 transform = Transform3D(0.99402, 0, -0.109197, 0, 1, 0, 0.109197, 0, 0.99402, 0.0925952, -0.146087, -1.42355)
 layer_viewport = NodePath("../../../SubViewportContainer/MainMenuSubViewport")
 sort_order = -2
@@ -422,7 +423,7 @@ quad_size = Vector2(2, 1.5)
 script = ExtResource("10_3g4hs")
 controller = NodePath("../XRLeftController3D")
 
-[node name="Pointer" type="MeshInstance3D" parent="Node3D/XROrigin3D/OpenXRCompositionLayerQuad"]
+[node name="Pointer" type="MeshInstance3D" parent="Node3D/MenuXROrigin3D/OpenXRCompositionLayerQuad"]
 mesh = SubResource("SphereMesh_ylh1b")
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
@@ -438,7 +439,7 @@ autoplay = true
 
 [node name="AudioStreamPlayer3" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("12_h11h2")
-volume_db = -5.0
+volume_db = -15.0
 autoplay = true
 bus = &"Music"
 

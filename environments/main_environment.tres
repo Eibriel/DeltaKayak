@@ -40,6 +40,7 @@ fog_density = 0.0025
 fog_sky_affect = 0.103
 fog_height_density = 0.5129
 fog_depth_curve = 0.5
+volumetric_fog_enabled = true
 volumetric_fog_anisotropy = 0.0
 volumetric_fog_length = 200.0
 volumetric_fog_detail_spread = 3.95852

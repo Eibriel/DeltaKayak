@@ -16,6 +16,11 @@ var black_tween: Tween
 
 func _ready() -> void:
 	get_tree().paused = false
+	
+	if not VR.is_vr_enabled:
+		%MenuControl.reparent(self)
+		%MenuXROrigin3D.visible = false
+		
 	%GameLoadProgressBar.value = 0
 	var locale_id := locale_names.find(TranslationServer.get_locale())
 	if locale_id != -1:
@@ -45,8 +50,7 @@ func _ready() -> void:
 	Global.datamosh_mount = 0.0
 	Global.force_datamosh = 0.0
 	
-	if not VR.is_vr_enabled:
-		%MenuControl.reparent(self)
+	
 
 func _process(_delta: float) -> void:
 	_scene_load_status = ResourceLoader.load_threaded_get_status(scene_name, _progress)

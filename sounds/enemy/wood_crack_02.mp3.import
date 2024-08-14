@@ -12,7 +12,7 @@ dest_files=["res://.godot/imported/wood_crack_02.mp3-a5b542c532915c86856511bc376
 
 [params]
 
-loop=false
+loop=true
 loop_offset=0
 bpm=0
 beat_count=0

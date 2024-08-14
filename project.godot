@@ -173,7 +173,7 @@ locale/translations=PackedStringArray("res://dkdata_strings.en.translation", "re
 
 [physics]
 
-3d/solver/solver_iterations=32
+common/physics_ticks_per_second=90
 
 [rendering]
 
@@ -183,6 +183,9 @@ reflections/sky_reflections/texture_array_reflections=false
 anti_aliasing/screen_space_roughness_limiter/enabled=false
 textures/decals/filter=0
 textures/light_projectors/filter=0
+environment/volumetric_fog/volume_size=32
+environment/volumetric_fog/volume_depth=32
+environment/volumetric_fog/use_filter=0
 environment/defaults/default_clear_color=Color(0, 0, 0, 1)
 occlusion_culling/use_occlusion_culling=true
 vrs/mode=2

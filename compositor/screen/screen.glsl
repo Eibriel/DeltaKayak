@@ -140,7 +140,7 @@ void main() {
 	//amount = 100;
 	amount *= 2;
 	if (amount > 0) {
-		quantized_color = quantize_color(color.rgb, 55+(200-amount));
+		quantized_color = quantize_color(color.rgb, 55-50+(200-amount));
 	}
 
 	float dither_strength = 0.5;

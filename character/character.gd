@@ -97,6 +97,13 @@ func _ready():
 	
 	%BreathingPlayer.play()
 	
+	# VR
+	if VR.is_vr_enabled:
+		%POVCameraController.visible = false
+		%CharacterXROrigin3D.visible = true
+	else:
+		%POVCameraController.visible = true
+		%CharacterXROrigin3D.visible = false
 
 func _process(delta: float) -> void:
 	trail_time += delta
@@ -740,7 +747,7 @@ func set_damage()->void:
 	#tween.tween_property(%DamageIndicator, "scale", Vector3.ZERO, 0.1)
 	#tween.tween_callback(Global.main_scene.set_datamosh.bind(false))
 	if damage > max_damage:
-		Global.main_scene.game_over()
+		Global.main_scene.game_over.call_deferred()
 
 var camera_tween:Tween
 func shake_camera(amount:Vector3, global:=false)->void:

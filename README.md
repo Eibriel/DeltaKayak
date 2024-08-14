@@ -7,6 +7,10 @@ Wishlist on [Steam](https://store.steampowered.com/app/2632680/Delta_Kayak/) ❤
 
 ![Delta Kayak Logo](textures/menu_background.jpg)
 
+### VR
+The game has experimental VR support.
+To enable it add the following argument when launching: `--xr-mode on -- --vr`
+
 ### Attributions
 Note that not all items in the list are currently in use.
 

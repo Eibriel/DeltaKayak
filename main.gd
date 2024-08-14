@@ -3,6 +3,7 @@ extends Control
 @export var game_preferences:PreferenceResource
 @export var game_state:DKDataResource
 @export var initial_position: Marker3D
+@export var show_logs: bool
 
 @onready var dk_world: DKWorld = %DKWorld
 @onready var label_demo: Label = $Control/LabelDemo
@@ -53,7 +54,8 @@ func _ready() -> void:
 		#DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_MAXIMIZED)
 		#Global.enemy.current_state = Global.enemy.STATE.GO_HOME
 		#Global.enemy.home_position = %EnemyHome03.global_position
-		pass
+		if show_logs:
+			%LogLabel.visible = true
 	else:
 		%LabelTemporizador.visible = false
 		%LogLabel.visible = false
@@ -145,6 +147,12 @@ func _ready() -> void:
 	%MenuThanks.visible = false
 	
 	%Enemydummy.visible = false
+	
+	# VR
+	if VR.is_vr_enabled:
+		var screen_effect:CompositorEffectDatamosh = %WorldEnvironment.compositor.compositor_effects[1]
+		screen_effect.enabled = false
+		%WorldEnvironment.environment.volumetric_fog_enabled = false
 
 func pause():
 	if demo_completed: return
@@ -244,8 +252,7 @@ func set_enemy_home(home:Node3D):
 	Global.enemy.home_position = home.global_position
 	Global.enemy.global_rotation = home.global_rotation
 	Global.enemy.global_position = Global.enemy.home_position
-	Global.enemy.current_state = Global.enemy.STATE.SLEEPING
-	Global.enemy.on_sleeping_time = 0.0
+	Global.enemy.set_state(Global.enemy.STATE.SLEEPING)
 
 func _process(delta: float) -> void:
 	handle_triggers(delta)
@@ -270,6 +277,7 @@ func _process(delta: float) -> void:
 			%WorldEnvironment.environment.ambient_light_energy = 0.0
 		else:
 			%WorldEnvironment.environment.ambient_light_energy = 0.02
+	
 
 func handle_enemy_direction_indicator(_delta:float) -> void:
 	if Global.enemy == null: return
@@ -591,8 +599,8 @@ func _input(event: InputEvent) -> void:
 	elif event.is_action_pressed("ui_text_backspace"):
 		if OS.has_feature("debug"):
 			#teleport_enemy(1)
-			say_dialogue("demo_other_side")
-			#game_over()
+			#say_dialogue("demo_other_side")
+			game_over()
 
 func say_some_dialogue()->void:
 	if player_state.size() > 0:
@@ -1093,8 +1101,8 @@ func game_over():
 	character.energy = 50.0
 	%GameOverMenu.visible = true
 	%ContinueButton.grab_focus()
-	get_tree().paused = true
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+	get_tree().paused = true
 
 
 func _on_continue_button_up() -> void:

@@ -40,7 +40,7 @@ shape = SubResource("BoxShape3D_v311q")
 
 [node name="CSGBox3D" type="CSGBox3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.213318, 0.0445557)
-size = Vector3(4.90063, 1.57336, 1.4707)
+size = Vector3(4.901, 1.573, 1.471)
 material = SubResource("StandardMaterial3D_xafum")
 
 [node name="Element" type="Node3D" parent="."]

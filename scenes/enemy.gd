@@ -211,7 +211,7 @@ func change_state():
 		#prints(real_velocity.length())
 		if real_velocity.length() > 5:
 			about_to_collide = false
-			current_state = STATE.AVOID_COLLISION
+			set_state(STATE.AVOID_COLLISION)
 			#print("AVOID_COLLISION")
 	match current_state:
 		STATE.SLEEPING:
@@ -225,40 +225,45 @@ func change_state():
 		STATE.GO_HOME:
 			check_go_home_exit()
 
+func set_state(state_to_set:STATE):
+	prints("Set", STATE.find_key(state_to_set))
+	current_state = state_to_set
+	match state_to_set:
+		STATE.ATTACK:
+			attack_state = ATTACK_STATE.START
+			waiting = false
+			play_howl()
+		STATE.ALERT:
+			on_alert_time = 0.0
+		STATE.SLEEPING:
+			on_sleeping_time = 0.0
+			waiting = false
+		STATE.AVOID_COLLISION:
+			avoid_collision_time = 0.0
+
 func check_sleeping_exit():
 	if is_character_visible:
-		current_state = STATE.ATTACK
-		attack_state = ATTACK_STATE.START
-		waiting = false
+		set_state(STATE.ATTACK)
 
 func check_attack_exit():
+	#print("ATTACK")
 	if following_trail_time > 5.0:
-		current_state = STATE.ALERT
-		on_alert_time = 0.0
+		set_state(STATE.ALERT)
 	if not is_character_visible:
-		current_state = STATE.ALERT
-		on_alert_time = 0.0
+		set_state(STATE.ALERT)
 
 func check_alert_exit():
+	#print("Alert")
 	if is_character_visible:
-		current_state = STATE.ATTACK
-		attack_state = ATTACK_STATE.START
-		waiting = false
+		set_state(STATE.ATTACK)
 	elif on_alert_time > 10.0:
-		current_state = STATE.SLEEPING
-		on_sleeping_time = 0.0
-		#waiting = true
-		waiting = false
+		set_state(STATE.SLEEPING)
 	elif following_trail_time > 5.0:
-		current_state = STATE.SLEEPING
-		on_sleeping_time = 0.0
-		waiting = false
+		set_state(STATE.SLEEPING)
 
 func check_avoid_collision_exit():
 	if avoid_collision_time > 5.0:
-		current_state = STATE.SLEEPING
-		on_sleeping_time = 0.0
-		avoid_collision_time = 0.0
+		set_state(STATE.SLEEPING)
 
 func check_go_home_exit():
 	pass
@@ -291,6 +296,7 @@ func is_stuck(delta:float):
 	#current_state = STATE.STUCK
 
 func check_character_visible(delta: float) -> bool:
+	#print(following_trail_time)
 	if direct_sight_character():
 		following_trail_time = 0.0
 		return true
@@ -298,6 +304,7 @@ func check_character_visible(delta: float) -> bool:
 		following_trail_time += delta
 		return true
 	following_trail_time = 0.0
+	#print("F")
 	return false
 
 func direct_sight_character() -> bool:
@@ -373,6 +380,18 @@ func is_trail_visible() -> bool:
 
 #func _integrate_forces(state: PhysicsDirectBodyState3D) -> void:
 #	handle_contacts(state)
+
+func play_howl():
+	if %Vocalizations.playing: return
+	const vocalization_sounds = [
+		preload("res://sounds/enemy/howl_01.mp3"),
+		preload("res://sounds/enemy/howl_02.mp3"),
+		preload("res://sounds/enemy/howl_03.mp3"),
+		preload("res://sounds/enemy/howl_05.mp3"),
+	]
+	%Vocalizations.stream = vocalization_sounds.pick_random()
+	%Vocalizations.play()
+
 
 func _handle_contacts(state: PhysicsDirectBodyState3D):
 	if state.get_contact_count() > 0:
