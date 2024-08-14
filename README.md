@@ -35,6 +35,7 @@ Note that not all items in the list are currently in use.
 #### 3D models
 
 - "Dog" (https://skfb.ly/o9DQT) by victory_mirosya is licensed under Creative Commons Attribution (http://creativecommons.org/licenses/by/4.0/).
+- "Kayak with Paddle" (https://skfb.ly/oGBWI) by nayangway is licensed under Creative Commons Attribution (http://creativecommons.org/licenses/by/4.0/).
 - "Lowpoly PS1 Basemesh Male, Unwrapped, Segmented" (https://skfb.ly/6XVJQ) by BitHack is licensed under Creative Commons Attribution (http://creativecommons.org/licenses/by/4.0/).
 - "Segmented lowpoly base female PS1 style" (https://skfb.ly/6XNRC) by BitHack is licensed under Creative Commons Attribution (http://creativecommons.org/licenses/by/4.0/).
 - "Capybara PS1 style" (https://skfb.ly/oAWtu) by Kabuum is licensed under Creative Commons Attribution (http://creativecommons.org/licenses/by/4.0/).
