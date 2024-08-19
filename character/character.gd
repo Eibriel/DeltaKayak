@@ -20,8 +20,8 @@ var energy := 100.0
 var is_paddling_locked:=false
 
 var kayak_speed := 0.17
-var speed_mult := 5.0
-var torque_mult := 3.0
+var speed_mult := 7.0
+var torque_mult := 10.0
 var temp_speed := 0.0
 var temp_time := 0.0
 var strength := 0
@@ -362,7 +362,7 @@ func handle_paddling(delta:float) -> void:
 	
 	var paddle_params := {
 		"forward": {
-			"torque": 2,
+			"torque": 1,
 			"speed": 10
 		},
 		"oposite_side": {
@@ -449,6 +449,23 @@ func handle_paddling(delta:float) -> void:
 		speed *= abs(padling_intent.y)
 		torque *= abs(padling_intent.x)
 	
+	Global.log_text += "\nContributor: %s" % original_highest_contributor
+	if original_highest_contributor.begins_with("forward"):
+		var forward_direction := (transform.basis * Vector3.FORWARD).normalized()
+		var forward_velocity: Vector3 = forward_direction * linear_velocity.dot(forward_direction)
+		forward_velocity = forward_velocity.rotated(Vector3.UP, -rotation.y)
+		var backwards_velocity_value: float = min(-forward_velocity.z, 0)
+		speed += backwards_velocity_value*20
+		Global.log_text += "\nbackward_velocity: %f, speed: %f" % [backwards_velocity_value, speed]
+	elif original_highest_contributor.begins_with("backward"):
+		var forward_direction := (transform.basis * Vector3.FORWARD).normalized()
+		var forward_velocity: Vector3 = forward_direction * linear_velocity.dot(forward_direction)
+		forward_velocity = forward_velocity.rotated(Vector3.UP, -rotation.y)
+		var forward_velocity_value: float = -min(forward_velocity.z, 0)
+		speed += forward_velocity_value*20
+		Global.log_text += "\nforward_velocity: %f, speed: %f" % [forward_velocity_value, speed]
+	
+	
 	Global.log_text += "\nhighest_contributor: %s" % highest_contributor
 	#Global.log_text += "\ntotal: %f" % padling_intent.length()
 	#Global.log_text += "\nspeed: %f" % speed
@@ -457,7 +474,10 @@ func handle_paddling(delta:float) -> void:
 	speed *= speed_mult
 	torque *= torque_mult
 	if grabbing_state == GRABBING.YES:
-		torque *= 10
+		#print(grabbing_object)
+		if grabbing_object is RigidBody3D:
+			Global.log_text += "\nTorque Mult: %d" % (grabbing_object.mass * 5)
+			torque *= grabbing_object.mass * 5
 	going_backwards = false
 	handle_grabbing()
 
@@ -563,6 +583,7 @@ func handle_grabbing():
 					#%GrabRay.visible = true
 					#%GrabRay.scale.z = $RayCast3D.get_collision_point().distance_to(%GrabRay.global_position)
 					var body = $RayCast3D.get_collider()
+					grabbing_object = body
 					Global.grab_joint.global_position = $GrabbingPosition.global_position
 					Global.grab_joint.set_node_a(get_path())
 					Global.grab_joint.set_node_b(body.get_path())
@@ -635,7 +656,7 @@ func _integrate_forces_old(state:PhysicsDirectBodyState3D):
 # TODO duplicated in boat_class.gd
 func _integrate_forces(state: PhysicsDirectBodyState3D) -> void:
 	handle_contacts(state)
-	state.angular_velocity *= 0.999
+	state.angular_velocity *= 0.991
 	#if grabbing_state == GRABBING.YES:
 	#	state.linear_velocity *= 0.99
 	

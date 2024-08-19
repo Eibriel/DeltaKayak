@@ -18,8 +18,9 @@ func _ready() -> void:
 	get_tree().paused = false
 	
 	if not VR.is_vr_enabled:
-		%MenuControl.reparent(self)
 		%MenuXROrigin3D.visible = false
+	else:
+		%MenuControl.reparent(%MainMenuSubViewport)
 		
 	%GameLoadProgressBar.value = 0
 	var locale_id := locale_names.find(TranslationServer.get_locale())
