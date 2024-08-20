@@ -4,7 +4,7 @@ var character: RigidBody3D
 var camera: Camera3D
 var enemy: Boat3D
 var camera_path: Path3D
-var main_scene
+var main_scene: Control
 var grab_joint: Generic6DOFJoint3D
 var grab_kayak: Generic6DOFJoint3D
 var grab_kayak2: Generic6DOFJoint3D

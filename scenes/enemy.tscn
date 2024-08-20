@@ -1,4 +1,4 @@
-[gd_scene load_steps=44 format=3 uid="uid://mvc5qr5igrlq"]
+[gd_scene load_steps=46 format=3 uid="uid://mvc5qr5igrlq"]
 
 [ext_resource type="Script" path="res://scenes/enemy.gd" id="1_ht45k"]
 [ext_resource type="Texture2D" uid="uid://cdex8bqdmulf8" path="res://textures/flashlight.jpg" id="2_1pota"]
@@ -52,47 +52,6 @@ point_count = 3
 _data = [Vector2(0.757143, 0), 0.0, 13.3972, 0, 0, Vector2(0.909091, 1), 0.0, 0.0, 0, 0]
 point_count = 2
 
-[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_c8bgx"]
-radius = 1.5
-height = 16.0
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_y8box"]
-shading_mode = 0
-albedo_color = Color(0.730458, 0.118933, 0, 1)
-
-[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_bdtrc"]
-radius = 1.5
-height = 16.0
-
-[sub_resource type="CylinderShape3D" id="CylinderShape3D_o5bdk"]
-radius = 20.0
-
-[sub_resource type="AudioStreamSynchronized" id="AudioStreamSynchronized_fxjsm"]
-stream_count = 7
-stream_0/stream = ExtResource("5_icqa8")
-stream_0/volume = -16.79
-stream_1/stream = ExtResource("6_5o4j6")
-stream_1/volume = -27.61
-stream_2/stream = ExtResource("7_ochvj")
-stream_2/volume = -27.23
-stream_3/stream = ExtResource("8_85ycd")
-stream_3/volume = 0.0
-stream_4/stream = ExtResource("9_26owm")
-stream_4/volume = -26.86
-stream_5/stream = ExtResource("10_3oiay")
-stream_5/volume = -29.1
-stream_6/stream = ExtResource("11_j8owj")
-stream_6/volume = -29.1
-
-[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_3dauc"]
-random_pitch = 1.28
-streams_count = 5
-stream_0/stream = ExtResource("13_r2g5u")
-stream_1/stream = ExtResource("14_5rsnb")
-stream_2/stream = ExtResource("15_n52wv")
-stream_3/stream = ExtResource("16_by2st")
-stream_4/stream = ExtResource("17_64am1")
-
 [sub_resource type="Curve" id="Curve_wu0in"]
 _data = [Vector2(0, 0.0328095), 0.0, 0.0, 0, 0, Vector2(0.68932, 0.128928), 0.0, 0.0, 0, 0, Vector2(1, 0.0388169), 0.0, 0.0, 0, 0]
 point_count = 3
@@ -139,6 +98,60 @@ distance_fade_mode = 1
 material = SubResource("StandardMaterial3D_ausrm")
 orientation = 2
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_y8box"]
+shading_mode = 0
+albedo_color = Color(0.730458, 0.118933, 0, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_44qiw"]
+transparency = 1
+blend_mode = 1
+cull_mode = 2
+shading_mode = 0
+albedo_color = Color(1, 0.0862745, 0.0980392, 0.0980392)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_xdsgb"]
+material = SubResource("StandardMaterial3D_44qiw")
+top_radius = 0.3
+bottom_radius = 1.0
+height = 200.0
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_c8bgx"]
+radius = 1.5
+height = 16.0
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_bdtrc"]
+radius = 1.5
+height = 16.0
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_o5bdk"]
+radius = 20.0
+
+[sub_resource type="AudioStreamSynchronized" id="AudioStreamSynchronized_fxjsm"]
+stream_count = 7
+stream_0/stream = ExtResource("5_icqa8")
+stream_0/volume = -16.79
+stream_1/stream = ExtResource("6_5o4j6")
+stream_1/volume = -27.61
+stream_2/stream = ExtResource("7_ochvj")
+stream_2/volume = -27.23
+stream_3/stream = ExtResource("8_85ycd")
+stream_3/volume = 0.0
+stream_4/stream = ExtResource("9_26owm")
+stream_4/volume = -26.86
+stream_5/stream = ExtResource("10_3oiay")
+stream_5/volume = -29.1
+stream_6/stream = ExtResource("11_j8owj")
+stream_6/volume = -29.1
+
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_3dauc"]
+random_pitch = 1.28
+streams_count = 5
+stream_0/stream = ExtResource("13_r2g5u")
+stream_1/stream = ExtResource("14_5rsnb")
+stream_2/stream = ExtResource("15_n52wv")
+stream_3/stream = ExtResource("16_by2st")
+stream_4/stream = ExtResource("17_64am1")
+
 [node name="Enemy" type="RigidBody3D"]
 collision_layer = 8
 collision_mask = 31
@@ -160,49 +173,76 @@ engine_curve_5 = SubResource("Curve_m6jhk")
 engine_curve_6 = SubResource("Curve_ekwef")
 engine_curve_7 = SubResource("Curve_oxwsh")
 
+[node name="EnemyVisual" type="Node3D" parent="."]
+unique_name_in_owner = true
+
+[node name="SmokeParticles" type="GPUParticles3D" parent="EnemyVisual"]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.05723, 0)
+cast_shadow = 0
+amount = 50
+lifetime = 5.0
+preprocess = 20.0
+process_material = SubResource("ParticleProcessMaterial_22ppc")
+draw_pass_1 = SubResource("PlaneMesh_mb0vy")
+
+[node name="enemy" parent="EnemyVisual" instance=ExtResource("3_ididr")]
+transform = Transform3D(-1.5, 0, -2.26494e-07, 0, 1.5, 0, 2.26494e-07, 0, -1.5, 0, 0.521704, 0)
+
+[node name="AttackIndicator" type="Node3D" parent="EnemyVisual"]
+unique_name_in_owner = true
+
+[node name="AttackIndicator2" type="CSGSphere3D" parent="EnemyVisual/AttackIndicator"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.453705, 3.00846, -5.11339)
+radius = 0.1
+material = SubResource("StandardMaterial3D_y8box")
+
+[node name="AttackIndicator3" type="CSGSphere3D" parent="EnemyVisual/AttackIndicator"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.464966, 3.01244, -5.11332)
+radius = 0.1
+material = SubResource("StandardMaterial3D_y8box")
+
+[node name="OmniLightEnemy" type="OmniLight3D" parent="EnemyVisual"]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.763075, -6.88418)
+light_color = Color(1, 0, 0, 1)
+
+[node name="SpotBaseEnemy" type="Node3D" parent="EnemyVisual"]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.30783e-07, 3.46587, -5.25146)
+
+[node name="SpotRotationEnemy" type="Node3D" parent="EnemyVisual/SpotBaseEnemy"]
+unique_name_in_owner = true
+
+[node name="SpotLightEnemy" type="SpotLight3D" parent="EnemyVisual/SpotBaseEnemy/SpotRotationEnemy"]
+unique_name_in_owner = true
+light_color = Color(1, 0.69, 0.69, 1)
+light_energy = 15.0
+light_projector = ExtResource("2_1pota")
+spot_range = 50.0
+spot_angle = 17.0202
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="EnemyVisual/SpotBaseEnemy/SpotRotationEnemy/SpotLightEnemy"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, -100.063)
+visible = false
+mesh = SubResource("CylinderMesh_xdsgb")
+
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0.537262, 0.0564319)
 shape = SubResource("CapsuleShape3D_c8bgx")
 
 [node name="NavigationAgent3D" type="NavigationAgent3D" parent="."]
+path_desired_distance = 4.0
+target_desired_distance = 4.0
 path_postprocessing = 1
 simplify_path = true
 simplify_epsilon = 5.0
-
-[node name="AttackIndicator" type="Node3D" parent="."]
-unique_name_in_owner = true
-
-[node name="AttackIndicator2" type="CSGSphere3D" parent="AttackIndicator"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.357483, 2.20194, -4.12193)
-radius = 0.1
-material = SubResource("StandardMaterial3D_y8box")
-
-[node name="AttackIndicator3" type="CSGSphere3D" parent="AttackIndicator"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.365479, 2.20592, -4.12186)
-radius = 0.1
-material = SubResource("StandardMaterial3D_y8box")
-
-[node name="SpotLightEnemy" type="SpotLight3D" parent="."]
-unique_name_in_owner = true
-transform = Transform3D(1, -1.31355e-08, -5.42335e-09, 1.4164e-08, 0.952273, 0.305247, 1.15495e-09, -0.305247, 0.952273, 1.30783e-07, 3.46587, -5.25146)
-light_color = Color(1, 0.69, 0.69, 1)
-light_energy = 5.0
-light_projector = ExtResource("2_1pota")
-spot_range = 13.9665
-spot_angle = 41.0167
-
-[node name="OmniLightEnemy" type="OmniLight3D" parent="."]
-unique_name_in_owner = true
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.763075, -6.88418)
-light_color = Color(1, 0, 0, 1)
+debug_enabled = true
 
 [node name="RayCast3D" type="RayCast3D" parent="."]
 collision_mask = 7
 hit_back_faces = false
 debug_shape_thickness = 5
-
-[node name="enemy" parent="." instance=ExtResource("3_ididr")]
-transform = Transform3D(-1.5, 0, -2.26494e-07, 0, 1.5, 0, 2.26494e-07, 0, -1.5, 0, 0.521704, 0)
 
 [node name="Rays" type="Node3D" parent="."]
 
@@ -313,14 +353,14 @@ stream = ExtResource("21_a13hk")
 volume_db = -54.154
 bus = &"Music"
 
-[node name="SmokeParticles" type="GPUParticles3D" parent="."]
+[node name="EnemyScreenNotifier" type="VisibleOnScreenNotifier3D" parent="."]
 unique_name_in_owner = true
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.05723, 0)
-cast_shadow = 0
-amount = 50
-lifetime = 5.0
-preprocess = 20.0
-process_material = SubResource("ParticleProcessMaterial_22ppc")
-draw_pass_1 = SubResource("PlaneMesh_mb0vy")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.83226, 0)
+aabb = AABB(-3, -1, -9, 6, 4, 18)
+
+[node name="EnemyFaceScreenNotifier" type="VisibleOnScreenNotifier3D" parent="."]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.09267, -4.65942)
+aabb = AABB(-0.958361, -0.643605, -0.742799, 1.91672, 1.52745, 1.4856)
 
 [connection signal="body_entered" from="Phantom/PhantomArea1" to="." method="_on_phantom_area_1_body_entered"]

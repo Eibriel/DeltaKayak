@@ -475,6 +475,10 @@ shape = SubResource("CapsuleShape3D_b8fg3")
 visible = false
 size = Vector3(0.3, 0.3, 0.3)
 
+[node name="PlayerTargetVisualization" type="CSGBox3D" parent="."]
+unique_name_in_owner = true
+size = Vector3(0.3, 0.3, 0.3)
+
 [node name="Kayak" type="Node3D" parent="."]
 unique_name_in_owner = true
 
@@ -537,6 +541,13 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.72403)
 enabled = false
 target_position = Vector3(0, 0, -3)
 collision_mask = 4
+
+[node name="PlayerTargetRayCast" type="RayCast3D" parent="."]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.72403)
+enabled = false
+target_position = Vector3(0, 0, -500)
+collision_mask = 53
 
 [node name="DamageIndicator" type="CSGSphere3D" parent="."]
 unique_name_in_owner = true

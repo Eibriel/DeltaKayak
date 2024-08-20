@@ -15,6 +15,7 @@ extends Control
 
 var interactive_labels:Dictionary
 var in_trigger:Array[String]
+var in_room:Array[Room]
 
 var dialogue_queue: Array[DialogueResource]
 var dialogue_time: float
@@ -95,6 +96,8 @@ func _ready() -> void:
 	
 	dk_world.connect("trigger_entered", on_trigger_entered)
 	dk_world.connect("trigger_exited", on_trigger_exited)
+	dk_world.connect("room_entered", on_room_entered)
+	dk_world.connect("room_exited", on_room_exited)
 	
 	dialogue_label.text = ""
 	
@@ -218,7 +221,7 @@ func hide_hint()->void:
 	hint_time = 0
 
 func enemy_attack():
-	Global.enemy.current_state = Global.enemy.STATE.SLEEPING
+	Global.enemy.set_state.call_deferred(Global.enemy.STATE.SEARCHING)
 
 func enemy_set_home(val:int):
 	var homes := [
@@ -252,7 +255,7 @@ func set_enemy_home(home:Node3D):
 	Global.enemy.home_position = home.global_position
 	Global.enemy.global_rotation = home.global_rotation
 	Global.enemy.global_position = Global.enemy.home_position
-	Global.enemy.set_state(Global.enemy.STATE.SLEEPING)
+	Global.enemy.set_state(Global.enemy.STATE.SEARCHING)
 
 func _process(delta: float) -> void:
 	handle_triggers(delta)
@@ -1123,3 +1126,15 @@ func _on_datamosh_button_toggled(toggled_on: bool) -> void:
 		datamosh_effect.enabled = true
 	else:
 		datamosh_effect.enabled = false
+
+func on_room_entered(room:Room):
+	#prints("Entered", id)
+	if room not in in_room:
+		in_room.append(room)
+	
+	print("Room %s entered" % room.room_id)
+
+func on_room_exited(room:Room):
+	#prints("Exited", id)
+	if room in in_room:
+		in_room.erase(room)

@@ -172,6 +172,8 @@ class DKT_OT_ExportWorld(bpy.types.Operator):
             sector_def["colliders"] = self.get_colliders(sector)
             sector_def["lands"] = self.get_lands(sector)
             sector_def["navmesh"] = self.get_navmesh(sector)
+            sector_def["enemy_points"] = self.get_enemy_points(sector)
+            sector_def["rooms"] = self.get_rooms(sector)
             definition[sector.name] = sector_def
 
         definition_path = context.scene.dkt_gltfsexportsetup.definition_path
@@ -345,6 +347,33 @@ class DKT_OT_ExportWorld(bpy.types.Operator):
             navmesh_def.append(mesh_def)
         return navmesh_def
 
+    def get_enemy_points(self, sector):
+        enemy_points_def = {}
+        enemy_points_name = "EnemyPoints_" + sector.name.split("_")[1]
+        if not enemy_points_name in sector.children: return enemy_points_def
+        for enemy_point in sector.children[enemy_points_name].objects:
+            enemy_points_def[enemy_point.name] = {
+                "position": self.location_to_godot(enemy_point.location),
+                "rotation": self.rotation_to_godot(enemy_point.rotation_euler),
+                "scale": self.scale_to_godot(enemy_point.scale),
+                "transformation": self.transform_to_godot(enemy_point.matrix_world),
+                "quaternion": self.quaternion_to_godot(enemy_point.matrix_world)
+            }
+        return enemy_points_def
+
+    def get_rooms(self, sector):
+        rooms_def = []
+        rooms_name = "Rooms_" + sector.name.split("_")[1]
+        if not rooms_name in sector.children: return rooms_def
+        for room in sector.children[rooms_name].objects:
+            room_data = self.get_triggerpath_data(room)
+            room_data["enemy_points"] = []
+            for rc in room.children:
+                room_data["enemy_points"].append(rc.name)
+            rooms_def.append(room_data)
+        return rooms_def
+
+
     def get_camera_data(self, camera_obj):
         #camera_obj.rotation_euler[0] -= math.radians(90.0)
         #bpy.context.view_layer.update()
@@ -372,7 +401,6 @@ class DKT_OT_ExportWorld(bpy.types.Operator):
         #camera_obj.rotation_euler[0] += math.radians(90.0)
         #bpy.context.view_layer.update()
         return camera_def
-
 
     def get_camera_animation(self, camera_obj):
         if camera_obj.animation_data == None: return None
@@ -415,8 +443,6 @@ class DKT_OT_ExportWorld(bpy.types.Operator):
             tracks.append(track)
         return tracks
 
-
-
     def get_curve_points(self, curve_obj):# -> list:
         points = []
         for p in curve_obj.data.splines[0].bezier_points:
@@ -427,7 +453,6 @@ class DKT_OT_ExportWorld(bpy.types.Operator):
             ]
             points.append(point_definition)
         return points
-
 
     def get_curve_data(self, curve_obj):
         if curve_obj == None: return None

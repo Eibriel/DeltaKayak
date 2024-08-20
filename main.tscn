@@ -7,7 +7,7 @@
 [ext_resource type="PackedScene" uid="uid://r0o1qsmlq84u" path="res://character/character.tscn" id="2_3sgbv"]
 [ext_resource type="CompositorEffect" uid="uid://o01yk1gb130b" path="res://compositor/screen/screen_compositor_effect.tres" id="2_f4rcp"]
 [ext_resource type="Resource" uid="uid://bcsic7fi7dxee" path="res://GamePreference.tres" id="2_wexnt"]
-[ext_resource type="PackedScene" uid="uid://dubd2tgwyjgm5" path="res://world_definition.dkworld" id="3_7foso"]
+[ext_resource type="PackedScene" uid="uid://bk15214tjtjf8" path="res://world_definition.dkworld" id="3_7foso"]
 [ext_resource type="Resource" uid="uid://bi1rugic742u0" path="res://dkdata/dkdata.tres" id="3_nh3h6"]
 [ext_resource type="Texture2D" uid="uid://31mrm2ajeyll" path="res://textures/dialogue_box.png" id="4_kkvku"]
 [ext_resource type="Texture2D" uid="uid://bue181jtwq3fu" path="res://textures/smoke.png" id="4_ob3me"]
@@ -214,7 +214,7 @@ theme = ExtResource("1_qo26v")
 script = ExtResource("1_xxenq")
 game_preferences = ExtResource("2_wexnt")
 game_state = ExtResource("3_nh3h6")
-initial_position = NodePath("Main3D/InitialPosition")
+initial_position = NodePath("Main3D/InitialPositionEnemy")
 show_logs = true
 
 [node name="Node2D" type="Node2D" parent="."]
@@ -1263,6 +1263,10 @@ gizmo_extents = 5.0
 
 [node name="InitialPositionOtherSide" type="Marker3D" parent="Main3D"]
 transform = Transform3D(-0.035842, 0, 0.999357, 0, 1, 0, -0.999357, 0, -0.035842, -210.627, 0, -134.058)
+gizmo_extents = 5.0
+
+[node name="InitialPositionEnemy" type="Marker3D" parent="Main3D"]
+transform = Transform3D(-0.0585043, 0, -0.998287, 0, 1, 0, 0.998287, 0, -0.0585043, -212.986, 0, -211.853)
 gizmo_extents = 5.0
 
 [node name="InitialPositionPuzzle" type="Marker3D" parent="Main3D"]

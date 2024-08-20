@@ -99,6 +99,7 @@ func _import(source_file, save_path, options, r_platform_variants, r_gen_files):
 		add_colliders(sector.colliders, sector_id, main_node)
 		add_lands(sector.lands, sector_id, main_node)
 		add_navmesh(sector.navmesh, sector_id, main_node)
+		add_rooms(sector.rooms, sector_id, main_node, sector)
 	
 	add_water(main_node)
 	
@@ -111,6 +112,37 @@ func _import(source_file, save_path, options, r_platform_variants, r_gen_files):
 	else:
 		return result
 		#return null
+
+func add_rooms(rooms_array: Array, sector_id:String, main_node:Node3D, sector:Dictionary):
+	for room in rooms_array:
+		var room_area := Room.new()
+		var room_collision := CollisionPolygon3D.new()
+		main_node.add_child(room_area)
+		room_area.set_owner(main_node)
+		room_area.add_child(room_collision)
+		room_collision.set_owner(main_node)
+		
+		#Do not scale!
+		room_area.position = array_to_vector3(room.position)
+		room_area.quaternion = array_to_quaternion(room.quaternion)
+		
+		#Do not scale!
+		room_collision.rotate_x(deg_to_rad(90))
+		
+		var points: PackedVector2Array
+		for p in room.points:
+			var p_position := Vector2(p[0][0], p[0][2])
+			points.append(p_position)
+		room_collision.polygon = points
+		room_collision.depth = 6
+		
+		var enemy_points_positions:Array[Vector3]
+		for ep in room.enemy_points:
+			enemy_points_positions.append(array_to_vector3(sector.enemy_points[ep].position))
+		
+		room_area.room_id = room.id
+		room_area.world_node = main_node
+		room_area.enemy_points = enemy_points_positions
 
 func add_navmesh(navmesh_array: Array, sector_id:String, main_node:Node3D):
 	for navmesh in navmesh_array:
@@ -254,7 +286,6 @@ func add_lands(lands: Array, sector_id:String, main_node:Node3D):
 			for p in mm_points:
 				multimesh.set_instance_transform(tree_n, p)
 				tree_n += 1
-		
 
 func add_triggers(triggers: Array, sector_id:String, main_node:Node3D):
 	for trigger in triggers:

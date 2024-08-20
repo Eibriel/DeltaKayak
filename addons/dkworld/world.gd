@@ -3,6 +3,8 @@ class_name DKWorld
 
 signal trigger_entered
 signal trigger_exited
+signal room_entered
+signal room_exited
 
 @export var initial_camera: Camera3D
 @export var initial_camera_path: Path3D
@@ -321,3 +323,13 @@ func on_trigger_exited(area_:Area3D, trigger_name:String) -> void:
 	if not area_.has_meta("is_character_interaction"): return
 	emit_signal("trigger_exited", trigger_name)
 	#prints("Trigger!", trigger_name)
+
+func on_room_entered(area_:Area3D, room:Room) -> void:
+	if not area_.has_meta("is_character_interaction"): return
+	emit_signal("room_entered", room)
+	#prints("Room!", room_name)
+
+func on_room_exited(area_:Area3D, room:Room) -> void:
+	if not area_.has_meta("is_character_interaction"): return
+	emit_signal("room_exited", room)
+	#prints("Room!", room_name)

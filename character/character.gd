@@ -52,6 +52,8 @@ var trail_position := []
 var trail_velocity := []
 var trail_time := 0.0
 
+var estimated_target:Vector3
+
 @onready var character: Node3D = $character
 
 var TILT_LOWER_LIMIT = deg_to_rad(-45)
@@ -132,6 +134,7 @@ func _process(delta: float) -> void:
 	_handle_controller_camera()
 	handle_brathing()
 	handle_buoyancy(delta)
+	handle_target()
 
 var _mouse_input:bool
 var _mouse_rotation:Vector3
@@ -145,6 +148,12 @@ func play_left_paddle():
 func play_right_paddle():
 	#if %RightPaddleAudio.playing: return
 	%RightPaddleAudio.play()
+
+func handle_target():
+	%PlayerTargetRayCast.force_raycast_update()
+	if %PlayerTargetRayCast.is_colliding():
+		estimated_target = %PlayerTargetRayCast.get_collision_point()
+	%PlayerTargetVisualization.global_position = estimated_target
 
 func handle_brathing():
 	#print(energy)
@@ -290,8 +299,8 @@ func handle_controls(delta:float) -> void:
 		right_sample = right_sample / total_sample
 	#Global.log_text += "\ninput_dir.x: %f" % input_dir.x
 	#Global.log_text += "\ninput_dir.y: %f" % input_dir.y
-	Global.log_text += "\nright_sample: %f" % right_sample
-	Global.log_text += "\nleft_sample: %f" % left_sample
+	#Global.log_text += "\nright_sample: %f" % right_sample
+	#Global.log_text += "\nleft_sample: %f" % left_sample
 
 var paddle_time:= 0.0
 var padling_side:PADDLE_SIDE=PADDLE_SIDE.IDLE

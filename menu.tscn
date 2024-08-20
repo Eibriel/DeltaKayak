@@ -368,7 +368,7 @@ transform = Transform3D(0.588329, 0.148588, -0.794853, -0.0155413, 0.984868, 0.1
 
 [node name="CSGBox3D" type="CSGBox3D" parent="Node3D"]
 transform = Transform3D(0.901667, 0, 0.432432, 0, 1, 0, -0.432432, 0, 0.901667, -0.286242, -0.244873, -1.4993)
-size = Vector3(4.77124, 0.510254, 12.6083)
+size = Vector3(10.5869, 0.510254, 12.6083)
 material = SubResource("StandardMaterial3D_51s74")
 
 [node name="pepa" parent="Node3D" instance=ExtResource("7_1g1vs")]

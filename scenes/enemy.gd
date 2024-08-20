@@ -16,9 +16,13 @@ extends Boat3D
 var current_state := STATE.SLEEPING
 var attack_state := ATTACK_STATE.START
 
+var previous_room: String
+var previous_enemy_point: int
+
 var following_trail_time := 0.0
 var on_sleeping_time := 0.0
 var on_alert_time := 0.0
+var on_ambush_time := 0.0
 var attack_start_time := 0.0
 var attack_charge_time := 0.0
 var attack_intimidate_time := 0.0
@@ -38,7 +42,10 @@ enum STATE {
 	EATING,
 	STUCK,
 	AVOID_COLLISION,
-	GO_HOME
+	GO_HOME,
+	AMBUSH,
+	FACE_POINT,
+	SEARCHING
 }
 
 enum ATTACK_STATE {
@@ -68,9 +75,26 @@ func _process(delta: float) -> void:
 	inside_turn_radius = is_target_inside_rotation_radius()
 	handle_sounds()
 	handle_music()
+	handle_buoyancy(delta)
 	
 	%PhantomArea1.position = global_position - (real_velocity * 1)
 	%PhantomArea1.rotation.y = rotation.y
+	
+	buoyancy_instability += abs(torque) * 0.001 * delta
+	#Global.log_text += "\nbuoyancy_instability: %f" % buoyancy_instability
+	
+
+var buoyancy_time:=0.0
+var buoyancy_instability:=1.0
+func handle_buoyancy(delta:float):
+	buoyancy_time += delta
+	if buoyancy_time > PI*2:
+		buoyancy_time = 0.0
+	buoyancy_instability -= delta
+	buoyancy_instability = clamp(buoyancy_instability, 1.0, 5.0)
+	var rotation_amount = sin(buoyancy_time)
+	%EnemyVisual.rotation.z = deg_to_rad(5*buoyancy_instability) * rotation_amount
+
 
 func handle_music():
 	var dist := global_position.distance_to(Global.character.global_position)
@@ -120,34 +144,60 @@ func _get_target(delta: float) -> void:
 	is_character_visible = check_character_visible(delta)
 	if current_state == STATE.ATTACK:
 		%AttackIndicator.visible = true
-		%SpotLightEnemy.visible = true
+		#%SpotLightEnemy.visible = true
 		%OmniLightEnemy.visible = true
 		change_attack_state()
 		#is_trail_visible() # TODO line may not be needed
 		#target_position = attack_position
+		
+		%SpotBaseEnemy.look_at(Global.character.global_position)
 		boat_speed = 0.5
 		if attack_state == ATTACK_STATE.START:
 			attack_start_time += delta
 			boat_speed = 0.8
-			
-		if attack_state == ATTACK_STATE.CHARGE:
+		elif attack_state == ATTACK_STATE.CHARGE:
 			attack_charge_time += delta
 			boat_speed = 0.4
 			if global_position.distance_to(Global.character.global_position) > 4.0:
 				waiting = false
 			else:
 				waiting = true
-		if attack_state == ATTACK_STATE.INTIMIDATE:
+		elif attack_state == ATTACK_STATE.INTIMIDATE:
 			attack_intimidate_time += delta
 			boat_speed = 0.1
-	if current_state == STATE.ALERT:
+	elif current_state == STATE.AMBUSH:
+		on_ambush_time += delta
+		boat_speed = 0.4
+		#target_position = Global.character.estimated_target
+		nav.target_position = Global.character.estimated_target
+		#if nav.is_target_reachable():
+			#print("Reachable")
+		target_position = nav.get_next_path_position()
+		%SpotBaseEnemy.look_at(nav.target_position)
+	elif current_state == STATE.SEARCHING:
+		boat_speed = 0.4
+		var current_room: Room
+		if Global.main_scene.in_room.size() > 0:
+			current_room = Global.main_scene.in_room[0]
+		if current_room:
+			if current_room.room_id != previous_room:
+				previous_room = current_room.room_id
+				previous_enemy_point = randi_range(0, current_room.enemy_points.size())
+			if global_position.distance_to(current_room.enemy_points[previous_enemy_point]) < 4.0:
+				previous_enemy_point = randi_range(0, current_room.enemy_points.size())
+			#nav.target_position = current_room.to_global(current_room.enemy_points[0])
+			nav.target_position = current_room.enemy_points[previous_enemy_point]
+			#print(nav.target_position)
+			target_position = nav.get_next_path_position()
+			%SpotBaseEnemy.look_at(target_position)
+	elif current_state == STATE.ALERT:
 		on_alert_time += delta
 		boat_speed = 0.4
-	if current_state == STATE.SLEEPING or current_state == STATE.GO_HOME:
+	elif current_state == STATE.SLEEPING or current_state == STATE.GO_HOME:
 		if current_state == STATE.SLEEPING:
 			on_sleeping_time += delta
 		%AttackIndicator.visible = false
-		%SpotLightEnemy.visible = false
+		#%SpotLightEnemy.visible = false
 		%OmniLightEnemy.visible = false
 		nav.target_position = home_position
 		#NavigationServer3D.map_get_iteration_id()
@@ -155,11 +205,11 @@ func _get_target(delta: float) -> void:
 			target_position = nav.get_next_path_position()
 		#target_position = global_position
 		boat_speed = 0.2
-		if global_position.distance_to(home_position) > 2.0:
+		if global_position.distance_to(home_position) > 4.0:
 			waiting = false
 		else:
 			waiting = true
-	if current_state == STATE.AVOID_COLLISION:
+	elif current_state == STATE.AVOID_COLLISION:
 		if avoid_collision_time == 0:
 			#var forward_direction := (transform.basis * Vector3.FORWARD).normalized()
 			var prev_target_position = target_position
@@ -224,6 +274,8 @@ func change_state():
 			check_avoid_collision_exit()
 		STATE.GO_HOME:
 			check_go_home_exit()
+		STATE.AMBUSH:
+			check_ambush_exit()
 
 func set_state(state_to_set:STATE):
 	prints("Set", STATE.find_key(state_to_set))
@@ -240,10 +292,16 @@ func set_state(state_to_set:STATE):
 			waiting = false
 		STATE.AVOID_COLLISION:
 			avoid_collision_time = 0.0
+		STATE.AMBUSH:
+			waiting = false
+			on_ambush_time = 0.0
+		STATE.SEARCHING:
+			waiting = false
 
 func check_sleeping_exit():
 	if is_character_visible:
-		set_state(STATE.ATTACK)
+		#set_state(STATE.ATTACK)
+		set_state(STATE.AMBUSH)
 
 func check_attack_exit():
 	#print("ATTACK")
@@ -268,6 +326,13 @@ func check_avoid_collision_exit():
 func check_go_home_exit():
 	pass
 
+func check_ambush_exit():
+	if global_position.distance_to(Global.character.estimated_target) < 4.0 or on_ambush_time > 180:
+		if is_character_visible:
+			set_state(STATE.ATTACK)
+		else:
+			set_state(STATE.SLEEPING)
+
 func is_target_inside_rotation_radius() -> bool:
 	if target_position.distance_to(%RotRadiusRight.global_position) < 20.0:
 		return true
@@ -275,14 +340,22 @@ func is_target_inside_rotation_radius() -> bool:
 		return true
 	return false
 
+func is_in_front_of_character():
+	pass
+
+var linear_stuck_time := 0.0
 func is_stuck(delta:float):
+	linear_stuck_time -= delta * 0.5
+	linear_stuck_time = max(linear_stuck_time, 0.0)
+	#Global.log_text += "\nlinear_stuck_time: %.2f" % linear_stuck_time
 	#Global.log_text += "\nreal_velocity: %.2f" % real_velocity.length()
 	#Global.log_text += "\nlast_applied_force: %.2f" % last_applied_force.length()
 	#Global.log_text += "\nreal_velocity_integral: %.2f" % last_applied_force.normalized().dot(real_velocity_integral.normalized())
 	var is_moving_towards_force:float = last_applied_force.normalized().dot(real_velocity_integral.normalized())
 	if (last_applied_force.length() - real_velocity.length()) > last_applied_force.length() * 0.5:
 		if is_moving_towards_force < 0.5:
-			Global.log_text += "\nStuck Linear"
+			#Global.log_text += "\nStuck Linear"
+			pass
 	# Angular
 	# If the angle to target is large
 	# but real angular velocity is not
@@ -292,7 +365,8 @@ func is_stuck(delta:float):
 	#Global.log_text += "\nrotation.y: %.2f" % (last_angle_to_target - rotation.y)
 	if abs(last_angle_to_target - rotation.y) > deg_to_rad(40):
 		if abs(real_angular_velocity) < 0.1:
-			Global.log_text += "\nStuck Angular"
+			#Global.log_text += "\nStuck Angular"
+			linear_stuck_time += delta
 	#current_state = STATE.STUCK
 
 func check_character_visible(delta: float) -> bool:
@@ -406,6 +480,7 @@ func _handle_contacts(state: PhysicsDirectBodyState3D):
 			#print(%CollisionAudio.volume_db)
 			if not %CollisionAudio.playing:
 				%CollisionAudio.play()
+				buoyancy_instability += 1
 		var body = state.get_contact_collider_object(0)
 		if body.name == "character":
 			Global.character.set_damage()
