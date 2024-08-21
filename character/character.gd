@@ -766,7 +766,7 @@ func collision_damage():
 
 func set_damage()->void:
 	if damage_timer > 0: return
-	damage += 1.0
+	damage += 4.0
 	damage_timer = 1.0
 	Global.main_scene.set_player_state("monster_damage")
 	buoyancy_instability += 2.0

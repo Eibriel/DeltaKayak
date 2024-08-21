@@ -13,7 +13,7 @@ extends Boat3D
 @onready var nav: NavigationAgent3D = $NavigationAgent3D
 @onready var ray_cast_3d: RayCast3D = $RayCast3D
 
-var current_state := STATE.SLEEPING
+var current_state := STATE.SEARCHING
 var attack_state := ATTACK_STATE.START
 
 var previous_room: String
@@ -182,13 +182,35 @@ func _get_target(delta: float) -> void:
 		if current_room:
 			if current_room.room_id != previous_room:
 				previous_room = current_room.room_id
-				previous_enemy_point = randi_range(0, current_room.enemy_points.size())
+				previous_enemy_point = randi_range(0, current_room.enemy_points.size()-1)
 			if global_position.distance_to(current_room.enemy_points[previous_enemy_point]) < 4.0:
-				previous_enemy_point = randi_range(0, current_room.enemy_points.size())
+				previous_enemy_point = randi_range(0, current_room.enemy_points.size()-1)
 			#nav.target_position = current_room.to_global(current_room.enemy_points[0])
 			nav.target_position = current_room.enemy_points[previous_enemy_point]
 			#print(nav.target_position)
 			target_position = nav.get_next_path_position()
+			#position.y = target_position.y
+			if not is_zero_approx(target_position.y):
+				var teleportation := false
+				var teleport_position: Vector3
+				var teleport_facing:Vector3
+				for path_point in nav.get_current_navigation_path():
+					if not teleportation and not is_zero_approx(path_point.y):
+						teleportation = true
+						prints("Teleportation!", path_point)
+					elif teleportation and is_zero_approx(path_point.y) and not teleport_position:
+						prints("Teleport to", path_point)
+						teleport_position = path_point
+					elif teleportation and teleport_position:
+						prints("Teleport facing", path_point)
+						teleport_facing = path_point
+						break
+				if teleportation and teleport_position:
+					global_position.x = teleport_position.x
+					global_position.z = teleport_position.z
+					if teleport_facing:
+						# TODO fix rotation
+						rotation.y = deg_to_rad(180) + Global.tri_to_bi(teleport_position).angle_to_point(Global.tri_to_bi(teleport_facing))
 			%SpotBaseEnemy.look_at(target_position)
 	elif current_state == STATE.ALERT:
 		on_alert_time += delta
@@ -276,6 +298,8 @@ func change_state():
 			check_go_home_exit()
 		STATE.AMBUSH:
 			check_ambush_exit()
+		STATE.SEARCHING:
+			check_searching_exit()
 
 func set_state(state_to_set:STATE):
 	prints("Set", STATE.find_key(state_to_set))
@@ -305,7 +329,7 @@ func check_sleeping_exit():
 
 func check_attack_exit():
 	#print("ATTACK")
-	if following_trail_time > 5.0:
+	if following_trail_time > 20.0:
 		set_state(STATE.ALERT)
 	if not is_character_visible:
 		set_state(STATE.ALERT)
@@ -315,9 +339,9 @@ func check_alert_exit():
 	if is_character_visible:
 		set_state(STATE.ATTACK)
 	elif on_alert_time > 10.0:
-		set_state(STATE.SLEEPING)
-	elif following_trail_time > 5.0:
-		set_state(STATE.SLEEPING)
+		set_state(STATE.SEARCHING)
+	elif following_trail_time > 20.0:
+		set_state(STATE.SEARCHING)
 
 func check_avoid_collision_exit():
 	if avoid_collision_time > 5.0:
@@ -332,6 +356,10 @@ func check_ambush_exit():
 			set_state(STATE.ATTACK)
 		else:
 			set_state(STATE.SLEEPING)
+
+func check_searching_exit():
+	if is_character_visible:
+		set_state(STATE.ATTACK)
 
 func is_target_inside_rotation_radius() -> bool:
 	if target_position.distance_to(%RotRadiusRight.global_position) < 20.0:
@@ -385,7 +413,7 @@ func direct_sight_character() -> bool:
 	if Global.character == null:
 		return false
 	var target := to_local(Global.character.global_position)
-	target = target.normalized() * 40
+	target = target.normalized() * 20
 	
 	var target_vector := global_position.direction_to(Global.character.global_position) # Direction vector to target
 	#var target_vector := to_local(Global.character.global_position).normalized() # Vector to target
@@ -406,7 +434,7 @@ func direct_sight_character() -> bool:
 	var char_rotation_vector := Vector3.FORWARD.rotated(Vector3.UP, Global.character.rotation.y)
 	var dist := global_position.distance_to(Global.character.global_position)
 	target_velocity = char_vel
-	if dist < 20:
+	if dist < 10:
 		var dire := Global.tri_to_bi(Global.character.global_position.direction_to(Global.enemy.global_position))
 		dire = dire.rotated(Global.character.global_rotation.y)
 		var angle := rad_to_deg(Vector2.DOWN.angle_to(dire))

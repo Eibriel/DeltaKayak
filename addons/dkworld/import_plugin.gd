@@ -157,7 +157,7 @@ func add_navmesh(navmesh_array: Array, sector_id:String, main_node:Node3D):
 		navigation_region.rotation = array_to_vector3(navmesh.rotation)
 		var packed_vertices: PackedVector3Array
 		for v in navmesh.vertices:
-			packed_vertices.append(Vector3(v[0], 0.0, v[1]))
+			packed_vertices.append(Vector3(v[0], v[1], v[2]))
 		navigation_mesh.set_vertices(packed_vertices)
 		for p in navmesh.polygons:
 			navigation_mesh.add_polygon(PackedInt32Array(p))

@@ -15,7 +15,7 @@ var force_limit := 5.0
 var boat_speed_multiplyer := 10.0
 var boat_speed := 1.0
 var torque_speed := 10.0
-var waiting := true
+var waiting := false
 
 var last_position:Vector3
 var real_velocity_integral:Vector3

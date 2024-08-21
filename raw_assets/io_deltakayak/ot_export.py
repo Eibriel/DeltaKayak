@@ -331,10 +331,7 @@ class DKT_OT_ExportWorld(bpy.types.Operator):
                 "rotation": self.rotation_to_godot(navmesh_obj.rotation_euler),
             }
             for v in navmesh_obj.data.vertices:
-                vertice = [
-                    v.co.x,
-                    -v.co.y
-                ]
+                vertice = self.location_to_godot(v.co)
                 mesh_def["vertices"].append(vertice)
             for p in navmesh_obj.data.polygons:
                 #if len(polygon.vertices) > 3:

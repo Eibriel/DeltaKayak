@@ -103,11 +103,7 @@ shading_mode = 0
 albedo_color = Color(0.730458, 0.118933, 0, 1)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_44qiw"]
-transparency = 1
-blend_mode = 1
-cull_mode = 2
-shading_mode = 0
-albedo_color = Color(1, 0.0862745, 0.0980392, 0.0980392)
+albedo_color = Color(1, 0.0862745, 0.0980392, 1)
 
 [sub_resource type="CylinderMesh" id="CylinderMesh_xdsgb"]
 material = SubResource("StandardMaterial3D_44qiw")
@@ -224,7 +220,6 @@ spot_angle = 17.0202
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="EnemyVisual/SpotBaseEnemy/SpotRotationEnemy/SpotLightEnemy"]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, -100.063)
-visible = false
 mesh = SubResource("CylinderMesh_xdsgb")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
@@ -237,7 +232,6 @@ target_desired_distance = 4.0
 path_postprocessing = 1
 simplify_path = true
 simplify_epsilon = 5.0
-debug_enabled = true
 
 [node name="RayCast3D" type="RayCast3D" parent="."]
 collision_mask = 7

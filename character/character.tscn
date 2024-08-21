@@ -477,6 +477,7 @@ size = Vector3(0.3, 0.3, 0.3)
 
 [node name="PlayerTargetVisualization" type="CSGBox3D" parent="."]
 unique_name_in_owner = true
+visible = false
 size = Vector3(0.3, 0.3, 0.3)
 
 [node name="Kayak" type="Node3D" parent="."]
