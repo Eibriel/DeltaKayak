@@ -107,17 +107,17 @@ albedo_color = Color(1, 0.0862745, 0.0980392, 1)
 
 [sub_resource type="CylinderMesh" id="CylinderMesh_xdsgb"]
 material = SubResource("StandardMaterial3D_44qiw")
-top_radius = 0.3
-bottom_radius = 1.0
-height = 200.0
+top_radius = 0.1
+bottom_radius = 0.1
+height = 20.0
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_c8bgx"]
-radius = 1.5
-height = 16.0
+radius = 1.7
+height = 16.5
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_bdtrc"]
-radius = 1.5
-height = 16.0
+radius = 1.7
+height = 16.5
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_o5bdk"]
 radius = 20.0
@@ -232,11 +232,31 @@ target_desired_distance = 4.0
 path_postprocessing = 1
 simplify_path = true
 simplify_epsilon = 5.0
+debug_enabled = true
 
-[node name="RayCast3D" type="RayCast3D" parent="."]
+[node name="EnemyEyeRayCast" type="RayCast3D" parent="."]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.12739, -5.1944)
+target_position = Vector3(0, 0, -20)
 collision_mask = 7
 hit_back_faces = false
 debug_shape_thickness = 5
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="EnemyEyeRayCast"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, -9.99458)
+mesh = SubResource("CylinderMesh_xdsgb")
+
+[node name="EnemyReachRayCast" type="RayCast3D" parent="."]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0351267, -5.1944)
+target_position = Vector3(0, 0, -20)
+collision_mask = 7
+hit_back_faces = false
+debug_shape_thickness = 5
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="EnemyReachRayCast"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, -9.99458)
+mesh = SubResource("CylinderMesh_xdsgb")
 
 [node name="Rays" type="Node3D" parent="."]
 

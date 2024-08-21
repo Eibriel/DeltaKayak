@@ -10,10 +10,11 @@ var p2 :Vector2
 var p3 :Vector2
 
 var speed := 0.0
+var force_limit_mult := 1.0
 var force_limit := 5.0
 
 var boat_speed_multiplyer := 10.0
-var boat_speed := 1.0
+#var boat_speed := 1.0
 var torque_speed := 10.0
 var waiting := false
 
@@ -172,8 +173,8 @@ func _physics_process(delta: float):
 		if sensor_data["ahead"]:
 			apply_central_force(-forward_direction*50)
 	
-	if forward_component.length() > force_limit:
-		forward_component = forward_component.normalized() * force_limit
+	if forward_component.length() > (force_limit*force_limit_mult):
+		forward_component = forward_component.normalized() * (force_limit*force_limit_mult)
 	
 	apply_central_force(forward_component)
 	#Global.log_text += "\nEnemy forward_component: %.2f" % forward_component.length()

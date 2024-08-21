@@ -37,12 +37,12 @@ shapes/paths/geometry_width=10.0
 
 window/size/viewport_width=800
 window/size/viewport_height=600
-window/size/mode=3
 window/size/window_width_override=1200
 window/size/window_height_override=800
 window/stretch/mode="viewport"
 window/stretch/aspect="keep_height"
 window/vsync/vsync_mode=0
+window/size/mode.release=3
 
 [editor_plugins]
 
