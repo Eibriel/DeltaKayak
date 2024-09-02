@@ -1,0 +1,61 @@
+[gd_scene load_steps=3 format=3 uid="uid://b2mnp4yqadq2v"]
+
+[ext_resource type="Script" path="res://experiments/hybrid_astar/boat_model_test.gd" id="1_prevq"]
+[ext_resource type="Texture2D" uid="uid://dvix2u8rr6fnc" path="res://icon.svg" id="2_8nqv4"]
+
+[node name="BoatModelTest" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_prevq")
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Control"]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="ForceLabel" type="Label" parent="Control/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Force: 0,0"
+
+[node name="MomentLabel" type="Label" parent="Control/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Force: 0,0"
+
+[node name="ControlsLabel" type="Label" parent="Control/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "0 rps
+0º"
+
+[node name="Node2D" type="Node2D" parent="."]
+position = Vector2(569, 322)
+
+[node name="Boat" type="Node2D" parent="Node2D"]
+unique_name_in_owner = true
+
+[node name="Icon" type="Sprite2D" parent="Node2D/Boat"]
+scale = Vector2(1, 0.245)
+texture = ExtResource("2_8nqv4")
+
+[node name="Rudder" type="Node2D" parent="Node2D/Boat"]
+unique_name_in_owner = true
+position = Vector2(-63, 0)
+
+[node name="Icon2" type="Sprite2D" parent="Node2D/Boat/Rudder"]
+position = Vector2(-14, 0)
+scale = Vector2(0.225, 0.05)
+texture = ExtResource("2_8nqv4")

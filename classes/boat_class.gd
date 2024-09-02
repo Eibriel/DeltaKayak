@@ -14,8 +14,8 @@ var force_limit_mult := 1.0
 var force_limit := 5.0
 
 var boat_speed_multiplyer := 10.0
-#var boat_speed := 1.0
 var torque_speed := 10.0
+var torque_multiplier := 1.0
 var waiting := false
 
 var last_position:Vector3
@@ -44,6 +44,8 @@ var path_visualization:Path3D
 var last_applied_force: Vector3
 
 var inside_turn_radius:=false
+
+var allow_sliding := false
 
 func _ready():
 	last_rotation = rotation.y
@@ -116,6 +118,9 @@ func get_derivative(_error) -> float:
 
 func _physics_process(delta: float):
 	_get_target(delta)
+	allow_sliding = true
+	#if allow_sliding:
+	#	mass = 1.1
 	#prints(last_position, position, delta)
 	var new_real_velocity:Vector3 = (last_position - position) / delta
 	real_velocity_integral = real_velocity-new_real_velocity
@@ -126,6 +131,7 @@ func _physics_process(delta: float):
 	real_angular_velocity = new_real_angular_velocity
 	last_rotationb = rotation.y
 	if waiting:
+		print("waiting")
 		return
 	"""#get_torque_path(delta)
 	get_torque_rotation(delta)
@@ -137,6 +143,9 @@ func _physics_process(delta: float):
 	if time > recalc_time:
 		time = 0.0
 		time_horizon = 2.0 # Aggressiveness
+		var dist := global_position.distance_to(target_position)
+		dist = min(0.1, dist)
+		time_horizon = dist
 		var _max_force := calculate_parameters(time_horizon)
 	var t := time/time_horizon
 	#print(t)
@@ -145,7 +154,7 @@ func _physics_process(delta: float):
 	
 	var der := second_derivaive_cubic_bezier(p0, p1, p2, p3, t)
 	var force_to_apply := Vector3(der.x, 0, der.y)/(time_horizon*time_horizon)
-	if inside_turn_radius:
+	if inside_turn_radius and not allow_sliding:
 		force_to_apply = real_velocity * 1.5
 	var forward_direction := (transform.basis * Vector3.FORWARD).normalized()
 	var forward_component: Vector3 = forward_direction * force_to_apply.dot(forward_direction)
@@ -176,14 +185,21 @@ func _physics_process(delta: float):
 	if forward_component.length() > (force_limit*force_limit_mult):
 		forward_component = forward_component.normalized() * (force_limit*force_limit_mult)
 	
-	apply_central_force(forward_component)
+	if allow_sliding:
+		apply_central_force(force_to_apply)
+		#prints("force_to_apply", force_to_apply)
+		#print("target_velocity", target_velocity)
+		last_applied_force = force_to_apply
+	else:
+		apply_central_force(forward_component)
+		#prints("forward_component", forward_component)
+		last_applied_force = forward_component
 	#Global.log_text += "\nEnemy forward_component: %.2f" % forward_component.length()
-	last_applied_force = forward_component
 	#var rotated_force := force_to_apply.rotated(Vector3.UP, rotation.y)
 	#print(rotated_force)
 	#var torque := -rotated_force.x
 	get_torque_rotation(Global.bi_to_tri(p3))
-	var torque_to_apply = Vector3(0, torque, 0) * torque_speed * delta
+	var torque_to_apply = Vector3(0, torque, 0) * torque_speed * torque_multiplier * delta
 	apply_torque(torque_to_apply)
 	last_applied_torque = torque_to_apply.y
 	#Global.log_text += "\ntorque: %.2f" % torque
@@ -197,22 +213,23 @@ func _integrate_forces(state:PhysicsDirectBodyState3D):
 	_handle_contacts(state)
 	#state.linear_velocity *= 0.999
 	state.angular_velocity *= 0.999
-	# TODO what happens when going backwards?
-	var forward_direction := (transform.basis * Vector3.FORWARD).normalized()
-	# Gets only the energy going forward
-	var forward_component: Vector3 = forward_direction * state.linear_velocity.dot(forward_direction)
-	# Gets only the energy not going forward
-	var side_component: Vector3 = state.linear_velocity - forward_component
-	#prints("side_component",side_component)
-	# Transfers the energy not going forward to going forward
-	var transferred_energy: Vector3 = forward_direction * side_component.length()
-	var side_drag := 0.99 # TODO depends on velocity
-	var calculated_velocity := Vector3.ZERO
-	calculated_velocity += side_component * side_drag
-	calculated_velocity += forward_component
-	calculated_velocity += transferred_energy * (1.0 - side_drag)
-	calculated_velocity += current
-	state.linear_velocity = calculated_velocity
+	if not allow_sliding:
+		# TODO what happens when going backwards?
+		var forward_direction := (transform.basis * Vector3.FORWARD).normalized()
+		# Gets only the energy going forward
+		var forward_component: Vector3 = forward_direction * state.linear_velocity.dot(forward_direction)
+		# Gets only the energy not going forward
+		var side_component: Vector3 = state.linear_velocity - forward_component
+		#prints("side_component",side_component)
+		# Transfers the energy not going forward to going forward
+		var transferred_energy: Vector3 = forward_direction * side_component.length()
+		var side_drag := 0.1 # TODO depends on velocity
+		var calculated_velocity := Vector3.ZERO
+		calculated_velocity += side_component * side_drag
+		calculated_velocity += forward_component
+		#calculated_velocity += transferred_energy * (1.0 - side_drag)
+		calculated_velocity += current
+		state.linear_velocity = calculated_velocity
 
 func _handle_contacts(_state: PhysicsDirectBodyState3D):
 	pass
@@ -223,7 +240,7 @@ func _get_sensor_data() -> Dictionary:
 # Cubic Bezier path planning
 func calculate_parameters(_time_horizon:float) -> float:
 	var start_pos := Global.tri_to_bi(position)
-	var start_vel := Global.tri_to_bi(linear_velocity)
+	var start_vel := Vector2.ZERO #Global.tri_to_bi(linear_velocity)
 	#var predicted_pos: Vector3= target_position+(target_velocity*_time_horizon)
 	#var end_pos := Global.tri_to_bi(predicted_pos)
 	var end_pos := Global.tri_to_bi(target_position)

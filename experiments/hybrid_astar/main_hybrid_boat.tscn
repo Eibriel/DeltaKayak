@@ -1,0 +1,91 @@
+[gd_scene load_steps=5 format=3 uid="uid://cr8p0vv818icj"]
+
+[ext_resource type="Script" path="res://experiments/hybrid_astar/main_hybrid_boat.gd" id="1_5hf13"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_8ek31"]
+sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+ground_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+
+[sub_resource type="Sky" id="Sky_aeoax"]
+sky_material = SubResource("ProceduralSkyMaterial_8ek31")
+
+[sub_resource type="Environment" id="Environment_aoyn7"]
+background_mode = 2
+sky = SubResource("Sky_aeoax")
+tonemap_mode = 2
+glow_enabled = true
+
+[node name="MainHybrid" type="Node3D"]
+script = ExtResource("1_5hf13")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_aoyn7")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.866025, -0.433013, 0.25, 0, 0.5, 0.866025, -0.5, 0.75, -0.433013, 0, 0, 0)
+shadow_enabled = true
+
+[node name="Agent" type="CSGBox3D" parent="."]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.215576, -0.12973)
+size = Vector3(2.35, 0.569, 2.714)
+
+[node name="Agent2" type="CSGBox3D" parent="Agent"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.551604, 0.813246)
+size = Vector3(2.03711, 0.568848, 0.786484)
+
+[node name="Rudder" type="Node3D" parent="Agent"]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.551604, -1.37211)
+
+[node name="RudderShape" type="CSGBox3D" parent="Agent/Rudder"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.374707)
+size = Vector3(0.174805, 2.62598, 0.786484)
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.618408, 0.785857, 0, -0.785857, 0.618408, 24.631, 29.0221, 36.1113)
+
+[node name="Hmap" type="Node3D" parent="."]
+unique_name_in_owner = true
+visible = false
+
+[node name="AnalysticExpantionPaths" type="Node3D" parent="."]
+unique_name_in_owner = true
+
+[node name="Nodes" type="Node3D" parent="."]
+unique_name_in_owner = true
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Control"]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="FrameLabel" type="Label" parent="Control/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Frame: 0"
+
+[node name="TickLabel" type="Label" parent="Control/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Tick: 0"
+
+[node name="SteerLabel" type="Label" parent="Control/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "0 rps
+0º"
+
+[node name="RevsLabel" type="Label" parent="Control/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "0 rps
+0º"

@@ -1,0 +1,39 @@
+[gd_scene load_steps=5 format=3 uid="uid://yij7uekjhgsb"]
+
+[ext_resource type="Script" path="res://experiments/hybrid_astar/main_hybrid.gd" id="1_bff6a"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_8ek31"]
+sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+ground_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+
+[sub_resource type="Sky" id="Sky_aeoax"]
+sky_material = SubResource("ProceduralSkyMaterial_8ek31")
+
+[sub_resource type="Environment" id="Environment_aoyn7"]
+background_mode = 2
+sky = SubResource("Sky_aeoax")
+tonemap_mode = 2
+glow_enabled = true
+
+[node name="MainHybrid" type="Node3D"]
+script = ExtResource("1_bff6a")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_aoyn7")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.866025, -0.433013, 0.25, 0, 0.5, 0.866025, -0.5, 0.75, -0.433013, 0, 0, 0)
+shadow_enabled = true
+
+[node name="Agent" type="CSGBox3D" parent="."]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.215576, -0.12973)
+size = Vector3(2.34961, 0.568848, 2.71429)
+
+[node name="Agent2" type="CSGBox3D" parent="Agent"]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.551604, 0.813246)
+size = Vector3(2.03711, 0.568848, 0.786484)
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.619025, 0.785371, 0, -0.785371, 0.619025, 24.631, 29.0221, 36.1113)

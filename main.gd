@@ -603,7 +603,8 @@ func _input(event: InputEvent) -> void:
 		if OS.has_feature("debug"):
 			#teleport_enemy(1)
 			#say_dialogue("demo_other_side")
-			game_over()
+			#game_over.call_deferred()
+			Global.enemy.enemy_camera.current = !Global.enemy.enemy_camera.current
 
 func say_some_dialogue()->void:
 	if player_state.size() > 0:
@@ -1102,6 +1103,7 @@ func game_over():
 	character.global_rotation = character_home_rotation
 	character.damage = 0.0
 	character.energy = 50.0
+	Global.enemy.set_state(Global.enemy.STATE.SEARCHING)
 	%GameOverMenu.visible = true
 	%ContinueButton.grab_focus()
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE

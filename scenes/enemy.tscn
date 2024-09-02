@@ -1,4 +1,4 @@
-[gd_scene load_steps=46 format=3 uid="uid://mvc5qr5igrlq"]
+[gd_scene load_steps=47 format=3 uid="uid://mvc5qr5igrlq"]
 
 [ext_resource type="Script" path="res://scenes/enemy.gd" id="1_ht45k"]
 [ext_resource type="Texture2D" uid="uid://cdex8bqdmulf8" path="res://textures/flashlight.jpg" id="2_1pota"]
@@ -148,6 +148,10 @@ stream_2/stream = ExtResource("15_n52wv")
 stream_3/stream = ExtResource("16_by2st")
 stream_4/stream = ExtResource("17_64am1")
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_8e41d"]
+shading_mode = 0
+albedo_color = Color(1, 0, 1, 1)
+
 [node name="Enemy" type="RigidBody3D"]
 collision_layer = 8
 collision_mask = 31
@@ -230,9 +234,9 @@ shape = SubResource("CapsuleShape3D_c8bgx")
 path_desired_distance = 4.0
 target_desired_distance = 4.0
 path_postprocessing = 1
-simplify_path = true
-simplify_epsilon = 5.0
 debug_enabled = true
+debug_use_custom = true
+debug_path_custom_point_size = 10.0
 
 [node name="EnemyEyeRayCast" type="RayCast3D" parent="."]
 unique_name_in_owner = true
@@ -257,38 +261,6 @@ debug_shape_thickness = 5
 [node name="MeshInstance3D" type="MeshInstance3D" parent="EnemyReachRayCast"]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, -9.99458)
 mesh = SubResource("CylinderMesh_xdsgb")
-
-[node name="Rays" type="Node3D" parent="."]
-
-[node name="RayAhead" type="RayCast3D" parent="Rays"]
-unique_name_in_owner = true
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0630493, -6.61163)
-target_position = Vector3(0, 0, -5)
-
-[node name="RayBehind" type="RayCast3D" parent="Rays"]
-unique_name_in_owner = true
-transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0.0630493, 5.95283)
-target_position = Vector3(0, 0, -5)
-
-[node name="RayLeftBack" type="RayCast3D" parent="Rays"]
-unique_name_in_owner = true
-transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0.063, 4)
-target_position = Vector3(0, 0, -5)
-
-[node name="RayLeftFront" type="RayCast3D" parent="Rays"]
-unique_name_in_owner = true
-transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0.063, -4)
-target_position = Vector3(0, 0, -5)
-
-[node name="RayRightBack" type="RayCast3D" parent="Rays"]
-unique_name_in_owner = true
-transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 0, 0.063, 4)
-target_position = Vector3(0, 0, -5)
-
-[node name="RayRightFront" type="RayCast3D" parent="Rays"]
-unique_name_in_owner = true
-transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 0, 0.063, -4)
-target_position = Vector3(0, 0, -5)
 
 [node name="Phantom" type="Node3D" parent="."]
 
@@ -376,5 +348,16 @@ aabb = AABB(-3, -1, -9, 6, 4, 18)
 unique_name_in_owner = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.09267, -4.65942)
 aabb = AABB(-0.958361, -0.643605, -0.742799, 1.91672, 1.52745, 1.4856)
+
+[node name="EnemyNavigationVelocityIndicator" type="CSGBox3D" parent="."]
+unique_name_in_owner = true
+size = Vector3(2, 2, 2)
+material = SubResource("StandardMaterial3D_8e41d")
+
+[node name="EnemyCamera" type="Camera3D" parent="."]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 51.7185, 0)
+projection = 1
+size = 72.738
 
 [connection signal="body_entered" from="Phantom/PhantomArea1" to="." method="_on_phantom_area_1_body_entered"]

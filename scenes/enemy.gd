@@ -11,6 +11,8 @@ extends Boat3D
 @export var engine_curve_7:Curve
 
 @onready var nav: NavigationAgent3D = $NavigationAgent3D
+@onready var enemy_camera: Camera3D = %EnemyCamera
+
 #@onready var ray_cast_3d: RayCast3D = $RayCast3D
 
 var current_state := STATE.SEARCHING
@@ -28,10 +30,14 @@ var attack_charge_time := 0.0
 var attack_intimidate_time := 0.0
 var path_blocked_time := 0.0
 var avoid_collision_time := 0.0
+var is_moving_time := 0.0
+var delay_next_state_change := 0.0
 
 var is_character_visible:=false
 var is_trail_visible:=false
 var clear_path_to_character:=false
+
+var force_new_enemy_point:=false
 
 var buoyancy_time:=0.0
 var buoyancy_instability:=1.0
@@ -78,11 +84,12 @@ func _process(delta: float) -> void:
 	Global.log_text += "\nAttack: %s" % ATTACK_STATE.find_key(attack_state)
 	Global.log_text += "\nforce_limit_mult: %s" % force_limit_mult
 	#%AttackPositionindicator.global_position = attack_position
-	is_stuck(delta)
+	#is_stuck(delta)
 	inside_turn_radius = is_target_inside_rotation_radius()
 	handle_sounds()
 	handle_music()
 	handle_buoyancy(delta)
+	handle_is_moving(delta)
 	
 	%PhantomArea1.position = global_position - (real_velocity * 1)
 	%PhantomArea1.rotation.y = rotation.y
@@ -90,6 +97,27 @@ func _process(delta: float) -> void:
 	buoyancy_instability += abs(torque) * 0.001 * delta
 	#Global.log_text += "\nbuoyancy_instability: %f" % buoyancy_instability
 	
+var is_moving_array: Array[Vector3] = []
+var is_moving := true
+func handle_is_moving(delta:float):
+	is_moving_time += delta
+	if is_moving_time < 0.1: return
+	is_moving_time = 0.0
+	is_moving_array.append(global_position)
+	is_moving = true
+	if is_moving_array.size() > 30:
+		var old_position:Vector3 = is_moving_array.pop_front()
+		var moving_distance:float = old_position.distance_to(global_position)
+		if moving_distance < 1.5:
+			is_moving = false
+	# NOTE Hack to prevent enemy getting stuck
+	if is_moving:
+		torque_multiplier = 1.0
+	else:
+		torque_multiplier = 5.0
+
+func reset_is_moving():
+	is_moving_array.resize(0)
 
 func handle_buoyancy(delta:float):
 	buoyancy_time += delta
@@ -145,13 +173,17 @@ func handle_sounds():
 	
 
 func _get_target(delta: float) -> void:
-	change_state()
+	delay_next_state_change -= delta
+	delay_next_state_change = max(delay_next_state_change, 0)
+	if delay_next_state_change <= 0:
+		change_state()
 	check_character_visible(delta)
 	if current_state == STATE.ATTACK:
 		%AttackIndicator.visible = true
 		#%SpotLightEnemy.visible = true
 		%OmniLightEnemy.visible = true
-		change_attack_state()
+		if delay_next_state_change <= 0:
+			change_attack_state()
 		#is_trail_visible() # TODO line may not be needed
 		#target_position = attack_position
 		
@@ -199,9 +231,16 @@ func _get_target(delta: float) -> void:
 		if Global.main_scene.in_room.size() > 0:
 			current_room = Global.main_scene.in_room[0]
 		if current_room:
-			if current_room.room_id != previous_room:
+			if current_room.room_id != previous_room or force_new_enemy_point:
+				force_new_enemy_point = false
 				previous_room = current_room.room_id
-				previous_enemy_point = randi_range(0, current_room.enemy_points.size()-1)
+				if force_new_enemy_point and current_room.enemy_points.size() > 1:
+					if previous_enemy_point == 0:
+						previous_enemy_point = 1
+					else:
+						previous_enemy_point = 0
+				else:
+					previous_enemy_point = randi_range(0, current_room.enemy_points.size()-1)
 			# BUG Out of bounds get index '-1' on base Array[Vector3]
 			if global_position.distance_to(current_room.enemy_points[previous_enemy_point]) < 4.0:
 				previous_enemy_point = randi_range(0, current_room.enemy_points.size()-1)
@@ -209,9 +248,10 @@ func _get_target(delta: float) -> void:
 			nav.target_position = current_room.enemy_points[previous_enemy_point]
 			#print(nav.target_position)
 			target_position = nav.get_next_path_position()
-			if nav.get_current_navigation_path().size() > 1:
-				target_velocity =nav.get_current_navigation_path()[0] - nav.get_current_navigation_path()[1]
-				target_velocity = target_velocity.normalized() * 2
+			if nav.get_current_navigation_path().size() > 2:
+				target_velocity =nav.get_current_navigation_path()[2] - nav.get_current_navigation_path()[1]
+				var nav_dist := nav.get_current_navigation_path()[2].distance_to(nav.get_current_navigation_path()[1])
+				target_velocity = target_velocity.normalized() * nav_dist * -2.0
 			else:
 				target_velocity = Vector3.ZERO
 			#position.y = target_position.y
@@ -265,6 +305,9 @@ func _get_target(delta: float) -> void:
 			#prints(target_position, target_velocity)
 		avoid_collision_time += delta
 	
+	
+	%EnemyNavigationVelocityIndicator.global_position = target_position + target_velocity
+	
 	#path_blocked_time -= delta
 	#if path_blocked_time < 0:
 		#path_blocked_time = 0.0
@@ -288,6 +331,7 @@ func change_attack_state():
 
 func set_attack_state(_attack_state:ATTACK_STATE):
 	attack_state = _attack_state
+	reset_is_moving()
 	match attack_state:
 		ATTACK_STATE.START:
 			attack_start_time = 0.0
@@ -314,6 +358,8 @@ func check_attack_charge_exit():
 		set_attack_state(ATTACK_STATE.FOLLOW_TRAIL)
 	if attack_charge_time > 10.0:
 		set_attack_state(ATTACK_STATE.INTIMIDATE)
+	if not is_moving:
+		set_attack_state(ATTACK_STATE.FOLLOW_TRAIL)
 
 func check_attack_follow_trail_exit():
 	if is_character_visible:
@@ -345,6 +391,7 @@ func change_state():
 func set_state(state_to_set:STATE):
 	prints("Set", STATE.find_key(state_to_set))
 	current_state = state_to_set
+	reset_is_moving()
 	match state_to_set:
 		STATE.ATTACK:
 			attack_state = ATTACK_STATE.START
@@ -369,19 +416,23 @@ func check_sleeping_exit():
 		set_state(STATE.AMBUSH)
 
 func check_attack_exit():
-	#print("ATTACK")
 	if following_trail_time > 20.0:
 		set_state(STATE.ALERT)
 	if not is_character_visible:
 		set_state(STATE.ALERT)
+	if not is_moving:
+		delay_next_state_change = 20.0
+		set_state(STATE.SEARCHING)
 
 func check_alert_exit():
-	#print("Alert")
 	if is_character_visible:
 		set_state(STATE.ATTACK)
 	elif on_alert_time > 10.0:
 		set_state(STATE.SEARCHING)
 	elif following_trail_time > 20.0:
+		set_state(STATE.SEARCHING)
+	if not is_moving:
+		delay_next_state_change = 20.0
 		set_state(STATE.SEARCHING)
 
 func check_avoid_collision_exit():
@@ -389,6 +440,7 @@ func check_avoid_collision_exit():
 		set_state(STATE.SLEEPING)
 
 func check_go_home_exit():
+	# NOTE can only exit manually
 	pass
 
 func check_ambush_exit():
@@ -401,6 +453,11 @@ func check_ambush_exit():
 func check_searching_exit():
 	if is_character_visible:
 		set_state(STATE.ATTACK)
+	if not is_moving:
+		force_new_enemy_point = true
+		reset_is_moving()
+	#	delay_next_state_change = 20.0
+	#	set_state(STATE.SLEEPING)
 
 func is_target_inside_rotation_radius() -> bool:
 	if target_position.distance_to(%RotRadiusRight.global_position) < 20.0:
@@ -479,7 +536,7 @@ func direct_sight_character() -> bool:
 	var predicted_pos: Vector3= char_pos+(char_vel*time_horizon)
 	var char_rotation_vector := Vector3.FORWARD.rotated(Vector3.UP, Global.character.rotation.y)
 	var dist := global_position.distance_to(Global.character.global_position)
-	target_velocity = char_vel
+	direct_target_velocity = char_vel
 	if dist < 10:
 		var dire := Global.tri_to_bi(Global.character.global_position.direction_to(Global.enemy.global_position))
 		dire = dire.rotated(Global.character.global_rotation.y)
@@ -546,6 +603,7 @@ func play_howl():
 
 func _handle_contacts(state: PhysicsDirectBodyState3D):
 	if state.get_contact_count() > 0:
+		var body = state.get_contact_collider_object(0)
 		var collision_impulse:float = state.get_contact_impulse(0).length()
 		if collision_impulse > 0.5:
 			# TODO mode out of this function
@@ -558,26 +616,8 @@ func _handle_contacts(state: PhysicsDirectBodyState3D):
 			if not %CollisionAudio.playing:
 				%CollisionAudio.play()
 				buoyancy_instability += 1
-		var body = state.get_contact_collider_object(0)
 		if body.name == "character":
 			Global.character.set_damage()
-
-func _get_sensor_data() -> Dictionary:
-	%RayAhead.force_raycast_update()
-	%RayBehind.force_raycast_update()
-	%RayLeftBack.force_raycast_update()
-	%RayLeftFront.force_raycast_update()
-	%RayRightBack.force_raycast_update()
-	%RayRightFront.force_raycast_update()
-	return {
-		"ahead": %RayAhead.is_colliding(),
-		"behind": %RayBehind.is_colliding(),
-		"left_back": %RayLeftBack.is_colliding(),
-		"left_front": %RayLeftFront.is_colliding(),
-		"right_back": %RayRightBack.is_colliding(),
-		"right_front": %RayRightFront.is_colliding(),
-	}
-
 
 func _on_phantom_area_1_body_entered(_body: Node3D) -> void:
 	return
