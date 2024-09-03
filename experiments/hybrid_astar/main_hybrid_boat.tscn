@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://cr8p0vv818icj"]
+[gd_scene load_steps=6 format=3 uid="uid://cr8p0vv818icj"]
 
 [ext_resource type="Script" path="res://experiments/hybrid_astar/main_hybrid_boat.gd" id="1_5hf13"]
 
@@ -15,6 +15,9 @@ sky = SubResource("Sky_aeoax")
 tonemap_mode = 2
 glow_enabled = true
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_p8cke"]
+albedo_color = Color(1, 0, 0, 1)
+
 [node name="MainHybrid" type="Node3D"]
 script = ExtResource("1_5hf13")
 
@@ -29,10 +32,12 @@ shadow_enabled = true
 unique_name_in_owner = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.215576, -0.12973)
 size = Vector3(2.35, 0.569, 2.714)
+material = SubResource("StandardMaterial3D_p8cke")
 
 [node name="Agent2" type="CSGBox3D" parent="Agent"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.551604, 0.813246)
 size = Vector3(2.03711, 0.568848, 0.786484)
+material = SubResource("StandardMaterial3D_p8cke")
 
 [node name="Rudder" type="Node3D" parent="Agent"]
 unique_name_in_owner = true
@@ -41,6 +46,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.551604, -1.37211)
 [node name="RudderShape" type="CSGBox3D" parent="Agent/Rudder"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.374707)
 size = Vector3(0.174805, 2.62598, 0.786484)
+material = SubResource("StandardMaterial3D_p8cke")
 
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.618408, 0.785857, 0, -0.785857, 0.618408, 24.631, 29.0221, 36.1113)

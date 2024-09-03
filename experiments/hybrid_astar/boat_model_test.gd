@@ -11,9 +11,8 @@ var forces = {
 }
 
 func _ready() -> void:
-	boat_model.tests()
-	
 	boat_model.load_parameters()
+	boat_model.tests()
 	boat_model.linear_velocity = Vector2(3.85, 0.0) # m/s
 	boat_model.angular_velocity = 0.0 # r/s
 	#boat_model.p.yaw_rate = 0.0 #r/s
@@ -29,9 +28,13 @@ func _ready() -> void:
 	}
 	for _n in range(10):
 		#prints("n", _n)
-		boat_model.linear_velocity = f.force
-		boat_model.angular_velocity = f.moment
-		var new_f = boat_model.get_boat_forces(revs_per_second, rudder_angle)
+		var linear_velocity:Vector2 = f.force
+		var angular_velocity:float = f.moment
+		var new_f = boat_model.extended_boat_model(
+			linear_velocity,
+			angular_velocity,
+			revs_per_second,
+			rudder_angle)
 		#prints("Raw:", new_f.force, new_f.moment)
 		assert(new_f.force.x != NAN)
 		f.force += new_f.force
@@ -39,10 +42,14 @@ func _ready() -> void:
 		#prints(f.force, f.moment)
 
 func _process(_delta: float) -> void:
-	boat_model.linear_velocity = forces.force
-	boat_model.angular_velocity = forces.moment
+	var linear_velocity:Vector2 = forces.force
+	var angular_velocity:float = forces.moment
 	
-	var f := boat_model.get_boat_forces(revs_per_second, rudder_angle)
+	var f := boat_model.extended_boat_model(
+		linear_velocity,
+		angular_velocity,
+		revs_per_second,
+		rudder_angle)
 
 	forces.force += f.force * _delta
 	forces.moment += f.moment * _delta

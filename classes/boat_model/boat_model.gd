@@ -127,8 +127,8 @@ class BoatForces:
 		self.force = force
 		self.moment = moment
 
-# J_P
-# Propeller advanced ratio
+## J_P
+## Propeller advanced ratio
 func propeller_advanced_ratio() -> float:
 	var w_P := pre_wake_coefficient_at_propeller_position_in_maneuvering
 	var res: float
@@ -139,7 +139,7 @@ func propeller_advanced_ratio() -> float:
 	
 	return res
 
-# beta_P
+## beta_P
 var pre_beta_P:float
 func beta_P() -> float:
 	#var tt := drift_angle_at_midship_position()
@@ -149,8 +149,8 @@ func beta_P() -> float:
 		p.ship_length_between_perpendiculars) * \
 		pre_nondimensionalized_yaw_rate
 
-# w_P
-# Wake coefficient at propeller position in maneuvering motions
+## w_P
+## Wake coefficient at propeller position in maneuvering motions
 var pre_wake_coefficient_at_propeller_position_in_maneuvering: float
 func wake_coefficient_at_propeller_position_in_maneuvering() -> float:
 	var w_P:float
@@ -169,8 +169,8 @@ func wake_coefficient_at_propeller_position_in_maneuvering() -> float:
 		w_P = w_P0 * exp(-4.0 * _beta_P**2) 
 	return w_P
 
-#K_T
-# Propeller thrust open water characteristic
+## K_T
+## Propeller thrust open water characteristic
 var pre_propeller_thrust_open_water_characteristic:float
 func propeller_thrust_open_water_characteristic() -> float:
 	var K_T:float
@@ -181,7 +181,7 @@ func propeller_thrust_open_water_characteristic() -> float:
 		K_T = p.J_slo * J_P * p.J_int
 	return K_T
 
-#u_R
+## u_R
 func longitudinal_inflow_velocity_component_to_rudder() -> float:
 	var J_P := propeller_advanced_ratio()
 	if J_P == 0.0:
@@ -209,24 +209,24 @@ func longitudinal_inflow_velocity_component_to_rudder() -> float:
 		(1.0 - p.ratio_of_propeller_diameter_to_rudder_span))
 	return u_R
 
-#U_R
+## U_R
 func resultant_inflow_velocity_to_rudder() -> float:
 	var U_R:= pre_inflow_velocity_component_to_rudder.length()
 	return U_R
 
-#A_R
+## A_R
 func rubber_profile_area():
 	return 6.13*p.rudder_aspect_ratio / p.rudder_aspect_ratio + 2.25
 
-#beta
+## beta
 func drift_angle_at_midship_position() -> float:
 	if linear_velocity.x == 0.0:
 		return 0.0
 	else:
 		return atan(-linear_velocity.y/linear_velocity.x)
 
-#v'
-# Non-dimensionalized lateral velocity
+## v'
+## Non-dimensionalized lateral velocity
 var pre_nondimensionalized_lateral_velocity:float
 func nondimensionalized_lateral_velocity() -> float:
 	if overall_vessel_speed() == 0:
@@ -234,14 +234,15 @@ func nondimensionalized_lateral_velocity() -> float:
 	else:
 		return linear_velocity.y / overall_vessel_speed()
 
-#r'
-# non-dimensionalized yaw rate
+## r'
+## non-dimensionalized yaw rate
 var pre_nondimensionalized_yaw_rate:float
 func nondimensionalized_yaw_rate() -> float:
 	if overall_vessel_speed() == 0:
 		return 0.0
 	else:
-		return angular_velocity * p.ship_length_between_perpendiculars / overall_vessel_speed()
+		var nyr := angular_velocity * p.ship_length_between_perpendiculars / overall_vessel_speed()
+		return nyr
 
 """
 # x_H'
@@ -251,21 +252,21 @@ func position_of_additional_lateral_force() -> float:
 	return -0.45*p.ship_length_between_perpendiculars 
 """
 
-# x_H
-# Redimensionalize x_H'
+## x_H
+## Redimensionalize x_H'
 func redimensionalized_x_H_dash() -> float:
 	return p.position_of_additional_lateral_force * p.ship_length_between_perpendiculars
 
-# beta_R
-# Effective inflow angle to rudder in maneuvering motions
+## beta_R
+## Effective inflow angle to rudder in maneuvering motions
 var pre_effective_inflow_angle_to_rudder:float
 func effective_inflow_angle_to_rudder() -> float:
 	return drift_angle_at_midship_position() - \
 		p.correction_of_flow_straightening_factor_to_yaw_rate * \
 		pre_nondimensionalized_yaw_rate
 
-# gamma_R
-# Flow straightening coefficient
+## gamma_R
+## Flow straightening coefficient
 func flow_straightening_coefficient() -> float:
 	var beta_R:= pre_effective_inflow_angle_to_rudder
 	if p.flow_straightening_coefficient != 0:
@@ -276,8 +277,8 @@ func flow_straightening_coefficient() -> float:
 		else:
 			return p.flow_straightening_coefficient_plus
 
-#Longitudinal and lateral inflow velocity component to rudder
-#u_R v_R
+## Longitudinal and lateral inflow velocity component to rudder
+## u_R v_R
 var pre_inflow_velocity_component_to_rudder:Vector2
 func inflow_velocity_component_to_rudder() -> Vector2:
 	var resistance_coefficient_straight_moving := pre_effective_inflow_angle_to_rudder
@@ -290,13 +291,13 @@ func inflow_velocity_component_to_rudder() -> Vector2:
 		resistance_coefficient_straight_moving
 	return Vector2(u_R, v_R)
 
-# alpha_R
+## alpha_R
 func effective_rudder_angle_of_attack() -> float:
 	var u_Rv_R := pre_inflow_velocity_component_to_rudder
 	return rudder_angle - \
 		atan2(u_Rv_R.y, u_Rv_R.x)
 
-#F_N
+## F_N
 var pre_rudder_normal_force:float
 func rudder_normal_force() -> float:
 	var U_R := resultant_inflow_velocity_to_rudder()
@@ -315,7 +316,7 @@ func rudder_normal_force() -> float:
 	return f
 
 # U
-func overall_vessel_speed():
+func overall_vessel_speed() -> float:
 	return linear_velocity.length()
 
 func hull_moment_derivatives() -> float:
@@ -328,6 +329,7 @@ func hull_moment_derivatives() -> float:
 		+ p.N_vvr_dash * (v_dash**2) * r_dash \
 		+ p.N_vrr_dash * v_dash * (r_dash**2) \
 		+ p.N_rrr_dash * (r_dash**3)
+	
 	return N_H_der
 
 func surge_force_hull_derivatives() -> float:
@@ -355,7 +357,7 @@ func lateral_force_hull_derivatives() -> float:
 
 # Hull
 
-#X_H
+## X_H
 func surge_force_ship_hull() -> float:
 	var X_H:float = (0.5 * \
 		p.water_density * \
@@ -365,18 +367,21 @@ func surge_force_ship_hull() -> float:
 		surge_force_hull_derivatives()
 	return X_H
 
-#N_H
+## N_H
 func hull_moment() -> float:
+	var os := overall_vessel_speed()
+	var hmd := hull_moment_derivatives()
 	var N_H:float = 0.5 *\
 		p.water_density *\
 		(p.ship_length_between_perpendiculars**2) *\
 		p.ship_draft *\
 		(overall_vessel_speed()**2) *\
 		hull_moment_derivatives()
-	
+	#if N_H > 162256263179:
+	#	breakpoint
 	return N_H
 
-#Y_H
+## Y_H
 func lateral_force_on_ship_hull() -> float:
 	var Y_H:float = 0.5 * p.water_density * p.ship_length_between_perpendiculars * \
 		p.ship_draft * \
@@ -387,14 +392,14 @@ func lateral_force_on_ship_hull() -> float:
 
 # Rudder
 
-#X_R
+## X_R
 func surge_force_by_steering() -> float:
 	var X_R:float = -(1.0-p.steering_resistance_deduction_factor) * \
 		pre_rudder_normal_force * \
 		sin(rudder_angle)
 	return X_R
 
-#Y_R
+## Y_R
 func lateral_force_by_steering() -> float:
 	var Y_R:float = -(1.0+p.rudder_force_increase_factor) * \
 		pre_rudder_normal_force * \
@@ -404,7 +409,7 @@ func lateral_force_by_steering() -> float:
 func longitudinal_coordinate_of_rudder_position() -> float:
 	return -0.5 * p.ship_length_between_perpendiculars
 
-#N_R
+## N_R
 func rudder_moment() -> float:
 	var tt := longitudinal_coordinate_of_rudder_position()
 	var x_H := redimensionalized_x_H_dash()
@@ -422,7 +427,7 @@ func rudder_moment() -> float:
 
 # Propeller
 
-#X_P
+## X_P
 func surge_force_by_propeller() -> float:
 	var K_T:float = pre_propeller_thrust_open_water_characteristic
 	
@@ -436,8 +441,27 @@ func surge_force_by_propeller() -> float:
 	
 	return X_P
 
+## Hacks the model to allow the boat to go backwards
+func extended_boat_model(
+		linear_velocity:Vector2,
+		angular_velocity:float,
+		revs_per_second:float,
+		rudder_angle:float) -> BoatForces:
+	if revs_per_second <0:
+		linear_velocity = linear_velocity.rotated(deg_to_rad(180))
+		rudder_angle *= -1.0
+	var rforces := get_boat_forces(linear_velocity, angular_velocity, abs(revs_per_second), rudder_angle)
+	if revs_per_second <0:
+		rforces.force = rforces.force.rotated(deg_to_rad(180))
+	return rforces
 
-func get_boat_forces(revs_per_second:float, rudder_angle:float) -> BoatForces:
+func get_boat_forces(
+		linear_velocity:Vector2,
+		angular_velocity:float,
+		revs_per_second:float,
+		rudder_angle:float) -> BoatForces:
+	self.linear_velocity = linear_velocity
+	self.angular_velocity = angular_velocity
 	self.rudder_angle = rudder_angle
 	self.revs_per_second = revs_per_second
 	
@@ -520,6 +544,9 @@ func get_boat_forces(revs_per_second:float, rudder_angle:float) -> BoatForces:
 	var rest_1 := F - mult_1
 	var final_res = multiply_matrix_by_vector(M_inv_array, rest_1)
 	
+	#if final_res.z > 10.0:
+	#	breakpoint
+	
 	return BoatForces.new(Vector2(final_res.x, final_res.y), final_res.z)
 
 
@@ -537,6 +564,19 @@ func _C_A(m_x:float,m_y:float,u:float, vm:float)->Array[Vector3]:
 
 func tests():
 	# Test
+	var t_linear_velocity := Vector2(0.08599999999569, 0.0170000000071)
+	var t_angular_velocity := -0.04300000000512
+	var t_rudder_angle := -0.63999999999942
+	var t_r := -20.0
+	var new_local_forces = extended_boat_model(
+		t_linear_velocity,
+		t_angular_velocity,
+		t_r,
+		t_rudder_angle)
+	if new_local_forces.moment > 10.0:
+		breakpoint
+	
+	
 	var test_C_RB := _C_RB(0.5,1.1, 2.0)
 	var res:Array[Vector3]= [Vector3(0.,  -1.,  -1.1),
 		Vector3(1.,   0.,   0.),

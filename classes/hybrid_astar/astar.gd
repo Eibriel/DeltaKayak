@@ -35,7 +35,7 @@ class AStarPara:
 		self.reso = reso  # resolution of grid world
 		self.motion = motion  # motion set
 
-func astar_planning(sx:float, sy:float, gx:float, gy:float, ox:Array[float], oy:Array[float], reso:float, rr:float):
+func astar_planning(area_size:Vector2i, sx:float, sy:float, gx:float, gy:float, ox:Array[float], oy:Array[float], reso:float, rr:float):
 	"""
 	return path of A*.
 	:param sx: starting node x [m]
@@ -55,7 +55,7 @@ func astar_planning(sx:float, sy:float, gx:float, gy:float, ox:Array[float], oy:
 	#ox = [x / reso for x in ox]
 	#oy = [y / reso for y in oy]
 	
-	var res_calc_parameters:= calc_parameters(ox, oy, rr, reso)
+	var res_calc_parameters:= calc_parameters(area_size, ox, oy, rr, reso)
 	var P:AStarPara = res_calc_parameters[0]
 	var obsmap:Array[Array] = res_calc_parameters[1]
 	
@@ -171,7 +171,7 @@ const EXPECTED_OBSMAP = [
 	[true, true, true, true, true, true, true, true, true, true, true, true, true, true, true],
 ]
 
-func calc_holonomic_heuristic_with_obstacle(node, ox:Array[float], oy:Array[float], reso:float, rr:float):
+func calc_holonomic_heuristic_with_obstacle(node, area_size:Vector2i, ox:Array[float], oy:Array[float], reso:float, rr:float):
 	var n_goal = AStarNode.new(python_round(float(node.x[-1]) / reso), python_round(float(node.y[-1]) / reso), 0.0, -1)
 
 	#ox = [x / reso for x in ox]
@@ -187,7 +187,7 @@ func calc_holonomic_heuristic_with_obstacle(node, ox:Array[float], oy:Array[floa
 
 	#print(ox_new)
 
-	var res_calc = calc_parameters(ox_new, oy_new, reso, rr)
+	var res_calc = calc_parameters(area_size, ox_new, oy_new, reso, rr)
 	var P = res_calc[0]
 	var obsmap = res_calc[1]
 
@@ -305,13 +305,19 @@ func calc_index(node:AStarNode, P:AStarPara) -> int:
 	return (node.y - P.miny) * P.xw + (node.x - P.minx)
 	
 	
-func calc_parameters(ox:Array[float], oy:Array[float], rr:float, reso:float) -> Array:
+func calc_parameters(area_size:Vector2i, ox:Array[float], oy:Array[float], rr:float, reso:float) -> Array:
 	# rr: Robot Radius
 	# reso: grid resolution
-	var minx:int = python_round(ox.min())
-	var miny:int = python_round(oy.min())
-	var maxx:int = python_round(ox.max())
-	var maxy:int = python_round(oy.max())
+	#var minx:int = python_round(ox.min())
+	#var miny:int = python_round(oy.min())
+	#var maxx:int = python_round(ox.max())
+	#var maxy:int = python_round(oy.max())
+	var minx:int = 0
+	var miny:int = 0
+	var maxx:int = area_size.x-1
+	var maxy:int = area_size.y-1
+	
+	
 	var xw:int = maxx - minx
 	var yw:int = maxy - miny
 
@@ -319,11 +325,11 @@ func calc_parameters(ox:Array[float], oy:Array[float], rr:float, reso:float) -> 
 	var P := AStarPara.new(minx, miny, maxx, maxy, xw, yw, reso, motion)
 	var obsmap := calc_obsmap(ox, oy, rr, P)
 
-	for k in obsmap.size():
+	#for k in obsmap.size():
 		#print(obsmap[k])
 		#print(EXPECTED_OBSMAP[k])
 		#assert(obsmap[k] == EXPECTED_OBSMAP[k])
-		pass
+		#pass
 
 	return [P, obsmap]
 
@@ -345,7 +351,7 @@ func calc_obsmap(ox:Array[float], oy:Array[float], rr:float, P:AStarPara) -> Arr
 	#obsmap_y.fill(false)
 	#var obsmap:Array[Array] = []
 	#obsmap.resize(P.xw)
-	##obsmap.fill(Array(obsmap_y))
+	#obsmap.fill(Array(obsmap_y))
 	#for n in obsmap.size():
 		#obsmap[n] = Array(obsmap_y)
 	
@@ -355,6 +361,8 @@ func calc_obsmap(ox:Array[float], oy:Array[float], rr:float, P:AStarPara) -> Arr
 		obsmap[n] = []
 		for nn in P.yw:
 			obsmap[n].append(false)
+			#obsmap[n].append(true)
+			# BUG if no obstacle is present it sets all as false
 
 	for x in range(P.xw):
 		var xx = x + P.minx

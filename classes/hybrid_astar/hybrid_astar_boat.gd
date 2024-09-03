@@ -147,6 +147,9 @@ class HybridAStarQueuePrior:
 		var item = queue.popitem()
 		#prints("item", item)
 		return item[0]  # pop out element with smallest priority
+	
+	func peek_item():
+		return queue.peekitem()[0]
 
 class KDTree:
 	var tree:Array[Vector2]
@@ -161,8 +164,8 @@ class KDTree:
 		return res
 
 func _init() -> void:
-	boat_sim.tests()
 	boat_sim.load_parameters()
+	boat_sim.tests()
 
 func python_round(num:float):
 	# Python rounds 0.5 toward floor
@@ -186,7 +189,10 @@ enum STATES {
 	ERROR
 }
 var final_path
-func hybrid_astar_planning(sx:float, sy:float, syaw:float, gx:float, gy:float, gyaw:float, ox:Array, oy:Array, xyreso:float, yawreso:float):
+var area_size:Vector2i
+func hybrid_astar_planning(area_size:Vector2i, sx:float, sy:float, syaw:float, gx:float, gy:float, gyaw:float, ox:Array, oy:Array, xyreso:float, yawreso:float):
+	self.area_size = area_size
+	
 	var sxr:float = python_round(sx / xyreso)
 	var syr:float = python_round(sy / xyreso)
 	var gxr:float = python_round(gx / xyreso)
@@ -208,7 +214,7 @@ func hybrid_astar_planning(sx:float, sy:float, syaw:float, gx:float, gy:float, g
 	
 	P = calc_parameters(ox, oy, xyreso, yawreso, kdtree)
 	
-	hmap = astar.calc_holonomic_heuristic_with_obstacle(ngoal, Array(P.ox, TYPE_FLOAT, "", null), Array(P.oy, TYPE_FLOAT, "", null), P.xyreso, 1.0)
+	hmap = astar.calc_holonomic_heuristic_with_obstacle(ngoal, area_size, Array(P.ox, TYPE_FLOAT, "", null), Array(P.oy, TYPE_FLOAT, "", null), P.xyreso, 1.0)
 			
 	var res_calc_motion_set = calc_motion_set()
 
@@ -239,9 +245,9 @@ func iterate() -> void:
 	res_update = update_node_with_analystic_expantion(n_curr, ngoal)
 	var update = res_update[0]
 	var fpath = res_update[1]
+	update = false # NOTE forcing to reach goal using A*
 	if update:
 		fnode = fpath
-		#break
 		final_path = extract_path(closed_set, fnode, nstart)
 		if final_path:
 			state = STATES.OK
@@ -279,6 +285,7 @@ func extract_path(closed, ngoal:HybridAStarNode, nstart:HybridAStarNode) -> Hybr
 	var node := ngoal
 
 	while true:
+		if node.pind < 0: break
 		#rx += node.x[::-1]
 		var inv_node_x := node.x
 		inv_node_x.reverse()
@@ -339,11 +346,17 @@ func get_next_boat_state(linear_velocity:Vector2,
 	var r := float(revs_per_second) * 10.0
 	var size_scale := 0.01
 	for _n in range(100000):
-		boat_sim.linear_velocity = local_data.force
-		boat_sim.angular_velocity = local_data.moment
-		var new_local_forces = boat_sim.get_boat_forces(r, rudder_angle)
-		if new_local_forces.moment > 10.0:
-			breakpoint
+		var _linear_velocity:Vector2 = local_data.force
+		var _angular_velocity:float = local_data.moment
+		#if _angular_velocity == -0.04300000000512:
+		#	breakpoint
+		var new_local_forces = boat_sim.extended_boat_model(
+			_linear_velocity,
+			_angular_velocity,
+			r,
+			rudder_angle)
+		#if new_local_forces.moment > 10.0:
+		#	breakpoint
 		local_data.force += new_local_forces.force * size_scale
 		local_data.moment += new_local_forces.moment
 		local_data.yaw -= local_data.moment
@@ -711,17 +724,21 @@ func calc_index(node:HybridAStarNode) -> int:
 
 
 func calc_parameters(ox:Array, oy:Array, xyreso, yawreso, kdtree:KDTree) -> HybridAStarPara:
-	var minx = python_round(ox.min() / xyreso)
-	var miny = python_round(oy.min() / xyreso)
-	var maxx = python_round(ox.max() / xyreso)
-	var maxy = python_round(oy.max() / xyreso)
+	#var minx:int = python_round(ox.min() / xyreso)
+	#var miny:int = python_round(oy.min() / xyreso)
+	#var maxx:int = python_round(ox.max() / xyreso)
+	#var maxy:int = python_round(oy.max() / xyreso)
+	var minx:int = 0
+	var miny:int = 0
+	var maxx:int = area_size.x-1
+	var maxy:int = area_size.y-1
 
-	var xw = maxx - minx
-	var yw = maxy - miny
+	var xw:int = maxx - minx
+	var yw:int = maxy - miny
 
-	var minyaw = python_round(-PI / yawreso) - 1
-	var maxyaw = python_round(PI / yawreso)
-	var yaww = maxyaw - minyaw
+	var minyaw:float = python_round(-PI / yawreso) - 1
+	var maxyaw:float = python_round(PI / yawreso)
+	var yaww:float = maxyaw - minyaw
 
 	return HybridAStarPara.new(minx, miny, minyaw, maxx, maxy, maxyaw,
 				xw, yw, yaww, xyreso, yawreso, ox, oy, kdtree)

@@ -15,7 +15,7 @@ var local_data := {
 	"yaw":0.0,
 	"position": Vector2.ZERO
 }
-	
+
 func _process(delta: float) -> void:
 	time += delta
 	if hybrid_astar.state == hybrid_astar.STATES.ITERATING:
@@ -53,9 +53,13 @@ func _process(delta: float) -> void:
 	%SteerLabel.text = "Steer: %dº" % rad_to_deg(anim[anim_frame].steer)
 	%RevsLabel.text = "Revs: %d" % r
 	var size_scale := 0.01
-	boat_sim.linear_velocity = local_data.force
-	boat_sim.angular_velocity = local_data.moment
-	var new_local_forces = boat_sim.get_boat_forces(r, anim[anim_frame].steer)
+	var linear_velocity:Vector2 = local_data.force
+	var angular_velocity:float = local_data.moment
+	var new_local_forces = boat_sim.extended_boat_model(
+		linear_velocity,
+		angular_velocity,
+		r,
+		anim[anim_frame].steer)
 	local_data.force += new_local_forces.force * size_scale
 	local_data.moment += new_local_forces.moment
 	local_data.yaw -= local_data.moment
@@ -79,15 +83,15 @@ func _ready() -> void:
 	heapdict_test.test_main()
 	
 	print("Loading BoatModel")
-	boat_sim.tests()
 	boat_sim.load_parameters()
+	boat_sim.tests()
 	
 	print("start!")
 	var x = 51
 	var y = 31
 	var sx = 10.0
 	var sy = 7.0
-	var syaw0 = deg_to_rad(45.0) # 120
+	var syaw0 = deg_to_rad(-45.0) # 120
 	var gx = 45.0
 	var gy = 10.0
 	var gyaw0 = deg_to_rad(90.0)
@@ -108,7 +112,7 @@ func _ready() -> void:
 		add_child(obs)
 
 	#var t0 = Time.get_ticks_msec()
-	hybrid_astar.hybrid_astar_planning(sx, sy, syaw0, gx, gy, gyaw0,
+	hybrid_astar.hybrid_astar_planning(Vector2i(10, 10), sx, sy, syaw0, gx, gy, gyaw0,
 								 ox, oy, hybrid_astar.config.XY_RESO, hybrid_astar.config.YAW_RESO)
 	#var t1 = Time.get_ticks_msec()
 	#print("running T: ", t1 - t0)
@@ -134,7 +138,7 @@ func iterate_pathfinding():
 	analystic_expantion_path_id = 0
 	hybrid_astar.iterate()
 	#draw_analystic_expantion_path()
-	#draw_nodes()
+	draw_nodes()
 	
 	if hybrid_astar.state == hybrid_astar.STATES.ITERATING:
 		return
