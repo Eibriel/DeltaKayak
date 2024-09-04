@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://cnr3fnhel1ora"]
+[gd_scene load_steps=8 format=3 uid="uid://cnr3fnhel1ora"]
 
 [ext_resource type="Script" path="res://experiments/improved_boat_b.gd" id="1_m0ec5"]
 
@@ -22,6 +22,9 @@ friction = 0.1
 radius = 1.38489
 height = 13.2257
 
+[sub_resource type="BoxShape3D" id="BoxShape3D_hn00r"]
+size = Vector3(5, 5, 5)
+
 [node name="Node3D" type="Node3D"]
 
 [node name="Control" type="Control" parent="."]
@@ -35,54 +38,47 @@ layout_mode = 0
 offset_right = 253.0
 offset_bottom = 105.0
 
-[node name="Label" type="Label" parent="Control/VBoxContainer"]
-layout_mode = 2
-text = "Time Horizon"
-
-[node name="TimeHorizonSlider" type="HSlider" parent="Control/VBoxContainer"]
+[node name="FrameLabel" type="Label" parent="Control/VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
-min_value = 1.0
-max_value = 10.0
-step = 0.5
-value = 1.0
+text = "Frame: 0"
 
-[node name="Label2" type="Label" parent="Control/VBoxContainer"]
-layout_mode = 2
-text = "Time Refresh"
-
-[node name="TimeRefreshSlider" type="HSlider" parent="Control/VBoxContainer"]
+[node name="TickLabel" type="Label" parent="Control/VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
-max_value = 10.0
-step = 0.1
+text = "Tick: 0"
 
-[node name="ForceValues" type="Label" parent="Control/VBoxContainer"]
+[node name="SteerLabel" type="Label" parent="Control/VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
-text = "F: 0,0,0"
+text = "0 rps
+0º"
 
-[node name="TorqueValues" type="Label" parent="Control/VBoxContainer"]
+[node name="RevsLabel" type="Label" parent="Control/VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
-text = "T: 0,0,0"
+text = "0 rps
+0º"
 
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 9.08728, 0)
 projection = 1
-size = 74.958
+size = 120.0
 far = 100.0
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_gr7uc")
 
 [node name="Boat" type="RigidBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.245529, 0, -0.00471163)
 axis_lock_linear_y = true
 axis_lock_angular_x = true
 axis_lock_angular_z = true
 mass = 10.0
 physics_material_override = SubResource("PhysicsMaterial_3fjc7")
 center_of_mass_mode = 1
+linear_damp_mode = 1
+angular_damp_mode = 1
 script = ExtResource("1_m0ec5")
 
 [node name="CollisionShape3D2" type="CollisionShape3D" parent="Boat"]
@@ -96,9 +92,17 @@ size = Vector3(2.6272, 0.207275, 13.1758)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -6.86028)
 size = Vector3(1.91016, 0.207275, 0.49585)
 
+[node name="Rudder" type="Node3D" parent="Boat"]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 6.56357)
+
+[node name="CSGBox3D3" type="CSGBox3D" parent="Boat/Rudder"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1.05464)
+size = Vector3(0.399414, 0.207275, 2.04858)
+
 [node name="NavTarget" type="CSGSphere3D" parent="."]
 unique_name_in_owner = true
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16.4123, 0, -21.5316)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 21.2119, 0, -19.6927)
 radius = 1.0
 
 [node name="NavVelocity" type="CSGSphere3D" parent="NavTarget"]
@@ -129,5 +133,19 @@ unique_name_in_owner = true
 unique_name_in_owner = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
 
-[connection signal="drag_ended" from="Control/VBoxContainer/TimeHorizonSlider" to="Boat" method="_on_time_horizon_slider_drag_ended"]
-[connection signal="drag_ended" from="Control/VBoxContainer/TimeRefreshSlider" to="Boat" method="_on_time_refresh_slider_drag_ended"]
+[node name="StaticBody3D" type="RigidBody3D" parent="."]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 17.7983, 0, -9.31948)
+axis_lock_linear_y = true
+axis_lock_angular_x = true
+axis_lock_angular_z = true
+mass = 100.0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
+shape = SubResource("BoxShape3D_hn00r")
+
+[node name="CollisionPolygon" type="CSGPolygon3D" parent="."]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, -36.3912, 0, 6.38443)
+use_collision = true
+polygon = PackedVector2Array(15.0525, -23.3145, 14.9235, -10.9294, -23.7801, -10.6713, -23.3931, 3.13295, 33.8882, 2.6169, 33.8882, 12.4218, -31.0048, 11.9058, -29.8437, -22.5404)

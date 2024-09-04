@@ -447,12 +447,15 @@ func extended_boat_model(
 		angular_velocity:float,
 		revs_per_second:float,
 		rudder_angle:float) -> BoatForces:
+	
+	var adjusted_linear_velocity = Vector2(linear_velocity)
 	if revs_per_second <0:
-		linear_velocity = linear_velocity.rotated(deg_to_rad(180))
+		adjusted_linear_velocity = linear_velocity.rotated(deg_to_rad(180))
 		rudder_angle *= -1.0
-	var rforces := get_boat_forces(linear_velocity, angular_velocity, abs(revs_per_second), rudder_angle)
+	var rforces := get_boat_forces(adjusted_linear_velocity, angular_velocity, abs(revs_per_second), rudder_angle)
 	if revs_per_second <0:
 		rforces.force = rforces.force.rotated(deg_to_rad(180))
+		
 	return rforces
 
 func get_boat_forces(
@@ -475,7 +478,7 @@ func get_boat_forces(
 	pre_inflow_velocity_component_to_rudder = inflow_velocity_component_to_rudder()
 	pre_rudder_normal_force = rudder_normal_force()
 	
-	# Wind is not computed
+	# NOTE Wind is not computed
 	var X_H:float = surge_force_ship_hull() #X_H
 	var X_R:float = surge_force_by_steering() #X_R
 	var X_P:float = surge_force_by_propeller() #X_P

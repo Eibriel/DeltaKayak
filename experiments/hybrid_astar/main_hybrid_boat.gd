@@ -9,6 +9,8 @@ var anim_tick := 0
 var hybrid_astar := HybridAStarBoat.new()
 var boat_sim := BoatModel.new()
 
+var end_search := false
+
 var local_data := {
 	"force": Vector2.ZERO,
 	"moment": 0.0,
@@ -112,8 +114,16 @@ func _ready() -> void:
 		add_child(obs)
 
 	#var t0 = Time.get_ticks_msec()
-	hybrid_astar.hybrid_astar_planning(Vector2i(10, 10), sx, sy, syaw0, gx, gy, gyaw0,
-								 ox, oy, hybrid_astar.config.XY_RESO, hybrid_astar.config.YAW_RESO)
+	hybrid_astar.hybrid_astar_planning(
+		Vector2.ZERO,
+		0.0,
+		Vector2i(x, y),
+		sx, sy,
+		syaw0,
+		gx, gy,
+		gyaw0,
+		ox, oy,
+		hybrid_astar.config.XY_RESO, hybrid_astar.config.YAW_RESO)
 	#var t1 = Time.get_ticks_msec()
 	#print("running T: ", t1 - t0)
 	for hx in hybrid_astar.hmap.size():
@@ -140,13 +150,24 @@ func iterate_pathfinding():
 	#draw_analystic_expantion_path()
 	draw_nodes()
 	
+	if end_search:
+		hybrid_astar.state = hybrid_astar.STATES.OK
+	
 	if hybrid_astar.state == hybrid_astar.STATES.ITERATING:
 		return
 	if hybrid_astar.state != hybrid_astar.STATES.OK:
 		print(hybrid_astar.STATES.find_key(hybrid_astar.state))
 		return
 	
-	var path = hybrid_astar.final_path
+	var path
+	var path_cost
+	for kk in hybrid_astar.closed_set:
+		path = hybrid_astar.closed_set[kk]
+		pass
+		
+	#if path.pind < 0: return
+	path = hybrid_astar.extract_any_path(hybrid_astar.closed_set, path, hybrid_astar.ngoal)
+	#var path = hybrid_astar.final_path
 	
 	for k in path.x.size():
 		anim.append({
@@ -199,6 +220,8 @@ func _input(event: InputEvent) -> void:
 		iterate_pathfinding()
 	elif event.is_action_pressed("ui_down"):
 		draw_analystic_expantion_path()
+	elif event.is_action_pressed("ui_up"):
+		end_search = true
 
 func design_obstacles(x, y) -> Array:
 	var ox := []

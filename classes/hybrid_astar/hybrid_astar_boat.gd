@@ -17,8 +17,8 @@ class C:  # Parameter config
 	var COLLISION_CHECK_STEP := 5  # skip number for collision check
 	# var EXTEND_BOUND := 1  # collision check range extended
 #
-	var GEAR_COST := 1000.0 #100.0  # switch back penalty cost
-	var BACKWARD_COST := 5000.0  # backward penalty cost
+	var GEAR_COST := 10.0 #100.0  # switch back penalty cost
+	var BACKWARD_COST := 5.0  # backward penalty cost
 	var STEER_CHANGE_COST := 5.0  # steer angle change penalty cost
 	var STEER_ANGLE_COST := 1.0  # steer angle penalty cost
 	var H_COST := 15.0  # Heuristic cost penalty cost
@@ -190,7 +190,20 @@ enum STATES {
 }
 var final_path
 var area_size:Vector2i
-func hybrid_astar_planning(area_size:Vector2i, sx:float, sy:float, syaw:float, gx:float, gy:float, gyaw:float, ox:Array, oy:Array, xyreso:float, yawreso:float):
+func hybrid_astar_planning(
+		initial_linear_velocity:Vector2,
+		initial_angular_velocity:float,
+		area_size:Vector2i,
+		sx:float,
+		sy:float,
+		syaw:float,
+		gx:float,
+		gy:float,
+		gyaw:float,
+		ox:Array,
+		oy:Array,
+		xyreso:float,
+		yawreso:float):
 	self.area_size = area_size
 	
 	var sxr:float = python_round(sx / xyreso)
@@ -202,7 +215,7 @@ func hybrid_astar_planning(area_size:Vector2i, sx:float, sy:float, syaw:float, g
 
 	nstart = HybridAStarNode.new(
 		sxr, syr, syawr, 1, [sx], [sy], [syaw], [1], 0.0, 0.0, -1,
-		[Vector2.ZERO], [0.0], 0, 0, [0.0], [0])
+		[initial_linear_velocity], [initial_angular_velocity], 0, 0, [0.0], [0])
 	ngoal = HybridAStarNode.new(
 		gxr, gyr, gyawr, 1, [gx], [gy], [gyaw], [1], 0.0, 0.0, -1,
 		[Vector2.ZERO], [0.0], 0, 0, [0.0], [0])
@@ -242,18 +255,19 @@ func iterate() -> void:
 	open_set.erase(ind)
 
 	# Is there a direct path to goal?
-	res_update = update_node_with_analystic_expantion(n_curr, ngoal)
-	var update = res_update[0]
-	var fpath = res_update[1]
-	update = false # NOTE forcing to reach goal using A*
-	if update:
-		fnode = fpath
-		final_path = extract_path(closed_set, fnode, nstart)
-		if final_path:
-			state = STATES.OK
-		else:
-			state = STATES.ERROR
-		return
+	var use_analystic_expantion:=false
+	if use_analystic_expantion:
+		res_update = update_node_with_analystic_expantion(n_curr, ngoal)
+		var update = res_update[0]
+		var fpath = res_update[1]
+		if update:
+			fnode = fpath
+			final_path = extract_path(closed_set, fnode, nstart)
+			if final_path:
+				state = STATES.OK
+			else:
+				state = STATES.ERROR
+			return
 	
 	for i in range(len(steer_set)):
 		var node := calc_next_node(n_curr, ind, steer_set[i], direc_set[i], i)
@@ -273,6 +287,66 @@ func iterate() -> void:
 			if open_set[node_ind].cost > node.cost:
 				open_set[node_ind] = node
 				qp.put_item(node_ind, calc_hybrid_cost(node, hmap))
+
+func extract_any_path(closed, ngoal:HybridAStarNode, nstart:HybridAStarNode) -> HybridAStarPath:
+	var rx:Array[float] = []
+	var ry:Array[float] = []
+	var ryaw:Array[float] = []
+	var direc:Array[int] = []
+	var steer:Array[float] = []
+	var ticks:Array[int] = []
+	var cost := 0.0
+	var node := ngoal
+
+	while true:
+		#if node.pind <= 0: break
+		#rx += node.x[::-1]
+		var inv_node_x := node.x
+		#inv_node_x = inv_node_x.slice(1)
+		inv_node_x.reverse()
+		rx.append_array(inv_node_x)
+		#ry += node.y[::-1]
+		var inv_node_y := node.y
+		#inv_node_y = inv_node_y.slice(1)
+		inv_node_y.reverse()
+		ry.append_array(inv_node_y)
+		#ryaw += node.yaw[::-1]
+		var inv_node_yaw := node.yaw
+		#inv_node_yaw = inv_node_yaw.slice(1)
+		inv_node_yaw.reverse()
+		ryaw.append_array(inv_node_yaw)
+		#direc += node.directions[::-1]
+		var inv_direc := node.directions
+		#inv_direc = inv_direc.slice(1)
+		inv_direc.reverse()
+		direc.append_array(inv_direc)
+		cost += node.cost
+		# Added for boat:
+		var inv_steer := node.steers
+		#inv_steer = inv_steer.slice(1)
+		inv_steer.reverse()
+		steer.append_array(inv_steer)
+		var inv_ticks := node.ticks
+		#inv_ticks = inv_ticks.slice(1)
+		inv_ticks.reverse()
+		ticks.append_array(inv_ticks)
+
+		if is_same_grid(node, nstart):
+			break
+		if node.pind < 0: break
+		
+		node = closed[node.pind]
+
+	rx.reverse()
+	ry.reverse()
+	ryaw.reverse()
+	direc.reverse()
+	steer.reverse()
+	ticks.reverse()
+
+	if direc.size() > 1:
+		direc[0] = direc[1]
+	return HybridAStarPath.new(rx, ry, ryaw, direc, cost, steer, ticks)
 
 func extract_path(closed, ngoal:HybridAStarNode, nstart:HybridAStarNode) -> HybridAStarPath:
 	var rx:Array[float] = []

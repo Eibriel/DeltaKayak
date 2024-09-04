@@ -192,7 +192,6 @@ vrs/mode=2
 
 [xr]
 
-openxr/enabled=true
 openxr/reference_space=0
 openxr/startup_alert=false
 shaders/enabled=true
