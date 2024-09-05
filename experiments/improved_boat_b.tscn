@@ -48,6 +48,11 @@ unique_name_in_owner = true
 layout_mode = 2
 text = "Tick: 0"
 
+[node name="SubTickLabel" type="Label" parent="Control/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Tick: 0"
+
 [node name="SteerLabel" type="Label" parent="Control/VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
@@ -135,7 +140,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
 
 [node name="StaticBody3D" type="RigidBody3D" parent="."]
 unique_name_in_owner = true
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 17.7983, 0, -9.31948)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 47.6432, 0, -3.539)
 axis_lock_linear_y = true
 axis_lock_angular_x = true
 axis_lock_angular_z = true
