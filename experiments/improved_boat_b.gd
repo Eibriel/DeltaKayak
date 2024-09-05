@@ -15,6 +15,7 @@ var origin := Vector2(0,0)
 
 var lines_mat := StandardMaterial3D.new()
 var cost_mat := StandardMaterial3D.new()
+var volume_mat := StandardMaterial3D.new()
 
 var time:float
 var anim:Array[Dictionary]
@@ -45,6 +46,9 @@ func _ready() -> void:
 	
 	cost_mat.albedo_color = Color.ORANGE_RED
 	cost_mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	
+	volume_mat.albedo_color = Color.ROYAL_BLUE
+	volume_mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 
 func set_hybrid_astar():
 	hybrid_astar = HybridAStarBoat.new()
@@ -53,9 +57,9 @@ func set_hybrid_astar():
 	goal_pos = position_godot_to_hybridastar(Global.tri_to_bi(%NavTarget.global_position))
 	goal_yaw = rotation_godot_to_hybridastar(%NavTarget.rotation.y)
 
-	#var obs_res:Array[Vector2i] = get_obstacles()
-	var ox:Array[int] = get_obstacles()[0]
-	var oy:Array[int] = get_obstacles()[1]
+	var obs_res = get_obstacles()
+	var ox:Array[int] = obs_res[0]
+	var oy:Array[int] = obs_res[1]
 	for c in %Obstacles.get_children():
 		c.queue_free()
 	for n in ox.size():
@@ -65,11 +69,13 @@ func set_hybrid_astar():
 		obs.position.z = pos.y
 		%Obstacles.add_child(obs)
 	
-	var current_linear_velocity := force_godot_to_hybridastar(Global.tri_to_bi(linear_velocity)) #Global.tri_to_bi(linear_velocity).rotated(rotation.y)
+	var current_linear_velocity := force_godot_to_hybridastar(Global.tri_to_bi(linear_velocity))
+	
+	prints(current_linear_velocity, angular_velocity.y)
 	
 	hybrid_astar.hybrid_astar_planning(
-		current_linear_velocity * 0.0,
-		angular_velocity.y * 0.05,
+		current_linear_velocity * 0.0, # TODO pass velocity
+		angular_velocity.y * 0.0, # TODO
 		area_size,
 		start_pos.x,
 		start_pos.y,
@@ -91,7 +97,21 @@ func _physics_process(delta: float) -> void:
 		set_hybrid_astar()
 	iterate_pathfinding()
 	get_foces(delta)
+	draw_boat_volume()
 	#apply_forces(delta)
+
+func draw_boat_volume():
+	var pos := position_godot_to_hybridastar(Global.tri_to_bi(global_position))
+	var yaw := rotation_godot_to_hybridastar(rotation.y)
+	var volume:Array[Vector2i] = hybrid_astar.get_shape(pos, yaw)
+	for c in %StartPointIndicator.get_children():
+		c.queue_free()
+	for v in volume:
+		var vb:= CSGBox3D.new()
+		vb.material = volume_mat
+		%StartPointIndicator.add_child(vb)
+		vb.global_position = Global.bi_to_tri(position_hybridastar_to_godot(Vector2(v)))
+	#print(volume)
 
 func apply_forces(delta: float) -> void:
 	if not anim_playing: return
@@ -141,10 +161,7 @@ func get_foces(delta: float) -> void:
 	
 	%SteerLabel.text = "Steer: %dº" % rad_to_deg(anim[anim_frame].steer)
 	%RevsLabel.text = "Revs: %d" % r
-	if r < 0:
-		%Rudder.rotation.y = -anim[anim_frame].steer
-	else:
-		%Rudder.rotation.y = -anim[anim_frame].steer
+	%Rudder.rotation.y = -anim[anim_frame].steer
 	
 	var size_scale := 0.01
 	var _linear_velocity:Vector2 = local_data.force
@@ -157,7 +174,7 @@ func get_foces(delta: float) -> void:
 	local_data.force += new_local_forces.force * size_scale
 	local_data.moment += new_local_forces.moment
 	local_data.yaw -= local_data.moment
-	local_data.position += local_data.force.rotated(local_data.yaw+deg_to_rad(90+180))
+	local_data.position += local_data.force.rotated(local_data.yaw+deg_to_rad(-90))
 	
 	var pos := position_hybridastar_to_godot(Vector2(local_data.position.x, local_data.position.y))
 	
@@ -214,7 +231,7 @@ func _integrate_forces(state: PhysicsDirectBodyState3D) -> void:
 func iterate_pathfinding():
 	if path_found: return
 	if hybrid_astar.state != hybrid_astar.STATES.ITERATING:
-		print("Not iterating")
+		#print("Not iterating")
 		return
 	hybrid_astar.iterate()
 	draw_nodes()
@@ -324,8 +341,15 @@ func get_obstacles() -> Array:
 		ox.append(x - 1)
 		oy.append(i)
 	
+	var pos := position_godot_to_hybridastar(Global.tri_to_bi(global_position))
+	var yaw := rotation_godot_to_hybridastar(rotation.y)
+	var volume:Array[Vector2i] = hybrid_astar.get_shape(pos, yaw)
 	for xx in range(1, x-1):
 		for yy in range(1, y-1):
+			# NOTE: dont set as obstacle cells that are inside
+			# bote's volume. That creates issues when solving.
+			if Vector2i(xx, yy) in volume: continue
+			#
 			var point := position_hybridastar_to_godot(Vector2(xx, yy))
 			if Geometry2D.is_point_in_polygon(point-Global.tri_to_bi(%CollisionPolygon.global_position), %CollisionPolygon.polygon):
 				#print(point)

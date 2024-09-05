@@ -149,3 +149,7 @@ unique_name_in_owner = true
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, -36.3912, 0, 6.38443)
 use_collision = true
 polygon = PackedVector2Array(15.0525, -23.3145, 14.9235, -10.9294, -23.7801, -10.6713, -23.3931, 3.13295, 33.8882, 2.6169, 33.8882, 12.4218, -31.0048, 11.9058, -29.8437, -22.5404)
+
+[node name="StartPointIndicator" type="Node3D" parent="."]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 0)

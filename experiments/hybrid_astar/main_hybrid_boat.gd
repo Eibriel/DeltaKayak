@@ -115,7 +115,7 @@ func _ready() -> void:
 
 	#var t0 = Time.get_ticks_msec()
 	hybrid_astar.hybrid_astar_planning(
-		Vector2.ZERO,
+		Vector2(1, 0)* 0.1,
 		0.0,
 		Vector2i(x, y),
 		sx, sy,
@@ -160,14 +160,17 @@ func iterate_pathfinding():
 		return
 	
 	var path
-	var path_cost
+	var path_length:=-1
 	for kk in hybrid_astar.closed_set:
-		path = hybrid_astar.closed_set[kk]
-		pass
+		if hybrid_astar.closed_set[kk].x.size() > path_length:
+			path_length = hybrid_astar.closed_set[kk].x.size()
+			path = hybrid_astar.closed_set[kk]
 		
 	#if path.pind < 0: return
 	path = hybrid_astar.extract_any_path(hybrid_astar.closed_set, path, hybrid_astar.ngoal)
 	#var path = hybrid_astar.final_path
+	
+	# BUG paths returned are too short
 	
 	for k in path.x.size():
 		anim.append({
@@ -178,6 +181,7 @@ func iterate_pathfinding():
 			"steer": path.steer[k],
 			"ticks": path.ticks[k]
 		})
+	prints(path.x.size(), anim.size())
 
 func draw_nodes():
 	for c in %Nodes.get_children():

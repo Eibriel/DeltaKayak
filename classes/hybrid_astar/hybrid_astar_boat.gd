@@ -23,9 +23,9 @@ class C:  # Parameter config
 	var STEER_ANGLE_COST := 1.0  # steer angle penalty cost
 	var H_COST := 15.0  # Heuristic cost penalty cost
 #
-	var RF := 4.5  # [m] distance from rear to vehicle front end of vehicle
-	var RB := 1.0  # [m] distance from rear to vehicle back end of vehicle
-	var W := 3.0  # [m] width of vehicle
+	var RF := 3.0  # 4.5 [m] distance from rear to vehicle front end of vehicle
+	var RB := 3.0  # 1.0 [m] distance from rear to vehicle back end of vehicle
+	var W := 1.0  # 3.0 [m] width of vehicle
 	var WD := 0.7 * W  # [m] distance between left-right wheels
 	var WB := 3.5  # [m] Wheel base
 	var TR := 0.5  # [m] Tyre radius
@@ -576,15 +576,15 @@ func is_index_ok(xind:int, yind:int, xlist:Array[float], ylist:Array[float], yaw
 	var ind = range(0, len(xlist), config.COLLISION_CHECK_STEP)
 
 	#nodex = [xlist[k] for k in ind]
-	var nodex := []
+	var nodex:Array[float] = []
 	for k in ind:
 		nodex.append(xlist[k])
 	#nodey = [ylist[k] for k in ind]
-	var nodey := []
+	var nodey:Array[float] = []
 	for k in ind:
 		nodey.append(ylist[k])
 	#nodeyaw = [yawlist[k] for k in ind]
-	var nodeyaw := []
+	var nodeyaw:Array[float] = []
 	for k in ind:
 		nodeyaw.append(yawlist[k])
 
@@ -655,15 +655,15 @@ func analystic_expantion(node:HybridAStarNode, ngoal:HybridAStarNode):
 		var ind = range(0, len(path.x), config.COLLISION_CHECK_STEP)
 
 		#pathx = [path.x[k] for k in ind]
-		var pathx := []
+		var pathx:Array[float]= []
 		for k in ind:
 			pathx.append(path.x[k])
 		#pathy = [path.y[k] for k in ind]
-		var pathy := []
+		var pathy:Array[float]= []
 		for k in ind:
 			pathy.append(path.y[k])
 		#pathyaw = [path.yaw[k] for k in ind]
-		var pathyaw := []
+		var pathyaw:Array[float]= []
 		for k in ind:
 			pathyaw.append(path.yaw[k])
 
@@ -673,8 +673,7 @@ func analystic_expantion(node:HybridAStarNode, ngoal:HybridAStarNode):
 	return null
 
 
-func is_collision(x, y, yaw) -> bool:
-	#for ix, iy, iyaw in zip(x, y, yaw):
+func is_collision(x:Array[float], y:Array[float], yaw:Array[float]) -> bool:
 	var ids:Array[int]
 	for k in len(x):
 		var ix = x[k]
@@ -702,6 +701,36 @@ func is_collision(x, y, yaw) -> bool:
 				return true
 
 	return false
+
+## Returns the cells taken by the boat
+func get_shape(pos:Vector2, yaw:float) -> Array[Vector2i]:
+	var volume_cells:Array[Vector2i] = []
+	#var ids:Array[int]
+	
+	var ix = pos.x
+	var iy = pos.y
+	var iyaw = yaw
+	var d = 1
+	var dl = (config.RF - config.RB) / 2.0
+	var r = (config.RF + config.RB) / 2.0 + d
+
+	var cx = ix + dl * cos(iyaw)
+	var cy = iy + dl * sin(iyaw)
+	
+	var points:Array[Vector2i]=[]
+	for x in range(int(pos.x)-5, int(pos.x)+5):
+		for y in range(int(pos.y)-5, int(pos.y)+5):
+			points.append(Vector2i(x, y))
+	for i in points:
+		var xo = i.x - cx
+		var yo = i.y - cy
+		var dx = xo * cos(iyaw) + yo * sin(iyaw)
+		var dy = -xo * sin(iyaw) + yo * cos(iyaw)
+
+		if abs(dx) < r and abs(dy) < config.W / 2 + d:
+			volume_cells.append(Vector2i(i.x, i.y))
+
+	return volume_cells
 
 
 func calc_rs_path_cost(rspath) -> float:
