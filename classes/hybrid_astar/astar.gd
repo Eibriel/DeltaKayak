@@ -308,14 +308,14 @@ func calc_index(node:AStarNode, P:AStarPara) -> int:
 func calc_parameters(area_size:Vector2i, ox:Array[float], oy:Array[float], rr:float, reso:float) -> Array:
 	# rr: Robot Radius
 	# reso: grid resolution
-	#var minx:int = python_round(ox.min())
-	#var miny:int = python_round(oy.min())
-	#var maxx:int = python_round(ox.max())
-	#var maxy:int = python_round(oy.max())
-	var minx:int = 0
-	var miny:int = 0
-	var maxx:int = area_size.x-1
-	var maxy:int = area_size.y-1
+	var minx:int = python_round(ox.min())
+	var miny:int = python_round(oy.min())
+	var maxx:int = python_round(ox.max())
+	var maxy:int = python_round(oy.max())
+	#var minx:int = 0
+	#var miny:int = 0
+	#var maxx:int = area_size.x-1
+	#var maxy:int = area_size.y-1
 	
 	
 	var xw:int = maxx - minx

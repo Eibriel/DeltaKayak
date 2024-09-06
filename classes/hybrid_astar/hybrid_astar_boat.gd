@@ -17,8 +17,8 @@ class C:  # Parameter config
 	var COLLISION_CHECK_STEP := 5  # skip number for collision check
 	# var EXTEND_BOUND := 1  # collision check range extended
 #
-	var GEAR_COST := 10.0 #100.0  # switch back penalty cost
-	var BACKWARD_COST := 5.0  # backward penalty cost
+	var GEAR_COST := 10.0 # 10.0  # switch back penalty cost
+	var BACKWARD_COST := 5.0  # 5.0 backward penalty cost
 	var STEER_CHANGE_COST := 5.0  # steer angle change penalty cost
 	var STEER_ANGLE_COST := 1.0  # steer angle penalty cost
 	var H_COST := 15.0  # Heuristic cost penalty cost
@@ -56,7 +56,7 @@ class HybridAStarNode:
 	func _init(xind:int, yind:int, yawind:int, direction:int, x:Array[float], y:Array[float],
 				yaw:Array[float], directions:Array[int], steer:float, cost:float, pind:int,
 				linear_velocity:Array[Vector2], angular_velocity:Array[float],
-				xvelind:int, yvelint:int, steers:Array[float], ticks:Array[int]):
+				xvelind:int, yvelind:int, steers:Array[float], ticks:Array[int]):
 		self.xind = xind
 		self.yind = yind
 		self.yawind = yawind
@@ -72,9 +72,30 @@ class HybridAStarNode:
 		self.linear_velocity = linear_velocity
 		self.angular_velocity = angular_velocity
 		self.xvelind = xvelind
-		self.yvelind = yvelint
+		self.yvelind = yvelind
 		self.steers = steers
 		self.ticks = ticks
+	
+	func clone() -> HybridAStarNode :
+		return HybridAStarNode.new(
+			xind,
+			yind,
+			yawind,
+			direction,
+			Array(x, TYPE_FLOAT, "", null),
+			Array(y, TYPE_FLOAT, "", null),
+			Array(yaw, TYPE_FLOAT, "", null),
+			Array(directions, TYPE_INT, "", null),
+			steer,
+			cost,
+			pind,
+			Array(linear_velocity, TYPE_VECTOR2, "", null),
+			Array(angular_velocity, TYPE_FLOAT, "", null),
+			xvelind,
+			yvelind,
+			Array(steers, TYPE_FLOAT, "", null),
+			Array(ticks, TYPE_INT, "", null)
+		)
 
 class HybridAStarPara:
 	var minx
@@ -166,6 +187,16 @@ class KDTree:
 func _init() -> void:
 	boat_sim.load_parameters()
 	boat_sim.tests()
+	tests()
+
+func tests()->void:
+	var test_node := HybridAStarNode.new(
+		0, 0, 0, 1, [0.0, 1.0], [0.0], [0.0], [1], 0.0, 0.0, -1,
+		[Vector2.ZERO], [0.0], 0, 0, [0.0], [0])
+	var clone_node := test_node.clone()
+	clone_node.x.reverse()
+	print(test_node.x)
+	assert(test_node.x == [0.0, 1.0])
 
 func python_round(num:float):
 	# Python rounds 0.5 toward floor
@@ -255,19 +286,21 @@ func iterate() -> void:
 	open_set.erase(ind)
 
 	# Is there a direct path to goal?
-	var use_analystic_expantion:=false
+	var use_analystic_expantion:=true
+	var stop_on_found:=false
 	if use_analystic_expantion:
-		res_update = update_node_with_analystic_expantion(n_curr, ngoal)
+		res_update = update_node_with_analystic_expantion(n_curr.clone(), ngoal.clone(), true)
 		var update = res_update[0]
 		var fpath = res_update[1]
 		if update:
-			fnode = fpath
-			final_path = extract_path(closed_set, fnode, nstart)
-			if final_path:
-				state = STATES.OK
-			else:
-				state = STATES.ERROR
-			return
+			fnode = fpath.clone()
+			final_path = extract_path(closed_set, fnode, nstart.clone())
+			if stop_on_found:
+				if final_path:
+					state = STATES.OK
+				else:
+					state = STATES.ERROR
+				return
 	
 	for i in range(len(steer_set)):
 		var node := calc_next_node(n_curr, ind, steer_set[i], direc_set[i], i)
@@ -356,32 +389,34 @@ func extract_path(closed, ngoal:HybridAStarNode, nstart:HybridAStarNode) -> Hybr
 	var steer:Array[float] = []
 	var ticks:Array[int] = []
 	var cost := 0.0
-	var node := ngoal
+	var node := ngoal.clone()
 
 	while true:
-		if node.pind < 0: break
+		# NOTE, use "duplicate()" to copy an Array
+		# otherwise will create a reference, and modify
+		# the original as well
 		#rx += node.x[::-1]
-		var inv_node_x := node.x
+		var inv_node_x := node.x.duplicate()
 		inv_node_x.reverse()
 		rx.append_array(inv_node_x)
 		#ry += node.y[::-1]
-		var inv_node_y := node.y
+		var inv_node_y := node.y.duplicate()
 		inv_node_y.reverse()
 		ry.append_array(inv_node_y)
 		#ryaw += node.yaw[::-1]
-		var inv_node_yaw := node.yaw
+		var inv_node_yaw := node.yaw.duplicate()
 		inv_node_yaw.reverse()
 		ryaw.append_array(inv_node_yaw)
 		#direc += node.directions[::-1]
-		var inv_direc := node.directions
+		var inv_direc := node.directions.duplicate()
 		inv_direc.reverse()
 		direc.append_array(inv_direc)
 		cost += node.cost
 		# Added for boat:
-		var inv_steer := node.steers
+		var inv_steer := node.steers.duplicate()
 		inv_steer.reverse()
 		steer.append_array(inv_steer)
-		var inv_ticks := node.ticks
+		var inv_ticks := node.ticks.duplicate()
 		inv_ticks.reverse()
 		ticks.append_array(inv_ticks)
 
@@ -594,8 +629,8 @@ func is_index_ok(xind:int, yind:int, xlist:Array[float], ylist:Array[float], yaw
 	return true
 
 
-func update_node_with_analystic_expantion(n_curr:HybridAStarNode, ngoal:HybridAStarNode) -> Array:
-	var path = analystic_expantion(n_curr, ngoal)  # rs path: n -> ngoal
+func update_node_with_analystic_expantion(n_curr:HybridAStarNode, ngoal:HybridAStarNode, ignore_collisions:=false) -> Array:
+	var path = analystic_expantion(n_curr, ngoal, ignore_collisions)  # rs path: n -> ngoal
 
 	if not path:
 		return [false, null]
@@ -629,7 +664,7 @@ func update_node_with_analystic_expantion(n_curr:HybridAStarNode, ngoal:HybridAS
 	return [true, fpath]
 
 var analystic_expantion_paths
-func analystic_expantion(node:HybridAStarNode, ngoal:HybridAStarNode):
+func analystic_expantion(node:HybridAStarNode, ngoal:HybridAStarNode, ignore_collisions:=false):
 	var sx = node.x[-1]
 	var sy = node.y[-1]
 	var syaw = node.yaw[-1]
@@ -649,6 +684,9 @@ func analystic_expantion(node:HybridAStarNode, ngoal:HybridAStarNode):
 	var pq := HybridAStarQueuePrior.new()
 	for path in paths:
 		pq.put_item(path, calc_rs_path_cost(path))
+
+	if ignore_collisions:
+		return pq.get_item() 
 
 	while not pq.empty():
 		var path = pq.get_item()
@@ -827,14 +865,14 @@ func calc_index(node:HybridAStarNode) -> int:
 
 
 func calc_parameters(ox:Array, oy:Array, xyreso, yawreso, kdtree:KDTree) -> HybridAStarPara:
-	#var minx:int = python_round(ox.min() / xyreso)
-	#var miny:int = python_round(oy.min() / xyreso)
-	#var maxx:int = python_round(ox.max() / xyreso)
-	#var maxy:int = python_round(oy.max() / xyreso)
-	var minx:int = 0
-	var miny:int = 0
-	var maxx:int = area_size.x-1
-	var maxy:int = area_size.y-1
+	var minx:int = python_round(ox.min() / xyreso)
+	var miny:int = python_round(oy.min() / xyreso)
+	var maxx:int = python_round(ox.max() / xyreso)
+	var maxy:int = python_round(oy.max() / xyreso)
+	#var minx:int = 0
+	#var miny:int = 0
+	#var maxx:int = area_size.x-1
+	#var maxy:int = area_size.y-1
 
 	var xw:int = maxx - minx
 	var yw:int = maxy - miny

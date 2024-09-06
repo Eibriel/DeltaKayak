@@ -212,50 +212,33 @@ func get_foces(delta: float) -> void:
 		local_data.yaw -= local_data.angular_velocity
 		
 		var rotated_linear_velocity: Vector2= force_mmg_to_godot(local_data.linear_velocity, local_data.yaw)
-		#var rotated_force: Vector2= -local_data.force.rotated(-rotation.y+deg_to_rad(90))
 		
 		var damp_number := 0.18
 		var angular_acceleration:float = local_data.angular_velocity - previous_angular_velocity*damp_number
 		var angular_force:float = angular_acceleration * mass
 		previous_angular_velocity = local_data.angular_velocity
-		var torque_multiplier := 180.0
+		var torque_multiplier := 190.0
 		torque_to_apply = angular_force*torque_multiplier
 		
 		damp_number = 0.12
 		var linear_acceleration:Vector2 = rotated_linear_velocity - previous_linear_velocity * damp_number
 		var linear_force:Vector2 = linear_acceleration * mass
 		previous_linear_velocity = rotated_linear_velocity
-		var force_multiplier := 20.0
+		var force_multiplier := 22.0
 		force_to_apply = Global.bi_to_tri(linear_force)*force_multiplier
 	
-	# Apply forces 90 times per second
-	# Apply forces 30 times per second
+	# Apply forces on every physics tick
+	# NOTE no need to multiply by delta!
 	apply_torque(Vector3(0, torque_to_apply, 0))
 	apply_central_force(force_to_apply)
 	
 	const use_position:=false
 	if use_position:
+		# BUG position is not aligned with the path for some reason
 		var pos := position_hybridastar_to_godot(Vector2(local_data.position.x, local_data.position.y)) + center*2
 		global_position.x = pos.x
 		global_position.z = pos.y
 		rotation.y = -local_data.yaw + deg_to_rad(90)
-		
-	#var use_forces = false
-	#if use_forces:
-		#var use_velocity:= false
-		#if use_velocity:
-			#linear_velocity.x = rotated_linear_velocity.x * mass * area_scale
-			#linear_velocity.z = rotated_linear_velocity.y * mass * area_scale
-			#angular_velocity.y = local_data.moment * mass
-		#else:
-			#var force_scale := 100000
-			#apply_central_force(Global.bi_to_tri(new_local_forces.force.rotated(local_data.yaw)) * 130)
-			##print(new_local_forces.moment*force_scale)
-			#apply_torque(Vector3(0, new_local_forces.moment*force_scale, 0))
-	#else:
-		#position.x = pos.x
-		#position.z = pos.y
-		#rotation.y = -local_data.yaw
 		
 	anim_subtick += 1
 	assert(Engine.physics_ticks_per_second * anim_ticks_delta > 0)
