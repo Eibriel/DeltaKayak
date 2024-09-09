@@ -6,6 +6,7 @@ var astar = AStar.new()
 var config = C.new()
 
 var boat_sim = BoatModel.new()
+var aprox_boat_model := AproxBoatModel.new()
 
 class C:  # Parameter config
 	#var _PI := PI
@@ -137,13 +138,17 @@ class HybridAStarPath:
 	var cost:float
 	var steer:Array[float]
 	var ticks:Array[int]
+	var linear_velocity: Array[Vector2]
+	var angular_velocity: Array[float]
 	func _init(x:Array[float],
 			y:Array[float],
 			yaw:Array[float],
 			direction:Array[int],
 			cost:float,
 			steer:Array[float],
-			ticks:Array[int]):
+			ticks:Array[int],
+			linear_velocity: Array[Vector2],
+			angular_velocity: Array[float]):
 		self.x = x
 		self.y = y
 		self.yaw = yaw
@@ -151,6 +156,8 @@ class HybridAStarPath:
 		self.cost = cost
 		self.steer = steer
 		self.ticks = ticks
+		self.linear_velocity = linear_velocity
+		self.angular_velocity = angular_velocity
 
 class HybridAStarQueuePrior:
 	var queue:HeapDict
@@ -328,41 +335,52 @@ func extract_any_path(closed, ngoal:HybridAStarNode, nstart:HybridAStarNode) -> 
 	var direc:Array[int] = []
 	var steer:Array[float] = []
 	var ticks:Array[int] = []
+	var angular_velocity:Array[float] = []
+	var linear_velocity:Array[Vector2] = []
 	var cost := 0.0
-	var node := ngoal
+	var node := ngoal.clone()
 
 	while true:
+		# NOTE, use "duplicate()" to copy an Array
+		# otherwise will create a reference, and modify
+		# the original as well
+		
 		#if node.pind <= 0: break
 		#rx += node.x[::-1]
-		var inv_node_x := node.x
+		var inv_node_x := node.x.duplicate()
 		#inv_node_x = inv_node_x.slice(1)
 		inv_node_x.reverse()
 		rx.append_array(inv_node_x)
 		#ry += node.y[::-1]
-		var inv_node_y := node.y
+		var inv_node_y := node.y.duplicate()
 		#inv_node_y = inv_node_y.slice(1)
 		inv_node_y.reverse()
 		ry.append_array(inv_node_y)
 		#ryaw += node.yaw[::-1]
-		var inv_node_yaw := node.yaw
+		var inv_node_yaw := node.yaw.duplicate()
 		#inv_node_yaw = inv_node_yaw.slice(1)
 		inv_node_yaw.reverse()
 		ryaw.append_array(inv_node_yaw)
 		#direc += node.directions[::-1]
-		var inv_direc := node.directions
+		var inv_direc := node.directions.duplicate()
 		#inv_direc = inv_direc.slice(1)
 		inv_direc.reverse()
 		direc.append_array(inv_direc)
 		cost += node.cost
 		# Added for boat:
-		var inv_steer := node.steers
+		var inv_steer := node.steers.duplicate()
 		#inv_steer = inv_steer.slice(1)
 		inv_steer.reverse()
 		steer.append_array(inv_steer)
-		var inv_ticks := node.ticks
-		#inv_ticks = inv_ticks.slice(1)
+		var inv_ticks := node.ticks.duplicate()
 		inv_ticks.reverse()
 		ticks.append_array(inv_ticks)
+		var inv_linear_velocity := node.linear_velocity.duplicate()
+		inv_linear_velocity.reverse()
+		linear_velocity.append_array(inv_linear_velocity)
+		var inv_angular_velocity := node.angular_velocity.duplicate()
+		inv_angular_velocity.reverse()
+		angular_velocity.append_array(inv_angular_velocity)
 
 		if is_same_grid(node, nstart):
 			break
@@ -376,10 +394,12 @@ func extract_any_path(closed, ngoal:HybridAStarNode, nstart:HybridAStarNode) -> 
 	direc.reverse()
 	steer.reverse()
 	ticks.reverse()
+	linear_velocity.reverse()
+	angular_velocity.reverse()
 
 	if direc.size() > 1:
 		direc[0] = direc[1]
-	return HybridAStarPath.new(rx, ry, ryaw, direc, cost, steer, ticks)
+	return HybridAStarPath.new(rx, ry, ryaw, direc, cost, steer, ticks, linear_velocity, angular_velocity)
 
 func extract_path(closed, ngoal:HybridAStarNode, nstart:HybridAStarNode) -> HybridAStarPath:
 	var rx:Array[float] = []
@@ -388,6 +408,8 @@ func extract_path(closed, ngoal:HybridAStarNode, nstart:HybridAStarNode) -> Hybr
 	var direc:Array[int] = []
 	var steer:Array[float] = []
 	var ticks:Array[int] = []
+	var angular_velocity:Array[float] = []
+	var linear_velocity:Array[Vector2] = []
 	var cost := 0.0
 	var node := ngoal.clone()
 
@@ -395,6 +417,7 @@ func extract_path(closed, ngoal:HybridAStarNode, nstart:HybridAStarNode) -> Hybr
 		# NOTE, use "duplicate()" to copy an Array
 		# otherwise will create a reference, and modify
 		# the original as well
+		
 		#rx += node.x[::-1]
 		var inv_node_x := node.x.duplicate()
 		inv_node_x.reverse()
@@ -419,6 +442,12 @@ func extract_path(closed, ngoal:HybridAStarNode, nstart:HybridAStarNode) -> Hybr
 		var inv_ticks := node.ticks.duplicate()
 		inv_ticks.reverse()
 		ticks.append_array(inv_ticks)
+		var inv_linear_velocity := node.linear_velocity.duplicate()
+		inv_linear_velocity.reverse()
+		linear_velocity.append_array(inv_linear_velocity)
+		var inv_angular_velocity := node.angular_velocity.duplicate()
+		inv_angular_velocity.reverse()
+		angular_velocity.append_array(inv_angular_velocity)
 
 		if is_same_grid(node, nstart):
 			break
@@ -431,9 +460,11 @@ func extract_path(closed, ngoal:HybridAStarNode, nstart:HybridAStarNode) -> Hybr
 	direc.reverse()
 	steer.reverse()
 	ticks.reverse()
+	linear_velocity.reverse()
+	angular_velocity.reverse()
 
 	direc[0] = direc[1]
-	return HybridAStarPath.new(rx, ry, ryaw, direc, cost, steer, ticks)
+	return HybridAStarPath.new(rx, ry, ryaw, direc, cost, steer, ticks, linear_velocity, angular_velocity)
 
 func get_next_boat_state(linear_velocity:Vector2,
 		angular_velocity:float,
@@ -457,17 +488,27 @@ func get_next_boat_state(linear_velocity:Vector2,
 	for _n in range(100000):
 		var _linear_velocity:Vector2 = local_data.force
 		var _angular_velocity:float = local_data.moment
-		#if _angular_velocity == -0.04300000000512:
-		#	breakpoint
-		var new_local_forces = boat_sim.extended_boat_model(
-			_linear_velocity,
-			_angular_velocity,
-			r,
-			rudder_angle)
-		#if new_local_forces.moment > 10.0:
-		#	breakpoint
-		local_data.force += new_local_forces.force * size_scale
-		local_data.moment += new_local_forces.moment
+		#print(local_data.moment)
+		var new_local_forces
+		if false:
+			new_local_forces = boat_sim.extended_boat_model(
+				_linear_velocity,
+				_angular_velocity,
+				r,
+				rudder_angle)
+			#if new_local_forces.moment > 10.0:
+			#	breakpoint
+			local_data.force += new_local_forces.force * size_scale
+			local_data.moment += new_local_forces.moment
+		else:
+			new_local_forces = aprox_boat_model.get_velocity(
+				_linear_velocity,
+				_angular_velocity,
+				aprox_boat_model.get_rudder_angle_key(rudder_angle),
+				aprox_boat_model.get_revs_per_second_key(revs_per_second)
+			)
+			local_data.force += Vector2(new_local_forces.x, new_local_forces.y) * size_scale
+			local_data.moment += new_local_forces.z
 		local_data.yaw -= local_data.moment
 		local_data.position += local_data.force.rotated(local_data.yaw)
 		local_data.ticks += 1

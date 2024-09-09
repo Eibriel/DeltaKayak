@@ -2,6 +2,7 @@ extends RigidBody3D
 
 var hybrid_astar := HybridAStarBoat.new()
 var boat_sim := BoatModel.new()
+var aprox_boat_model := AproxBoatModel.new()
 
 var area_size := Vector2i(30, 30)
 var area_scale := 2.0
@@ -73,13 +74,11 @@ func set_hybrid_astar():
 		obs.position.z = pos.y
 		%Obstacles.add_child(obs)
 	
-	var current_linear_velocity := force_godot_to_hybridastar(Global.tri_to_bi(linear_velocity))
-	
-	prints(current_linear_velocity, angular_velocity.y)
+	%NavStart.global_position = Global.bi_to_tri(position_hybridastar_to_godot(start_pos))
 	
 	hybrid_astar.hybrid_astar_planning(
-		current_linear_velocity * 0.0, # TODO pass velocity
-		angular_velocity.y * 0.0, # TODO
+		get_current_velocity()[0], # TODO pass velocity
+		get_current_velocity()[1], # TODO
 		area_size,
 		start_pos.x,
 		start_pos.y,
@@ -103,6 +102,15 @@ func _physics_process(delta: float) -> void:
 	get_foces(delta)
 	draw_boat_volume()
 	#apply_forces(delta)
+
+func get_current_velocity():
+	var current_linear_velocity := Global.tri_to_bi(linear_velocity).rotated(rotation.y+deg_to_rad(90)) * 0.1
+	var current_angular_velocity := angular_velocity.y * 0.01
+	
+	return [
+		current_linear_velocity,
+		current_angular_velocity
+	]
 
 func draw_boat_volume():
 	var pos := position_godot_to_hybridastar(Global.tri_to_bi(global_position))
@@ -142,32 +150,6 @@ func get_foces(delta: float) -> void:
 	%TickLabel.text = "Tick: %d" % anim_tick
 	%SubTickLabel.text = "Sub Tick: %d" % anim_subtick
 	
-	#Initialized!
-	#0.00833333333333
-	#0.10833333333333
-	#2.50833333333333
-	#3.50833333333332
-	#4.20833333333333
-	#5.00833333333337
-	#5.6083333333334
-	#6.10833333333343
-	#6.60833333333345
-	#7.10833333333348
-	#7.5083333333335
-	
-	#Initialized!
-	#0.1
-	#0.2
-	#2.6
-	#3.6
-	#4.3
-	#5.1
-	#5.7
-	#6.19999999999999
-	#6.69999999999999
-	#7.19999999999999
-	#7.59999999999999
-	
 	# Calculate forces 10 times per second
 	#if anim_tick == 0 and anim_subtick == 0:
 	if anim_subtick == 0:
@@ -176,13 +158,14 @@ func get_foces(delta: float) -> void:
 			#local_data.position.y = anim[anim_frame].y
 			#local_data.yaw = anim[anim_frame].yaw
 			local_data = {
-				"linear_velocity": Vector2.ZERO,
-				"angular_velocity": 0.0,
+				"linear_velocity": anim[anim_frame].linear_velocity,
+				"angular_velocity": anim[anim_frame].angular_velocity,
 				"yaw": anim[anim_frame].yaw,
 				"position": Vector2.ZERO
 			}
-			previous_angular_velocity = 0.0
-			previous_linear_velocity = Vector2.ZERO
+			previous_angular_velocity = get_current_velocity()[1]
+			previous_linear_velocity = get_current_velocity()[0]
+			
 			#previous_angular_velocity = angular_velocity.y
 			#previous_linear_velocity = force_godot_to_mmg(Global.tri_to_bi(linear_velocity))
 		elif anim_frame > 0:
@@ -201,13 +184,24 @@ func get_foces(delta: float) -> void:
 		var size_scale := 0.01
 		var _linear_velocity:Vector2 = local_data.linear_velocity
 		var _angular_velocity:float = local_data.angular_velocity
-		var new_local_velocity = boat_sim.extended_boat_model(
-			_linear_velocity,
-			_angular_velocity,
-			r,
-			anim[anim_frame].steer)
-		local_data.linear_velocity += new_local_velocity.force * size_scale
-		local_data.angular_velocity += new_local_velocity.moment
+		var new_local_velocity
+		if false:
+			new_local_velocity = boat_sim.extended_boat_model(
+				_linear_velocity,
+				_angular_velocity,
+				r,
+				anim[anim_frame].steer)
+			local_data.linear_velocity += new_local_velocity.force * size_scale
+			local_data.angular_velocity += new_local_velocity.moment
+		else:
+			new_local_velocity = aprox_boat_model.get_velocity(
+				_linear_velocity,
+				_angular_velocity,
+				aprox_boat_model.get_rudder_angle_key(anim[anim_frame].steer),
+				aprox_boat_model.get_revs_per_second_key(anim[anim_frame].direction)
+			)
+			local_data.linear_velocity += Vector2(new_local_velocity.x, new_local_velocity.y) * size_scale
+			local_data.angular_velocity += new_local_velocity.z
 		local_data.position += local_data.linear_velocity.rotated(local_data.yaw)
 		local_data.yaw -= local_data.angular_velocity
 		
@@ -310,7 +304,9 @@ func draw_nodes():
 			"yaw": path.yaw[k],
 			"direction": path.direction[k],
 			"steer": path.steer[k],
-			"ticks": path.ticks[k]
+			"ticks": path.ticks[k],
+			"linear_velocity": path.linear_velocity[k],
+			"angular_velocity": path.angular_velocity[k]
 		})
 
 func _input(event: InputEvent) -> void:
@@ -324,9 +320,18 @@ func _input(event: InputEvent) -> void:
 		#set_hybrid_astar()
 		new_path_requested = true
 	elif event.is_action_pressed("ui_up"):
-		anim_playing = true
+		#anim_playing = true
+		apply_impulse(Vector3.FORWARD.rotated(Vector3.UP, rotation.y)*100)
+	elif event.is_action_pressed("ui_down"):
+		#anim_playing = true
+		apply_impulse(Vector3.BACK.rotated(Vector3.UP, rotation.y)*100)
 	elif event.is_action_pressed("ui_right"):
-		anim_frame += 1
+		#apply_impulse(Vector3.RIGHT.rotated(Vector3.UP, rotation.y)*10000)
+		apply_torque_impulse(Vector3(0,+100,0))
+	elif event.is_action_pressed("ui_left"):
+		apply_torque_impulse(Vector3(0,-100,0))
+		#apply_impulse(Vector3.LEFT.rotated(Vector3.UP, rotation.y)*10000)
+		#anim_frame += 1
 		#anim_tick += 1
 		#if anim_tick >= anim[anim_frame].ticks:
 			#anim_frame += 1
@@ -335,7 +340,8 @@ func _input(event: InputEvent) -> void:
 func define_area() -> void:
 	origin = Global.tri_to_bi(global_position)
 	center = Vector2(area_size) / 2.0
-	start_pos = Vector2(center)
+	var future_position_offset := Global.tri_to_bi(linear_velocity / 22)
+	start_pos = Vector2(center) + future_position_offset
 
 # Hybrid A* convertions
 func position_godot_to_hybridastar(godot_pos:Vector2) -> Vector2:

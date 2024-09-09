@@ -448,6 +448,9 @@ func extended_boat_model(
 		revs_per_second:float,
 		rudder_angle:float) -> BoatForces:
 	
+	var initial_angular_velocity := angular_velocity
+	var initial_linear_velocity := linear_velocity
+	
 	var adjusted_linear_velocity = Vector2(linear_velocity)
 	if revs_per_second <0:
 		adjusted_linear_velocity = linear_velocity.rotated(deg_to_rad(180))
@@ -455,7 +458,17 @@ func extended_boat_model(
 	var rforces := get_boat_forces(adjusted_linear_velocity, angular_velocity, abs(revs_per_second), rudder_angle)
 	if revs_per_second <0:
 		rforces.force = rforces.force.rotated(deg_to_rad(180))
-		
+	
+	# Limit acceleration
+	var angular_acceleration := absf(initial_angular_velocity - rforces.moment)
+	if angular_acceleration > 0.5:
+		rforces.moment = -initial_angular_velocity * 0.5
+	#print(angular_acceleration)
+	var linear_acceleration := initial_linear_velocity.distance_to(rforces.force)
+	if linear_acceleration > 50.0:
+		rforces.force = -initial_linear_velocity * 0.5
+	#print(linear_acceleration)
+	
 	return rforces
 
 func get_boat_forces(

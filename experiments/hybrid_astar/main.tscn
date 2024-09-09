@@ -1,6 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://px6k15eiqpsq"]
-
-[ext_resource type="Script" path="res://main.gd" id="1_20ox0"]
+[gd_scene load_steps=4 format=3 uid="uid://px6k15eiqpsq"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_8ek31"]
 sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
@@ -16,7 +14,6 @@ tonemap_mode = 2
 glow_enabled = true
 
 [node name="Main" type="Node3D"]
-script = ExtResource("1_20ox0")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_aoyn7")

@@ -41,6 +41,21 @@ layout_mode = 2
 text = "0 rps
 0º"
 
+[node name="TreeKeysLabel" type="Label" parent="Control/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "0 rps
+0º"
+
+[node name="LogText" type="RichTextLabel" parent="Control"]
+unique_name_in_owner = true
+layout_mode = 0
+anchor_left = 0.3325
+anchor_top = 0.0166667
+anchor_right = 0.94375
+anchor_bottom = 0.381667
+metadata/_edit_use_anchors_ = true
+
 [node name="Node2D" type="Node2D" parent="."]
 position = Vector2(569, 322)
 
@@ -56,6 +71,25 @@ unique_name_in_owner = true
 position = Vector2(-63, 0)
 
 [node name="Icon2" type="Sprite2D" parent="Node2D/Boat/Rudder"]
+position = Vector2(-14, 0)
+scale = Vector2(0.225, 0.05)
+texture = ExtResource("2_8nqv4")
+
+[node name="Node2D2" type="Node2D" parent="."]
+position = Vector2(197, 322)
+
+[node name="Boat2" type="Node2D" parent="Node2D2"]
+unique_name_in_owner = true
+
+[node name="Icon" type="Sprite2D" parent="Node2D2/Boat2"]
+scale = Vector2(1, 0.245)
+texture = ExtResource("2_8nqv4")
+
+[node name="Rudder2" type="Node2D" parent="Node2D2/Boat2"]
+unique_name_in_owner = true
+position = Vector2(-63, 0)
+
+[node name="Icon2" type="Sprite2D" parent="Node2D2/Boat2/Rudder2"]
 position = Vector2(-14, 0)
 scale = Vector2(0.225, 0.05)
 texture = ExtResource("2_8nqv4")

@@ -113,6 +113,11 @@ radius = 1.0
 [node name="NavVelocity" type="CSGSphere3D" parent="NavTarget"]
 unique_name_in_owner = true
 
+[node name="NavStart" type="CSGSphere3D" parent="."]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 21.2119, 0, -19.6927)
+radius = 1.0
+
 [node name="NavPoints" type="Node3D" parent="."]
 unique_name_in_owner = true
 

@@ -8,6 +8,7 @@ var anim_tick := 0
 
 var hybrid_astar := HybridAStarBoat.new()
 var boat_sim := BoatModel.new()
+var aprox_boat_model := AproxBoatModel.new()
 
 var end_search := false
 
@@ -17,6 +18,9 @@ var local_data := {
 	"yaw":0.0,
 	"position": Vector2.ZERO
 }
+
+var initial_linear_velocity := Vector2(0.0, 0.0)
+var initial_angular_velocity := -0.05
 
 func _process(delta: float) -> void:
 	time += delta
@@ -43,6 +47,8 @@ func _process(delta: float) -> void:
 	
 	if anim_tick == 0:
 		if anim_frame == 0:
+			local_data.force = anim[anim_frame].linear_velocity
+			local_data.moment = anim[anim_frame].angular_velocity
 			local_data.position.x = anim[anim_frame].x
 			local_data.position.y = anim[anim_frame].y
 			local_data.yaw = anim[anim_frame].yaw
@@ -57,13 +63,24 @@ func _process(delta: float) -> void:
 	var size_scale := 0.01
 	var linear_velocity:Vector2 = local_data.force
 	var angular_velocity:float = local_data.moment
-	var new_local_forces = boat_sim.extended_boat_model(
-		linear_velocity,
-		angular_velocity,
-		r,
-		anim[anim_frame].steer)
-	local_data.force += new_local_forces.force * size_scale
-	local_data.moment += new_local_forces.moment
+	var new_local_forces
+	if false:
+		new_local_forces = boat_sim.extended_boat_model(
+			linear_velocity,
+			angular_velocity,
+			r,
+			anim[anim_frame].steer)
+		local_data.force += new_local_forces.force * size_scale
+		local_data.moment += new_local_forces.moment
+	else:
+		new_local_forces = aprox_boat_model.get_velocity(
+			linear_velocity,
+			angular_velocity,
+			aprox_boat_model.get_rudder_angle_key(anim[anim_frame].steer),
+			aprox_boat_model.get_revs_per_second_key(anim[anim_frame].direction)
+		)
+		local_data.force += Vector2(new_local_forces.x, new_local_forces.y) * size_scale
+		local_data.moment += new_local_forces.z
 	local_data.yaw -= local_data.moment
 	local_data.position += local_data.force.rotated(local_data.yaw)
 	
@@ -115,8 +132,8 @@ func _ready() -> void:
 
 	#var t0 = Time.get_ticks_msec()
 	hybrid_astar.hybrid_astar_planning(
-		Vector2.ZERO,
-		0.0,
+		initial_linear_velocity,
+		initial_angular_velocity,
 		Vector2i(x, y),
 		sx, sy,
 		syaw0,
@@ -188,7 +205,9 @@ func iterate_pathfinding():
 			"yaw": path.yaw[k],
 			"direction": path.direction[k],
 			"steer": path.steer[k],
-			"ticks": path.ticks[k]
+			"ticks": path.ticks[k],
+			"linear_velocity": path.linear_velocity[k],
+			"angular_velocity": path.angular_velocity[k]
 		})
 	prints(path.x.size(), anim.size())
 
