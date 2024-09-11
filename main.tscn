@@ -216,6 +216,7 @@ game_preferences = ExtResource("2_wexnt")
 game_state = ExtResource("3_nh3h6")
 initial_position = NodePath("Main3D/InitialPositionEnemy")
 show_logs = true
+SKIP_INTRO = true
 
 [node name="Node2D" type="Node2D" parent="."]
 

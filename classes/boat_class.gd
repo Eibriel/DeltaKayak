@@ -1,6 +1,9 @@
 extends RigidBody3D
 class_name Boat3D
 
+var boat_pathfinding:BoatPathfinding
+var aprox_boat_model := AproxBoatModel.new()
+
 var time := 999999999999.0
 var time_horizon := 1.0
 var recalc_time := 0.1
@@ -40,12 +43,15 @@ var pid_integral_par := 760.0 #1000.0
 var pid_derivative_par := 20140.0 #8180.0
 
 var path_visualization:Path3D
+var boat_pathfinding_debug:Node3D
 
 var last_applied_force: Vector3
 
 var inside_turn_radius:=false
 
-var allow_sliding := false
+var nav_regions: Array[NavigationRegion3D]
+
+const allow_sliding := false
 
 func _ready():
 	last_rotation = rotation.y
@@ -55,11 +61,17 @@ func _ready():
 	#path_target_indicator = CSGBox3D.new()
 	#add_child(path_target_indicator)
 	path_visualization = Path3D.new()
+	path_visualization.name = "PathVisualization"
 	path_visualization.top_level = true
 	path_visualization.curve = Curve3D.new()
 	path_visualization.curve.add_point(Vector3.ZERO, Vector3.ONE, Vector3.ONE)
 	path_visualization.curve.add_point(Vector3.ONE, Vector3.ONE, Vector3.ONE)
 	add_child(path_visualization)
+	boat_pathfinding_debug = Node3D.new()
+	boat_pathfinding_debug.name = "PathfindingDebug"
+	add_child(boat_pathfinding_debug)
+	boat_pathfinding = BoatPathfinding.new(boat_pathfinding_debug)
+	
 	
 
 #func setup_physics():
@@ -115,10 +127,113 @@ func get_derivative(_error) -> float:
 			derivative = -(rotation.y + last_rotation)
 	return derivative * pid_derivative_par
 #
-
+var local_data:Dictionary
+var linear_force_to_apply: Vector3
+var angular_force_to_apply: float
+var old_target_position: Vector3
 func _physics_process(delta: float):
 	_get_target(delta)
-	allow_sliding = true
+	#
+	if not boat_pathfinding.initialized:
+		initialize_pathfinding()
+	elif boat_pathfinding.anim_state == boat_pathfinding.ANIM_STATES.ENDED:
+		initialize_pathfinding()
+	elif target_position.distance_to(old_target_position) > 10.0:
+		old_target_position = target_position
+		initialize_pathfinding()
+	
+	if not boat_pathfinding.path_found:
+		boat_pathfinding.iterate_pathfinding()
+	
+	if boat_pathfinding.path_found:
+		var frame := boat_pathfinding.subtick()
+		var size_scale := 0.01
+		if frame.ok:
+			if frame.subtick == 0:
+				if frame.frame == 0:
+					local_data = {
+						"linear_velocity": frame.data.linear_velocity,
+						"angular_velocity": frame.data.angular_velocity,
+						"yaw": frame.data.yaw,
+						"position": Vector2.ZERO
+					}
+				var new_local_velocity = aprox_boat_model.get_velocity(
+					local_data.linear_velocity,
+					local_data.angular_velocity,
+					aprox_boat_model.get_rudder_angle_key(frame.data.steer),
+					aprox_boat_model.get_revs_per_second_key(frame.data.direction)
+				)
+				local_data.linear_velocity += Vector2(new_local_velocity.x, new_local_velocity.y) * size_scale
+				local_data.angular_velocity += new_local_velocity.z
+				local_data.position += local_data.linear_velocity.rotated(local_data.yaw)
+				local_data.yaw -= local_data.angular_velocity
+				var rotated_linear_velocity: Vector2= boat_pathfinding.force_mmg_to_godot(local_data.linear_velocity, local_data.yaw)
+				linear_force_to_apply = Global.bi_to_tri(rotated_linear_velocity)
+				angular_force_to_apply = local_data.angular_velocity
+				# Calculate forces
+				"""
+				var damp_number := 0.18
+				var angular_acceleration:float = local_data.angular_velocity - previous_angular_velocity*damp_number
+				var angular_force:float = angular_acceleration * mass
+				previous_angular_velocity = local_data.angular_velocity
+				var torque_multiplier := 190.0
+				torque_to_apply = angular_force*torque_multiplier
+				
+				damp_number = 0.12
+				var linear_acceleration:Vector2 = rotated_linear_velocity - previous_linear_velocity * damp_number
+				var linear_force:Vector2 = linear_acceleration * mass
+				previous_linear_velocity = rotated_linear_velocity
+				var force_multiplier := 22.0
+				force_to_apply = Global.bi_to_tri(linear_force)*force_multiplier"""
+				
+			linear_velocity = linear_force_to_apply * mass
+			angular_velocity.y = angular_force_to_apply * mass
+
+func initialize_pathfinding():
+	boat_pathfinding.initialize_pathfinding(
+		Global.tri_to_bi(global_position),
+		rotation.y,
+		Global.tri_to_bi(target_position),
+		0.0,
+		Global.tri_to_bi(linear_velocity),
+		angular_velocity.y,
+		is_obstacle
+	)
+	
+func is_obstacle(point: Vector2):
+	for nr in nav_regions:
+		for pidx in nr.navigation_mesh.get_polygon_count():
+			var pol := nr.navigation_mesh.get_polygon(pidx)
+			var is_2d := true
+			var pol_2d:PackedVector2Array
+			for ppoint in pol:
+				var p := nr.navigation_mesh.get_vertices()[ppoint]
+				if p.y != 0:
+					is_2d = false
+					break
+				pol_2d.append(Vector2(p.x, p.z))
+			if not is_2d: continue
+			var shifted_point := point - Global.tri_to_bi(nr.position)
+			if false:
+				var triangles:= Geometry2D.triangulate_polygon(pol_2d)
+				# TODO use is_point_in_polygon
+				assert(triangles.size() > 0)
+				for t in triangles.size()/3:
+					var t_3 := t*3
+					if Geometry2D.point_is_inside_triangle(
+								shifted_point,
+								pol_2d[triangles[t_3]],
+								pol_2d[triangles[t_3+1]],
+								pol_2d[triangles[t_3+2]],
+							):
+						return false
+			else:
+				if Geometry2D.is_point_in_polygon(shifted_point, pol_2d):
+					return false
+	return true
+	
+
+func bezier_path(delta: float):
 	#if allow_sliding:
 	#	mass = 1.1
 	#prints(last_position, position, delta)

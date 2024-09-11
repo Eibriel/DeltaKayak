@@ -97,6 +97,13 @@ func set_hybrid_astar():
 func _physics_process(delta: float) -> void:
 	if new_path_requested:
 		new_path_requested = false
+		%NavTarget.global_position = global_position
+		%NavTarget.global_position += Vector3(randf_range(-20, 20), 0, randf_range(-20, 20))
+		anim_frame = 0
+		anim_tick = 0
+		anim_subtick = 0
+		anim_playing = false
+		path_found = false
 		set_hybrid_astar()
 	iterate_pathfinding()
 	get_foces(delta)
@@ -105,7 +112,7 @@ func _physics_process(delta: float) -> void:
 
 func get_current_velocity():
 	var current_linear_velocity := Global.tri_to_bi(linear_velocity).rotated(rotation.y+deg_to_rad(90)) * 0.1
-	var current_angular_velocity := angular_velocity.y * 0.01
+	var current_angular_velocity := -angular_velocity.y * 0.05
 	
 	return [
 		current_linear_velocity,
@@ -141,6 +148,8 @@ var previous_angular_velocity := 0.0
 var force_to_apply := Vector3.ZERO
 var torque_to_apply := 0.0
 func get_foces(delta: float) -> void:
+	#linear_velocity *= 0.0
+	#angular_velocity *= 0.0
 	if not anim_playing: return
 	if anim.size() == 0: return 
 	if anim_frame >= anim.size(): return
@@ -154,20 +163,21 @@ func get_foces(delta: float) -> void:
 	#if anim_tick == 0 and anim_subtick == 0:
 	if anim_subtick == 0:
 		if anim_frame == 0:
-			#local_data.position.x = anim[anim_frame].x
-			#local_data.position.y = anim[anim_frame].y
-			#local_data.yaw = anim[anim_frame].yaw
+			#linear_velocity *= 0.0
+			#angular_velocity *= 0.0
 			local_data = {
 				"linear_velocity": anim[anim_frame].linear_velocity,
 				"angular_velocity": anim[anim_frame].angular_velocity,
 				"yaw": anim[anim_frame].yaw,
+				#"position": position_hybridastar_to_godot(Vector2(anim[anim_frame].x, anim[anim_frame].y))
 				"position": Vector2.ZERO
 			}
 			previous_angular_velocity = get_current_velocity()[1]
 			previous_linear_velocity = get_current_velocity()[0]
-			
 			#previous_angular_velocity = angular_velocity.y
 			#previous_linear_velocity = force_godot_to_mmg(Global.tri_to_bi(linear_velocity))
+			anim_frame += 1
+			return
 		elif anim_frame > 0:
 			#local_data.position.x = anim[anim_frame-1].x
 			#local_data.position.y = anim[anim_frame-1].y
@@ -207,19 +217,35 @@ func get_foces(delta: float) -> void:
 		
 		var rotated_linear_velocity: Vector2= force_mmg_to_godot(local_data.linear_velocity, local_data.yaw)
 		
-		var damp_number := 0.18
-		var angular_acceleration:float = local_data.angular_velocity - previous_angular_velocity*damp_number
-		var angular_force:float = angular_acceleration * mass
-		previous_angular_velocity = local_data.angular_velocity
-		var torque_multiplier := 190.0
-		torque_to_apply = angular_force*torque_multiplier
-		
-		damp_number = 0.12
-		var linear_acceleration:Vector2 = rotated_linear_velocity - previous_linear_velocity * damp_number
-		var linear_force:Vector2 = linear_acceleration * mass
-		previous_linear_velocity = rotated_linear_velocity
-		var force_multiplier := 22.0
-		force_to_apply = Global.bi_to_tri(linear_force)*force_multiplier
+		if false:
+			var damp_number := 0.18
+			var angular_acceleration:float = local_data.angular_velocity - previous_angular_velocity*damp_number
+			var angular_force:float = angular_acceleration * mass
+			previous_angular_velocity = local_data.angular_velocity
+			var torque_multiplier := 190.0
+			torque_to_apply = angular_force*torque_multiplier
+			
+			damp_number = 0.12
+			var linear_acceleration:Vector2 = rotated_linear_velocity - previous_linear_velocity * damp_number
+			var linear_force:Vector2 = linear_acceleration * mass
+			previous_linear_velocity = rotated_linear_velocity
+			var force_multiplier := 22.0
+			force_to_apply = Global.bi_to_tri(linear_force)*force_multiplier
+		else:
+			var all_force_multiplier := 1490.0
+			var damp_number := 0.0112
+			var angular_acceleration:float = local_data.angular_velocity * damp_number
+			var angular_force:float = angular_acceleration * mass
+			previous_angular_velocity = local_data.angular_velocity
+			var torque_multiplier := all_force_multiplier * 10.0
+			torque_to_apply = angular_force*torque_multiplier
+			
+			damp_number = 0.013
+			var linear_acceleration:Vector2 = rotated_linear_velocity * damp_number
+			var linear_force:Vector2 = linear_acceleration * mass
+			previous_linear_velocity = rotated_linear_velocity
+			var force_multiplier := all_force_multiplier * 1.0
+			force_to_apply = Global.bi_to_tri(linear_force)*force_multiplier
 	
 	# Apply forces on every physics tick
 	# NOTE no need to multiply by delta!
@@ -229,10 +255,10 @@ func get_foces(delta: float) -> void:
 	const use_position:=false
 	if use_position:
 		# BUG position is not aligned with the path for some reason
-		var pos := position_hybridastar_to_godot(Vector2(local_data.position.x, local_data.position.y)) + center*2
+		var pos := position_hybridastar_to_godot(Vector2(local_data.position.x, local_data.position.y)) + center*2 #- origin
 		global_position.x = pos.x
 		global_position.z = pos.y
-		rotation.y = -local_data.yaw + deg_to_rad(90)
+		rotation.y = -local_data.yaw + deg_to_rad(180+90)
 		
 	anim_subtick += 1
 	assert(Engine.physics_ticks_per_second * anim_ticks_delta > 0)
@@ -244,12 +270,13 @@ func get_foces(delta: float) -> void:
 			anim_tick = 0
 
 func _integrate_forces(state: PhysicsDirectBodyState3D) -> void:
+	#return
 	var _liner_damp := 0.9
 	var _angular_damp := 0.9
 	
 	linear_velocity *= 1.0 - _liner_damp / Engine.physics_ticks_per_second
 	angular_velocity *= 1.0 - _angular_damp / Engine.physics_ticks_per_second
-	
+	#return
 	var forward_direction := (transform.basis * Vector3.FORWARD).normalized()
 	# Gets only the energy going forward
 	var forward_component: Vector3 = forward_direction * state.linear_velocity.dot(forward_direction)
@@ -311,37 +338,22 @@ func draw_nodes():
 
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_accept"):
-		%NavTarget.global_position = global_position
-		%NavTarget.global_position += Vector3(randf_range(-20, 20), 0, randf_range(-20, 20))
-		anim_frame = 0
-		anim_tick = 0
-		anim_playing = false
-		path_found = false
-		#set_hybrid_astar()
 		new_path_requested = true
 	elif event.is_action_pressed("ui_up"):
-		#anim_playing = true
 		apply_impulse(Vector3.FORWARD.rotated(Vector3.UP, rotation.y)*100)
 	elif event.is_action_pressed("ui_down"):
-		#anim_playing = true
 		apply_impulse(Vector3.BACK.rotated(Vector3.UP, rotation.y)*100)
 	elif event.is_action_pressed("ui_right"):
-		#apply_impulse(Vector3.RIGHT.rotated(Vector3.UP, rotation.y)*10000)
 		apply_torque_impulse(Vector3(0,+100,0))
 	elif event.is_action_pressed("ui_left"):
 		apply_torque_impulse(Vector3(0,-100,0))
-		#apply_impulse(Vector3.LEFT.rotated(Vector3.UP, rotation.y)*10000)
-		#anim_frame += 1
-		#anim_tick += 1
-		#if anim_tick >= anim[anim_frame].ticks:
-			#anim_frame += 1
-			#anim_tick = 0
 
 func define_area() -> void:
 	origin = Global.tri_to_bi(global_position)
 	center = Vector2(area_size) / 2.0
 	var future_position_offset := Global.tri_to_bi(linear_velocity / 22)
-	start_pos = Vector2(center) + future_position_offset
+	#start_pos = Vector2(center) + future_position_offset
+	start_pos = Vector2(center)
 
 # Hybrid A* convertions
 func position_godot_to_hybridastar(godot_pos:Vector2) -> Vector2:

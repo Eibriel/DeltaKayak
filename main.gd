@@ -4,6 +4,8 @@ extends Control
 @export var game_state:DKDataResource
 @export var initial_position: Marker3D
 @export var show_logs: bool
+@export var SKIP_INTRO: bool
+@export var ENABLE_VR: bool
 
 @onready var dk_world: DKWorld = %DKWorld
 @onready var label_demo: Label = $Control/LabelDemo
@@ -32,9 +34,6 @@ var foreshadowing := false
 var other_side := false
 var kayak_k1: RigidBody3D
 
-var SKIP_INTRO = true
-var ENABLE_VR = false
-
 var character_home_position:Vector3
 var character_home_rotation:Vector3
 
@@ -43,6 +42,7 @@ const UnhandledTriggers = preload("res://interactives/unhandled_triggers.gd")
 var puzzle_items:=[]
 
 func _ready() -> void:
+	var nav_regions: Array[NavigationRegion3D]
 	for c in dk_world.get_children():
 		if c.has_meta("is_pepa_kayak"):
 			kayak_k1 = c
@@ -50,6 +50,10 @@ func _ready() -> void:
 			Global.enemy = c
 		#if c.has_meta("puzzle_item"):
 		#	puzzle_items.append(c)
+		if c is NavigationRegion3D:
+			nav_regions.append(c)
+	
+	Global.enemy.nav_regions = nav_regions
 	
 	if OS.has_feature("editor"):
 		#DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_MAXIMIZED)

@@ -358,6 +358,6 @@ material = SubResource("StandardMaterial3D_8e41d")
 unique_name_in_owner = true
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 51.7185, 0)
 projection = 1
-size = 72.738
+size = 50.0
 
 [connection signal="body_entered" from="Phantom/PhantomArea1" to="." method="_on_phantom_area_1_body_entered"]

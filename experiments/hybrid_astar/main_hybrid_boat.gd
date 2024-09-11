@@ -20,7 +20,7 @@ var local_data := {
 }
 
 var initial_linear_velocity := Vector2(0.0, 0.0)
-var initial_angular_velocity := -0.05
+var initial_angular_velocity := 0.00
 
 func _process(delta: float) -> void:
 	time += delta
@@ -52,10 +52,13 @@ func _process(delta: float) -> void:
 			local_data.position.x = anim[anim_frame].x
 			local_data.position.y = anim[anim_frame].y
 			local_data.yaw = anim[anim_frame].yaw
+			anim_frame += 1
+			return
 		elif anim_frame > 0:
-			local_data.position.x = anim[anim_frame-1].x
-			local_data.position.y = anim[anim_frame-1].y
-			local_data.yaw = anim[anim_frame-1].yaw
+			#local_data.position.x = anim[anim_frame-1].x
+			#local_data.position.y = anim[anim_frame-1].y
+			#local_data.yaw = anim[anim_frame-1].yaw
+			pass
 	
 	var r := float(anim[anim_frame].direction) * 10.0
 	%SteerLabel.text = "Steer: %dº" % rad_to_deg(anim[anim_frame].steer)
