@@ -1,7 +1,12 @@
-[gd_scene load_steps=3 format=3 uid="uid://b2mnp4yqadq2v"]
+[gd_scene load_steps=5 format=3 uid="uid://b2mnp4yqadq2v"]
 
 [ext_resource type="Script" path="res://experiments/hybrid_astar/boat_model_test.gd" id="1_prevq"]
 [ext_resource type="Texture2D" uid="uid://dvix2u8rr6fnc" path="res://icon.svg" id="2_8nqv4"]
+[ext_resource type="Script" path="res://experiments/hybrid_astar/boat_3.gd" id="3_kjt1o"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_u5ali"]
+radius = 16.0
+height = 134.0
 
 [node name="BoatModelTest" type="Control"]
 layout_mode = 3
@@ -90,6 +95,39 @@ unique_name_in_owner = true
 position = Vector2(-63, 0)
 
 [node name="Icon2" type="Sprite2D" parent="Node2D2/Boat2/Rudder2"]
+position = Vector2(-14, 0)
+scale = Vector2(0.225, 0.05)
+texture = ExtResource("2_8nqv4")
+
+[node name="Node2D3" type="Node2D" parent="."]
+position = Vector2(354, 461)
+
+[node name="Boat3" type="RigidBody2D" parent="Node2D3"]
+unique_name_in_owner = true
+mass = 10.0
+gravity_scale = 0.0
+center_of_mass_mode = 1
+inertia = 1.0
+linear_damp_mode = 1
+angular_damp_mode = 1
+script = ExtResource("3_kjt1o")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Node2D3/Boat3"]
+rotation = 1.5708
+shape = SubResource("CapsuleShape2D_u5ali")
+
+[node name="Boat3_" type="Node2D" parent="Node2D3/Boat3"]
+unique_name_in_owner = true
+
+[node name="Icon" type="Sprite2D" parent="Node2D3/Boat3/Boat3_"]
+scale = Vector2(1, 0.245)
+texture = ExtResource("2_8nqv4")
+
+[node name="Rudder3" type="Node2D" parent="Node2D3/Boat3/Boat3_"]
+unique_name_in_owner = true
+position = Vector2(-63, 0)
+
+[node name="Icon2" type="Sprite2D" parent="Node2D3/Boat3/Boat3_/Rudder3"]
 position = Vector2(-14, 0)
 scale = Vector2(0.225, 0.05)
 texture = ExtResource("2_8nqv4")

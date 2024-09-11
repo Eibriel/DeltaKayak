@@ -293,7 +293,7 @@ func iterate() -> void:
 	open_set.erase(ind)
 
 	# Is there a direct path to goal?
-	var use_analystic_expantion:=true
+	var use_analystic_expantion:=false
 	var stop_on_found:=false
 	if use_analystic_expantion:
 		res_update = update_node_with_analystic_expantion(n_curr.clone(), ngoal.clone(), true)

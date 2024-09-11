@@ -131,6 +131,8 @@ var local_data:Dictionary
 var linear_force_to_apply: Vector3
 var angular_force_to_apply: float
 var old_target_position: Vector3
+var previous_linear_velocity := Vector2.ZERO
+var previous_angular_velocity := 0.0
 func _physics_process(delta: float):
 	_get_target(delta)
 	#
@@ -157,37 +159,40 @@ func _physics_process(delta: float):
 						"yaw": frame.data.yaw,
 						"position": Vector2.ZERO
 					}
-				var new_local_velocity = aprox_boat_model.get_velocity(
-					local_data.linear_velocity,
-					local_data.angular_velocity,
-					aprox_boat_model.get_rudder_angle_key(frame.data.steer),
-					aprox_boat_model.get_revs_per_second_key(frame.data.direction)
-				)
-				local_data.linear_velocity += Vector2(new_local_velocity.x, new_local_velocity.y) * size_scale
-				local_data.angular_velocity += new_local_velocity.z
-				local_data.position += local_data.linear_velocity.rotated(local_data.yaw)
-				local_data.yaw -= local_data.angular_velocity
-				var rotated_linear_velocity: Vector2= boat_pathfinding.force_mmg_to_godot(local_data.linear_velocity, local_data.yaw)
-				linear_force_to_apply = Global.bi_to_tri(rotated_linear_velocity)
-				angular_force_to_apply = local_data.angular_velocity
-				# Calculate forces
-				"""
-				var damp_number := 0.18
-				var angular_acceleration:float = local_data.angular_velocity - previous_angular_velocity*damp_number
-				var angular_force:float = angular_acceleration * mass
-				previous_angular_velocity = local_data.angular_velocity
-				var torque_multiplier := 190.0
-				torque_to_apply = angular_force*torque_multiplier
-				
-				damp_number = 0.12
-				var linear_acceleration:Vector2 = rotated_linear_velocity - previous_linear_velocity * damp_number
-				var linear_force:Vector2 = linear_acceleration * mass
-				previous_linear_velocity = rotated_linear_velocity
-				var force_multiplier := 22.0
-				force_to_apply = Global.bi_to_tri(linear_force)*force_multiplier"""
-				
-			linear_velocity = linear_force_to_apply * mass
-			angular_velocity.y = angular_force_to_apply * mass
+				else:
+					var new_local_velocity = aprox_boat_model.get_velocity(
+						local_data.linear_velocity,
+						local_data.angular_velocity,
+						aprox_boat_model.get_rudder_angle_key(frame.data.steer),
+						aprox_boat_model.get_revs_per_second_key(frame.data.direction)
+					)
+					local_data.linear_velocity += Vector2(new_local_velocity.x, new_local_velocity.y) * size_scale
+					local_data.angular_velocity += new_local_velocity.z
+					local_data.position += local_data.linear_velocity.rotated(local_data.yaw)
+					local_data.yaw -= local_data.angular_velocity
+					var rotated_linear_velocity: Vector2= boat_pathfinding.force_mmg_to_godot(local_data.linear_velocity, local_data.yaw)
+					#linear_force_to_apply = Global.bi_to_tri(rotated_linear_velocity)
+					#angular_force_to_apply = local_data.angular_velocity
+					# Calculate forces
+					var all_force_multiplier := 1490.0
+					var damp_number := 0.0112
+					var angular_acceleration:float = local_data.angular_velocity * damp_number
+					var angular_force:float = angular_acceleration * mass
+					previous_angular_velocity = local_data.angular_velocity
+					var torque_multiplier := all_force_multiplier * 10.0
+					angular_force_to_apply = angular_force*torque_multiplier
+					
+					damp_number = 0.013
+					var linear_acceleration:Vector2 = rotated_linear_velocity * damp_number
+					var linear_force:Vector2 = linear_acceleration * mass
+					previous_linear_velocity = rotated_linear_velocity
+					var force_multiplier := all_force_multiplier * 1.0
+					linear_force_to_apply = Global.bi_to_tri(linear_force)*force_multiplier
+			if frame.frame != 0:
+				#linear_velocity = linear_force_to_apply * mass
+				#angular_velocity.y = angular_force_to_apply * mass
+				apply_central_force(linear_force_to_apply)
+				apply_torque(Vector3(0, angular_force_to_apply, 0))
 
 func initialize_pathfinding():
 	boat_pathfinding.initialize_pathfinding(
@@ -195,11 +200,20 @@ func initialize_pathfinding():
 		rotation.y,
 		Global.tri_to_bi(target_position),
 		0.0,
-		Global.tri_to_bi(linear_velocity),
-		angular_velocity.y,
+		get_current_velocity()[0],
+		get_current_velocity()[1],
 		is_obstacle
 	)
+
+func get_current_velocity():
+	var current_linear_velocity := Global.tri_to_bi(linear_velocity).rotated(rotation.y+deg_to_rad(90)) * 0.1
+	var current_angular_velocity := -angular_velocity.y * 0.05
 	
+	return [
+		current_linear_velocity,
+		current_angular_velocity
+	]
+
 func is_obstacle(point: Vector2):
 	for nr in nav_regions:
 		for pidx in nr.navigation_mesh.get_polygon_count():
@@ -214,22 +228,8 @@ func is_obstacle(point: Vector2):
 				pol_2d.append(Vector2(p.x, p.z))
 			if not is_2d: continue
 			var shifted_point := point - Global.tri_to_bi(nr.position)
-			if false:
-				var triangles:= Geometry2D.triangulate_polygon(pol_2d)
-				# TODO use is_point_in_polygon
-				assert(triangles.size() > 0)
-				for t in triangles.size()/3:
-					var t_3 := t*3
-					if Geometry2D.point_is_inside_triangle(
-								shifted_point,
-								pol_2d[triangles[t_3]],
-								pol_2d[triangles[t_3+1]],
-								pol_2d[triangles[t_3+2]],
-							):
-						return false
-			else:
-				if Geometry2D.is_point_in_polygon(shifted_point, pol_2d):
-					return false
+			if Geometry2D.is_point_in_polygon(shifted_point, pol_2d):
+				return false
 	return true
 	
 
@@ -326,8 +326,14 @@ func bezier_path(delta: float):
 
 func _integrate_forces(state:PhysicsDirectBodyState3D):
 	_handle_contacts(state)
-	#state.linear_velocity *= 0.999
-	state.angular_velocity *= 0.999
+	#state.linear_velocity *= 0.9
+	#state.angular_velocity *= 0.9
+	var _liner_damp := 0.9
+	var _angular_damp := 0.9
+	
+	linear_velocity *= 1.0 - _liner_damp / Engine.physics_ticks_per_second
+	angular_velocity *= 1.0 - _angular_damp / Engine.physics_ticks_per_second
+	
 	if not allow_sliding:
 		# TODO what happens when going backwards?
 		var forward_direction := (transform.basis * Vector3.FORWARD).normalized()
@@ -338,7 +344,7 @@ func _integrate_forces(state:PhysicsDirectBodyState3D):
 		#prints("side_component",side_component)
 		# Transfers the energy not going forward to going forward
 		var transferred_energy: Vector3 = forward_direction * side_component.length()
-		var side_drag := 0.1 # TODO depends on velocity
+		var side_drag := 0.4 # TODO depends on velocity
 		var calculated_velocity := Vector3.ZERO
 		calculated_velocity += side_component * side_drag
 		calculated_velocity += forward_component

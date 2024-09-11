@@ -25,7 +25,7 @@ var initial_angular_velocity := 0.00
 func _process(delta: float) -> void:
 	time += delta
 	if hybrid_astar.state == hybrid_astar.STATES.ITERATING:
-		for _n in 100:
+		for _n in 1:
 			iterate_pathfinding()
 			if hybrid_astar.state != hybrid_astar.STATES.ITERATING:
 				break
@@ -99,6 +99,8 @@ func _process(delta: float) -> void:
 		anim_frame += 1
 		anim_tick = 0
 
+var start_pos:Vector2
+var goal_pos:Vector2
 func _ready() -> void:
 	print("test HeapDictTest")
 	var heapdict_test := HeapDictTest.new()
@@ -117,6 +119,9 @@ func _ready() -> void:
 	var gx = 45.0
 	var gy = 10.0
 	var gyaw0 = deg_to_rad(90.0)
+
+	start_pos = Vector2(sx, sy)
+	goal_pos = Vector2(gx, gy)
 
 	%Agent.position.x = sx
 	%Agent.position.z = sy
@@ -179,25 +184,39 @@ func iterate_pathfinding():
 		print(hybrid_astar.STATES.find_key(hybrid_astar.state))
 		return
 	
-	#var path
-	#var path_length:=-1
-	#for kk in hybrid_astar.closed_set:
-		#if hybrid_astar.closed_set[kk].x.size() > path_length:
-			#path_length = hybrid_astar.closed_set[kk].x.size()
-			#path = hybrid_astar.closed_set[kk]
+	var path
+	var path_length:=-1
+	for kk in hybrid_astar.closed_set:
+		if hybrid_astar.closed_set[kk].x.size() > path_length:
+			path_length = hybrid_astar.closed_set[kk].x.size()
+			var n_curr = hybrid_astar.closed_set[kk]
+			path = hybrid_astar.extract_any_path(hybrid_astar.closed_set, n_curr, hybrid_astar.ngoal)
+			var touch_start_point:=false
+			var path_found:=false
+			for k in path.x.size():
+				if Vector2(path.x[k], path.y[k]).distance_to(start_pos) < 2.0:
+					touch_start_point = true
+				
+				if Vector2(path.x[k], path.y[k]).distance_to(goal_pos) < 2.0:
+					if touch_start_point:
+						path_found = true
+						print("Path found!")
+						break
+			if path_found:
+				break
 	
-	if false:
-		var ind = hybrid_astar.qp.peek_item()
-		var n_curr = hybrid_astar.open_set[ind]
-		hybrid_astar.closed_set[ind] = n_curr
-		#
-		var res_update = hybrid_astar.update_node_with_analystic_expantion(n_curr, hybrid_astar.ngoal, true)
-		var fpath = res_update[1]
-		var path = hybrid_astar.extract_path(hybrid_astar.closed_set, fpath, hybrid_astar.nstart)
+	#var ind = hybrid_astar.qp.peek_item()
+	#var n_curr = hybrid_astar.open_set[ind]
+	#hybrid_astar.closed_set[ind] = n_curr
+	
+	#if false:
+		#var res_update = hybrid_astar.update_node_with_analystic_expantion(n_curr, hybrid_astar.ngoal, true)
+		#var fpath = res_update[1]
+		#var path = hybrid_astar.extract_path(hybrid_astar.closed_set, fpath, hybrid_astar.nstart)
 	
 	#if path.pind < 0: return
 	#var path = hybrid_astar.extract_any_path(hybrid_astar.closed_set, n_curr, hybrid_astar.ngoal)
-	var path = hybrid_astar.final_path
+	#var path = hybrid_astar.final_path
 	
 	# BUG paths returned are too short and out of order
 	anim.resize(0)
