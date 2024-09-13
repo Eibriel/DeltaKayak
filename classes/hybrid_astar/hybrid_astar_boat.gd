@@ -474,7 +474,9 @@ func get_next_boat_state(linear_velocity:Vector2,
 		yaw: float) -> Dictionary:
 	
 	var simple_boat_model := SimpleBoatModel.new()
+	var _delta := 0.1
 	simple_boat_model.configure(10.0)
+	simple_boat_model.ticks_per_second = int(1.0 / _delta)
 	
 	var local_data := {
 		"force": Vector2(linear_velocity),
@@ -520,10 +522,10 @@ func get_next_boat_state(linear_velocity:Vector2,
 			local_data.moment += new_local_forces.z
 		else:
 			new_local_forces = simple_boat_model.calculate_boat_forces(
-				revs_per_second,
+				r,#revs_per_second,
 				rudder_angle
 			)
-			var _delta := 0.05
+			#simple_boat_model.linear_force *= size_scale
 			simple_boat_model._update_forces(_delta)
 			# Save last velocity
 			local_data.force = simple_boat_model.linear_velocity
@@ -538,21 +540,6 @@ func get_next_boat_state(linear_velocity:Vector2,
 			local_data.position = simple_boat_model.position
 		local_data.ticks += 1
 		if position.distance_to(local_data.position) > 1.4: break
-	
-	#prints("local_data.moment", local_data.moment, rudder_angle, r)
-	#prints("Intended Distance", position.distance_to(local_data.position))
-	#local_data.yaw = -local_data.yaw + deg_to_rad(90)
-	
-	# +X: forward
-	# +Y: right
-	# + Yaw: turn right
-	if false:
-		local_data = {
-			"force": Vector2(linear_velocity),
-			"moment": float(angular_velocity),
-			"position": position+Vector2(1.0, 0.0).rotated(yaw),
-			"yaw": yaw - deg_to_rad(2)
-		}
 	
 	return local_data
 	

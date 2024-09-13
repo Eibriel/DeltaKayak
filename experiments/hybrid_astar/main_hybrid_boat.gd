@@ -23,6 +23,8 @@ var local_data := {
 var initial_linear_velocity := Vector2(0.0, 0.0)
 var initial_angular_velocity := 0.00
 
+var fps := 10
+
 func _process(delta: float) -> void:
 	time += delta
 	if hybrid_astar.state == hybrid_astar.STATES.ITERATING:
@@ -30,7 +32,7 @@ func _process(delta: float) -> void:
 			iterate_pathfinding()
 			if hybrid_astar.state != hybrid_astar.STATES.ITERATING:
 				break
-	if time < 0.1: return
+	if time < 1.0 / fps*0.5: return
 	if anim.size() == 0: return 
 	if anim_frame >= anim.size():
 		anim_frame = 0
@@ -57,7 +59,8 @@ func _process(delta: float) -> void:
 			
 			simple_boat_model.position = local_data.position
 			simple_boat_model.rotation = local_data.yaw
-			
+			simple_boat_model.linear_velocity = Vector2.ZERO
+			simple_boat_model.angular_velocity = 0.0
 			return
 		elif anim_frame > 0:
 			#local_data.position.x = anim[anim_frame-1].x
@@ -93,11 +96,12 @@ func _process(delta: float) -> void:
 		#simple_boat_model.linear_velocity = linear_velocity
 		#simple_boat_model.angular_velocity = angular_velocity
 		new_local_forces = simple_boat_model.calculate_boat_forces(
-			anim[anim_frame].direction,
+			r,#anim[anim_frame].direction,
 			anim[anim_frame].steer,
 		)
-		simple_boat_model.step(0.05)
-		local_data.force += Vector2(new_local_forces.x, new_local_forces.y) * size_scale
+		#simple_boat_model.linear_force *= size_scale
+		simple_boat_model.step(0.1)
+		local_data.force += Vector2(new_local_forces.x, new_local_forces.y)
 		local_data.moment += new_local_forces.z
 	
 	if false:
@@ -110,8 +114,8 @@ func _process(delta: float) -> void:
 		%Rudder.rotation.y = -anim[anim_frame].steer
 	else:
 		%Agent.position = Global.bi_to_tri(simple_boat_model.position)
-		%Agent.rotation.y = simple_boat_model.rotation
-		%Rudder.rotation.y = -anim[anim_frame].steer
+		%Agent.rotation.y = -simple_boat_model.rotation + deg_to_rad(90)
+		%Rudder.rotation.y = anim[anim_frame].steer
 	#prints(anim_frame, anim_tick)
 	
 	anim_tick += 1
@@ -131,13 +135,14 @@ func _ready() -> void:
 	boat_sim.tests()
 	
 	simple_boat_model.configure(10.0)
+	simple_boat_model.ticks_per_second = fps
 	
 	print("start!")
 	var x = 51
 	var y = 31
 	var sx = 10.0
 	var sy = 7.0
-	var syaw0 = deg_to_rad(-45.0) # 120
+	var syaw0 = deg_to_rad(-45.0+180) # 120
 	var gx = 45.0
 	var gy = 10.0
 	var gyaw0 = deg_to_rad(90.0)

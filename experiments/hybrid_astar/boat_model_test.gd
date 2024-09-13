@@ -25,8 +25,10 @@ func _ready() -> void:
 	#boat_model.p.yaw_rate = 0.0 #r/s
 	
 	simple_boat_model.configure(sbm_mass)
+	simple_boat_model.rotation = deg_to_rad(-45)
 	
 	revss_per_second = aprox_boat_model.revss_per_second
+	revss_per_second = [2, 1, 0, -1, -2]
 	rudder_angles = aprox_boat_model.rudder_angles
 	
 	#aprox_boat_model.nearest_neighbor_fit()
@@ -55,8 +57,8 @@ func _ready() -> void:
 
 func _physics_process(delta: float) -> void:
 	#params = best_parameters()
-	simple_boat_model.simulared_annealing()
-	#real_time(delta)
+	#simple_boat_model.simulared_annealing()
+	real_time(delta)
 	pass
 
 func real_time(delta: float) -> void:
@@ -93,7 +95,7 @@ var linear_angular_velocity:Vector3
 func process_sbm(delta: float) -> Vector3:
 	#set_parameters(params)
 	var sbm_forces := simple_boat_model.calculate_boat_forces(
-		revss_per_second[revs_per_second]*10.0,
+		revss_per_second[revs_per_second] *10.0,
 		rudder_angles[rudder_angle]
 	)
 	simple_boat_model.step(delta)
@@ -103,8 +105,8 @@ func process_sbm(delta: float) -> Vector3:
 	%Rudder2.rotation = -rudder_angles[rudder_angle]
 	
 	%SimpleForceLabel.text = "SF: %.4f : %.4f : %.4f" % [
-		simple_boat_model.linear_velocity.x,
-		simple_boat_model.linear_velocity.y,
+		simple_boat_model.get_local_velocity().x,
+		simple_boat_model.get_local_velocity().y,
 		simple_boat_model.angular_velocity
 	]
 	

@@ -6,21 +6,12 @@ var p_lateral_damp_coef := 0.99
 var p_vel_damp_rel := 0.01
 var p_angular_damp_coef := 0.99
 
+var simple_boat_model := SimpleBoatModel.new()
+
 func _physics_process(delta: float) -> void:
 	pass
 
 func _integrate_forces(state: PhysicsDirectBodyState2D) -> void:
-	#prints("RB", rotation)
-	var local_velocity_b := state.linear_velocity.rotated(-rotation)
-	var longitudinal_damp := clampf(p_longitudinal_damp_coef * (1.0 - (local_velocity_b.x * p_vel_damp_rel)), 0.0, 1.0)
-	#local_velocity_b.x *= longitudinal_damp
-	
-	# BUG when local_velocity_b.x > 1, it moves in
-	# oposite direction to simple_boat_model
-	local_velocity_b.x *= p_longitudinal_damp_coef
-	local_velocity_b.y *= p_lateral_damp_coef
-	state.linear_velocity = local_velocity_b.rotated(rotation)
-	
-	#state.linear_velocity.x = 0.2
-	
-	state.angular_velocity *= p_angular_damp_coef
+	var dvel := simple_boat_model.damped_velocity(state.linear_velocity, state.angular_velocity)
+	state.linear_velocity = dvel[0]
+	state.angular_velocity = dvel[1]
