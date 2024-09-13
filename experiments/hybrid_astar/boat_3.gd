@@ -13,7 +13,11 @@ func _integrate_forces(state: PhysicsDirectBodyState2D) -> void:
 	#prints("RB", rotation)
 	var local_velocity_b := state.linear_velocity.rotated(-rotation)
 	var longitudinal_damp := clampf(p_longitudinal_damp_coef * (1.0 - (local_velocity_b.x * p_vel_damp_rel)), 0.0, 1.0)
-	local_velocity_b.x *= longitudinal_damp
+	#local_velocity_b.x *= longitudinal_damp
+	
+	# BUG when local_velocity_b.x > 1, it moves in
+	# oposite direction to simple_boat_model
+	local_velocity_b.x *= p_longitudinal_damp_coef
 	local_velocity_b.y *= p_lateral_damp_coef
 	state.linear_velocity = local_velocity_b.rotated(rotation)
 	

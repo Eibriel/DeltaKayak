@@ -9,6 +9,7 @@ var anim_tick := 0
 var hybrid_astar := HybridAStarBoat.new()
 var boat_sim := BoatModel.new()
 var aprox_boat_model := AproxBoatModel.new()
+var simple_boat_model := SimpleBoatModel.new()
 
 var end_search := false
 
@@ -53,6 +54,10 @@ func _process(delta: float) -> void:
 			local_data.position.y = anim[anim_frame].y
 			local_data.yaw = anim[anim_frame].yaw
 			anim_frame += 1
+			
+			simple_boat_model.position = local_data.position
+			simple_boat_model.rotation = local_data.yaw
+			
 			return
 		elif anim_frame > 0:
 			#local_data.position.x = anim[anim_frame-1].x
@@ -75,7 +80,7 @@ func _process(delta: float) -> void:
 			anim[anim_frame].steer)
 		local_data.force += new_local_forces.force * size_scale
 		local_data.moment += new_local_forces.moment
-	else:
+	elif false:
 		new_local_forces = aprox_boat_model.get_velocity(
 			linear_velocity,
 			angular_velocity,
@@ -84,14 +89,29 @@ func _process(delta: float) -> void:
 		)
 		local_data.force += Vector2(new_local_forces.x, new_local_forces.y) * size_scale
 		local_data.moment += new_local_forces.z
-	local_data.yaw -= local_data.moment
-	local_data.position += local_data.force.rotated(local_data.yaw)
+	else:
+		#simple_boat_model.linear_velocity = linear_velocity
+		#simple_boat_model.angular_velocity = angular_velocity
+		new_local_forces = simple_boat_model.calculate_boat_forces(
+			anim[anim_frame].direction,
+			anim[anim_frame].steer,
+		)
+		simple_boat_model.step(0.05)
+		local_data.force += Vector2(new_local_forces.x, new_local_forces.y) * size_scale
+		local_data.moment += new_local_forces.z
 	
-	%Agent.position.x = local_data.position.x
-	%Agent.position.z = local_data.position.y
-	%Agent.rotation.y = -local_data.yaw + deg_to_rad(90)
-	%Rudder.rotation.y = -anim[anim_frame].steer
-	
+	if false:
+		local_data.yaw -= local_data.moment
+		local_data.position += local_data.force.rotated(local_data.yaw)
+		
+		%Agent.position.x = local_data.position.x
+		%Agent.position.z = local_data.position.y
+		%Agent.rotation.y = -local_data.yaw + deg_to_rad(90)
+		%Rudder.rotation.y = -anim[anim_frame].steer
+	else:
+		%Agent.position = Global.bi_to_tri(simple_boat_model.position)
+		%Agent.rotation.y = simple_boat_model.rotation
+		%Rudder.rotation.y = -anim[anim_frame].steer
 	#prints(anim_frame, anim_tick)
 	
 	anim_tick += 1
@@ -109,6 +129,8 @@ func _ready() -> void:
 	print("Loading BoatModel")
 	boat_sim.load_parameters()
 	boat_sim.tests()
+	
+	simple_boat_model.configure(10.0)
 	
 	print("start!")
 	var x = 51
@@ -184,26 +206,26 @@ func iterate_pathfinding():
 		print(hybrid_astar.STATES.find_key(hybrid_astar.state))
 		return
 	
-	var path
-	var path_length:=-1
-	for kk in hybrid_astar.closed_set:
-		if hybrid_astar.closed_set[kk].x.size() > path_length:
-			path_length = hybrid_astar.closed_set[kk].x.size()
-			var n_curr = hybrid_astar.closed_set[kk]
-			path = hybrid_astar.extract_any_path(hybrid_astar.closed_set, n_curr, hybrid_astar.ngoal)
-			var touch_start_point:=false
-			var path_found:=false
-			for k in path.x.size():
-				if Vector2(path.x[k], path.y[k]).distance_to(start_pos) < 2.0:
-					touch_start_point = true
-				
-				if Vector2(path.x[k], path.y[k]).distance_to(goal_pos) < 2.0:
-					if touch_start_point:
-						path_found = true
-						print("Path found!")
-						break
-			if path_found:
-				break
+	#var path
+	#var path_length:=-1
+	#for kk in hybrid_astar.closed_set:
+		#if hybrid_astar.closed_set[kk].x.size() > path_length:
+			#path_length = hybrid_astar.closed_set[kk].x.size()
+			#var n_curr = hybrid_astar.closed_set[kk]
+			#path = hybrid_astar.extract_any_path(hybrid_astar.closed_set, n_curr, hybrid_astar.ngoal)
+			#var touch_start_point:=false
+			#var path_found:=false
+			#for k in path.x.size():
+				#if Vector2(path.x[k], path.y[k]).distance_to(start_pos) < 2.0:
+					#touch_start_point = true
+				#
+				#if Vector2(path.x[k], path.y[k]).distance_to(goal_pos) < 2.0:
+					#if touch_start_point:
+						#path_found = true
+						#print("Path found!")
+						#break
+			#if path_found:
+				#break
 	
 	#var ind = hybrid_astar.qp.peek_item()
 	#var n_curr = hybrid_astar.open_set[ind]
@@ -216,7 +238,7 @@ func iterate_pathfinding():
 	
 	#if path.pind < 0: return
 	#var path = hybrid_astar.extract_any_path(hybrid_astar.closed_set, n_curr, hybrid_astar.ngoal)
-	#var path = hybrid_astar.final_path
+	var path = hybrid_astar.final_path
 	
 	# BUG paths returned are too short and out of order
 	anim.resize(0)

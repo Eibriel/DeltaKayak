@@ -5,8 +5,8 @@
 [ext_resource type="Script" path="res://experiments/hybrid_astar/boat_3.gd" id="3_kjt1o"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_u5ali"]
-radius = 16.0
-height = 134.0
+radius = 1.0
+height = 7.0
 
 [node name="BoatModelTest" type="Control"]
 layout_mode = 3
@@ -40,6 +40,11 @@ unique_name_in_owner = true
 layout_mode = 2
 text = "Force: 0,0"
 
+[node name="SimpleForceLabel" type="Label" parent="Control/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Force: 0,0"
+
 [node name="ControlsLabel" type="Label" parent="Control/VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
@@ -63,40 +68,42 @@ metadata/_edit_use_anchors_ = true
 
 [node name="Node2D" type="Node2D" parent="."]
 position = Vector2(569, 322)
+scale = Vector2(4, 4)
 
 [node name="Boat" type="Node2D" parent="Node2D"]
 unique_name_in_owner = true
 
 [node name="Icon" type="Sprite2D" parent="Node2D/Boat"]
-scale = Vector2(1, 0.245)
+scale = Vector2(0.055, 0.014)
 texture = ExtResource("2_8nqv4")
 
 [node name="Rudder" type="Node2D" parent="Node2D/Boat"]
 unique_name_in_owner = true
-position = Vector2(-63, 0)
+position = Vector2(-3.57, 0)
 
 [node name="Icon2" type="Sprite2D" parent="Node2D/Boat/Rudder"]
-position = Vector2(-14, 0)
-scale = Vector2(0.225, 0.05)
+position = Vector2(-0.65, 0)
+scale = Vector2(0.01, 0.002)
 texture = ExtResource("2_8nqv4")
 
 [node name="Node2D2" type="Node2D" parent="."]
 position = Vector2(197, 322)
+scale = Vector2(4, 4)
 
 [node name="Boat2" type="Node2D" parent="Node2D2"]
 unique_name_in_owner = true
 
 [node name="Icon" type="Sprite2D" parent="Node2D2/Boat2"]
-scale = Vector2(1, 0.245)
+scale = Vector2(0.055, 0.013)
 texture = ExtResource("2_8nqv4")
 
 [node name="Rudder2" type="Node2D" parent="Node2D2/Boat2"]
 unique_name_in_owner = true
-position = Vector2(-63, 0)
+position = Vector2(-3.57, 0)
 
 [node name="Icon2" type="Sprite2D" parent="Node2D2/Boat2/Rudder2"]
-position = Vector2(-14, 0)
-scale = Vector2(0.225, 0.05)
+position = Vector2(-0.65, 0)
+scale = Vector2(0.01, 0.002)
 texture = ExtResource("2_8nqv4")
 
 [node name="Node2D3" type="Node2D" parent="."]
@@ -120,14 +127,14 @@ shape = SubResource("CapsuleShape2D_u5ali")
 unique_name_in_owner = true
 
 [node name="Icon" type="Sprite2D" parent="Node2D3/Boat3/Boat3_"]
-scale = Vector2(1, 0.245)
+scale = Vector2(0.055, 0.013)
 texture = ExtResource("2_8nqv4")
 
 [node name="Rudder3" type="Node2D" parent="Node2D3/Boat3/Boat3_"]
 unique_name_in_owner = true
-position = Vector2(-63, 0)
+position = Vector2(-3.57, 0)
 
 [node name="Icon2" type="Sprite2D" parent="Node2D3/Boat3/Boat3_/Rudder3"]
-position = Vector2(-14, 0)
-scale = Vector2(0.225, 0.05)
+position = Vector2(-0.65, 0)
+scale = Vector2(0.01, 0.002)
 texture = ExtResource("2_8nqv4")

@@ -293,7 +293,7 @@ func iterate() -> void:
 	open_set.erase(ind)
 
 	# Is there a direct path to goal?
-	var use_analystic_expantion:=false
+	var use_analystic_expantion:=true
 	var stop_on_found:=false
 	if use_analystic_expantion:
 		res_update = update_node_with_analystic_expantion(n_curr.clone(), ngoal.clone(), true)
@@ -473,6 +473,9 @@ func get_next_boat_state(linear_velocity:Vector2,
 		position: Vector2,
 		yaw: float) -> Dictionary:
 	
+	var simple_boat_model := SimpleBoatModel.new()
+	simple_boat_model.configure(10.0)
+	
 	var local_data := {
 		"force": Vector2(linear_velocity),
 		"moment": float(angular_velocity),
@@ -480,12 +483,18 @@ func get_next_boat_state(linear_velocity:Vector2,
 		"yaw": yaw,
 		"ticks": 0
 	}
+	# Initialize simple_boat_model
+	simple_boat_model.rotation = yaw
+	simple_boat_model.position = Vector2(position)
+	simple_boat_model.linear_velocity = linear_velocity
+	simple_boat_model.angular_velocity = angular_velocity
+	
 	#var global_pos := 
 	#var global_yaw := yaw
 	# TODO should look until min distance is reached?
 	var r := float(revs_per_second) * 10.0
 	var size_scale := 0.01
-	for _n in range(100000):
+	for _n in range(10000):
 		var _linear_velocity:Vector2 = local_data.force
 		var _angular_velocity:float = local_data.moment
 		#print(local_data.moment)
@@ -500,7 +509,7 @@ func get_next_boat_state(linear_velocity:Vector2,
 			#	breakpoint
 			local_data.force += new_local_forces.force * size_scale
 			local_data.moment += new_local_forces.moment
-		else:
+		elif false:
 			new_local_forces = aprox_boat_model.get_velocity(
 				_linear_velocity,
 				_angular_velocity,
@@ -509,8 +518,24 @@ func get_next_boat_state(linear_velocity:Vector2,
 			)
 			local_data.force += Vector2(new_local_forces.x, new_local_forces.y) * size_scale
 			local_data.moment += new_local_forces.z
-		local_data.yaw -= local_data.moment
-		local_data.position += local_data.force.rotated(local_data.yaw)
+		else:
+			new_local_forces = simple_boat_model.calculate_boat_forces(
+				revs_per_second,
+				rudder_angle
+			)
+			var _delta := 0.05
+			simple_boat_model._update_forces(_delta)
+			# Save last velocity
+			local_data.force = simple_boat_model.linear_velocity
+			local_data.moment = simple_boat_model.angular_velocity
+			simple_boat_model._update_transform(_delta)
+			simple_boat_model._reset_forces()
+		if false:
+			local_data.yaw -= local_data.moment
+			local_data.position += local_data.force.rotated(local_data.yaw)
+		else:
+			local_data.yaw = simple_boat_model.rotation
+			local_data.position = simple_boat_model.position
 		local_data.ticks += 1
 		if position.distance_to(local_data.position) > 1.4: break
 	
