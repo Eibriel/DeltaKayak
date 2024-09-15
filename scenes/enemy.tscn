@@ -234,7 +234,6 @@ shape = SubResource("CapsuleShape3D_c8bgx")
 path_desired_distance = 4.0
 target_desired_distance = 4.0
 path_postprocessing = 1
-debug_enabled = true
 debug_use_custom = true
 debug_path_custom_point_size = 10.0
 

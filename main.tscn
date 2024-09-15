@@ -821,6 +821,7 @@ directional_shadow_mode = 0
 [node name="DebugSunLight" type="DirectionalLight3D" parent="Main3D"]
 unique_name_in_owner = true
 transform = Transform3D(-0.979372, -0.124014, -0.159538, -3.01012e-08, -0.789524, 0.61372, -0.202069, 0.60106, 0.773237, 0, 18.834, 0)
+visible = false
 light_energy = 2.0
 light_volumetric_fog_energy = 0.0
 shadow_opacity = 0.9

@@ -157,7 +157,7 @@ func _ready() -> void:
 	
 	# VR
 	if VR.is_vr_enabled:
-		var screen_effect:CompositorEffectDatamosh = %WorldEnvironment.compositor.compositor_effects[1]
+		var screen_effect:CompositorEffectDatamosh = %WorldEnvironment.compositor.compositor_effects[0]
 		screen_effect.enabled = false
 		%WorldEnvironment.environment.volumetric_fog_enabled = false
 

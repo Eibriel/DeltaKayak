@@ -135,6 +135,20 @@ func _process(delta: float) -> void:
 	handle_brathing()
 	handle_buoyancy(delta)
 	handle_target()
+	handle_paddle_grab()
+
+func handle_paddle_grab():
+	%Paddle.position = Vector3(-0.221, -0.447, -0.53)
+	%Paddle.rotation = Vector3(0, deg_to_rad(-90), 0)
+	%Paddle.reparent(%CharacterXROrigin3D, false)
+	if grabbing_paddle and not grabbing_paddle_b:
+		%Paddle.reparent(%LeftController, false)
+		%Paddle.position = Vector3.ZERO
+	elif grabbing_paddle and grabbing_paddle_b:
+		%Paddle.look_at_from_position(
+			%LeftController.global_position,
+			%RightController.global_position,
+			Vector3.UP, false)
 
 var _mouse_input:bool
 var _mouse_rotation:Vector3
@@ -235,7 +249,10 @@ func hide_pepa()->void:
 	pepa.visible = false
 
 func hide_head_if_needed()->void:
-	if %POVCamera3D.current:
+	if VR.is_vr_enabled:
+		$character/Armature/Skeleton3D/capucha.visible = false
+		$character/Armature/Skeleton3D/head.visible = false
+	elif %POVCamera3D.current:
 		$character/Armature/Skeleton3D/capucha.visible = false
 		$character/Armature/Skeleton3D/head.visible = false
 	else:
@@ -282,6 +299,9 @@ func reset_rotation()->void:
 func handle_controls(delta:float) -> void:
 	if is_paddling_locked: return
 	var input_dir:Vector2 = Input.get_vector("left", "right", "up", "down")
+	if vr_controller_vector != Vector2.ZERO:
+		input_dir = vr_controller_vector
+		#print(input_dir)
 	padling_intent = input_dir
 	
 	left_sample = max(0,-input_dir.x)
@@ -797,3 +817,34 @@ func shake_camera(amount:Vector3, global:=false)->void:
 	camera_tween.tween_property(%POVCameraController, "position", lerp(current_pos, new_pos, 0.2), 0.07)
 	camera_tween.tween_property(%POVCameraController, "position", current_pos, 0.02)
 	
+
+var grabbing_paddle := false
+var grabbing_paddle_b := false
+func _on_left_controller_button_pressed(_name: String) -> void:
+	#prints("Pressed", _name)
+	if _name == "grip_click":
+		grabbing_paddle = true
+
+
+func _on_left_controller_button_released(_name: String) -> void:
+	#prints("Released", _name)
+	if _name == "grip_click":
+		grabbing_paddle = false
+
+
+func _on_right_controller_button_pressed(_name: String) -> void:
+	if _name == "grip_click":
+		grabbing_paddle_b = true
+
+
+func _on_right_controller_button_released(_name: String) -> void:
+	if _name == "grip_click":
+		grabbing_paddle_b = false
+
+var vr_controller_vector := Vector2.ZERO
+func _on_right_controller_input_vector_2_changed(_name: String, value: Vector2) -> void:
+	#print(_name)
+	if _name == "primary":
+		#print(value)
+		value.y *= -1.0
+		vr_controller_vector = value

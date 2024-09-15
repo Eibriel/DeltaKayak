@@ -135,6 +135,7 @@ var previous_linear_velocity := Vector2.ZERO
 var previous_angular_velocity := 0.0
 func _physics_process(delta: float):
 	_get_target(delta)
+	return
 	#
 	if not boat_pathfinding.initialized:
 		initialize_pathfinding()
