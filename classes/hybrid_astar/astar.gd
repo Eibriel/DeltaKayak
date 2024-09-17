@@ -34,6 +34,7 @@ class AStarPara:
 		self.yw = yw
 		self.reso = reso  # resolution of grid world
 		self.motion = motion  # motion set
+		print("New Astar")
 
 func astar_planning(area_size:Vector2i, sx:float, sy:float, gx:float, gy:float, ox:Array[float], oy:Array[float], reso:float, rr:float):
 	"""

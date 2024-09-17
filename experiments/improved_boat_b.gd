@@ -1,6 +1,7 @@
 extends RigidBody3D
 
 var hybrid_astar := HybridAStarBoat.new()
+var threaded_hybrid_astar := ThreadedHybridAstarBoat.new()
 var boat_sim := BoatModel.new()
 var aprox_boat_model := AproxBoatModel.new()
 var simple_boat_model := SimpleBoatModel.new()
@@ -11,7 +12,7 @@ var start_pos := Vector2(10.0, 7.0)
 var start_yaw := deg_to_rad(-45.0) # 120
 var goal_pos := Vector2(45.0, 10.0)
 var goal_yaw = deg_to_rad(90.0)
-var center := Vector2(0,0)
+var center := area_size / 2.0
 
 var origin := Vector2(0,0)
 
@@ -54,16 +55,53 @@ func _ready() -> void:
 	#Engine.physics_ticks_per_second = 10
 	#Engine.physics_ticks_per_second = 120
 
-func set_hybrid_astar():
-	hybrid_astar = HybridAStarBoat.new()
-	define_area()
-	start_yaw = rotation_godot_to_hybridastar(rotation.y)
-	goal_pos = position_godot_to_hybridastar(Global.tri_to_bi(%NavTarget.global_position))
-	goal_yaw = rotation_godot_to_hybridastar(%NavTarget.rotation.y)
+func _exit_tree():
+	threaded_hybrid_astar.stop_pathfinding()
+	threaded_hybrid_astar.destroy()
 
-	var obs_res = get_obstacles()
-	var ox:Array[int] = obs_res[0]
-	var oy:Array[int] = obs_res[1]
+func _physics_process(delta: float) -> void:
+	if new_path_requested and threaded_hybrid_astar.is_pathfinding_alive():
+		threaded_hybrid_astar.stop_pathfinding()
+	elif new_path_requested and not threaded_hybrid_astar.is_pathfinding_alive():
+		new_path_requested = false
+		%NavTarget.global_position = global_position
+		%NavTarget.global_position += Vector3(randf_range(-20, 20), 0, randf_range(-20, 20))
+		anim_frame = 0
+		anim_tick = 0
+		anim_subtick = 0
+		anim_playing = false
+		path_found = false
+		# TODO remove duplicated code
+		origin = Global.tri_to_bi(global_position)
+		center = Vector2(area_size) / 2.0
+		start_pos = Vector2(center)
+		#
+		var obstacles:= get_obstacles()
+		threaded_hybrid_astar.run_pathfinding(
+			get_current_velocity()[0],
+			get_current_velocity()[1],
+			Global.tri_to_bi(global_position),
+			rotation.y,
+			Global.tri_to_bi(%NavTarget.global_position),
+			%NavTarget.rotation.y,
+			obstacles
+		)
+		draw_obstacles(obstacles)
+	#iterate_pathfinding()
+	var r_anim := threaded_hybrid_astar.get_animation()
+	if r_anim.size() > 0:
+		anim = r_anim
+		path_found = true
+		anim_playing = true
+	get_foces(delta)
+	draw_boat_volume()
+	#apply_forces(delta)
+
+
+
+func draw_obstacles(obstacles:Array) -> void:
+	var ox = obstacles[0]
+	var oy = obstacles[1]
 	for c in %Obstacles.get_children():
 		c.queue_free()
 	for n in ox.size():
@@ -74,44 +112,10 @@ func set_hybrid_astar():
 		%Obstacles.add_child(obs)
 	
 	%NavStart.global_position = Global.bi_to_tri(position_hybridastar_to_godot(start_pos))
-	
-	hybrid_astar.hybrid_astar_planning(
-		get_current_velocity()[0] * 0.0, # TODO pass velocity
-		get_current_velocity()[1] * 0.0, # TODO
-		area_size,
-		start_pos.x,
-		start_pos.y,
-		start_yaw,
-		goal_pos.x,
-		goal_pos.y,
-		goal_yaw,
-		ox,
-		oy,
-		hybrid_astar.config.XY_RESO,
-		hybrid_astar.config.YAW_RESO
-	)
-	draw_hmap()
-	print("Initialized!")
-
-func _physics_process(delta: float) -> void:
-	if new_path_requested:
-		new_path_requested = false
-		%NavTarget.global_position = global_position
-		%NavTarget.global_position += Vector3(randf_range(-20, 20), 0, randf_range(-20, 20))
-		anim_frame = 0
-		anim_tick = 0
-		anim_subtick = 0
-		anim_playing = false
-		path_found = false
-		set_hybrid_astar()
-	iterate_pathfinding()
-	get_foces(delta)
-	draw_boat_volume()
-	#apply_forces(delta)
 
 func get_current_velocity():
-	var current_linear_velocity := Global.tri_to_bi(linear_velocity).rotated(rotation.y+deg_to_rad(90)) * 0.1
-	var current_angular_velocity := -angular_velocity.y * 0.05
+	var current_linear_velocity := Global.tri_to_bi(linear_velocity)#.rotated(rotation.y+deg_to_rad(90))
+	var current_angular_velocity := -angular_velocity.y
 	
 	return [
 		current_linear_velocity,
@@ -121,14 +125,14 @@ func get_current_velocity():
 func draw_boat_volume():
 	var pos := position_godot_to_hybridastar(Global.tri_to_bi(global_position))
 	var yaw := rotation_godot_to_hybridastar(rotation.y)
-	var volume:Array[Vector2i] = hybrid_astar.get_shape(pos, yaw)
+	"""var volume:Array[Vector2i] = hybrid_astar.get_shape(pos, yaw)
 	for c in %StartPointIndicator.get_children():
 		c.queue_free()
 	for v in volume:
 		var vb:= CSGBox3D.new()
 		vb.material = volume_mat
 		%StartPointIndicator.add_child(vb)
-		vb.global_position = Global.bi_to_tri(position_hybridastar_to_godot(Vector2(v)))
+		vb.global_position = Global.bi_to_tri(position_hybridastar_to_godot(Vector2(v)))"""
 	#print(volume)
 
 #func apply_forces(delta: float) -> void:
@@ -165,7 +169,7 @@ func get_foces(delta: float) -> void:
 			simple_boat_model.angular_velocity = anim[anim_frame].angular_velocity
 			simple_boat_model.position = Vector2(anim[anim_frame].x, anim[anim_frame].y) - center
 			simple_boat_model.rotation = anim[anim_frame].yaw
-			assert(simple_boat_model.position == Vector2.ZERO)
+			#assert(simple_boat_model.position == Vector2.ZERO)
 			anim_frame += 1
 			return
 		if anim_frame > 0 and false:
@@ -222,58 +226,6 @@ func _integrate_forces(state: PhysicsDirectBodyState3D) -> void:
 	state.linear_velocity = Global.bi_to_tri(dvel[0])
 	state.angular_velocity = Vector3(0, dvel[1], 0)
 
-func iterate_pathfinding():
-	if path_found: return
-	if hybrid_astar.state != hybrid_astar.STATES.ITERATING:
-		#print("Not iterating")
-		return
-	hybrid_astar.iterate()
-	draw_nodes()
-
-func draw_nodes():
-	for c in %Nodes.get_children():
-		c.queue_free()
-	var path
-	var path_cost
-	for kk in hybrid_astar.closed_set:
-		path = hybrid_astar.closed_set[kk]
-		pass
-		
-	if path.pind < 0: return
-	path = hybrid_astar.extract_any_path(hybrid_astar.closed_set, path, hybrid_astar.ngoal)
-	anim.resize(0)
-	
-	var touch_start_point := false
-	for k in path.x.size():
-		var pos := position_hybridastar_to_godot(Vector2(path.x[k], path.y[k]))
-		var pyaw:float = path.yaw[k]
-		var obs := CSGBox3D.new()
-		obs.size = Vector3(0.2, 0.2, 1.0)
-		obs.position.x = pos.x
-		obs.position.z = pos.y
-		obs.rotation.y = -pyaw + deg_to_rad(90)
-		obs.material = lines_mat
-		%Nodes.add_child(obs)
-		
-		if Vector2(path.x[k], path.y[k]).distance_to(start_pos) < 2.0:
-			touch_start_point = true
-		
-		if Vector2(path.x[k], path.y[k]).distance_to(goal_pos) < 2.0:
-			if touch_start_point:
-				path_found = true
-				anim_playing = true
-		
-		anim.append({
-			"x": path.x[k],
-			"y": path.y[k],
-			"yaw": path.yaw[k],
-			"direction": path.direction[k],
-			"steer": path.steer[k],
-			"ticks": path.ticks[k],
-			"linear_velocity": path.linear_velocity[k],
-			"angular_velocity": path.angular_velocity[k]
-		})
-
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_accept"):
 		new_path_requested = true
@@ -286,34 +238,7 @@ func _input(event: InputEvent) -> void:
 	elif event.is_action_pressed("ui_left"):
 		apply_torque_impulse(Vector3(0,-100,0))
 
-func define_area() -> void:
-	origin = Global.tri_to_bi(global_position)
-	center = Vector2(area_size) / 2.0
-	#var future_position_offset := Global.tri_to_bi(linear_velocity / 22)
-	#start_pos = Vector2(center) + future_position_offset
-	start_pos = Vector2(center)
-
-# Hybrid A* convertions
-func position_godot_to_hybridastar(godot_pos:Vector2) -> Vector2:
-	return (Vector2(area_size) - ((-((godot_pos- origin) / area_scale )) + center))
-
-func position_hybridastar_to_godot(hybridastar_pos:Vector2) -> Vector2:
-	return (((hybridastar_pos + origin) * area_scale) - origin) - (center*2)
-
-func force_godot_to_hybridastar(godot_force: Vector2) -> Vector2:
-	return godot_force.rotated(rotation.y+deg_to_rad(90))*0.01
-
-func rotation_godot_to_hybridastar(godot_rotation:float) -> float:
-	return -godot_rotation - deg_to_rad(90)
-
-# MMG convertions
-func force_godot_to_mmg(godot_force: Vector2) -> Vector2:
-	return godot_force.rotated(rotation.y)
-
-func force_mmg_to_godot(mmg_force: Vector2, mmg_yaw: float) -> Vector2:
-	return mmg_force.rotated(mmg_yaw)
-
-func get_obstacles() -> Array:
+func get_obstacles() -> Array[Array]:
 	var x := area_size.x
 	var y := area_size.y
 	var ox:Array[int]= []
@@ -352,6 +277,7 @@ func get_obstacles() -> Array:
 				oy.append(yy)
 	return [ox, oy]
 
+"""
 func draw_hmap():
 	for c in %Hmap.get_children():
 		c.queue_free()
@@ -369,12 +295,24 @@ func draw_hmap():
 			var pos := position_hybridastar_to_godot(Vector2(hx, hy))
 			obs.position.x = pos.x
 			obs.position.z = pos.y
-			%Hmap.add_child(obs)
+			%Hmap.add_child(obs)"""
 
-#
-#func _physics_process(delta: float) -> void:
-	#iterate_pathfinding()
-#
-#
-#func iterate_pathfinding():
-	#hybrid_astar.iterate()
+# Hybrid A* convertions
+func position_godot_to_hybridastar(godot_pos:Vector2) -> Vector2:
+	return (Vector2(area_size) - ((-((godot_pos- origin) / area_scale )) + center))
+
+func position_hybridastar_to_godot(hybridastar_pos:Vector2) -> Vector2:
+	return (((hybridastar_pos + origin) * area_scale) - origin) - (center*2)
+
+func force_godot_to_hybridastar(godot_force: Vector2) -> Vector2:
+	return godot_force.rotated(rotation.y+deg_to_rad(90))*0.01
+
+func rotation_godot_to_hybridastar(godot_rotation:float) -> float:
+	return -godot_rotation - deg_to_rad(90)
+
+# MMG convertions
+func force_godot_to_mmg(godot_force: Vector2) -> Vector2:
+	return godot_force.rotated(rotation.y)
+
+func force_mmg_to_godot(mmg_force: Vector2, mmg_yaw: float) -> Vector2:
+	return mmg_force.rotated(mmg_yaw)

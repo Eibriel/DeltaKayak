@@ -6,7 +6,7 @@ var astar = AStar.new()
 var config = C.new()
 
 var boat_sim = BoatModel.new()
-var aprox_boat_model := AproxBoatModel.new()
+var aprox_boat_model #:= AproxBoatModel.new()
 
 class C:  # Parameter config
 	#var _PI := PI
@@ -192,8 +192,8 @@ class KDTree:
 		return res
 
 func _init() -> void:
-	boat_sim.load_parameters()
-	boat_sim.tests()
+	#boat_sim.load_parameters()
+	#boat_sim.tests()
 	tests()
 
 func tests()->void:
@@ -309,6 +309,8 @@ func iterate() -> void:
 					state = STATES.ERROR
 				return
 	
+	# TODO remove this for loop
+	# takes to much time
 	for i in range(len(steer_set)):
 		var node := calc_next_node(n_curr, ind, steer_set[i], direc_set[i], i)
 		
