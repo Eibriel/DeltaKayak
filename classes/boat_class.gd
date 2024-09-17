@@ -3,6 +3,7 @@ class_name Boat3D
 
 var boat_pathfinding:BoatPathfinding
 var aprox_boat_model := AproxBoatModel.new()
+var simple_boat_model := SimpleBoatModel.new()
 
 var time := 999999999999.0
 var time_horizon := 1.0
@@ -72,6 +73,8 @@ func _ready():
 	add_child(boat_pathfinding_debug)
 	boat_pathfinding = BoatPathfinding.new(boat_pathfinding_debug)
 	
+	simple_boat_model.configure(10.0)
+	
 	
 
 #func setup_physics():
@@ -127,6 +130,30 @@ func get_derivative(_error) -> float:
 			derivative = -(rotation.y + last_rotation)
 	return derivative * pid_derivative_par
 #
+
+var manual_control := Vector2.ZERO
+func _manual_control(delta: float):
+	if true:
+		manual_control = Input.get_vector("camera_left", "camera_right", "camera_up", "camera_down")
+		manual_control *= -1.0
+	if manual_control == Vector2.ZERO: return
+	simple_boat_model.position = Global.tri_to_bi(global_position)
+	simple_boat_model.rotation = -rotation.y + deg_to_rad(90)
+	simple_boat_model.linear_velocity = Global.tri_to_bi(linear_velocity)
+	simple_boat_model.angular_velocity = angular_velocity.y
+	var sbm_forces := simple_boat_model.calculate_boat_forces(
+		remap(manual_control.y, -1, 1, 20, -20),
+		remap(manual_control.x, -1, 1, deg_to_rad(45), deg_to_rad(-45))
+	)
+	var linear_to_apply := Vector3(sbm_forces.x, 0, sbm_forces.y)
+	#print(linear_to_apply, sbm_forces.z*10)
+	%EnemyNavigationVelocityIndicator.global_position = global_position + linear_to_apply*2
+	apply_central_force(linear_to_apply)
+	apply_torque(Vector3(0, sbm_forces.z, 0))
+	simple_boat_model.step(delta)
+	# Godot BUG ? when inertia.z is > 0, but .x and .y == 0
+	# erratic behaviour
+
 var local_data:Dictionary
 var linear_force_to_apply: Vector3
 var angular_force_to_apply: float
@@ -135,6 +162,7 @@ var previous_linear_velocity := Vector2.ZERO
 var previous_angular_velocity := 0.0
 func _physics_process(delta: float):
 	_get_target(delta)
+	_manual_control(delta)
 	return
 	#
 	if not boat_pathfinding.initialized:
@@ -327,6 +355,15 @@ func bezier_path(delta: float):
 
 func _integrate_forces(state:PhysicsDirectBodyState3D):
 	_handle_contacts(state)
+	var dvel := simple_boat_model.damped_velocity(
+		Global.tri_to_bi(state.linear_velocity),
+		state.angular_velocity.y,
+		Engine.physics_ticks_per_second,
+		rotation.y
+	)
+	state.linear_velocity = Global.bi_to_tri(dvel[0])
+	state.angular_velocity = Vector3(0, dvel[1], 0)
+	return
 	#state.linear_velocity *= 0.9
 	#state.angular_velocity *= 0.9
 	var _liner_damp := 0.9

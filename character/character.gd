@@ -212,6 +212,7 @@ func handle_buoyancy(delta:float):
 	#print(buoyancy_instability)
 
 func _handle_controller_camera()->void:
+	return # NOTE locking camera to controll boat
 	var input_dir:Vector2 = Input.get_vector("camera_left", "camera_right", "camera_up", "camera_down")
 	_rotation_input = -input_dir.x * 3.0
 	_tilt_input = -input_dir.y * 3.0
@@ -821,30 +822,45 @@ func shake_camera(amount:Vector3, global:=false)->void:
 var grabbing_paddle := false
 var grabbing_paddle_b := false
 func _on_left_controller_button_pressed(_name: String) -> void:
-	#prints("Pressed", _name)
 	if _name == "grip_click":
+		%character_hand_left_closed.visible = true
+		%character_hand_left_open.visible = false
 		grabbing_paddle = true
 
 
 func _on_left_controller_button_released(_name: String) -> void:
-	#prints("Released", _name)
 	if _name == "grip_click":
+		%character_hand_left_closed.visible = false
+		%character_hand_left_open.visible = true
 		grabbing_paddle = false
 
 
 func _on_right_controller_button_pressed(_name: String) -> void:
 	if _name == "grip_click":
+		%character_hand_right_closed.visible = true
+		%character_hand_right_open.visible = false
 		grabbing_paddle_b = true
+	#print(_name)
+	if _name == "trigger_click":
+		%character_cup.visible = true
 
 
 func _on_right_controller_button_released(_name: String) -> void:
 	if _name == "grip_click":
+		%character_hand_right_closed.visible = false
+		%character_hand_right_open.visible = true
 		grabbing_paddle_b = false
+	if _name == "trigger_click":
+		%character_cup.visible = false
 
 var vr_controller_vector := Vector2.ZERO
-func _on_right_controller_input_vector_2_changed(_name: String, value: Vector2) -> void:
-	#print(_name)
+func _on_left_controller_input_vector_2_changed(_name: String, value: Vector2) -> void:
 	if _name == "primary":
-		#print(value)
 		value.y *= -1.0
 		vr_controller_vector = value
+
+
+func _on_right_controller_input_vector_2_changed(_name: String, value: Vector2) -> void:
+	if _name == "primary":
+		#%XRBase.rotation.z = remap(value.x, -1, 1, deg_to_rad(90), deg_to_rad(-90))
+		Global.enemy.manual_control = value

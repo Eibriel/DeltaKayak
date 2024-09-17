@@ -609,6 +609,8 @@ func _input(event: InputEvent) -> void:
 			#say_dialogue("demo_other_side")
 			#game_over.call_deferred()
 			Global.enemy.enemy_camera.current = !Global.enemy.enemy_camera.current
+			#var f = func (): Global.enemy.global_position = %EnemyHome03.global_position
+			#f.call_deferred()
 
 func say_some_dialogue()->void:
 	if player_state.size() > 0:

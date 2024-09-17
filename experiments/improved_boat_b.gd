@@ -3,6 +3,7 @@ extends RigidBody3D
 var hybrid_astar := HybridAStarBoat.new()
 var boat_sim := BoatModel.new()
 var aprox_boat_model := AproxBoatModel.new()
+var simple_boat_model := SimpleBoatModel.new()
 
 var area_size := Vector2i(30, 30)
 var area_scale := 2.0
@@ -24,24 +25,22 @@ var anim_frame := 0
 var anim_tick := 0
 var anim_subtick := 0
 var anim_playing := false
-var local_data := {
-	"linear_velocity": Vector2.ZERO,
-	"angular_velocity": 0.0,
-	"yaw": 0.0,
-	"position": Vector2.ZERO
-}
 var path_found := false
 var new_path_requested := true
 
 var rudder_angle: float = 0.0
 var revs_per_second: float = 0.0
 
-var anim_ticks_delta:float = 0.1 #0.15
+var anim_ticks_delta:float = 0.1
+var hybrid_delta: float = 0.1
 
 func _ready() -> void:
 	print("Loading BoatModel")
 	boat_sim.load_parameters()
 	#set_hybrid_astar()
+	
+	simple_boat_model.configure(10.0)
+	#simple_boat_model.ticks_per_second = int(1.0/hybrid_delta)
 	
 	lines_mat.albedo_color = Color.RED
 	lines_mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
@@ -77,8 +76,8 @@ func set_hybrid_astar():
 	%NavStart.global_position = Global.bi_to_tri(position_hybridastar_to_godot(start_pos))
 	
 	hybrid_astar.hybrid_astar_planning(
-		get_current_velocity()[0], # TODO pass velocity
-		get_current_velocity()[1], # TODO
+		get_current_velocity()[0] * 0.0, # TODO pass velocity
+		get_current_velocity()[1] * 0.0, # TODO
 		area_size,
 		start_pos.x,
 		start_pos.y,
@@ -132,14 +131,14 @@ func draw_boat_volume():
 		vb.global_position = Global.bi_to_tri(position_hybridastar_to_godot(Vector2(v)))
 	#print(volume)
 
-func apply_forces(delta: float) -> void:
-	if not anim_playing: return
-	var r := float(anim[anim_frame].direction) * 10.0
-	rudder_angle = anim[anim_frame].steer
-	var direction := (transform.basis * Vector3.FORWARD).normalized()
-	apply_central_force(direction * r)
-	
-	apply_torque(Vector3(0, -rudder_angle, 0) * 10 * r)
+#func apply_forces(delta: float) -> void:
+	#if not anim_playing: return
+	#var r := float(anim[anim_frame].direction) * 10.0
+	#rudder_angle = anim[anim_frame].steer
+	#var direction := (transform.basis * Vector3.FORWARD).normalized()
+	#apply_central_force(direction * r)
+	#
+	#apply_torque(Vector3(0, -rudder_angle, 0) * 10 * r)
 
 
 var previous_linear_velocity := Vector2.ZERO
@@ -160,106 +159,49 @@ func get_foces(delta: float) -> void:
 	%SubTickLabel.text = "Sub Tick: %d" % anim_subtick
 	
 	# Calculate forces 10 times per second
-	#if anim_tick == 0 and anim_subtick == 0:
-	if anim_subtick == 0:
-		if anim_frame == 0:
-			#linear_velocity *= 0.0
-			#angular_velocity *= 0.0
-			local_data = {
-				"linear_velocity": anim[anim_frame].linear_velocity,
-				"angular_velocity": anim[anim_frame].angular_velocity,
-				"yaw": anim[anim_frame].yaw,
-				#"position": position_hybridastar_to_godot(Vector2(anim[anim_frame].x, anim[anim_frame].y))
-				"position": Vector2.ZERO
-			}
-			previous_angular_velocity = get_current_velocity()[1]
-			previous_linear_velocity = get_current_velocity()[0]
-			#previous_angular_velocity = angular_velocity.y
-			#previous_linear_velocity = force_godot_to_mmg(Global.tri_to_bi(linear_velocity))
+	if anim_tick == 0: # On tick
+		if anim_frame == 0: # On frame
+			simple_boat_model.linear_velocity = anim[anim_frame].linear_velocity
+			simple_boat_model.angular_velocity = anim[anim_frame].angular_velocity
+			simple_boat_model.position = Vector2(anim[anim_frame].x, anim[anim_frame].y) - center
+			simple_boat_model.rotation = anim[anim_frame].yaw
+			assert(simple_boat_model.position == Vector2.ZERO)
 			anim_frame += 1
 			return
-		elif anim_frame > 0:
-			#local_data.position.x = anim[anim_frame-1].x
-			#local_data.position.y = anim[anim_frame-1].y
-			#local_data.yaw = anim[anim_frame-1].yaw
-			pass
+		if anim_frame > 0 and false:
+			simple_boat_model.linear_velocity = anim[anim_frame-1].linear_velocity
+			simple_boat_model.angular_velocity = anim[anim_frame-1].angular_velocity
+			simple_boat_model.position = Vector2(anim[anim_frame-1].x, anim[anim_frame-1].y) - center
+			simple_boat_model.rotation = anim[anim_frame-1].yaw
 	
-		var r := float(anim[anim_frame].direction) * 10.0
 		rudder_angle = anim[anim_frame].steer
-		revs_per_second = r
-		
+		revs_per_second = float(anim[anim_frame].direction)
+	
 		%SteerLabel.text = "Steer: %dº" % rad_to_deg(anim[anim_frame].steer)
-		%RevsLabel.text = "Revs: %d" % r
-		%Rudder.rotation.y = -anim[anim_frame].steer
-		var size_scale := 0.01
-		var _linear_velocity:Vector2 = local_data.linear_velocity
-		var _angular_velocity:float = local_data.angular_velocity
-		var new_local_velocity
-		if false:
-			new_local_velocity = boat_sim.extended_boat_model(
-				_linear_velocity,
-				_angular_velocity,
-				r,
-				anim[anim_frame].steer)
-			local_data.linear_velocity += new_local_velocity.force * size_scale
-			local_data.angular_velocity += new_local_velocity.moment
-		else:
-			new_local_velocity = aprox_boat_model.get_velocity(
-				_linear_velocity,
-				_angular_velocity,
-				aprox_boat_model.get_rudder_angle_key(anim[anim_frame].steer),
-				aprox_boat_model.get_revs_per_second_key(anim[anim_frame].direction)
-			)
-			local_data.linear_velocity += Vector2(new_local_velocity.x, new_local_velocity.y) * size_scale
-			local_data.angular_velocity += new_local_velocity.z
-		local_data.position += local_data.linear_velocity.rotated(local_data.yaw)
-		local_data.yaw -= local_data.angular_velocity
-		
-		var rotated_linear_velocity: Vector2= force_mmg_to_godot(local_data.linear_velocity, local_data.yaw)
-		
-		if false:
-			var damp_number := 0.18
-			var angular_acceleration:float = local_data.angular_velocity - previous_angular_velocity*damp_number
-			var angular_force:float = angular_acceleration * mass
-			previous_angular_velocity = local_data.angular_velocity
-			var torque_multiplier := 190.0
-			torque_to_apply = angular_force*torque_multiplier
-			
-			damp_number = 0.12
-			var linear_acceleration:Vector2 = rotated_linear_velocity - previous_linear_velocity * damp_number
-			var linear_force:Vector2 = linear_acceleration * mass
-			previous_linear_velocity = rotated_linear_velocity
-			var force_multiplier := 22.0
-			force_to_apply = Global.bi_to_tri(linear_force)*force_multiplier
-		else:
-			var all_force_multiplier := 1490.0
-			var damp_number := 0.0112
-			var angular_acceleration:float = local_data.angular_velocity * damp_number
-			var angular_force:float = angular_acceleration * mass
-			previous_angular_velocity = local_data.angular_velocity
-			var torque_multiplier := all_force_multiplier * 10.0
-			torque_to_apply = angular_force*torque_multiplier
-			
-			damp_number = 0.013
-			var linear_acceleration:Vector2 = rotated_linear_velocity * damp_number
-			var linear_force:Vector2 = linear_acceleration * mass
-			previous_linear_velocity = rotated_linear_velocity
-			var force_multiplier := all_force_multiplier * 1.0
-			force_to_apply = Global.bi_to_tri(linear_force)*force_multiplier
+		%RevsLabel.text = "Revs: %d" % revs_per_second
+		%Rudder.rotation.y = anim[anim_frame].steer
+	
+	var boat_forces := simple_boat_model.calculate_boat_forces(
+		revs_per_second,
+		rudder_angle
+	)
+	#simple_boat_model.step(hybrid_delta)
+	simple_boat_model.step(delta)
+	torque_to_apply = -boat_forces.z
+	var f := Vector2(boat_forces.x, boat_forces.y)
+	force_to_apply = Global.bi_to_tri(f)
+	%SimForce.global_position = global_position + force_to_apply*10
+	
+	var pos := position_hybridastar_to_godot(simple_boat_model.position) + center*2
+	%SimBoat.global_position.x = pos.x
+	%SimBoat.global_position.z = pos.y
+	%SimBoat.rotation.y = -simple_boat_model.rotation + deg_to_rad(90+180)
 	
 	# Apply forces on every physics tick
 	# NOTE no need to multiply by delta!
 	apply_torque(Vector3(0, torque_to_apply, 0))
-	apply_central_force(force_to_apply)
-	
-	const use_position:=false
-	if use_position:
-		# BUG position is not aligned with the path for some reason
-		var pos := position_hybridastar_to_godot(Vector2(local_data.position.x, local_data.position.y)) + center*2 #- origin
-		global_position.x = pos.x
-		global_position.z = pos.y
-		rotation.y = -local_data.yaw + deg_to_rad(180+90)
-		
+	apply_central_force(force_to_apply*2.0) # Why it must be multiplied by 2!??
+
 	anim_subtick += 1
 	assert(Engine.physics_ticks_per_second * anim_ticks_delta > 0)
 	if anim_subtick >= Engine.physics_ticks_per_second * anim_ticks_delta:
@@ -270,19 +212,15 @@ func get_foces(delta: float) -> void:
 			anim_tick = 0
 
 func _integrate_forces(state: PhysicsDirectBodyState3D) -> void:
-	#return
-	var _liner_damp := 0.9
-	var _angular_damp := 0.9
-	
-	linear_velocity *= 1.0 - _liner_damp / Engine.physics_ticks_per_second
-	angular_velocity *= 1.0 - _angular_damp / Engine.physics_ticks_per_second
-	#return
-	var forward_direction := (transform.basis * Vector3.FORWARD).normalized()
-	# Gets only the energy going forward
-	var forward_component: Vector3 = forward_direction * state.linear_velocity.dot(forward_direction)
-	var side_component: Vector3 = state.linear_velocity - forward_component
-	linear_velocity = forward_component
-	linear_velocity += side_component * 0.4
+	var dvel := simple_boat_model.damped_velocity(
+		#force_godot_to_mmg(Global.tri_to_bi(state.linear_velocity)),
+		Global.tri_to_bi(state.linear_velocity),
+		state.angular_velocity.y,
+		Engine.physics_ticks_per_second,
+		simple_boat_model.rotation, #-rotation.y-deg_to_rad(90)
+	)
+	state.linear_velocity = Global.bi_to_tri(dvel[0])
+	state.angular_velocity = Vector3(0, dvel[1], 0)
 
 func iterate_pathfinding():
 	if path_found: return
@@ -351,7 +289,7 @@ func _input(event: InputEvent) -> void:
 func define_area() -> void:
 	origin = Global.tri_to_bi(global_position)
 	center = Vector2(area_size) / 2.0
-	var future_position_offset := Global.tri_to_bi(linear_velocity / 22)
+	#var future_position_offset := Global.tri_to_bi(linear_velocity / 22)
 	#start_pos = Vector2(center) + future_position_offset
 	start_pos = Vector2(center)
 

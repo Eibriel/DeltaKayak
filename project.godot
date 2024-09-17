@@ -173,7 +173,7 @@ locale/translations=PackedStringArray("res://dkdata_strings.en.translation", "re
 
 [physics]
 
-common/physics_ticks_per_second=90
+common/physics_ticks_per_second=120
 
 [rendering]
 
@@ -192,7 +192,6 @@ vrs/mode=2
 
 [xr]
 
-openxr/enabled=true
 openxr/reference_space=0
 openxr/startup_alert=false
 shaders/enabled=true

@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://cnr3fnhel1ora"]
+[gd_scene load_steps=10 format=3 uid="uid://cnr3fnhel1ora"]
 
 [ext_resource type="Script" path="res://experiments/improved_boat_b.gd" id="1_m0ec5"]
 
@@ -24,6 +24,12 @@ height = 13.2257
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_hn00r"]
 size = Vector3(5, 5, 5)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7y8an"]
+albedo_color = Color(1, 0.239216, 0.133333, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0qit4"]
+albedo_color = Color(0.227451, 0.239216, 0.784314, 1)
 
 [node name="Node3D" type="Node3D"]
 
@@ -81,6 +87,7 @@ axis_lock_angular_z = true
 mass = 10.0
 physics_material_override = SubResource("PhysicsMaterial_3fjc7")
 center_of_mass_mode = 1
+inertia = Vector3(0.01, 100, 0.01)
 linear_damp_mode = 1
 angular_damp_mode = 1
 script = ExtResource("1_m0ec5")
@@ -115,6 +122,7 @@ unique_name_in_owner = true
 [node name="NavStart" type="CSGSphere3D" parent="."]
 unique_name_in_owner = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 21.2119, 0, -19.6927)
+visible = false
 radius = 1.0
 
 [node name="NavPoints" type="Node3D" parent="."]
@@ -144,11 +152,12 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
 
 [node name="StaticBody3D" type="RigidBody3D" parent="."]
 unique_name_in_owner = true
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 47.6432, 0, -3.539)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 54.7841, 0, -2.35004)
 axis_lock_linear_y = true
 axis_lock_angular_x = true
 axis_lock_angular_z = true
-mass = 100.0
+linear_damp_mode = 1
+angular_damp_mode = 1
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
 shape = SubResource("BoxShape3D_hn00r")
@@ -162,3 +171,15 @@ polygon = PackedVector2Array(15.0525, -23.3145, 14.9235, -10.9294, -23.7801, -10
 [node name="StartPointIndicator" type="Node3D" parent="."]
 unique_name_in_owner = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 0)
+visible = false
+
+[node name="SimBoat" type="CSGBox3D" parent="."]
+unique_name_in_owner = true
+size = Vector3(1, 1, 5.28931)
+material = SubResource("StandardMaterial3D_7y8an")
+
+[node name="SimForce" type="CSGBox3D" parent="."]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.1499, 0)
+size = Vector3(1, 1, 0.9729)
+material = SubResource("StandardMaterial3D_0qit4")

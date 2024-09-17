@@ -31,7 +31,7 @@ class C:  # Parameter config
 	var WB := 3.5  # [m] Wheel base
 	var TR := 0.5  # [m] Tyre radius
 	var TW := 1.0  # [m] Tyre width
-	var MAX_STEER: = 0.8  # [rad] maximum steering angle
+	var MAX_STEER: = deg_to_rad(60)  # [rad] maximum steering angle
 
 class HybridAStarNode:
 	var xind:int # TODO merge into Vector2i
@@ -494,7 +494,7 @@ func get_next_boat_state(linear_velocity:Vector2,
 	#var global_pos := 
 	#var global_yaw := yaw
 	# TODO should look until min distance is reached?
-	var r := float(revs_per_second) * 10.0
+	var r := float(revs_per_second)# * 10.0
 	var size_scale := 0.01
 	for _n in range(10000):
 		var _linear_velocity:Vector2 = local_data.force
@@ -539,7 +539,12 @@ func get_next_boat_state(linear_velocity:Vector2,
 			local_data.yaw = simple_boat_model.rotation
 			local_data.position = simple_boat_model.position
 		local_data.ticks += 1
-		if position.distance_to(local_data.position) > 1.4: break
+		var new_x:int = python_round(local_data.position.x / P.xyreso)
+		var new_y:int = python_round(local_data.position.y / P.xyreso)
+		var old_x:int = python_round(position.x / P.xyreso)
+		var old_y:int = python_round(position.y / P.xyreso)
+		if new_x != old_x or new_y != old_y: break
+		#if position.distance_to(local_data.position) > 1.415: break
 	
 	return local_data
 	
@@ -883,16 +888,20 @@ func calc_motion_set() -> Array:
 	
 	var direc:Array[int] = []
 	for _n in len(steer_s):
-		direc.append(2)
+		direc.append(20)
 	for _n in len(steer_s):
-		direc.append(1)
+		direc.append(10)
 	for _n in len(steer_s):
-		direc.append(-1)
+		direc.append(5)
 	for _n in len(steer_s):
-		direc.append(-2)
+		direc.append(-5)
+	for _n in len(steer_s):
+		direc.append(-10)
+	for _n in len(steer_s):
+		direc.append(-20)
 	
 	var steer:Array[float] = []
-	for _n in 4:
+	for _n in 6:
 		steer.append_array(steer_s)
 
 	return [steer, direc]

@@ -306,7 +306,7 @@ func _get_target(delta: float) -> void:
 		avoid_collision_time += delta
 	
 	
-	%EnemyNavigationVelocityIndicator.global_position = target_position + target_velocity
+	#%EnemyNavigationVelocityIndicator.global_position = target_position + target_velocity
 	
 	#path_blocked_time -= delta
 	#if path_blocked_time < 0:

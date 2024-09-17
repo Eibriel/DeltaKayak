@@ -53,7 +53,7 @@ func _init() -> void:
 func configure(mass:float) -> void:
 	mass = 10.0
 	self.mass = mass
-	self.inertia = 1.4
+	self.inertia = 100.0
 	set_parameters( best_parameters() )
 
 
@@ -67,13 +67,14 @@ func calculate_boat_forces(revs_per_second: float, rudder_angle: float)->Vector3
 	var linear_force_to_apply := Vector2(revs_per_second * p_surge_multiplier, 0.0).rotated(rotation)
 	# More longirudinal velocity, more rudder angular_force
 	# More revs_per_second, more rudder angular_force
-	var rudder_force := rudder_angle * p_rudder_multiplier + (local_velocity.x * p_vel_rudder_rel)
+	var rudder_force := rudder_angle * p_rudder_multiplier * clampf(local_velocity.x*p_vel_rudder_rel, -1.0, 1.0)
 	# More velocity, the more the boat rotates towards direction of motion
 	# (hull is acting as a rudder)
 	var direction_of_motion := local_velocity.normalized()
-	# var angle_to_motion := direction_of_motion.angle_to(Vector2.RIGHT.rotated(rotation))
-	#rudder_force += angle_to_motion * p_hull_torque_coef
-	var angular_force_to_apply := rudder_angle * p_rudder_multiplier * clampf(local_velocity.x*p_vel_rudder_rel, -1.0, 1.0)
+	var angle_to_motion := direction_of_motion.dot(Vector2.UP)
+	#print(angle_to_motion)
+	var rudder_force_to_motion := angle_to_motion * p_hull_torque_coef * clampf(local_velocity.x*0.01, -1.0, 1.0)
+	var angular_force_to_apply:float = rudder_force + rudder_force_to_motion
 	#
 	#add_force(linear_force_to_apply)
 	add_force_at_position(linear_force_to_apply, Vector2(-10, 0).rotated(rotation))
@@ -81,11 +82,11 @@ func calculate_boat_forces(revs_per_second: float, rudder_angle: float)->Vector3
 	return Vector3(linear_force.x, linear_force.y, angular_force)
 
 func damping():
-	var damped_vels := damped_velocity(linear_velocity, angular_velocity)
+	var damped_vels := damped_velocity(linear_velocity, angular_velocity, ticks_per_second, rotation)
 	linear_velocity = damped_vels[0]
 	angular_velocity = damped_vels[1]
 
-func damped_velocity(_linear_velocity:Vector2, _angular_velocity: float) -> Array:
+func damped_velocity(_linear_velocity:Vector2, _angular_velocity: float, _ticks_per_second: int, _rotation:float) -> Array:
 	#prints("SBM", rotation)
 	#var local_velocity_b := linear_velocity.rotated(-rotation)
 	#var longitudinal_damp := clampf(p_longitudinal_damp_coef * (1.0 - (local_velocity_b.x * p_vel_damp_rel)), 0.0, 1.0)
@@ -95,12 +96,12 @@ func damped_velocity(_linear_velocity:Vector2, _angular_velocity: float) -> Arra
 	
 	var lv: = Vector2(_linear_velocity)
 	var av: float
-	lv = lv.rotated(-rotation)
-	lv.x *= 1.0 - p_longitudinal_damp_coef / ticks_per_second
-	lv.y *= 1.0 - p_lateral_damp_coef / ticks_per_second
-	lv = lv.rotated(rotation)
+	lv = lv.rotated(-_rotation)
+	lv.x *= 1.0 - p_longitudinal_damp_coef / _ticks_per_second
+	lv.y *= 1.0 - p_lateral_damp_coef / _ticks_per_second
+	lv = lv.rotated(_rotation)
 	
-	av = _angular_velocity * (1.0 - p_angular_damp_coef / ticks_per_second)
+	av = _angular_velocity * (1.0 - p_angular_damp_coef / _ticks_per_second)
 	return [lv, av]
 
 func get_torque() -> float:
@@ -117,8 +118,8 @@ func step(delta:float) -> void:
 	_reset_forces()
 
 func get_damped_acceleration() -> Array:
-	var linear_damp_acceleration:Vector2 = linear_velocity - damped_velocity(linear_velocity, angular_velocity)[0]
-	var angular_damp_acceleration:float = angular_velocity - damped_velocity(linear_velocity, angular_velocity)[1]
+	var linear_damp_acceleration:Vector2 = linear_velocity - damped_velocity(linear_velocity, angular_velocity, ticks_per_second, rotation)[0]
+	var angular_damp_acceleration:float = angular_velocity - damped_velocity(linear_velocity, angular_velocity, ticks_per_second, rotation)[1]
 	return [
 		(1.0/mass * linear_force) - linear_damp_acceleration,
 		(1.0/inertia * angular_force) - angular_damp_acceleration,
@@ -388,15 +389,15 @@ func set_parameters(_params:Dictionary) -> void:
 func best_parameters() -> Dictionary:
 	#return { "p_surge_multiplier": 0.01208286295468, "p_rudder_multiplier": 0.18197398393783, "p_rudder_profile_coef": 1.29562627514753, "p_vel_rudder_rel": 0.40135133627127, "p_longitudinal_damp_coef": 0.00750097905684, "p_lateral_damp_coef": 0.71044768800579, "p_angular_damp_coef": 0.60752206177752, "p_vel_damp_rel": 0.00858374920892, "p_hull_torque_coef": 0.00020219185183 }
 	return {
-		"p_surge_multiplier": 0.3,
-		"p_rudder_multiplier": 0.2,
+		"p_surge_multiplier": 0.05,
+		"p_rudder_multiplier": 0.2*200.0,
 		"p_vel_rudder_rel": 0.4,
-		"p_longitudinal_damp_coef": 0.00000001,
+		"p_longitudinal_damp_coef": 0.001,
 		"p_lateral_damp_coef": 0.7,
 		"p_angular_damp_coef": 0.6,
+		"p_hull_torque_coef": -400.0,
 		# Not in use
 		"p_vel_damp_rel": 0.0001,
-		"p_hull_torque_coef": 0.0001,
 		"p_rudder_profile_coef": 1.3,
 	}
 

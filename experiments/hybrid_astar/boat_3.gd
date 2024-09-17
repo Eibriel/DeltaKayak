@@ -12,6 +12,11 @@ func _physics_process(delta: float) -> void:
 	pass
 
 func _integrate_forces(state: PhysicsDirectBodyState2D) -> void:
-	var dvel := simple_boat_model.damped_velocity(state.linear_velocity, state.angular_velocity)
+	var dvel := simple_boat_model.damped_velocity(
+		state.linear_velocity,
+		state.angular_velocity,
+		simple_boat_model.ticks_per_second,
+		simple_boat_model.rotation
+	)
 	state.linear_velocity = dvel[0]
 	state.angular_velocity = dvel[1]

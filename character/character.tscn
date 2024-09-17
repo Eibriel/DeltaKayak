@@ -1,4 +1,4 @@
-[gd_scene load_steps=75 format=3 uid="uid://r0o1qsmlq84u"]
+[gd_scene load_steps=80 format=3 uid="uid://r0o1qsmlq84u"]
 
 [ext_resource type="Script" path="res://character/character.gd" id="1_mnv7b"]
 [ext_resource type="Texture2D" uid="uid://dbr6od55galv2" path="res://models/world_textures/BoteMadera_diffuse.png" id="2_j3chf"]
@@ -25,7 +25,12 @@
 [ext_resource type="AudioStream" uid="uid://coy1qbholkcw4" path="res://sounds/breathing/breathing_02.ogg" id="22_3tyeg"]
 [ext_resource type="AudioStream" uid="uid://dyqwvmon87aal" path="res://sounds/breathing/breathing_03.ogg" id="23_bgndq"]
 [ext_resource type="PackedScene" uid="uid://c4kr1nf0brr2d" path="res://models/character_hand.glb" id="25_118nn"]
+[ext_resource type="PackedScene" uid="uid://4akyl01aqhvn" path="res://models/character_hand_right_closed.glb" id="25_cw6ay"]
+[ext_resource type="PackedScene" uid="uid://m1rucgwm71io" path="res://models/character_hand_right_open.glb" id="26_p5v8k"]
 [ext_resource type="PackedScene" uid="uid://cqdha2a78fxfh" path="res://models/character_paddle.glb" id="26_vv65b"]
+[ext_resource type="PackedScene" uid="uid://0jlaca45yxvv" path="res://models/character_cup.glb" id="27_4bpvy"]
+[ext_resource type="PackedScene" uid="uid://2xfkbumqr6ce" path="res://models/character_hand_left_closed.glb" id="28_qj542"]
+[ext_resource type="PackedScene" uid="uid://bw8u7bgyyc5l3" path="res://models/character_hand_left_open.tscn" id="31_n54bj"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_p6dmh"]
 friction = 0.2
@@ -690,16 +695,19 @@ spot_angle = 58.47
 unique_name_in_owner = true
 metadata/fog_density = 0.005
 
-[node name="CharacterXROrigin3D" type="XROrigin3D" parent="."]
+[node name="XRBase" type="Node3D" parent="."]
+unique_name_in_owner = true
+
+[node name="CharacterXROrigin3D" type="XROrigin3D" parent="XRBase"]
 unique_name_in_owner = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.641885, 0.324)
 current = true
 
-[node name="CharacterXRCamera3D" type="XRCamera3D" parent="CharacterXROrigin3D"]
+[node name="CharacterXRCamera3D" type="XRCamera3D" parent="XRBase/CharacterXROrigin3D"]
 unique_name_in_owner = true
 current = true
 
-[node name="SpotLight3D3" type="SpotLight3D" parent="CharacterXROrigin3D/CharacterXRCamera3D"]
+[node name="SpotLight3D3" type="SpotLight3D" parent="XRBase/CharacterXROrigin3D/CharacterXRCamera3D"]
 transform = Transform3D(1, -1.41718e-08, -1.05431e-09, 1.4164e-08, 0.999975, -0.00710326, 1.15495e-09, 0.00710326, 0.999975, 1.37734e-07, 0.587775, -0.112731)
 light_energy = 10.0
 light_volumetric_fog_energy = 0.2
@@ -709,59 +717,78 @@ shadow_enabled = true
 spot_range = 100.0
 spot_angle = 58.47
 
-[node name="RightController" type="XRController3D" parent="CharacterXROrigin3D"]
+[node name="RightController" type="XRController3D" parent="XRBase/CharacterXROrigin3D"]
 unique_name_in_owner = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.23506, 0, 0)
 tracker = &"right_hand"
 
-[node name="CSGBox3D" type="CSGBox3D" parent="CharacterXROrigin3D/RightController"]
+[node name="CSGBox3D" type="CSGBox3D" parent="XRBase/CharacterXROrigin3D/RightController"]
 visible = false
 size = Vector3(0.1, 0.1, 0.1)
 
-[node name="character_hand2" parent="CharacterXROrigin3D/RightController" instance=ExtResource("25_118nn")]
-transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0)
+[node name="character_hand_right_closed" parent="XRBase/CharacterXROrigin3D/RightController" instance=ExtResource("25_cw6ay")]
+unique_name_in_owner = true
+transform = Transform3D(-0.7, 0, -1.05697e-07, 0, 0.7, 0, 1.05697e-07, 0, -0.7, 0, 0, 0)
 
-[node name="RigidBody3D" type="AnimatableBody3D" parent="CharacterXROrigin3D/RightController"]
+[node name="character_hand_right_open" parent="XRBase/CharacterXROrigin3D/RightController" instance=ExtResource("26_p5v8k")]
+unique_name_in_owner = true
+transform = Transform3D(-0.7, 0, -1.05697e-07, 0, 0.7, 0, 1.05697e-07, 0, -0.7, 0, 0, 0)
+
+[node name="character_cup" parent="XRBase/CharacterXROrigin3D/RightController" instance=ExtResource("27_4bpvy")]
+unique_name_in_owner = true
+transform = Transform3D(0.13677, -0.990603, 0, 0.990603, 0.13677, 0, 0, 0, 1, -0.00252755, -0.0550295, 0)
+
+[node name="RigidBody3D" type="AnimatableBody3D" parent="XRBase/CharacterXROrigin3D/RightController"]
 collision_layer = 2
 collision_mask = 4
 sync_to_physics = false
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="CharacterXROrigin3D/RightController/RigidBody3D"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="XRBase/CharacterXROrigin3D/RightController/RigidBody3D"]
 shape = SubResource("BoxShape3D_scd1v")
 
-[node name="LeftController" type="XRController3D" parent="CharacterXROrigin3D"]
+[node name="LeftController" type="XRController3D" parent="XRBase/CharacterXROrigin3D"]
 unique_name_in_owner = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.10594, 0, 0)
 tracker = &"left_hand"
 
-[node name="CSGBox3D2" type="CSGBox3D" parent="CharacterXROrigin3D/LeftController"]
+[node name="CSGBox3D2" type="CSGBox3D" parent="XRBase/CharacterXROrigin3D/LeftController"]
 visible = false
 size = Vector3(0.1, 0.1, 0.1)
 
-[node name="character_hand" parent="CharacterXROrigin3D/LeftController" instance=ExtResource("25_118nn")]
+[node name="character_hand" parent="XRBase/CharacterXROrigin3D/LeftController" instance=ExtResource("25_118nn")]
 transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0)
+visible = false
 
-[node name="RigidBody3D" type="AnimatableBody3D" parent="CharacterXROrigin3D/LeftController"]
+[node name="character_hand_left_closed" parent="XRBase/CharacterXROrigin3D/LeftController" instance=ExtResource("28_qj542")]
+unique_name_in_owner = true
+transform = Transform3D(-0.7, 0, -1.05697e-07, 0, 0.7, 0, 1.05697e-07, 0, -0.7, 0, 0, 0)
+
+[node name="character_hand_left_open" parent="XRBase/CharacterXROrigin3D/LeftController" instance=ExtResource("31_n54bj")]
+unique_name_in_owner = true
+transform = Transform3D(-0.7, 0, 6.11959e-08, 0, 0.7, 0, -6.11959e-08, 0, -0.7, 0, 0, 0)
+
+[node name="RigidBody3D" type="AnimatableBody3D" parent="XRBase/CharacterXROrigin3D/LeftController"]
 collision_layer = 2
 collision_mask = 4
 sync_to_physics = false
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="CharacterXROrigin3D/LeftController/RigidBody3D"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="XRBase/CharacterXROrigin3D/LeftController/RigidBody3D"]
 shape = SubResource("BoxShape3D_scd1v")
 
-[node name="Paddle" type="Node3D" parent="CharacterXROrigin3D"]
+[node name="Paddle" type="Node3D" parent="XRBase/CharacterXROrigin3D"]
 unique_name_in_owner = true
 transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -0.220687, -0.447147, -0.530098)
 
-[node name="Node3D" type="Node3D" parent="CharacterXROrigin3D/Paddle"]
+[node name="Node3D" type="Node3D" parent="XRBase/CharacterXROrigin3D/Paddle"]
 transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -9.77727e-09, 0, -0.223678)
 
-[node name="character_paddle" parent="CharacterXROrigin3D/Paddle/Node3D" instance=ExtResource("26_vv65b")]
+[node name="character_paddle" parent="XRBase/CharacterXROrigin3D/Paddle/Node3D" instance=ExtResource("26_vv65b")]
 transform = Transform3D(0.9, 0, 0, 0, 0.9, 0, 0, 0, 0.9, 0, 0, 0)
 
 [connection signal="area_entered" from="InteractionArea" to="." method="_on_interaction_area_area_entered"]
-[connection signal="button_pressed" from="CharacterXROrigin3D/RightController" to="." method="_on_right_controller_button_pressed"]
-[connection signal="button_released" from="CharacterXROrigin3D/RightController" to="." method="_on_right_controller_button_released"]
-[connection signal="input_vector2_changed" from="CharacterXROrigin3D/RightController" to="." method="_on_right_controller_input_vector_2_changed"]
-[connection signal="button_pressed" from="CharacterXROrigin3D/LeftController" to="." method="_on_left_controller_button_pressed"]
-[connection signal="button_released" from="CharacterXROrigin3D/LeftController" to="." method="_on_left_controller_button_released"]
+[connection signal="button_pressed" from="XRBase/CharacterXROrigin3D/RightController" to="." method="_on_right_controller_button_pressed"]
+[connection signal="button_released" from="XRBase/CharacterXROrigin3D/RightController" to="." method="_on_right_controller_button_released"]
+[connection signal="input_vector2_changed" from="XRBase/CharacterXROrigin3D/RightController" to="." method="_on_right_controller_input_vector_2_changed"]
+[connection signal="button_pressed" from="XRBase/CharacterXROrigin3D/LeftController" to="." method="_on_left_controller_button_pressed"]
+[connection signal="button_released" from="XRBase/CharacterXROrigin3D/LeftController" to="." method="_on_left_controller_button_released"]
+[connection signal="input_vector2_changed" from="XRBase/CharacterXROrigin3D/LeftController" to="." method="_on_left_controller_input_vector_2_changed"]

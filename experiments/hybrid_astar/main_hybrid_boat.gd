@@ -68,7 +68,7 @@ func _process(delta: float) -> void:
 			#local_data.yaw = anim[anim_frame-1].yaw
 			pass
 	
-	var r := float(anim[anim_frame].direction) * 10.0
+	var r := float(anim[anim_frame].direction)# * 10.0
 	%SteerLabel.text = "Steer: %dº" % rad_to_deg(anim[anim_frame].steer)
 	%RevsLabel.text = "Revs: %d" % r
 	var size_scale := 0.01
@@ -142,7 +142,7 @@ func _ready() -> void:
 	var y = 31
 	var sx = 10.0
 	var sy = 7.0
-	var syaw0 = deg_to_rad(-45.0+180) # 120
+	var syaw0 = deg_to_rad(-45 + 180) # 120
 	var gx = 45.0
 	var gy = 10.0
 	var gyaw0 = deg_to_rad(90.0)
