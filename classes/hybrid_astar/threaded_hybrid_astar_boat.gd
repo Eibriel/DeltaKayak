@@ -5,6 +5,7 @@ var hybrid_astar: HybridAStarBoat
 
 const area_size := Vector2i(30, 30)
 const area_scale := 2.0
+const max_time := 1000
 
 var thread: Thread
 var mutex: Mutex
@@ -60,7 +61,7 @@ func stop_pathfinding() -> void:
 func is_pathfinding_alive() -> bool:
 	return thread.is_alive()
 
-func get_animation() -> Array[Dictionary]:
+func get_animation(force:=false) -> Array[Dictionary]:
 	var anim_r:Array[Dictionary] = []
 	mutex.lock()
 	if path_found:
@@ -127,6 +128,13 @@ func _run_pathfinding(
 			break
 		hybrid_astar.iterate()
 		draw_nodes()
+		# BUG using time as early termination will cause
+		# the game to behave differently according to computation power
+		# of the player's PC
+		if (Time.get_ticks_msec()-time) > max_time:
+			mutex.lock()
+			path_found = true
+			mutex.unlock()
 
 ## Allows the safe access to is_pathfinding_stopped
 func safe_is_pathfinding_stopped() -> bool:
@@ -146,10 +154,6 @@ func define_area() -> void:
 """
 
 func draw_nodes():
-	"""
-	for c in %Nodes.get_children():
-		c.queue_free()
-	"""
 	var path
 	var path_cost
 	for kk in hybrid_astar.closed_set:
@@ -162,18 +166,6 @@ func draw_nodes():
 	var touch_start_point := false
 	var t_anim: Array[Dictionary] = []
 	for k in path.x.size():
-		"""
-		var pos := position_hybridastar_to_godot(Vector2(path.x[k], path.y[k]))
-		var pyaw:float = path.yaw[k]
-		var obs := CSGBox3D.new()
-		obs.size = Vector3(0.2, 0.2, 1.0)
-		obs.position.x = pos.x
-		obs.position.z = pos.y
-		obs.rotation.y = -pyaw + deg_to_rad(90)
-		obs.material = lines_mat
-		%Nodes.add_child(obs)
-		"""
-		
 		if Vector2(path.x[k], path.y[k]).distance_to(start_pos) < 2.0:
 			touch_start_point = true
 		
