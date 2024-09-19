@@ -5,7 +5,7 @@ var hybrid_astar: HybridAStarBoat
 
 const area_size := Vector2i(30, 30)
 const area_scale := 2.0
-const max_time := 1000
+const max_time := 2000
 
 var thread: Thread
 var mutex: Mutex
@@ -95,6 +95,8 @@ func _run_pathfinding(
 	var ox:Array[int] = obstacles[0]
 	var oy:Array[int] = obstacles[1]
 	
+	anim.resize(0)
+	
 	assert(start_pos == Vector2(15, 15))
 	var time := Time.get_ticks_msec()
 	hybrid_astar.hybrid_astar_planning(
@@ -165,15 +167,15 @@ func draw_nodes():
 	
 	var touch_start_point := false
 	var t_anim: Array[Dictionary] = []
+	var t_path_found = false
 	for k in path.x.size():
 		if Vector2(path.x[k], path.y[k]).distance_to(start_pos) < 2.0:
 			touch_start_point = true
 		
 		if Vector2(path.x[k], path.y[k]).distance_to(goal_pos) < 2.0:
 			if touch_start_point:
-				path_found = true
+				t_path_found = true
 				#anim_playing = true
-		
 		t_anim.append({
 			"x": path.x[k],
 			"y": path.y[k],
@@ -184,10 +186,15 @@ func draw_nodes():
 			"linear_velocity": path.linear_velocity[k],
 			"angular_velocity": path.angular_velocity[k]
 		})
-	
+	assert(Vector2(t_anim[0].x,t_anim[0].y) == Vector2(15,15))
+	# If path don't start at center, its not valid
+	if Vector2(t_anim[0].x,t_anim[0].y) != Vector2(15,15):
+		t_anim.resize(0)
+		t_path_found = false
 	mutex.lock() # Safely sets anim
 	anim = t_anim
 	mutex.unlock()
+	path_found = t_path_found
 
 # Hybrid A* convertions
 func position_godot_to_hybridastar(godot_pos:Vector2) -> Vector2:

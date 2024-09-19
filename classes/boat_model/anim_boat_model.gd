@@ -8,7 +8,6 @@ var anim_frame := 0
 var anim_tick := 0
 var anim_subtick := 0
 
-var area_scale:Vector2
 var anim_ticks_delta:float
 func _init() -> void:
 	anim_ticks_delta = 0.1
@@ -23,8 +22,8 @@ func current_frame() -> Dictionary:
 	else:
 		return anim[anim_frame-1]
 
-var rudder_angle
-var revs_per_second
+var rudder_angle:float
+var revs_per_second:float
 func tick(delta: float) -> Vector3:
 	if anim_frame >= anim.size():
 		return Vector3.ZERO
@@ -64,14 +63,23 @@ func tick(delta: float) -> Vector3:
 	
 	return boat_forces
 
-func fast_torward(time_in_seconds: float, delta: float):
-	for n in 10:
+func fast_torward(time_in_seconds: float, delta: float) -> Array[Vector3]:
+	assert(delta>0)
+	for n in int(time_in_seconds/delta):
 		tick(delta)
-	return Vector3(
+	var vel := Vector3(
+		simple_boat_model.linear_velocity.x,
+		simple_boat_model.linear_velocity.y,
+		simple_boat_model.angular_velocity,
+		)
+	return [vel, Vector3(
 		simple_boat_model.position.x,
 		simple_boat_model.position.y,
 		simple_boat_model.rotation
-	)
+	)]
 
 func set_anim(animation:Array[Dictionary]):
+	anim_frame = 0
+	anim_tick = 0
+	anim_subtick = 0
 	anim = animation

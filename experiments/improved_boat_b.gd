@@ -22,17 +22,16 @@ var lines_mat := StandardMaterial3D.new()
 var cost_mat := StandardMaterial3D.new()
 var volume_mat := StandardMaterial3D.new()
 
-var time:float
+var time:float = 9999.0
 var anim:Array[Dictionary]
-#var anim_frame := 0
-#var anim_tick := 0
-#var anim_subtick := 0
+var next_anim:Array[Dictionary]
 var anim_playing := false
-var path_found := false
 var new_path_requested := true
 
-#var rudder_angle: float = 0.0
-#var revs_per_second: float = 0.0
+var pathfinding_position:Vector3
+var pathfinding_rotation:Vector3
+var pathfinding_linear_velocity:Vector3
+var pathfinding_angular_velocity:Vector3
 
 var anim_ticks_delta:float = 0.1
 var hybrid_delta: float = 0.1
@@ -54,127 +53,83 @@ func _ready() -> void:
 	volume_mat.albedo_color = Color.ROYAL_BLUE
 	volume_mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	
-	#Engine.physics_ticks_per_second = 10
-	#Engine.physics_ticks_per_second = 120
+	pathfinding_position = global_position
+	pathfinding_rotation = rotation
+	pathfinding_linear_velocity = linear_velocity
+	pathfinding_angular_velocity = angular_velocity
+	set_area()
 
 func _exit_tree():
 	threaded_hybrid_astar.stop_pathfinding()
 	threaded_hybrid_astar.destroy()
 
-func _physics_process(delta: float) -> void:
+func _process(delta: float) -> void:
 	if new_path_requested and threaded_hybrid_astar.is_pathfinding_alive():
+		#path_found = false
 		threaded_hybrid_astar.stop_pathfinding()
 	elif new_path_requested and not threaded_hybrid_astar.is_pathfinding_alive():
 		new_path_requested = false
-		%NavTarget.global_position = global_position
-		%NavTarget.global_position += Vector3(randf_range(-20, 20), 0, randf_range(-20, 20))
-		anim_boat_model.anim_frame = 0
-		anim_boat_model.anim_tick = 0
-		anim_boat_model.anim_subtick = 0
-		anim_playing = false
-		path_found = false
-		# TODO remove duplicated code
-		origin = Global.tri_to_bi(global_position)
-		center = Vector2(area_size) / 2.0
-		start_pos = Vector2(center)
 		#
 		var obstacles:= get_obstacles()
+		print("Request Pathfinding")
 		threaded_hybrid_astar.run_pathfinding(
 			get_current_velocity()[0],
 			get_current_velocity()[1],
-			Global.tri_to_bi(global_position),
-			rotation.y,
+			Global.tri_to_bi(pathfinding_position),
+			pathfinding_rotation.y,
 			Global.tri_to_bi(%NavTarget.global_position),
 			%NavTarget.rotation.y,
 			obstacles
 		)
 		draw_obstacles(obstacles)
-	#iterate_pathfinding()
-	var r_anim := threaded_hybrid_astar.get_animation()
-	if r_anim.size() > 0:
-		anim = r_anim
-		path_found = true
-		anim_playing = true
-		anim_boat_model.set_anim(anim)
-	get_foces(delta)
+	
 	draw_boat_volume()
-	#apply_forces(delta)
 
-func _process(delta: float) -> void:
-	var t_anim := threaded_hybrid_astar.get_animation(true)
-	if t_anim.size() == 0: return
-	for c in %Nodes.get_children():
-		c.queue_free()
-	for t in t_anim:
-		var pos := position_hybridastar_to_godot(Vector2(t.x, t.y))
-		var pyaw:float = t.yaw
-		var obs := CSGBox3D.new()
-		obs.size = Vector3(0.2, 0.2, 1.0)
-		obs.position.x = pos.x
-		obs.position.z = pos.y
-		obs.rotation.y = -pyaw + deg_to_rad(90)
-		obs.material = lines_mat
-		%Nodes.add_child(obs)
-
-func draw_obstacles(obstacles:Array) -> void:
-	var ox = obstacles[0]
-	var oy = obstacles[1]
-	for c in %Obstacles.get_children():
-		c.queue_free()
-	for n in ox.size():
-		var obs := CSGBox3D.new()
-		var pos := position_hybridastar_to_godot(Vector2(ox[n], oy[n]))
-		obs.position.x = pos.x
-		obs.position.z = pos.y
-		%Obstacles.add_child(obs)
+var set_count := 0
+func _physics_process(delta: float) -> void:
+	var r_anim := threaded_hybrid_astar.get_animation()
+	#prints(r_anim.size() > 0, not new_path_requested)
+	if r_anim.size() > 0 and not new_path_requested:
+		if time > 2.0:
+			anim = r_anim
+			if set_count <= 1 :
+				set_count += 1
+			else:
+				set_area()
+			draw_path() # TODO move out of physics
+			time = 0.0
+			anim_playing = true
+			anim_boat_model.set_anim(anim)
+			future_position(delta)
+			new_path_requested = true
+	get_foces(delta)
 	
-	%NavStart.global_position = Global.bi_to_tri(position_hybridastar_to_godot(start_pos))
 
-func get_current_velocity():
-	var current_linear_velocity := Global.tri_to_bi(linear_velocity)#.rotated(rotation.y+deg_to_rad(90))
-	var current_angular_velocity := -angular_velocity.y
-	
-	return [
-		current_linear_velocity,
-		current_angular_velocity
-	]
+func future_position(delta:float):
+	var fast_anim := AnimBoatModel.new()
+	fast_anim.set_anim(anim)
+	# NOTE Fast forward 2 seconds
+	var vel_data := fast_anim.fast_torward(2.0, delta)
+	var pos := position_hybridastar_to_godot(Vector2(vel_data[1].x, vel_data[1].y))
+	# BUG FutureBoat is not in the future, but in the present
+	%FutureBoat.position.x = pos.x
+	%FutureBoat.position.z = pos.y
+	%FutureBoat.rotation.y = -vel_data[1].z + deg_to_rad(90+180)
+	pathfinding_position = Global.bi_to_tri(pos)
+	pathfinding_rotation = Vector3(0, -vel_data[1].z + deg_to_rad(90+180), 0)
+	pathfinding_rotation.y = hybrid_astar.rs.pi_2_pi(pathfinding_rotation.y)
+	pathfinding_linear_velocity = Vector3(vel_data[0].x, 0, vel_data[0].y)
+	pathfinding_angular_velocity = Vector3(0, -vel_data[0].z, 0)
+	#prints("Future pos:", vel_data[1])
 
-func draw_boat_volume():
-	var pos := position_godot_to_hybridastar(Global.tri_to_bi(global_position))
-	var yaw := rotation_godot_to_hybridastar(rotation.y)
-	"""var volume:Array[Vector2i] = hybrid_astar.get_shape(pos, yaw)
-	for c in %StartPointIndicator.get_children():
-		c.queue_free()
-	for v in volume:
-		var vb:= CSGBox3D.new()
-		vb.material = volume_mat
-		%StartPointIndicator.add_child(vb)
-		vb.global_position = Global.bi_to_tri(position_hybridastar_to_godot(Vector2(v)))"""
-	#print(volume)
-
-#func apply_forces(delta: float) -> void:
-	#if not anim_playing: return
-	#var r := float(anim[anim_frame].direction) * 10.0
-	#rudder_angle = anim[anim_frame].steer
-	#var direction := (transform.basis * Vector3.FORWARD).normalized()
-	#apply_central_force(direction * r)
-	#
-	#apply_torque(Vector3(0, -rudder_angle, 0) * 10 * r)
-
-
-var previous_linear_velocity := Vector2.ZERO
-var previous_angular_velocity := 0.0
-
+#var previous_linear_velocity := Vector2.ZERO
+#var previous_angular_velocity := 0.0
 var force_to_apply := Vector3.ZERO
 var torque_to_apply := 0.0
 func get_foces(delta: float) -> void:
-	#linear_velocity *= 0.0
-	#angular_velocity *= 0.0
 	if not anim_playing: return
 	if anim.size() == 0: return 
-	#if anim_frame >= anim.size(): return
 	time += delta
-	
 	%FrameLabel.text = "Frame: %d" % anim_boat_model.anim_frame
 	%TickLabel.text = "Tick: %d" % anim_boat_model.anim_tick
 	%SubTickLabel.text = "Sub Tick: %d" % anim_boat_model.anim_subtick
@@ -183,7 +138,9 @@ func get_foces(delta: float) -> void:
 	torque_to_apply = -forces_to_apply.z
 	force_to_apply = Vector3(forces_to_apply.x, 0.0, forces_to_apply.y)
 	apply_torque(Vector3(0, torque_to_apply, 0))
-	# Why it must be multiplied by 2!??
+	# TODO Why it must be multiplied by 2!??
+	# It's because the area is scaled by 2?
+	# see area_scale variable
 	apply_central_force(force_to_apply*2.0)
 	
 	%SimForce.global_position = global_position + force_to_apply*10
@@ -192,86 +149,44 @@ func get_foces(delta: float) -> void:
 	%RevsLabel.text = "Revs: %d" % float(anim_boat_model.current_frame().direction)
 	%Rudder.rotation.y = anim_boat_model.current_frame().steer
 	
-	var pos := position_hybridastar_to_godot(anim_boat_model.simple_boat_model.position)# + center*2
+	var pos := position_hybridastar_to_godot(anim_boat_model.simple_boat_model.position)
 	%SimBoat.global_position.x = pos.x
 	%SimBoat.global_position.z = pos.y
 	%SimBoat.rotation.y = -anim_boat_model.simple_boat_model.rotation + deg_to_rad(90+180)
-	
-	"""# Calculate forces 10 times per second
-	if anim_tick == 0: # On tick
-		if anim_frame == 0: # On frame
-			simple_boat_model.linear_velocity = anim[anim_frame].linear_velocity
-			simple_boat_model.angular_velocity = anim[anim_frame].angular_velocity
-			simple_boat_model.position = Vector2(anim[anim_frame].x, anim[anim_frame].y) - center
-			simple_boat_model.rotation = anim[anim_frame].yaw
-			assert(simple_boat_model.position == Vector2.ZERO)
-			anim_frame += 1
-			return
-		if anim_frame > 0 and false:
-			simple_boat_model.linear_velocity = anim[anim_frame-1].linear_velocity
-			simple_boat_model.angular_velocity = anim[anim_frame-1].angular_velocity
-			simple_boat_model.position = Vector2(anim[anim_frame-1].x, anim[anim_frame-1].y) - center
-			simple_boat_model.rotation = anim[anim_frame-1].yaw
-	
-		rudder_angle = anim[anim_frame].steer
-		revs_per_second = float(anim[anim_frame].direction)
-	
-		%SteerLabel.text = "Steer: %dº" % rad_to_deg(anim[anim_frame].steer)
-		%RevsLabel.text = "Revs: %d" % revs_per_second
-		%Rudder.rotation.y = anim[anim_frame].steer
-	
-	var boat_forces := simple_boat_model.calculate_boat_forces(
-		revs_per_second,
-		rudder_angle
-	)
-	#simple_boat_model.step(hybrid_delta)
-	simple_boat_model.step(delta)
-	torque_to_apply = -boat_forces.z
-	var f := Vector2(boat_forces.x, boat_forces.y)
-	force_to_apply = Global.bi_to_tri(f)
-	%SimForce.global_position = global_position + force_to_apply*10
-	
-	var pos := position_hybridastar_to_godot(simple_boat_model.position) + center*2
-	%SimBoat.global_position.x = pos.x
-	%SimBoat.global_position.z = pos.y
-	%SimBoat.rotation.y = -simple_boat_model.rotation + deg_to_rad(90+180)
-	
-	# Apply forces on every physics tick
-	# NOTE no need to multiply by delta!
-	apply_torque(Vector3(0, torque_to_apply, 0))
-	apply_central_force(force_to_apply*2.0) # Why it must be multiplied by 2!??
 
-	anim_subtick += 1
-	assert(Engine.physics_ticks_per_second * anim_ticks_delta > 0)
-	if anim_subtick >= Engine.physics_ticks_per_second * anim_ticks_delta:
-		anim_tick += 1
-		anim_subtick = 0
-		if anim_tick >= anim[anim_frame].ticks:
-			anim_frame += 1
-			anim_tick = 0"""
 
 func _integrate_forces(state: PhysicsDirectBodyState3D) -> void:
 	var dvel := simple_boat_model.damped_velocity(
-		#force_godot_to_mmg(Global.tri_to_bi(state.linear_velocity)),
 		Global.tri_to_bi(state.linear_velocity),
 		state.angular_velocity.y,
 		Engine.physics_ticks_per_second,
-		-rotation.y + deg_to_rad(90)#simple_boat_model.rotation, #-rotation.y-deg_to_rad(90)
+		-rotation.y + deg_to_rad(90)
 	)
 	state.linear_velocity = Global.bi_to_tri(dvel[0])
 	state.angular_velocity = Vector3(0, dvel[1], 0)
 
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_accept"):
-		new_path_requested = true
+		#new_path_requested = true
+		pass
 	elif event.is_action_pressed("ui_up"):
-		apply_impulse(Vector3.FORWARD.rotated(Vector3.UP, rotation.y)*10)
+		#apply_impulse(Vector3.FORWARD.rotated(Vector3.UP, rotation.y)*10)
+		%NavTarget.position.z -= 5.0
 	elif event.is_action_pressed("ui_down"):
-		apply_impulse(Vector3.BACK.rotated(Vector3.UP, rotation.y)*10)
+		#apply_impulse(Vector3.BACK.rotated(Vector3.UP, rotation.y)*10)
+		%NavTarget.position.z += 5.0
 	elif event.is_action_pressed("ui_right"):
-		apply_torque_impulse(Vector3(0,+50,0))
+		#apply_torque_impulse(Vector3(0,+50,0))
+		%NavTarget.position.x += 5.0
 	elif event.is_action_pressed("ui_left"):
-		apply_torque_impulse(Vector3(0,-50,0))
+		#apply_torque_impulse(Vector3(0,-50,0))
+		%NavTarget.position.x -= 5.0
+
+func set_area():
+	# TODO remove duplicated code
+	origin = Global.tri_to_bi(pathfinding_position)
+	center = Vector2(area_size) / 2.0
+	start_pos = Vector2(center)
 
 func get_obstacles() -> Array[Array]:
 	var x := area_size.x
@@ -311,6 +226,57 @@ func get_obstacles() -> Array[Array]:
 				ox.append(xx)
 				oy.append(yy)
 	return [ox, oy]
+
+func draw_obstacles(obstacles:Array) -> void:
+	var ox = obstacles[0]
+	var oy = obstacles[1]
+	for c in %Obstacles.get_children():
+		c.queue_free()
+	for n in ox.size():
+		var obs := CSGBox3D.new()
+		var pos := position_hybridastar_to_godot(Vector2(ox[n], oy[n]))
+		obs.position.x = pos.x
+		obs.position.z = pos.y
+		%Obstacles.add_child(obs)
+	
+	%NavStart.global_position = Global.bi_to_tri(position_hybridastar_to_godot(start_pos))
+
+func get_current_velocity():
+	var current_linear_velocity := Global.tri_to_bi(pathfinding_linear_velocity)#.rotated(rotation.y+deg_to_rad(90))
+	var current_angular_velocity := -pathfinding_angular_velocity.y
+	
+	return [
+		current_linear_velocity,
+		current_angular_velocity
+	]
+
+func draw_path()->void:
+	#var t_anim := threaded_hybrid_astar.get_animation(true)
+	if anim.size() == 0: return
+	for c in %Nodes.get_children():
+		c.queue_free()
+	for t in anim:
+		var pos := position_hybridastar_to_godot(Vector2(t.x, t.y))
+		var pyaw:float = t.yaw
+		var obs := CSGBox3D.new()
+		obs.size = Vector3(0.2, 0.2, 1.0)
+		obs.position.x = pos.x
+		obs.position.z = pos.y
+		obs.rotation.y = -pyaw + deg_to_rad(90)
+		obs.material = lines_mat
+		%Nodes.add_child(obs)
+
+func draw_boat_volume():
+	var pos := position_godot_to_hybridastar(Global.tri_to_bi(global_position))
+	var yaw := rotation_godot_to_hybridastar(rotation.y)
+	"""var volume:Array[Vector2i] = hybrid_astar.get_shape(pos, yaw)
+	for c in %StartPointIndicator.get_children():
+		c.queue_free()
+	for v in volume:
+		var vb:= CSGBox3D.new()
+		vb.material = volume_mat
+		%StartPointIndicator.add_child(vb)
+		vb.global_position = Global.bi_to_tri(position_hybridastar_to_godot(Vector2(v)))"""
 
 """
 func draw_hmap():

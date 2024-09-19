@@ -202,7 +202,7 @@ func tests()->void:
 		[Vector2.ZERO], [0.0], 0, 0, [0.0], [0])
 	var clone_node := test_node.clone()
 	clone_node.x.reverse()
-	print(test_node.x)
+	#print(test_node.x)
 	assert(test_node.x == [0.0, 1.0])
 
 func python_round(num:float):
@@ -289,11 +289,12 @@ func iterate() -> void:
 	if not open_set.has(ind):
 		push_error("%d not in open_set" % ind)
 	var n_curr = open_set[ind]
+	#assert(Vector2(n_curr.x[0], n_curr.y[0]) == Vector2(15,15))
 	closed_set[ind] = n_curr
 	open_set.erase(ind)
 
 	# Is there a direct path to goal?
-	var use_analystic_expantion:=true
+	var use_analystic_expantion:=false
 	var stop_on_found:=false
 	if use_analystic_expantion:
 		res_update = update_node_with_analystic_expantion(n_curr.clone(), ngoal.clone(), true)

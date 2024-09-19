@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://cnr3fnhel1ora"]
+[gd_scene load_steps=14 format=3 uid="uid://cnr3fnhel1ora"]
 
 [ext_resource type="Script" path="res://experiments/improved_boat_b.gd" id="1_m0ec5"]
 
@@ -22,14 +22,31 @@ friction = 0.1
 radius = 1.38489
 height = 13.2257
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_y114s"]
+shading_mode = 0
+albedo_color = Color(0, 0, 1, 1)
+
 [sub_resource type="BoxShape3D" id="BoxShape3D_hn00r"]
 size = Vector3(5, 5, 5)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7y8an"]
+shading_mode = 0
 albedo_color = Color(1, 0.239216, 0.133333, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4xk4o"]
+shading_mode = 0
+albedo_color = Color(1, 0.788235, 0.133333, 1)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0qit4"]
 albedo_color = Color(0.227451, 0.239216, 0.784314, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ivvkv"]
+shading_mode = 0
+albedo_color = Color(0.835294, 0.901961, 0.92549, 1)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_reiv7"]
+material = SubResource("StandardMaterial3D_ivvkv")
+size = Vector2(100, 100)
 
 [node name="Node3D" type="Node3D"]
 
@@ -74,7 +91,7 @@ text = "0 rps
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 9.08728, 0)
 projection = 1
-size = 120.0
+size = 70.0
 far = 100.0
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
@@ -113,8 +130,9 @@ size = Vector3(0.399414, 0.207275, 2.04858)
 
 [node name="NavTarget" type="CSGSphere3D" parent="."]
 unique_name_in_owner = true
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 21.2119, 0, -19.6927)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11.3565, 0, -20.2253)
 radius = 1.0
+material = SubResource("StandardMaterial3D_y114s")
 
 [node name="NavVelocity" type="CSGSphere3D" parent="NavTarget"]
 unique_name_in_owner = true
@@ -178,8 +196,17 @@ unique_name_in_owner = true
 size = Vector3(1, 1, 5.28931)
 material = SubResource("StandardMaterial3D_7y8an")
 
+[node name="FutureBoat" type="CSGBox3D" parent="."]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.34399, 0)
+size = Vector3(0.607422, 1, 4.80884)
+material = SubResource("StandardMaterial3D_4xk4o")
+
 [node name="SimForce" type="CSGBox3D" parent="."]
 unique_name_in_owner = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.1499, 0)
 size = Vector3(1, 1, 0.9729)
 material = SubResource("StandardMaterial3D_0qit4")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("PlaneMesh_reiv7")
