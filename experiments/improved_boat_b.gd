@@ -53,10 +53,10 @@ func _ready() -> void:
 	volume_mat.albedo_color = Color.ROYAL_BLUE
 	volume_mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	
-	pathfinding_position = global_position
+	pathfinding_position = Vector3(global_position)
 	pathfinding_rotation = rotation
-	pathfinding_linear_velocity = linear_velocity
-	pathfinding_angular_velocity = angular_velocity
+	pathfinding_linear_velocity = Vector3(linear_velocity)
+	pathfinding_angular_velocity = Vector3(angular_velocity)
 	set_area()
 
 func _exit_tree():
@@ -71,13 +71,20 @@ func _process(delta: float) -> void:
 		new_path_requested = false
 		#
 		var obstacles:= get_obstacles()
+		var target_position:Vector3 = %NavTarget.global_position
+		var distance_limit := 28
+		if target_position.distance_to(pathfinding_position) > distance_limit:
+			target_position = (target_position - pathfinding_position).normalized() * distance_limit
+			target_position += pathfinding_position
+		%NavTarget2.global_position = target_position
+		%NavStart.global_position = pathfinding_position
 		print("Request Pathfinding")
 		threaded_hybrid_astar.run_pathfinding(
 			get_current_velocity()[0],
 			get_current_velocity()[1],
 			Global.tri_to_bi(pathfinding_position),
 			pathfinding_rotation.y,
-			Global.tri_to_bi(%NavTarget.global_position),
+			Global.tri_to_bi(target_position),
 			%NavTarget.rotation.y,
 			obstacles
 		)
@@ -207,7 +214,7 @@ func get_obstacles() -> Array[Array]:
 		ox.append(x - 1)
 		oy.append(i)
 	
-	var pos := position_godot_to_hybridastar(Global.tri_to_bi(global_position))
+	var pos := position_godot_to_hybridastar(Global.tri_to_bi(pathfinding_position))
 	var yaw := rotation_godot_to_hybridastar(rotation.y)
 	var volume:Array[Vector2i] = hybrid_astar.get_shape(pos, yaw)
 	for xx in range(1, x-1):

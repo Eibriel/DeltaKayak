@@ -100,8 +100,6 @@ func _run_pathfinding(
 	assert(start_pos == Vector2(15, 15))
 	var time := Time.get_ticks_msec()
 	hybrid_astar.hybrid_astar_planning(
-		#get_current_velocity()[0],
-		#get_current_velocity()[1],
 		linear_velocity,
 		angular_velocity,
 		area_size,
@@ -136,6 +134,12 @@ func _run_pathfinding(
 		if (Time.get_ticks_msec()-time) > max_time:
 			mutex.lock()
 			path_found = true
+			print("Path finding timeout! %d" % anim.size())
+			mutex.unlock()
+		if hybrid_astar.state == hybrid_astar.STATES.ERROR:
+			mutex.lock()
+			path_found = true
+			print("Path finding failed!")
 			mutex.unlock()
 
 ## Allows the safe access to is_pathfinding_stopped
@@ -168,33 +172,25 @@ func draw_nodes():
 	var touch_start_point := false
 	var t_anim: Array[Dictionary] = []
 	var t_path_found = false
-	for k in path.x.size():
-		if Vector2(path.x[k], path.y[k]).distance_to(start_pos) < 2.0:
-			touch_start_point = true
-		
-		if Vector2(path.x[k], path.y[k]).distance_to(goal_pos) < 2.0:
-			if touch_start_point:
+	if Vector2(path.x[0], path.y[0]) == Vector2(15,15):
+		for k in path.x.size():
+			if Vector2(path.x[k], path.y[k]).distance_to(goal_pos) < 2.0:
 				t_path_found = true
-				#anim_playing = true
-		t_anim.append({
-			"x": path.x[k],
-			"y": path.y[k],
-			"yaw": path.yaw[k],
-			"direction": path.direction[k],
-			"steer": path.steer[k],
-			"ticks": path.ticks[k],
-			"linear_velocity": path.linear_velocity[k],
-			"angular_velocity": path.angular_velocity[k]
-		})
-	assert(Vector2(t_anim[0].x,t_anim[0].y) == Vector2(15,15))
-	# If path don't start at center, its not valid
-	if Vector2(t_anim[0].x,t_anim[0].y) != Vector2(15,15):
-		t_anim.resize(0)
-		t_path_found = false
-	mutex.lock() # Safely sets anim
-	anim = t_anim
-	mutex.unlock()
+			t_anim.append({
+				"x": path.x[k],
+				"y": path.y[k],
+				"yaw": path.yaw[k],
+				"direction": path.direction[k],
+				"steer": path.steer[k],
+				"ticks": path.ticks[k],
+				"linear_velocity": path.linear_velocity[k],
+				"angular_velocity": path.angular_velocity[k]
+			})
+	mutex.lock() # Safely sets state
 	path_found = t_path_found
+	if t_anim.size()>0:
+		anim = t_anim
+	mutex.unlock()
 
 # Hybrid A* convertions
 func position_godot_to_hybridastar(godot_pos:Vector2) -> Vector2:

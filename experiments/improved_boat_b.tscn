@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://cnr3fnhel1ora"]
+[gd_scene load_steps=16 format=3 uid="uid://cnr3fnhel1ora"]
 
 [ext_resource type="Script" path="res://experiments/improved_boat_b.gd" id="1_m0ec5"]
 
@@ -25,6 +25,14 @@ height = 13.2257
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_y114s"]
 shading_mode = 0
 albedo_color = Color(0, 0, 1, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ue248"]
+shading_mode = 0
+albedo_color = Color(0.139002, 0.403182, 0, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_myfte"]
+shading_mode = 0
+albedo_color = Color(0.154851, 4.87083e-05, 0.55368, 1)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_hn00r"]
 size = Vector3(5, 5, 5)
@@ -91,7 +99,7 @@ text = "0 rps
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 9.08728, 0)
 projection = 1
-size = 70.0
+size = 100.0
 far = 100.0
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
@@ -137,11 +145,17 @@ material = SubResource("StandardMaterial3D_y114s")
 [node name="NavVelocity" type="CSGSphere3D" parent="NavTarget"]
 unique_name_in_owner = true
 
+[node name="NavTarget2" type="CSGSphere3D" parent="."]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11.3565, 0, -20.2253)
+radius = 1.0
+material = SubResource("StandardMaterial3D_ue248")
+
 [node name="NavStart" type="CSGSphere3D" parent="."]
 unique_name_in_owner = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 21.2119, 0, -19.6927)
-visible = false
 radius = 1.0
+material = SubResource("StandardMaterial3D_myfte")
 
 [node name="NavPoints" type="Node3D" parent="."]
 unique_name_in_owner = true

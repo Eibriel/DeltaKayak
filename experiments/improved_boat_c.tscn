@@ -1,0 +1,270 @@
+[gd_scene load_steps=18 format=3 uid="uid://bne6d3s7rtemd"]
+
+[ext_resource type="Script" path="res://experiments/improved_boat_c.gd" id="1_q1tnb"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_sr1hb"]
+sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+ground_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+
+[sub_resource type="Sky" id="Sky_o84vh"]
+sky_material = SubResource("ProceduralSkyMaterial_sr1hb")
+
+[sub_resource type="Environment" id="Environment_gr7uc"]
+background_mode = 2
+sky = SubResource("Sky_o84vh")
+tonemap_mode = 2
+glow_enabled = true
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_3fjc7"]
+friction = 0.1
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_007ww"]
+radius = 1.38489
+height = 13.2257
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_67f65"]
+shading_mode = 0
+albedo_color = Color(1, 0.167436, 0.753144, 1)
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_rj8kc"]
+radius = 1.5
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_y114s"]
+shading_mode = 0
+albedo_color = Color(0, 0, 1, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ue248"]
+shading_mode = 0
+albedo_color = Color(0.139002, 0.403182, 0, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_myfte"]
+shading_mode = 0
+albedo_color = Color(0.154851, 4.87083e-05, 0.55368, 1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_hn00r"]
+size = Vector3(5, 5, 5)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7y8an"]
+shading_mode = 0
+albedo_color = Color(1, 0.239216, 0.133333, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4xk4o"]
+shading_mode = 0
+albedo_color = Color(1, 0.788235, 0.133333, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0qit4"]
+albedo_color = Color(0.227451, 0.239216, 0.784314, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ivvkv"]
+shading_mode = 0
+albedo_color = Color(0.0214947, 0.0484334, 0.0585101, 1)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_reiv7"]
+material = SubResource("StandardMaterial3D_ivvkv")
+size = Vector2(200, 200)
+
+[node name="Node3D" type="Node3D"]
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 215.0
+offset_bottom = 195.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Control"]
+layout_mode = 0
+offset_right = 253.0
+offset_bottom = 105.0
+
+[node name="FrameLabel" type="Label" parent="Control/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Frame: 0"
+
+[node name="TickLabel" type="Label" parent="Control/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Tick: 0"
+
+[node name="SubTickLabel" type="Label" parent="Control/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Tick: 0"
+
+[node name="SteerLabel" type="Label" parent="Control/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "0 rps
+0º"
+
+[node name="RevsLabel" type="Label" parent="Control/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "0 rps
+0º"
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 9.08728, 0)
+projection = 1
+size = 150.0
+far = 100.0
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_gr7uc")
+
+[node name="Boat" type="RigidBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+collision_layer = 2
+axis_lock_linear_y = true
+axis_lock_angular_x = true
+axis_lock_angular_z = true
+mass = 10.0
+physics_material_override = SubResource("PhysicsMaterial_3fjc7")
+center_of_mass_mode = 1
+inertia = Vector3(0.01, 100, 0.01)
+linear_damp_mode = 1
+angular_damp_mode = 1
+script = ExtResource("1_q1tnb")
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="Boat"]
+transform = Transform3D(-4.37114e-08, -1, 4.37114e-08, 0, -4.37114e-08, -1, 1, -4.37114e-08, 1.91069e-15, 0, -2.46672e-09, 0.0564319)
+shape = SubResource("CapsuleShape3D_007ww")
+
+[node name="CSGBox3D" type="CSGBox3D" parent="Boat"]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0, 0)
+size = Vector3(2.6272, 0.207275, 13.1758)
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="Boat"]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 6.84259, 0, -0.0798988)
+size = Vector3(1.91016, 0.207275, 0.49585)
+
+[node name="Rudder" type="Node3D" parent="Boat"]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.53156, 0, -0.0301933)
+
+[node name="CSGBox3D3" type="CSGBox3D" parent="Boat/Rudder"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1.05464)
+size = Vector3(0.399414, 0.207275, 2.04858)
+
+[node name="FutureColision" type="Node3D" parent="Boat"]
+unique_name_in_owner = true
+top_level = true
+
+[node name="SimBoat2" type="CSGBox3D" parent="Boat/FutureColision"]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.00299144)
+size = Vector3(11.9277, 1, 1.67944)
+material = SubResource("StandardMaterial3D_67f65")
+
+[node name="FutureColisionCast" type="ShapeCast3D" parent="Boat/FutureColision"]
+unique_name_in_owner = true
+transform = Transform3D(-4.37114e-08, -1, 4.37114e-08, 0, -4.37114e-08, -1, 1, -4.37114e-08, 1.91069e-15, 0, -2.46672e-09, 0.0564319)
+enabled = false
+shape = SubResource("CapsuleShape3D_007ww")
+target_position = Vector3(0, 0, 0)
+
+[node name="CSGSphere3D" type="CSGSphere3D" parent="Boat/FutureColision"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.52684, 0, -0.00748205)
+radius = 0.1
+
+[node name="BoatRayCast" type="RayCast3D" parent="Boat"]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+target_position = Vector3(50, 0, 0)
+
+[node name="BoatShapeCast" type="ShapeCast3D" parent="Boat"]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.74955, 0)
+enabled = false
+shape = SubResource("SphereShape3D_rj8kc")
+target_position = Vector3(0, 0, 25)
+
+[node name="NavTarget" type="CSGSphere3D" parent="."]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11.3565, 0, -20.2253)
+radius = 1.0
+material = SubResource("StandardMaterial3D_y114s")
+
+[node name="NavVelocity" type="CSGSphere3D" parent="NavTarget"]
+unique_name_in_owner = true
+
+[node name="NavTarget2" type="CSGSphere3D" parent="."]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11.3565, 0, -20.2253)
+radius = 1.0
+material = SubResource("StandardMaterial3D_ue248")
+
+[node name="NavStart" type="CSGSphere3D" parent="."]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 21.2119, 0, -19.6927)
+radius = 1.0
+material = SubResource("StandardMaterial3D_myfte")
+
+[node name="NavPoints" type="Node3D" parent="."]
+unique_name_in_owner = true
+
+[node name="Marker3D" type="Marker3D" parent="NavPoints"]
+transform = Transform3D(0.638486, 0, 0.769634, 0, 1, 0, -0.769634, 0, 0.638486, -2.31529, 0, -17.3647)
+gizmo_extents = 10.0
+
+[node name="Marker3D2" type="Marker3D" parent="NavPoints"]
+transform = Transform3D(-0.460494, 0, 0.887663, 0, 1, 0, -0.887663, 0, -0.460494, -33.1858, 0, -33.7646)
+gizmo_extents = 10.0
+
+[node name="Marker3D3" type="Marker3D" parent="NavPoints"]
+transform = Transform3D(-0.996019, 0, 0.0891378, 0, 1, 0, -0.0891378, 0, -0.996019, -47.8493, 0, -4.82351)
+gizmo_extents = 10.0
+
+[node name="Hmap" type="Node3D" parent="."]
+unique_name_in_owner = true
+
+[node name="Obstacles" type="Node3D" parent="."]
+unique_name_in_owner = true
+
+[node name="Nodes" type="Node3D" parent="."]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
+
+[node name="StaticBody3D" type="RigidBody3D" parent="."]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 54.7841, 0, -2.35004)
+axis_lock_linear_y = true
+axis_lock_angular_x = true
+axis_lock_angular_z = true
+linear_damp_mode = 1
+angular_damp_mode = 1
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
+shape = SubResource("BoxShape3D_hn00r")
+
+[node name="CollisionPolygon" type="CSGPolygon3D" parent="."]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 36.9234, -0.370493, 19.7742)
+use_collision = true
+polygon = PackedVector2Array(-133.107, -10.6475, -121.44, -34.163, -100.094, -37.5783, -81.8783, -31.3168, -69.3553, -31.3168, -73.6245, -51.8091, -80.7399, -65.7552, -61.3861, -72.0167, -54.8399, -55.5091, -54.5553, -32.4553, -37.1938, -35.3014, -21.8246, -30.1784, -5.03239, -15.0938, 14.0368, -26.763, 34.529, -34.7322, 54.1675, -27.6168, 42.4983, 4.82923, 20.5829, 21.0523, -30.3631, 18.4907, -57.1169, 23.0446, -80.4553, 28.4522, -108.063, 21.3369, -120.301, 17.0677, -118.024, 12.7984, -106.355, 18.2061, -80.4553, 23.8984, -57.4015, 18.2061, -30.6477, 13.9369, 18.5906, 16.4984, 38.229, 1.69847, 49.0444, -26.1938, 33.6752, -31.3168, 15.1753, -23.3476, -5.31701, -10.54, -24.1016, -27.3322, -37.7631, -31.8861, -57.1169, -29.0399, -57.4015, -54.086, -63.0938, -68.6013, -77.3245, -64.0475, -70.2091, -51.8091, -65.6553, -27.9014, -82.1629, -27.3322, -100.378, -33.3091, -118.594, -31.6014, -129.409, -11.1092, -118.878, -5.13229, -109.771, -19.9322, -99.2398, -19.363, -86.1475, -12.2476, -39.4708, -13.1015, -29.7939, -9.11689, -10.2759, -1.55119, -1.88653, 0.562872, 15.3268, -10.1665, 29.1214, -15.9476, 24.2829, -2.57075, 7.89857, 8.17791, -31.5015, 2.55231, -59.963, 5.68308, -81.3091, 10.8061, -104.078, 5.11385, -114.324, 0.560013, -112.617, -1.7169, -102.655, 1.98309, -81.5937, 7.10614, -60.2476, 2.55231, -31.2169, -0.578449, -1.89809, 5.13756, 6.92142, 5.11385, 20.0137, -3.99382, 23.5861, -10.7841, 16.5983, -7.97843, -1.89809, 3.65117, -11.7623, 1.48915, -30.9323, -7.12458, -40.8938, -9.97073, -86.7168, -8.83227, -100.378, -15.3784, -108.347, -15.9476, -118.024, -0.578449)
+
+[node name="StartPointIndicator" type="Node3D" parent="."]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 0)
+visible = false
+
+[node name="SimBoat" type="CSGBox3D" parent="."]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.00299144)
+size = Vector3(11.9277, 1, 1.67944)
+material = SubResource("StandardMaterial3D_7y8an")
+
+[node name="FutureBoat" type="CSGBox3D" parent="."]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.34399, 0)
+size = Vector3(10.4414, 1, 1.14844)
+material = SubResource("StandardMaterial3D_4xk4o")
+
+[node name="SimForce" type="CSGBox3D" parent="."]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.1499, 0)
+size = Vector3(1, 1, 0.9729)
+material = SubResource("StandardMaterial3D_0qit4")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("PlaneMesh_reiv7")

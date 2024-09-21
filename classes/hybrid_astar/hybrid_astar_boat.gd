@@ -289,7 +289,6 @@ func iterate() -> void:
 	if not open_set.has(ind):
 		push_error("%d not in open_set" % ind)
 	var n_curr = open_set[ind]
-	#assert(Vector2(n_curr.x[0], n_curr.y[0]) == Vector2(15,15))
 	closed_set[ind] = n_curr
 	open_set.erase(ind)
 
@@ -387,7 +386,10 @@ func extract_any_path(closed, ngoal:HybridAStarNode, nstart:HybridAStarNode) -> 
 
 		if is_same_grid(node, nstart):
 			break
-		if node.pind < 0: break
+		if Vector2(node.x[0], node.y[0]) == Vector2(15,15):
+			break
+		if node.pind < 0:
+			break
 		
 		node = closed[node.pind]
 
@@ -636,6 +638,10 @@ func calc_next_node(n_curr:HybridAStarNode, c_id:int, u:float, d:int, iii:int) -
 	else:
 		#direction = -1
 		cost += abs(step) * config.BACKWARD_COST
+	
+	# Additional cost for going slowly
+	if abs(d) < 15:
+		cost += abs(step) * config.BACKWARD_COST * 1.2
 	
 	if d != n_curr.direction:
 		cost += config.GEAR_COST * 0.0 # penalty for changing gear
@@ -894,17 +900,17 @@ func calc_motion_set() -> Array:
 		direc.append(20)
 	for _n in len(steer_s):
 		direc.append(10)
-	for _n in len(steer_s):
-		direc.append(5)
-	for _n in len(steer_s):
-		direc.append(-5)
+	#for _n in len(steer_s):
+		#direc.append(5)
+	#for _n in len(steer_s):
+		#direc.append(-5)
 	for _n in len(steer_s):
 		direc.append(-10)
 	for _n in len(steer_s):
 		direc.append(-20)
 	
 	var steer:Array[float] = []
-	for _n in 6:
+	for _n in 4:
 		steer.append_array(steer_s)
 
 	return [steer, direc]

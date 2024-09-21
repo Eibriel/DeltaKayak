@@ -52,3 +52,13 @@ func tri_to_bi(tri:Vector3) -> Vector2:
 
 func bi_to_tri(bi:Vector2, z_value:float=0.0) -> Vector3:
 	return Vector3(bi.x, z_value, bi.y)
+
+# TODO: check if it exists in Godot
+func pi_2_pi(theta):
+	while theta > PI:
+		theta -= 2.0 * PI
+
+	while theta < -PI:
+		theta += 2.0 * PI
+
+	return theta

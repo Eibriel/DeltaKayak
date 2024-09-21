@@ -242,7 +242,17 @@ func calc_holonomic_heuristic_with_obstacle(node, area_size:Vector2i, ox:Array[f
 
 	for n in closed_set.values():
 		#prints("hmap", n.x - P.minx, n.y - P.miny)
-		hmap[n.x - P.minx][n.y - P.miny] = n.cost
+		var x_diff = n.x - P.minx
+		var y_diff = n.y - P.miny
+		if hmap.size() > x_diff and  hmap[x_diff].size() > y_diff:
+			#assert(hmap.size() > x_diff)
+			#assert(hmap[x_diff].size() > y_diff)
+			hmap[x_diff][y_diff] = n.cost
+		else:
+			push_warning("Hmap out of boundaries %d, %d, %d" % [
+				x_diff, hmap.size(),
+				y_diff
+			])
 
 	return hmap
 
