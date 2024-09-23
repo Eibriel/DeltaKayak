@@ -34,8 +34,12 @@ func _process(delta: float) -> void:
 
 var set_count := 0
 var max_dist_search := 50
-var time_all_collision := 0.0
+var context_steering := ContextSteering.new()
 func _physics_process(delta: float) -> void:
+	context_steering.resolution = 4
+	context_steering.next()
+	context_steering.set_debug_node(%DebugMeshInstance.mesh)
+	
 	subtarget_position = target_position
 	var direct_sight:=true
 	if target_position != %BoatRayCast.global_position:
@@ -44,54 +48,27 @@ func _physics_process(delta: float) -> void:
 		%BoatRayCast.force_raycast_update()
 		if %BoatRayCast.is_colliding():
 			direct_sight = false
-	var some_no_collision:=false
-	var positions:Array[Vector3] = []
+	
 	if not direct_sight:
-		%BoatRayCast.rotation = Vector3.ZERO
+		%BoatRayCast.rotation.y = -rotation.y
 		%BoatRayCast.target_position = Vector3(max_dist_search, 0, 0)
-		var res := 4
-		var clos_pos:Vector3
-		var clos_dist:float = 9999.0
-		for angle in 360/res:
-			var rad := deg_to_rad(angle*res)
+		for rad in context_steering.get_angles():
 			var vect := Vector3.LEFT.rotated(Vector3.UP, rad) * max_dist_search
 			%BoatRayCast.target_position = vect
 			%BoatRayCast.force_raycast_update()
 			if %BoatRayCast.is_colliding():
-				positions.append(%BoatRayCast.get_collision_point())
+				context_steering.append(
+					global_position.distance_to(%BoatRayCast.get_collision_point())
+				)
 			else:
-				some_no_collision = true
-				positions.append(%BoatRayCast.target_position.rotated(Vector3.UP, rotation.y)+global_position)
-				var dist := positions[-1].distance_squared_to(target_position)
-				if dist < clos_dist:
-					clos_dist = dist
-					clos_pos = positions[-1]
-		if clos_dist < global_position.distance_squared_to(target_position):
-			var idx := positions.find(clos_pos)
-			if idx >= 0:
-				var pos_a:Vector3 = positions[wrapi(idx+1, 0, positions.size()-1)]
-				var pos_b:Vector3 = positions[wrapi(idx-1, 0, positions.size()-1)]
-				if is_equal_approx(global_position.distance_to(pos_a), max_dist_search):
-					clos_pos = pos_a
-				elif is_equal_approx(global_position.distance_to(pos_b), max_dist_search):
-					clos_pos = pos_b
-			subtarget_position = clos_pos
-		if not some_no_collision:
-			max_dist_search *= 0.5
-			time_all_collision += delta
-		else:
-			if time_all_collision > 2.0:
-				max_dist_search = 50
-				time_all_collision = 0.0
-			else:
-				time_all_collision += delta
-	#print(time_all_collision)
-	for c in %BoatRayCast.get_children():
-		c.queue_free()
-	for p in positions:
-		var b = CSGBox3D.new()
-		%BoatRayCast.add_child(b)
-		b.global_position = p
+				context_steering.append(max_dist_search)
+	
+		var angle_to_target := Global.tri_to_bi(global_position).angle_to_point(Global.tri_to_bi(target_position))
+		angle_to_target = Global.pi_2_pi(-angle_to_target+deg_to_rad(180))
+		var angle := context_steering.get_direction(angle_to_target, delta)
+		subtarget_position = Vector3.LEFT.rotated(Vector3.UP, angle)*10 + global_position
+		#subtarget_position = Vector3.RIGHT.rotated(Vector3.DOWN, angle_to_target)*10 + global_position
+	
 	get_action(delta)
 	move_boat(delta)
 	sim_step(delta)

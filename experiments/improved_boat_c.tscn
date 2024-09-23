@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=3 uid="uid://bne6d3s7rtemd"]
+[gd_scene load_steps=19 format=3 uid="uid://bne6d3s7rtemd"]
 
 [ext_resource type="Script" path="res://experiments/improved_boat_c.gd" id="1_q1tnb"]
 
@@ -63,6 +63,8 @@ albedo_color = Color(0.0214947, 0.0484334, 0.0585101, 1)
 material = SubResource("StandardMaterial3D_ivvkv")
 size = Vector2(200, 200)
 
+[sub_resource type="ImmediateMesh" id="ImmediateMesh_spvle"]
+
 [node name="Node3D" type="Node3D"]
 
 [node name="Control" type="Control" parent="."]
@@ -113,7 +115,6 @@ far = 100.0
 environment = SubResource("Environment_gr7uc")
 
 [node name="Boat" type="RigidBody3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 collision_layer = 2
 axis_lock_linear_y = true
 axis_lock_angular_x = true
@@ -169,7 +170,6 @@ radius = 0.1
 
 [node name="BoatRayCast" type="RayCast3D" parent="Boat"]
 unique_name_in_owner = true
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 target_position = Vector3(50, 0, 0)
 
 [node name="BoatShapeCast" type="ShapeCast3D" parent="Boat"]
@@ -268,3 +268,7 @@ material = SubResource("StandardMaterial3D_0qit4")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 mesh = SubResource("PlaneMesh_reiv7")
+
+[node name="DebugMeshInstance" type="MeshInstance3D" parent="."]
+unique_name_in_owner = true
+mesh = SubResource("ImmediateMesh_spvle")
