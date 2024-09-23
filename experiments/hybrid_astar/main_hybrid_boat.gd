@@ -243,7 +243,12 @@ func iterate_pathfinding():
 	
 	#if path.pind < 0: return
 	#var path = hybrid_astar.extract_any_path(hybrid_astar.closed_set, n_curr, hybrid_astar.ngoal)
-	var path = hybrid_astar.final_path
+	#var path = hybrid_astar.final_path
+	
+	var path = hybrid_astar.extract_any_path(
+		hybrid_astar.closed_set,
+		hybrid_astar.open_set[hybrid_astar.qp.peek_item()],
+		hybrid_astar.ngoal)
 	
 	# BUG paths returned are too short and out of order
 	anim.resize(0)
