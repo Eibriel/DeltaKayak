@@ -28,7 +28,7 @@ func get_angles() -> Array[float]:
 func append(pos:float) -> void:
 	distances.append(pos)
 
-func get_direction(target_angle, delta) -> float:
+func get_direction(target_angle:float, delta:float) -> float:
 	generate_dangers()
 	generate_interests(target_angle)
 	draw_interests()
@@ -36,6 +36,7 @@ func get_direction(target_angle, delta) -> float:
 	
 	for _n in angles.size():
 		diffs[_n] = lerpf(diffs[_n], interests[_n] - dangers[_n], delta*0.5)
+		#diffs[_n] = interests[_n] - dangers[_n]
 	
 	return angles[diffs.find(diffs.max())]
 
@@ -77,28 +78,28 @@ func draw_interests():
 		debug_node.surface_begin(Mesh.PRIMITIVE_POINTS, mat)
 		for _n in distances.size():
 			var d = distances[_n]
-			debug_node.surface_add_vertex(Vector3(-d, 0, 0).rotated(Vector3.UP, angles[_n]))
+			debug_node.surface_add_vertex(Vector3(-d, 10, 0).rotated(Vector3.UP, angles[_n]))
 		debug_node.surface_end()
 	
 	
 	if dangers.size() > 0:
-		debug_node.surface_begin(Mesh.PRIMITIVE_POINTS, null)
+		debug_node.surface_begin(Mesh.PRIMITIVE_POINTS, mat)
 		for _n in dangers.size():
 			var d = dangers[_n]
-			debug_node.surface_add_vertex(Vector3(-d, 0, 0).rotated(Vector3.UP, angles[_n])*10)
+			debug_node.surface_add_vertex(Vector3(-d*10, 10, 0).rotated(Vector3.UP, angles[_n]))
 		debug_node.surface_end()
 	
 	if interests.size() > 0:
-		debug_node.surface_begin(Mesh.PRIMITIVE_POINTS, null)
+		debug_node.surface_begin(Mesh.PRIMITIVE_POINTS, green_mat)
 		for _n in interests.size():
 			var i = interests[_n]
-			debug_node.surface_add_vertex(Vector3(-i, 0, 0).rotated(Vector3.UP, angles[_n])*10)
+			debug_node.surface_add_vertex(Vector3(-i*10, 10, 0).rotated(Vector3.UP, angles[_n]))
 		debug_node.surface_end()
 	
 	debug_node.surface_begin(Mesh.PRIMITIVE_POINTS, green_mat)
 	for _n in diffs.size():
 		var d = diffs[_n]
-		debug_node.surface_add_vertex(Vector3(-min(0, d), 0, 0).rotated(Vector3.UP, angles[_n])*10)
+		debug_node.surface_add_vertex(Vector3(0, 10, -min(0, d*10)).rotated(Vector3.UP, angles[_n]))
 	debug_node.surface_end()
 	#for c in debug_node.get_children():
 		#c.queue_free()

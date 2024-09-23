@@ -83,7 +83,7 @@ func _process(delta: float) -> void:
 	Global.log_text += "\nState: %s" % STATE.find_key(current_state)
 	Global.log_text += "\nAttack: %s" % ATTACK_STATE.find_key(attack_state)
 	Global.log_text += "\nforce_limit_mult: %s" % force_limit_mult
-	#%AttackPositionindicator.global_position = attack_position
+	%AttackPositionindicator.global_position = target_position
 	#is_stuck(delta)
 	inside_turn_radius = is_target_inside_rotation_radius()
 	handle_sounds()

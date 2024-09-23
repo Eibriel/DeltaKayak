@@ -106,7 +106,7 @@ text = "0 rps
 0º"
 
 [node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 9.08728, 0)
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 20, 0)
 projection = 1
 size = 150.0
 far = 100.0
@@ -133,15 +133,15 @@ shape = SubResource("CapsuleShape3D_007ww")
 
 [node name="CSGBox3D" type="CSGBox3D" parent="Boat"]
 transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0, 0)
-size = Vector3(2.6272, 0.207275, 13.1758)
+size = Vector3(3.03418, 0.207275, 12.8428)
 
 [node name="CSGBox3D2" type="CSGBox3D" parent="Boat"]
-transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 6.84259, 0, -0.0798988)
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 6.66581, 0, -0.0245047)
 size = Vector3(1.91016, 0.207275, 0.49585)
 
 [node name="Rudder" type="Node3D" parent="Boat"]
 unique_name_in_owner = true
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.53156, 0, -0.0301933)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.645, 0, 0)
 
 [node name="CSGBox3D3" type="CSGBox3D" parent="Boat/Rudder"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1.05464)
@@ -150,6 +150,7 @@ size = Vector3(0.399414, 0.207275, 2.04858)
 [node name="FutureColision" type="Node3D" parent="Boat"]
 unique_name_in_owner = true
 top_level = true
+visible = false
 
 [node name="SimBoat2" type="CSGBox3D" parent="Boat/FutureColision"]
 unique_name_in_owner = true
@@ -191,6 +192,7 @@ unique_name_in_owner = true
 [node name="NavTarget2" type="CSGSphere3D" parent="."]
 unique_name_in_owner = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11.3565, 0, -20.2253)
+visible = false
 radius = 1.0
 material = SubResource("StandardMaterial3D_ue248")
 
@@ -250,23 +252,27 @@ visible = false
 
 [node name="SimBoat" type="CSGBox3D" parent="."]
 unique_name_in_owner = true
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.00299144)
-size = Vector3(11.9277, 1, 1.67944)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.121918, -0.00299144)
+visible = false
+size = Vector3(11.457, 1.24384, 1.48047)
 material = SubResource("StandardMaterial3D_7y8an")
 
 [node name="FutureBoat" type="CSGBox3D" parent="."]
 unique_name_in_owner = true
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.34399, 0)
-size = Vector3(10.4414, 1, 1.14844)
+transform = Transform3D(0.999983, -0.00581191, 0, 0.00581191, 0.999983, 0, 0, 0, 1, 0, 1.34399, 0)
+visible = false
+size = Vector3(10.3867, 1, 0.875977)
 material = SubResource("StandardMaterial3D_4xk4o")
 
 [node name="SimForce" type="CSGBox3D" parent="."]
 unique_name_in_owner = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.1499, 0)
+visible = false
 size = Vector3(1, 1, 0.9729)
 material = SubResource("StandardMaterial3D_0qit4")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+visible = false
 mesh = SubResource("PlaneMesh_reiv7")
 
 [node name="DebugMeshInstance" type="MeshInstance3D" parent="."]

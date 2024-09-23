@@ -94,6 +94,7 @@ func get_rudder_angle(target_position: Vector3):
 	#%SimForce.global_position = (target_position-global_position).normalized()*5
 	#%NavStart.global_position = forward_direction * 10
 	#prints(direction_error)
+	prints(angle_to_target, rotation.y)
 	var error := angle_difference(angle_to_target, rotation.y)
 	var poportional := get_proportional(error)
 	var integral := get_proportional(error)
