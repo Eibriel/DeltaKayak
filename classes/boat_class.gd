@@ -149,7 +149,9 @@ func get_subtarget_position(delta: float):
 	var angle := context_steering.get_direction(angle_to_target, delta)
 	#angle += deg_to_rad(-90)
 	subtarget_position = Vector3.LEFT.rotated(Vector3.UP, angle)*10 + global_position
+	#subtarget_position = Vector3.FORWARD.rotated(Vector3.UP, rotation.y+deg_to_rad(-4))*15 + global_position
 	%EnemyNavigationVelocityIndicator.global_position = subtarget_position
+	%EnemyNavigationVelocityIndicator.global_position.y = 5
 
 ## Simulates and applies forces to the boat
 func move_boat(delta: float) -> void:
@@ -158,21 +160,21 @@ func move_boat(delta: float) -> void:
 			linear_velocity,
 			angular_velocity.y,
 			global_position,
-			rotation.y+deg_to_rad(90))
+			rotation.y)
 	#print(revs_per_second)
 	#revs_per_second = 20.0
 	#rudder_angle = deg_to_rad(5)
 	#print(rudder_angle)
 	%Rudder.rotation.y = -rudder_angle
 	var forces_to_apply := simple_boat_model.calculate_boat_forces(
-		revs_per_second,
+		revs_per_second*5.0,
 		rudder_angle
 	)
 	simple_boat_model.step(delta)
 	
 	var torque_to_apply := forces_to_apply.z
 	var force_to_apply := Vector3(forces_to_apply.x, 0.0, forces_to_apply.y)
-	#%EnemyNavigationVelocityIndicator.global_position = global_position + force_to_apply*10
+	#%EnemyNavigationVelocityIndicator.global_position = global_position + force_to_apply*20
 	#%EnemyNavigationVelocityIndicator.global_position.y = 10.0
 	apply_torque(Vector3(0, torque_to_apply, 0))
 	apply_central_force(force_to_apply)
@@ -187,29 +189,20 @@ func setup_boat_model(
 	boat_model.linear_velocity = Global.tri_to_bi(_linear_velocity)
 	boat_model.angular_velocity = _angular_velocity
 	boat_model.position = Global.tri_to_bi(_position)
-	#boat_model.rotation = -_rotation+deg_to_rad(90)
-	boat_model.rotation = -_rotation
+	boat_model.rotation = -(_rotation+deg_to_rad(90))
+	#boat_model.rotation = -_rotation
 
 
 ## Determine rudder angle from sub target position
 func get_rudder_angle(target_position: Vector3):
 	# TODO switch from Vector3 to Vector2
 	var rotation_vector := global_position.direction_to(target_position)
-	var angle_to_target := Vector3.RIGHT.signed_angle_to(rotation_vector, Vector3.UP)
-	#print(angle_to_target)
-	#angle_to_target = Global.pi_2_pi(angle_to_target)
-	
-	#prints(rotation_vector, (target_position-global_position).normalized())
-	
+	var angle_to_target := Vector3.RIGHT.signed_angle_to(-rotation_vector.rotated(Vector3.UP, deg_to_rad(90)), Vector3.UP)
 	var forward_direction := Vector3.FORWARD.rotated(Vector3.UP, rotation.y)
 	var direction_error := rotation_vector.dot(forward_direction)
-	#direction_error = Global.pi_2_pi(direction_error+deg_to_rad(90))
-	#%SimForce.global_position = (target_position-global_position).normalized()*5
-	#%DirectionIndicator.global_position = global_position+(rotation_vector * 10)
-	#%DirectionIndicator.global_position.y = 10.0
-	#prints(direction_error)
-	#prints(angle_to_target-deg_to_rad(90), rotation.y)
-	var error := angle_difference(angle_to_target-deg_to_rad(90), rotation.y)
+	var rotation_y:float = rotation.y
+	var error := angle_difference(angle_to_target, rotation_y)
+	prints(error, angle_to_target, rotation_y)
 	error *= -1.0
 	var poportional := get_proportional(error)
 	var integral := get_proportional(error)
@@ -219,22 +212,21 @@ func get_rudder_angle(target_position: Vector3):
 	rudder_angle += poportional
 	rudder_angle += integral
 	rudder_angle += derivative
-	#prints(error, rudder_angle)
-	#rudder_angle = Global.pi_2_pi(rudder_angle)
+	rudder_angle = Global.pi_2_pi(rudder_angle)
 	rudder_angle = clampf(rudder_angle, deg_to_rad(-45), deg_to_rad(45))
 	#print(rudder_angle)
 	last_rotation = rotation.y
 	
-	
-	
 	#print(error)
-	#if abs(direction_error) > 0.5:
-		#revs_per_second = 20
-	#else:
-		#revs_per_second = 10
-	#if direction_error < 0:
-		#revs_per_second *= -1.0
-		#rudder_angle *= -1.0
+	if abs(direction_error) > 0.5:
+		revs_per_second = 20
+	else:
+		revs_per_second = 10
+	if direction_error < 0:
+		revs_per_second *= -1.0
+		rudder_angle *= -1.0
+	#prints(error, direction_error, revs_per_second)
+	#print(revs_per_second)
 
 # PID control Torque
 func get_proportional(error) -> float:
@@ -266,7 +258,7 @@ func _integrate_forces(state:PhysicsDirectBodyState3D):
 		Global.tri_to_bi(state.linear_velocity),
 		state.angular_velocity.y,
 		Engine.physics_ticks_per_second,
-		rotation.y
+		-(rotation.y+deg_to_rad(90))
 	)
 	state.linear_velocity = Global.bi_to_tri(dvel[0])
 	state.angular_velocity = Vector3(0, dvel[1], 0)
