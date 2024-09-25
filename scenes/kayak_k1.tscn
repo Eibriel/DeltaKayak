@@ -10,7 +10,7 @@ height = 3.3989
 
 [node name="KayakKone" type="RigidBody3D"]
 collision_layer = 4
-collision_mask = 31
+collision_mask = 95
 axis_lock_linear_y = true
 axis_lock_angular_x = true
 axis_lock_angular_z = true

@@ -36,6 +36,7 @@ var target_position := Vector3.ZERO
 var target_velocity := Vector3.ZERO
 var current := Vector3.ZERO
 var subtarget_position := Vector3.ZERO
+var direct_target := false
 
 var last_rotation := 0.0
 var angle_to_target := 0.0
@@ -120,7 +121,10 @@ func _physics_process(delta: float):
 	context_steering.next()
 	
 	_get_target(delta)
-	get_subtarget_position(delta)
+	if not direct_target:
+		subtarget_position = target_position
+	else:
+		get_subtarget_position(delta)
 	move_boat(delta)
 	get_rudder_angle(
 		subtarget_position
@@ -167,7 +171,7 @@ func move_boat(delta: float) -> void:
 	#print(rudder_angle)
 	%Rudder.rotation.y = -rudder_angle
 	var forces_to_apply := simple_boat_model.calculate_boat_forces(
-		revs_per_second*5.0,
+		revs_per_second*4.0,
 		rudder_angle
 	)
 	simple_boat_model.step(delta)
@@ -202,7 +206,7 @@ func get_rudder_angle(target_position: Vector3):
 	var direction_error := rotation_vector.dot(forward_direction)
 	var rotation_y:float = rotation.y
 	var error := angle_difference(angle_to_target, rotation_y)
-	prints(error, angle_to_target, rotation_y)
+	#prints(error, angle_to_target, rotation_y)
 	error *= -1.0
 	var poportional := get_proportional(error)
 	var integral := get_proportional(error)

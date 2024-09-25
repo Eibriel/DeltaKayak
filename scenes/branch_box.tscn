@@ -47,7 +47,7 @@ material = SubResource("StandardMaterial3D_3yxvb")
 
 [node name="BranchBox" type="RigidBody3D" node_paths=PackedStringArray("model", "break_sound", "break_particles")]
 collision_layer = 4
-collision_mask = 31
+collision_mask = 95
 axis_lock_linear_y = true
 axis_lock_angular_x = true
 axis_lock_angular_z = true

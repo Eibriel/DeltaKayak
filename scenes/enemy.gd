@@ -178,7 +178,9 @@ func _get_target(delta: float) -> void:
 	if delay_next_state_change <= 0:
 		change_state()
 	check_character_visible(delta)
+	direct_target = false
 	if current_state == STATE.ATTACK:
+		direct_target = true
 		%AttackIndicator.visible = true
 		#%SpotLightEnemy.visible = true
 		%OmniLightEnemy.visible = true
@@ -416,23 +418,23 @@ func check_sleeping_exit():
 		set_state(STATE.AMBUSH)
 
 func check_attack_exit():
-	if following_trail_time > 20.0:
+	if following_trail_time > 60.0:
 		set_state(STATE.ALERT)
 	if not is_character_visible:
 		set_state(STATE.ALERT)
 	if not is_moving:
-		delay_next_state_change = 20.0
+		delay_next_state_change = 60.0
 		set_state(STATE.SEARCHING)
 
 func check_alert_exit():
 	if is_character_visible:
 		set_state(STATE.ATTACK)
-	elif on_alert_time > 10.0:
+	elif on_alert_time > 30.0:
 		set_state(STATE.SEARCHING)
-	elif following_trail_time > 20.0:
+	elif following_trail_time > 60.0:
 		set_state(STATE.SEARCHING)
 	if not is_moving:
-		delay_next_state_change = 20.0
+		delay_next_state_change = 60.0
 		set_state(STATE.SEARCHING)
 
 func check_avoid_collision_exit():

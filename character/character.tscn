@@ -70,10 +70,11 @@ curve = SubResource("Curve_g5f2h")
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_nmsp7"]
 emission_shape = 3
-emission_box_extents = Vector3(0.15, 0, 0)
+emission_box_extents = Vector3(0.05, 0, 0)
 inherit_velocity_ratio = 0.1
 direction = Vector3(0, 0, 1)
 spread = 0.0
+flatness = 1.0
 initial_velocity_max = 0.2
 gravity = Vector3(0, 0, 0)
 linear_accel_min = -2.23517e-06
@@ -83,12 +84,14 @@ damping_max = 0.1
 scale_curve = SubResource("CurveTexture_tgiu8")
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0ij2n"]
-shading_mode = 0
-albedo_color = Color(0.17, 0.129795, 0.1139, 1)
+shading_mode = 2
+albedo_color = Color(0.56275, 0.465967, 0.427793, 1)
 
 [sub_resource type="TubeTrailMesh" id="TubeTrailMesh_6cpm0"]
 material = SubResource("StandardMaterial3D_0ij2n")
-radius = 0.03
+radius = 0.015
+radial_steps = 4
+sections = 2
 section_length = 0.001
 
 [sub_resource type="Curve" id="Curve_cmpet"]
@@ -411,7 +414,7 @@ size = Vector3(0.1, 0.1, 0.1)
 
 [node name="character" type="RigidBody3D"]
 collision_layer = 2
-collision_mask = 61
+collision_mask = 63
 axis_lock_linear_y = true
 axis_lock_angular_x = true
 axis_lock_angular_z = true
@@ -567,7 +570,16 @@ radius = 0.438744
 material = SubResource("StandardMaterial3D_bt2tn")
 
 [node name="GPUParticles3D" type="GPUParticles3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0307007, 0.999695)
+transform = Transform3D(0.350158, 0, 0.936691, 0, 1, 0, -0.936691, 0, 0.350158, 0.109004, 0.0307007, 1.1087)
+cast_shadow = 0
+amount = 200
+lifetime = 20.0
+fixed_fps = 20
+process_material = SubResource("ParticleProcessMaterial_nmsp7")
+draw_pass_1 = SubResource("TubeTrailMesh_6cpm0")
+
+[node name="GPUParticles3D3" type="GPUParticles3D" parent="."]
+transform = Transform3D(0.538109, 0, -0.842875, 0, 1, 0, 0.842875, 0, 0.538109, -0.153888, 0.0307007, 1.11511)
 cast_shadow = 0
 amount = 200
 lifetime = 20.0
@@ -739,7 +751,7 @@ unique_name_in_owner = true
 transform = Transform3D(0.13677, -0.990603, 0, 0.990603, 0.13677, 0, 0, 0, 1, -0.00252755, -0.0550295, 0)
 
 [node name="RigidBody3D" type="AnimatableBody3D" parent="XRBase/CharacterXROrigin3D/RightController"]
-collision_layer = 2
+collision_layer = 64
 collision_mask = 4
 sync_to_physics = false
 
@@ -768,7 +780,7 @@ unique_name_in_owner = true
 transform = Transform3D(-0.7, 0, 6.11959e-08, 0, 0.7, 0, -6.11959e-08, 0, -0.7, 0, 0, 0)
 
 [node name="RigidBody3D" type="AnimatableBody3D" parent="XRBase/CharacterXROrigin3D/LeftController"]
-collision_layer = 2
+collision_layer = 64
 collision_mask = 4
 sync_to_physics = false
 

@@ -316,6 +316,7 @@ shape = SubResource("CylinderShape3D_o5bdk")
 
 [node name="AttackPositionindicator" type="CSGSphere3D" parent="."]
 unique_name_in_owner = true
+visible = false
 radius = 2.0
 material = SubResource("StandardMaterial3D_pirxd")
 
@@ -370,11 +371,13 @@ aabb = AABB(-0.958361, -0.643605, -0.742799, 1.91672, 1.52745, 1.4856)
 
 [node name="EnemyNavigationVelocityIndicator" type="CSGBox3D" parent="."]
 unique_name_in_owner = true
+visible = false
 size = Vector3(2, 2, 2)
 material = SubResource("StandardMaterial3D_8e41d")
 
 [node name="DirectionIndicator" type="CSGBox3D" parent="."]
 unique_name_in_owner = true
+visible = false
 size = Vector3(1.5, 1.5, 1.5)
 material = SubResource("StandardMaterial3D_8nwj3")
 
