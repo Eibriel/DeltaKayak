@@ -1,4 +1,4 @@
-[gd_scene load_steps=80 format=3 uid="uid://r0o1qsmlq84u"]
+[gd_scene load_steps=81 format=3 uid="uid://r0o1qsmlq84u"]
 
 [ext_resource type="Script" path="res://character/character.gd" id="1_mnv7b"]
 [ext_resource type="Texture2D" uid="uid://dbr6od55galv2" path="res://models/world_textures/BoteMadera_diffuse.png" id="2_j3chf"]
@@ -49,6 +49,9 @@ albedo_color = Color(0.826, 1, 0.13, 1)
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_ogamo"]
 radius = 0.271211
 height = 3.53406
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_22xye"]
+size = Vector3(0.535156, 2.99707, 0.803711)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_pwt6l"]
 size = Vector3(1.50659, 1.52148, 0.599609)
@@ -415,6 +418,7 @@ size = Vector3(0.1, 0.1, 0.1)
 [node name="character" type="RigidBody3D"]
 collision_layer = 2
 collision_mask = 63
+input_ray_pickable = false
 axis_lock_linear_y = true
 axis_lock_angular_x = true
 axis_lock_angular_z = true
@@ -450,9 +454,15 @@ visible = false
 radius = 0.34157
 height = 0.757899
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+[node name="CapsuleCollisionShape" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0)
 shape = SubResource("CapsuleShape3D_ogamo")
+
+[node name="BoxCollisionShape" type="CollisionShape3D" parent="."]
+editor_description = "Capsule to capsule collision is not working properly.
+Adding this Box Collision as a workaround."
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0)
+shape = SubResource("BoxShape3D_22xye")
 
 [node name="CameraArea_middle" type="Area3D" parent="."]
 metadata/is_character_camera = true

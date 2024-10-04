@@ -390,7 +390,7 @@ func best_parameters() -> Dictionary:
 	#return { "p_surge_multiplier": 0.01208286295468, "p_rudder_multiplier": 0.18197398393783, "p_rudder_profile_coef": 1.29562627514753, "p_vel_rudder_rel": 0.40135133627127, "p_longitudinal_damp_coef": 0.00750097905684, "p_lateral_damp_coef": 0.71044768800579, "p_angular_damp_coef": 0.60752206177752, "p_vel_damp_rel": 0.00858374920892, "p_hull_torque_coef": 0.00020219185183 }
 	return {
 		"p_surge_multiplier": 0.05,
-		"p_rudder_multiplier": 0.2 * 200.0 * 1.0,
+		"p_rudder_multiplier": 0.2 * 200.0 * 1.9,
 		"p_vel_rudder_rel": 0.4,
 		"p_longitudinal_damp_coef": 0.001,
 		"p_lateral_damp_coef": 0.7,

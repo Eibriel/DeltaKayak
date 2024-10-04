@@ -85,6 +85,7 @@ func _ready():
 	simple_boat_model.configure(10.0)
 	
 	boat_ray_cast = RayCast3D.new()
+	boat_ray_cast.position = Vector3(0,0,-3)
 	add_child(boat_ray_cast)
 	
 
@@ -99,7 +100,7 @@ func _manual_control(delta: float):
 	simple_boat_model.linear_velocity = Global.tri_to_bi(linear_velocity)
 	simple_boat_model.angular_velocity = angular_velocity.y
 	var sbm_forces := simple_boat_model.calculate_boat_forces(
-		remap(manual_control.y, -1, 1, 20, -20),
+		remap(manual_control.y, -1, 1, 20*4.0, -20*4.0),
 		remap(manual_control.x, -1, 1, deg_to_rad(45), deg_to_rad(-45))
 	)
 	var linear_to_apply := Vector3(sbm_forces.x, 0, sbm_forces.y)
@@ -121,7 +122,7 @@ func _physics_process(delta: float):
 	context_steering.next()
 	
 	_get_target(delta)
-	if not direct_target:
+	if direct_target:
 		subtarget_position = target_position
 	else:
 		get_subtarget_position(delta)
@@ -171,7 +172,7 @@ func move_boat(delta: float) -> void:
 	#print(rudder_angle)
 	%Rudder.rotation.y = -rudder_angle
 	var forces_to_apply := simple_boat_model.calculate_boat_forces(
-		revs_per_second*4.0,
+		revs_per_second*5.0,
 		rudder_angle
 	)
 	simple_boat_model.step(delta)
@@ -227,7 +228,9 @@ func get_rudder_angle(target_position: Vector3):
 	else:
 		revs_per_second = 10
 	if direction_error < 0:
-		revs_per_second *= -1.0
+		%RearRayCast.force_raycast_update()
+		if not %RearRayCast.is_colliding():
+			revs_per_second *= -1.0
 		rudder_angle *= -1.0
 	#prints(error, direction_error, revs_per_second)
 	#print(revs_per_second)

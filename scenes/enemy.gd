@@ -508,7 +508,7 @@ func direct_sight_character() -> bool:
 	if Global.character == null:
 		return false
 	var target := to_local(Global.character.global_position)
-	target = target.normalized() * 20
+	target = target.normalized() * 40
 	
 	if false:
 		var target_vector := global_position.direction_to(Global.character.global_position) # Direction vector to target

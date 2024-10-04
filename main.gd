@@ -148,7 +148,7 @@ func _ready() -> void:
 		%DatamoshButton.set_pressed_no_signal(false)
 	
 	%PauseMenu.main_scene = self
-	%BlockPath.position.y = -20
+	#%BlockPath.position.y = -20
 	
 	%HintLabel.visible = false
 	%MenuThanks.visible = false

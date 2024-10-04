@@ -1,4 +1,4 @@
-[gd_scene load_steps=49 format=3 uid="uid://mvc5qr5igrlq"]
+[gd_scene load_steps=50 format=3 uid="uid://mvc5qr5igrlq"]
 
 [ext_resource type="Script" path="res://scenes/enemy.gd" id="1_ht45k"]
 [ext_resource type="Texture2D" uid="uid://cdex8bqdmulf8" path="res://textures/flashlight.jpg" id="2_1pota"]
@@ -107,13 +107,17 @@ albedo_color = Color(1, 0.0862745, 0.0980392, 1)
 
 [sub_resource type="CylinderMesh" id="CylinderMesh_xdsgb"]
 material = SubResource("StandardMaterial3D_44qiw")
-top_radius = 0.1
-bottom_radius = 0.1
-height = 20.0
+top_radius = 0.05
+height = 5.0
+cap_top = false
+cap_bottom = false
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_c8bgx"]
 radius = 1.7
 height = 16.5
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_f3gxl"]
+size = Vector3(3.45215, 15.9248, 1)
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_bdtrc"]
 radius = 1.7
@@ -163,6 +167,8 @@ albedo_color = Color(0.141176, 0.843137, 0.168627, 1)
 [node name="Enemy" type="RigidBody3D"]
 collision_layer = 8
 collision_mask = 31
+collision_priority = 5.0
+input_ray_pickable = false
 axis_lock_linear_y = true
 axis_lock_angular_x = true
 axis_lock_angular_z = true
@@ -231,7 +237,7 @@ spot_range = 50.0
 spot_angle = 17.0202
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="EnemyVisual/SpotBaseEnemy/SpotRotationEnemy/SpotLightEnemy"]
-transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, -100.063)
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, -2.40696)
 mesh = SubResource("CylinderMesh_xdsgb")
 
 [node name="Rudder" type="Node3D" parent="EnemyVisual"]
@@ -246,9 +252,18 @@ size = Vector3(0.399414, 0.207275, 2.04858)
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0.537262, 0.0564319)
 shape = SubResource("CapsuleShape3D_c8bgx")
 
+[node name="BoxCollisionShape" type="CollisionShape3D" parent="."]
+editor_description = "Capsule to capsule collision is not working properly.
+Adding this Box Collision as a workaround.
+Keeping it disabled, since I've added a similar Shape on the character."
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0.537262, 0.0564319)
+shape = SubResource("BoxShape3D_f3gxl")
+disabled = true
+
 [node name="NavigationAgent3D" type="NavigationAgent3D" parent="."]
-path_desired_distance = 4.0
-target_desired_distance = 4.0
+path_desired_distance = 10.0
+target_desired_distance = 10.0
+path_max_distance = 10.01
 path_postprocessing = 1
 debug_use_custom = true
 debug_path_custom_point_size = 10.0
@@ -389,5 +404,10 @@ size = 70.0
 
 [node name="BoatRayCast" type="RayCast3D" parent="."]
 unique_name_in_owner = true
+
+[node name="RearRayCast" type="RayCast3D" parent="."]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 7.9)
+target_position = Vector3(0, 0, 2)
 
 [connection signal="body_entered" from="Phantom/PhantomArea1" to="." method="_on_phantom_area_1_body_entered"]

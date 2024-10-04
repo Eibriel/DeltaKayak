@@ -106,6 +106,7 @@ func _ready():
 	else:
 		%POVCameraController.visible = true
 		%CharacterXROrigin3D.visible = false
+		%XRBase.queue_free()
 
 func _process(delta: float) -> void:
 	trail_time += delta
@@ -138,6 +139,7 @@ func _process(delta: float) -> void:
 	handle_paddle_grab()
 
 func handle_paddle_grab():
+	if not VR.is_vr_enabled: return
 	%Paddle.position = Vector3(-0.221, -0.447, -0.53)
 	%Paddle.rotation = Vector3(0, deg_to_rad(-90), 0)
 	%Paddle.reparent(%CharacterXROrigin3D, false)
@@ -252,13 +254,16 @@ func hide_pepa()->void:
 func hide_head_if_needed()->void:
 	if VR.is_vr_enabled:
 		$character/Armature/Skeleton3D/capucha.visible = false
-		$character/Armature/Skeleton3D/head.visible = false
+		$character/Armature/Skeleton3D/arm_hi_l_Cube_001.visible = false
+		$character/Armature/Skeleton3D/arm_lo_l_Cube_003.visible = false
+		$character/Armature/Skeleton3D/hand_l_Cube_004.visible = false
+		$character/Armature/Skeleton3D/arm_hi_r_Cube_014.visible = false
+		$character/Armature/Skeleton3D/arm_lo_r_Cube_013.visible = false
+		$character/Armature/Skeleton3D/hand_r_Cube_015.visible = false
 	elif %POVCamera3D.current:
 		$character/Armature/Skeleton3D/capucha.visible = false
-		$character/Armature/Skeleton3D/head.visible = false
 	else:
 		$character/Armature/Skeleton3D/capucha.visible = true
-		$character/Armature/Skeleton3D/head.visible = true
 
 func lock_paddling(value:bool=true) -> void:
 	is_paddling_locked=value
@@ -626,7 +631,7 @@ func release_grab()->void:
 	grabbing_state = GRABBING.NO
 	Global.grab_joint.set_node_a(NodePath(""))
 	Global.grab_joint.set_node_b(NodePath(""))
-	set_collision_mask_value(3, true)
+	#set_collision_mask_value(3, true)
 
 func lock_grab(value:=true):
 	is_grab_locked = value
@@ -686,9 +691,12 @@ func _integrate_forces_old(state:PhysicsDirectBodyState3D):
 # TODO duplicated in boat_class.gd
 func _integrate_forces(state: PhysicsDirectBodyState3D) -> void:
 	handle_contacts(state)
-	state.angular_velocity *= 0.991
+	var _angular_damp := 0.5
+	state.angular_velocity *= 1.0 - _angular_damp / Engine.physics_ticks_per_second
 	#if grabbing_state == GRABBING.YES:
 	#	state.linear_velocity *= 0.99
+	#lv.x *= 1.0 - p_longitudinal_damp_coef / _ticks_per_second
+	#lv.y *= 1.0 - p_lateral_damp_coef / _ticks_per_second
 	
 	var forward_direction := (transform.basis * Vector3.FORWARD).normalized()
 	#var backward_direction := (transform.basis * Vector3.BACK).normalized()
@@ -703,16 +711,17 @@ func _integrate_forces(state: PhysicsDirectBodyState3D) -> void:
 	var transferred_energy: Vector3 = forward_direction * side_component.length()
 	var side_drag := 0.99 # TODO depends on velocity
 	var calculated_velocity := Vector3.ZERO
-	calculated_velocity += side_component * side_drag
+	calculated_velocity += side_component * (1.0 - (side_drag / Engine.physics_ticks_per_second))
 	calculated_velocity += forward_component
-	calculated_velocity += transferred_energy * (1.0 - side_drag)
+	calculated_velocity += transferred_energy * (side_drag / Engine.physics_ticks_per_second)
 	calculated_velocity += current
 	state.linear_velocity = calculated_velocity
 
 func handle_contacts(state: PhysicsDirectBodyState3D):
 	if state.get_contact_count() > 0:
 		var collision_impulse:float = state.get_contact_impulse(0).length()
-		if collision_impulse > 10.0:
+		print(collision_impulse)
+		if collision_impulse > 20.0:
 			collision_damage.call_deferred()
 		if collision_impulse > 0.5:
 			#prints("collision", collision_impulse)
@@ -779,7 +788,7 @@ func _on_interaction_area_area_entered(area: Area3D) -> void:
 func collision_damage():
 	# TODO join with set_damage
 	if damage_timer > 0: return
-	damage += 5.0
+	damage += 7.0
 	damage_timer = 1.0
 	buoyancy_instability += 2.0
 	if damage > max_damage:
@@ -787,7 +796,7 @@ func collision_damage():
 
 func set_damage()->void:
 	if damage_timer > 0: return
-	damage += 4.0
+	damage += 0.5
 	damage_timer = 1.0
 	Global.main_scene.set_player_state("monster_damage")
 	buoyancy_instability += 2.0

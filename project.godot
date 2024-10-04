@@ -12,11 +12,12 @@ config_version=5
 
 config/name="Delta Kayak"
 config/description="Navigate an open-world island in your kayak, avoid the giant boat stalking you, and venture deep into the unknown to find your missing pet."
-run/main_scene="res://menu.tscn"
+run/main_scene="res://main.tscn"
 config/features=PackedStringArray("4.3", "Forward Plus")
 run/max_fps=90
 boot_splash/show_image=false
 config/icon="res://icon.png"
+run/main_scene.release="res://menu.tscn"
 
 [audio]
 
@@ -175,6 +176,7 @@ locale/translations=PackedStringArray("res://dkdata_strings.en.translation", "re
 [physics]
 
 common/physics_ticks_per_second=120
+common/enable_object_picking=false
 
 [rendering]
 

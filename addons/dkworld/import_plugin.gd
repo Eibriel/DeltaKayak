@@ -100,6 +100,7 @@ func _import(source_file, save_path, options, r_platform_variants, r_gen_files):
 		add_lands(sector.lands, sector_id, main_node)
 		add_navmesh(sector.navmesh, sector_id, main_node)
 		add_rooms(sector.rooms, sector_id, main_node, sector)
+		add_lights(sector.lights, sector_id, main_node)
 	
 	add_water(main_node)
 	
@@ -112,6 +113,31 @@ func _import(source_file, save_path, options, r_platform_variants, r_gen_files):
 	else:
 		return result
 		#return null
+
+func add_lights(lights_array: Array, sector_id:String, main_node:Node3D):
+	for light in lights_array:
+		var light_node:Node3D
+		var light_pos:Node3D = Node3D.new()
+		match light.type:
+			"SPOT":
+				light_node = SpotLight3D.new()
+				light_node.spot_angle = rad_to_deg(light.spot_size)
+				light_node.spot_range = light.distance
+			"POINT":
+				light_node = OmniLight3D.new()
+				light_node.omni_range = light.omni_radius
+		light_node.name = light.name
+		light_node.light_color = Color(light.color[0], light.color[1], light.color[2])
+		light_node.light_volumetric_fog_energy = 2.61
+		light_node.distance_fade_enabled = true
+		light_node.distance_fade_begin = 200
+		light_pos.position = array_to_vector3(light.position)
+		light_pos.rotation = array_to_vector3(light.rotation)
+		light_node.rotation.x = deg_to_rad(-90)
+		main_node.add_child(light_pos)
+		light_pos.add_child(light_node)
+		light_node.set_owner(main_node)
+		light_pos.set_owner(main_node)
 
 func add_rooms(rooms_array: Array, sector_id:String, main_node:Node3D, sector:Dictionary):
 	for room in rooms_array:
@@ -221,6 +247,7 @@ func add_lands(lands: Array, sector_id:String, main_node:Node3D):
 		land_polygon.set_collision_mask_value(3, true) # Grabbable
 		land_polygon.set_collision_mask_value(4, true) # Enemies
 		land_polygon.set_collision_mask_value(5, true) # Transparent
+		land_polygon.collision_priority = 20
 		
 		#Do not scale!
 		static_body.position = array_to_vector3(land.position)

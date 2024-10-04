@@ -28,7 +28,7 @@ color_ramp = SubResource("Gradient_0eb2r")
 noise = SubResource("FastNoiseLite_m8djf")
 
 [resource]
-render_priority = 0
+render_priority = 1
 shader = ExtResource("1_oh05p")
 shader_parameter/albedo = Color(0.69, 0.465405, 0.2553, 1)
 shader_parameter/ssr_resolution = 2.0

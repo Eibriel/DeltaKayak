@@ -174,6 +174,7 @@ class DKT_OT_ExportWorld(bpy.types.Operator):
             sector_def["navmesh"] = self.get_navmesh(sector)
             sector_def["enemy_points"] = self.get_enemy_points(sector)
             sector_def["rooms"] = self.get_rooms(sector)
+            sector_def["lights"] = self.get_lights(sector)
             definition[sector.name] = sector_def
 
         definition_path = context.scene.dkt_gltfsexportsetup.definition_path
@@ -370,6 +371,31 @@ class DKT_OT_ExportWorld(bpy.types.Operator):
             rooms_def.append(room_data)
         return rooms_def
 
+    def get_lights(self, sector):
+        lights_def = []
+        lights_name = "Lights_" + sector.name.split("_")[1]
+        if not lights_name in sector.children: return lights_def
+        for light_obj in sector.children[lights_name].objects:
+            light_data = {
+                "name": light_obj.name,
+                "position": self.location_to_godot(light_obj.location),
+                "rotation": self.rotation_to_godot(light_obj.rotation_euler),
+                "scale": self.scale_to_godot(light_obj.scale),
+                "transformation": self.transform_to_godot(light_obj.matrix_world),
+                "quaternion": self.quaternion_to_godot(light_obj.matrix_world),
+                "type": light_obj.data.type, # POINT, SPOT
+                "power": light_obj.data.energy,
+                "color": [light_obj.data.color.r,light_obj.data.color.g,light_obj.data.color.b], # RGB
+                "omni_radius": light_obj.data.shadow_soft_size,
+                "use_shadow": light_obj.data.use_shadow,
+                "distance": light_obj.data.cutoff_distance,
+            }
+            if light_obj.data.type == 'POINT':
+                pass
+            elif light_obj.data.type == 'SPOT':
+                light_data["spot_size"] = light_obj.data.spot_size
+            lights_def.append(light_data)
+        return lights_def
 
     def get_camera_data(self, camera_obj):
         #camera_obj.rotation_euler[0] -= math.radians(90.0)
