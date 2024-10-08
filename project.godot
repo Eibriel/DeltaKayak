@@ -54,7 +54,8 @@ enabled=PackedStringArray("res://addons/dkdata_inspector/plugin.cfg", "res://add
 folder_colors={
 "res://data_resources/": "orange",
 "res://dkdata/": "red",
-"res://interactives/": "green"
+"res://interactives/": "green",
+"res://models_csg/": "teal"
 }
 
 [godot_resource_groups]

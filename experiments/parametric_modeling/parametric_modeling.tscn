@@ -1,0 +1,101 @@
+[gd_scene load_steps=2 format=3 uid="uid://vupa8ksqaiw3"]
+
+[ext_resource type="Material" uid="uid://3q8kof4xrq7a" path="res://materials/wood_material.tres" id="1_o36wo"]
+
+[node name="ParametricModeling" type="Node3D"]
+
+[node name="Node3D" type="CSGMesh3D" parent="."]
+visible = false
+
+[node name="CSGPolygon3D2" type="CSGPolygon3D" parent="Node3D"]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0.0634391, 1.15724, 0.484101)
+polygon = PackedVector2Array(0.561942, -0.163219, -0.424109, -0.156732, 0.0645918, 0.228174)
+depth = 0.03
+material = ExtResource("1_o36wo")
+
+[node name="CSGBox3D" type="CSGBox3D" parent="Node3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.496964, 0.496527, 0.0122856)
+size = Vector3(0.0251465, 1, 1)
+material = ExtResource("1_o36wo")
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="Node3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.48758, 0.496527, 0.0122856)
+material_override = ExtResource("1_o36wo")
+size = Vector3(0.017334, 1, 1)
+material = ExtResource("1_o36wo")
+
+[node name="CSGBox3D5" type="CSGBox3D" parent="Node3D"]
+transform = Transform3D(0.603417, -0.797426, 0, 0.797426, 0.603417, 0, 0, 0, 1, 0.378159, 1.10738, 0.0122856)
+material_override = ExtResource("1_o36wo")
+size = Vector3(0.0681152, 1, 1.26929)
+
+[node name="CSGBox3D6" type="CSGBox3D" parent="Node3D"]
+transform = Transform3D(0.638083, 0.769968, 0, -0.769968, 0.638083, 0, 0, 0, 1, -0.376921, 1.09825, 0.0238823)
+material_override = ExtResource("1_o36wo")
+size = Vector3(0.0681152, 1, 1.26929)
+
+[node name="CSGBox3D3" type="CSGBox3D" parent="Node3D"]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -0.0052303, 0.496527, -0.475191)
+material_override = ExtResource("1_o36wo")
+size = Vector3(0.03125, 1, 1)
+material = ExtResource("1_o36wo")
+
+[node name="CSGBox3D4" type="CSGBox3D" parent="Node3D"]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -0.00523026, 0.496527, 0.500619)
+material_override = ExtResource("1_o36wo")
+size = Vector3(0.0263672, 1, 1)
+material = ExtResource("1_o36wo")
+
+[node name="CSGPolygon3D" type="CSGPolygon3D" parent="Node3D/CSGBox3D4"]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0.110695, -0.51096, 5.12227e-09)
+operation = 2
+polygon = PackedVector2Array(0.286462, -0.177377, -0.278283, -0.172895, -0.273801, 0.548723, -0.157266, 0.728007, 0.120624, 0.736972, 0.273016, 0.620437)
+depth = 0.2
+
+[node name="CSGMesh3D" type="CSGMesh3D" parent="."]
+
+[node name="CSGBox3D" type="CSGBox3D" parent="CSGMesh3D"]
+size = Vector3(2.4375, 0.076416, 0.835938)
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="CSGMesh3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1.05249)
+size = Vector3(2.4375, 0.076416, 0.835938)
+
+[node name="CSGBox3D3" type="CSGBox3D" parent="CSGMesh3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2.00934)
+size = Vector3(2.4375, 0.076416, 0.835938)
+
+[node name="CSGBox3D4" type="CSGBox3D" parent="CSGMesh3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 3.0448)
+size = Vector3(2.4375, 0.076416, 0.835938)
+
+[node name="CSGBox3D5" type="CSGBox3D" parent="CSGMesh3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 4.12793)
+size = Vector3(2.4375, 0.076416, 0.835938)
+
+[node name="CSGBox3D6" type="CSGBox3D" parent="CSGMesh3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 5.16821)
+size = Vector3(2.4375, 0.076416, 0.835938)
+
+[node name="CSGBox3D7" type="CSGBox3D" parent="CSGMesh3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 6.25543)
+size = Vector3(2.4375, 0.076416, 0.835938)
+
+[node name="CSGBox3D8" type="CSGBox3D" parent="CSGMesh3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 7.37726)
+size = Vector3(2.4375, 0.076416, 0.835938)
+
+[node name="CSGCylinder3D" type="CSGCylinder3D" parent="CSGMesh3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.30832, -0.394287, 0)
+radius = 0.138759
+height = 1.93843
+
+[node name="CSGCylinder3D2" type="CSGCylinder3D" parent="CSGMesh3D"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, -1.02747, -0.201399, 3.55236)
+radius = 0.138759
+height = 8.83703
+
+[node name="CSGCylinder3D3" type="CSGCylinder3D" parent="CSGMesh3D"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 1.05346, -0.201399, 3.55236)
+radius = 0.138759
+height = 8.83703

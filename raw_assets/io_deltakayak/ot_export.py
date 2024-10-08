@@ -175,6 +175,7 @@ class DKT_OT_ExportWorld(bpy.types.Operator):
             sector_def["enemy_points"] = self.get_enemy_points(sector)
             sector_def["rooms"] = self.get_rooms(sector)
             sector_def["lights"] = self.get_lights(sector)
+            sector_def["greyboxes"] = self.get_greybox(sector)
             definition[sector.name] = sector_def
 
         definition_path = context.scene.dkt_gltfsexportsetup.definition_path
@@ -344,6 +345,47 @@ class DKT_OT_ExportWorld(bpy.types.Operator):
                 mesh_def["polygons"].append(polygon)
             navmesh_def.append(mesh_def)
         return navmesh_def
+
+    def get_greybox(self, sector):
+        greybox_def = []
+        greybox_name = "Greybox_" + sector.name.split("_")[1]
+        if not greybox_name in sector.children: return greybox_def
+        for greybox_obj in sector.children[greybox_name].objects:
+            #navmesh_obj = sector.objects[greybox_name]
+            mesh_def = {
+                "name": greybox_obj.name,
+                "vertices": [],
+                "polygons": [],
+                "normals": [],
+                "position": self.location_to_godot(greybox_obj.location),
+                "rotation": self.rotation_to_godot(greybox_obj.rotation_euler),
+            }
+
+            bm = bmesh.new()
+            bm.from_mesh(greybox_obj.data)
+            bmesh.ops.triangulate(bm, faces=bm.faces)
+            tri_mesh = bpy.data.meshes.new("Mesh")
+            bm.to_mesh(tri_mesh)
+            bm.free()
+            del bm
+
+            for v in tri_mesh.vertices:
+                vertice = self.location_to_godot(v.co)
+                mesh_def["vertices"].append(vertice)
+            for p in tri_mesh.polygons:
+                polygon = []
+                for v in p.vertices:
+                    polygon.append(v)
+                mesh_def["polygons"].append(polygon)
+            if tri_mesh.normals_domain == "FACE":
+                for n in tri_mesh.polygon_normals:
+                    mesh_def["normals"].append(self.location_to_godot(n.vector))
+            else:
+                for n in tri_mesh.vertex_normals:
+                    mesh_def["normals"].append(self.location_to_godot(n.vector))
+            greybox_def.append(mesh_def)
+
+        return greybox_def
 
     def get_enemy_points(self, sector):
         enemy_points_def = {}

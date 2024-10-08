@@ -1,4 +1,4 @@
-[gd_scene load_steps=55 format=3 uid="uid://ce6e8v1saxjr5"]
+[gd_scene load_steps=56 format=3 uid="uid://ce6e8v1saxjr5"]
 
 [ext_resource type="Theme" uid="uid://1kj8fi5pat0v" path="res://themes/default_theme.tres" id="1_7eei4"]
 [ext_resource type="Environment" uid="uid://xpf4ng2ym0n4" path="res://environments/main_environment.tres" id="1_ekqa4"]
@@ -7,7 +7,7 @@
 [ext_resource type="PackedScene" uid="uid://r0o1qsmlq84u" path="res://character/character.tscn" id="2_3sgbv"]
 [ext_resource type="CompositorEffect" uid="uid://o01yk1gb130b" path="res://compositor/screen/screen_compositor_effect.tres" id="2_f4rcp"]
 [ext_resource type="Resource" uid="uid://bcsic7fi7dxee" path="res://GamePreference.tres" id="2_wexnt"]
-[ext_resource type="PackedScene" uid="uid://bk15214tjtjf8" path="res://world_definition.dkworld" id="3_7foso"]
+[ext_resource type="PackedScene" uid="uid://dt3hle1a7e3br" path="res://world_definition.dkworld" id="3_7foso"]
 [ext_resource type="Resource" uid="uid://bi1rugic742u0" path="res://dkdata/dkdata.tres" id="3_nh3h6"]
 [ext_resource type="Texture2D" uid="uid://31mrm2ajeyll" path="res://textures/dialogue_box.png" id="4_kkvku"]
 [ext_resource type="Texture2D" uid="uid://bue181jtwq3fu" path="res://textures/smoke.png" id="4_ob3me"]
@@ -165,6 +165,9 @@ _data = {
 [sub_resource type="BoxOccluder3D" id="BoxOccluder3D_gtuj1"]
 size = Vector3(155.256, 42, 10)
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4xldj"]
+cull_mode = 2
+
 [sub_resource type="AudioStreamPlaylist" id="AudioStreamPlaylist_4rlso"]
 loop = false
 fade_time = 0.0
@@ -185,7 +188,7 @@ theme = ExtResource("1_qo26v")
 script = ExtResource("1_xxenq")
 game_preferences = ExtResource("2_wexnt")
 game_state = ExtResource("3_nh3h6")
-initial_position = NodePath("Main3D/InitialPositionPuzzle")
+initial_position = NodePath("Main3D/InitialPositionHub")
 SKIP_INTRO = true
 
 [node name="Node2D" type="Node2D" parent="."]
@@ -1061,6 +1064,10 @@ gizmo_extents = 5.0
 transform = Transform3D(0.789128, 0, -0.61423, 0, 1, 0, 0.61423, 0, 0.789128, -172.031, 0, -403.6)
 gizmo_extents = 5.0
 
+[node name="InitialPositionHub" type="Marker3D" parent="Main3D"]
+transform = Transform3D(0.789128, 0, -0.61423, 0, 1, 0, 0.61423, 0, 0.789128, -21.9952, 0, -416.447)
+gizmo_extents = 5.0
+
 [node name="InitialPositionCarpincho" type="Marker3D" parent="Main3D"]
 transform = Transform3D(-0.141213, 0, 0.98998, 0, 1, 0, -0.98998, 0, -0.141213, -240.207, 0, -325.365)
 gizmo_extents = 5.0
@@ -1158,6 +1165,9 @@ transform = Transform3D(-1.99956, -0.040267, 0.0112252, -0.034489, 1.89262, 0.64
 
 [node name="NoPasar2" parent="Main3D/CartelesNoPasar" instance=ExtResource("31_tpcsj")]
 transform = Transform3D(-1.64473, -0.157696, 1.12695, -0.114636, 1.99359, 0.111661, -1.13214, 0.0272321, -1.64849, 18.3618, -2.95565, 8.5525)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Main3D"]
+material_override = SubResource("StandardMaterial3D_4xldj")
 
 [node name="MusicBackground" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("16_dvrax")

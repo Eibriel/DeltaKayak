@@ -101,6 +101,7 @@ func _import(source_file, save_path, options, r_platform_variants, r_gen_files):
 		add_navmesh(sector.navmesh, sector_id, main_node)
 		add_rooms(sector.rooms, sector_id, main_node, sector)
 		add_lights(sector.lights, sector_id, main_node)
+		add_greyboxes(sector.greyboxes, sector_id, main_node)
 	
 	add_water(main_node)
 	
@@ -187,6 +188,61 @@ func add_navmesh(navmesh_array: Array, sector_id:String, main_node:Node3D):
 		navigation_mesh.set_vertices(packed_vertices)
 		for p in navmesh.polygons:
 			navigation_mesh.add_polygon(PackedInt32Array(p))
+
+func add_greyboxes(greybox_array: Array, sector_id:String, main_node:Node3D):
+	var grey_mat := StandardMaterial3D.new()
+	grey_mat.albedo_color = Color.DIM_GRAY
+	grey_mat.cull_mode = BaseMaterial3D.CULL_DISABLED
+	for greybox in greybox_array:
+		var navigation_region := MeshInstance3D.new()
+		navigation_region.name = greybox.name
+		var navigation_mesh := ArrayMesh.new()
+		main_node.add_child(navigation_region)
+		navigation_region.set_owner(main_node)
+		navigation_region.mesh = navigation_mesh
+		navigation_region.position = array_to_vector3(greybox.position)
+		navigation_region.rotation = array_to_vector3(greybox.rotation)
+		var packed_vertices: PackedVector3Array
+		var packed_normals:PackedVector3Array
+		var packed_polygons: PackedInt32Array
+		#for v in greybox.vertices:
+		#	packed_vertices.append(Vector3(v[0], v[1], v[2]))
+		for p in greybox.polygons:
+			#packed_polygons.append(p[2])
+			#packed_polygons.append(p[1])
+			#packed_polygons.append(p[0])
+			var norm := get_normal_from_triangle(
+				Vector3(greybox.vertices[p[0]][0], greybox.vertices[p[0]][1], greybox.vertices[p[0]][2]),
+				Vector3(greybox.vertices[p[1]][0], greybox.vertices[p[1]][1], greybox.vertices[p[1]][2]),
+				Vector3(greybox.vertices[p[2]][0], greybox.vertices[p[2]][1], greybox.vertices[p[2]][2]),
+			)
+			for v in 3:
+				var ver = greybox.vertices[p[2-v]]
+				packed_vertices.append(Vector3(ver[0], ver[1], ver[2]))
+				packed_normals.append(norm)
+		#for n in greybox.normals:
+		#	packed_normals.append(Vector3(n[0], n[1], n[2]))
+		var grey_mesh := []
+		grey_mesh.resize(Mesh.ARRAY_MAX)
+		grey_mesh.fill(null)
+		grey_mesh[Mesh.ARRAY_VERTEX] = packed_vertices
+		#grey_mesh[Mesh.ARRAY_INDEX] = packed_polygons
+		grey_mesh[Mesh.ARRAY_NORMAL] = packed_normals
+		navigation_mesh.add_surface_from_arrays(
+			Mesh.PrimitiveType.PRIMITIVE_TRIANGLES,
+			grey_mesh)
+		#navigation_mesh.regen_normal_maps()
+		navigation_mesh.surface_set_material(0, grey_mat)
+
+func get_normal_from_triangle(p1:Vector3, p2:Vector3, p3:Vector3) -> Vector3:
+	var A := p2 - p1
+	var B := p3 - p1
+	var N :Vector3
+	N.x = A.y * B.z - A.z * B.y
+	N.y = A.z * B.x - A.x * B.z
+	N.z = A.x * B.y - A.y * B.x
+	N = N.normalized()
+	return N
 
 func add_colliders(colliders: Array, sector_id:String, main_node:Node3D):
 	# Collider
