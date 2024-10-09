@@ -510,9 +510,13 @@ func handle_paddling(delta:float) -> void:
 	torque *= torque_mult
 	if grabbing_state == GRABBING.YES:
 		#print(grabbing_object)
-		if grabbing_object is RigidBody3D:
-			Global.log_text += "\nTorque Mult: %d" % (grabbing_object.mass * 5)
-			torque *= grabbing_object.mass * 5
+		if false:
+			# Disabling, better to reduce object mass to 0
+			if grabbing_object is RigidBody3D:
+				Global.log_text += "\nTorque Mult: %d" % (grabbing_object.mass * 5)
+				torque *= grabbing_object.mass * 5
+		# Instead making torque less
+		torque *= 0.7
 	going_backwards = false
 	handle_grabbing()
 
@@ -622,6 +626,9 @@ func handle_grabbing():
 					Global.grab_joint.global_position = $GrabbingPosition.global_position
 					Global.grab_joint.set_node_a(get_path())
 					Global.grab_joint.set_node_b(body.get_path())
+					
+					grabbing_object.set_meta("mass_bkp", grabbing_object.mass)
+					grabbing_object.mass = 0.01
 
 	elif Input.is_action_just_pressed("grab") and grabbing_state == GRABBING.YES:
 		release_grab()
@@ -632,6 +639,7 @@ func release_grab()->void:
 	Global.grab_joint.set_node_a(NodePath(""))
 	Global.grab_joint.set_node_b(NodePath(""))
 	#set_collision_mask_value(3, true)
+	grabbing_object.mass = grabbing_object.get_meta("mass_bkp")
 
 func lock_grab(value:=true):
 	is_grab_locked = value
