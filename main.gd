@@ -6,6 +6,7 @@ extends Control
 @export var show_logs: bool
 @export var SKIP_INTRO: bool
 @export var ENABLE_VR: bool
+@export var IS_DEMO: bool
 
 @onready var dk_world: DKWorld = %DKWorld
 @onready var label_demo: Label = $Control/LabelDemo
@@ -59,6 +60,7 @@ func _ready() -> void:
 		#DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_MAXIMIZED)
 		#Global.enemy.current_state = Global.enemy.STATE.GO_HOME
 		#Global.enemy.home_position = %EnemyHome03.global_position
+		Global.force_demo = IS_DEMO
 		if show_logs:
 			%LogLabel.visible = true
 	else:
@@ -301,6 +303,7 @@ var puzzle_solved := true #false NOTE: puzzle disabled
 var puzzle_progress := false
 var demo_completed := false
 func set_demo_completed():
+	if not Global.is_demo(): return
 	if demo_completed: return
 	demo_completed = true
 	GamePlatform.set_achievement("demo_completed")

@@ -19,6 +19,8 @@ var carpincho_near:Node3D
 
 var eibriel_logo = false
 
+var force_demo = false
+
 # NOTE Needed for datamosh_compositior
 var refresh_frame: bool
 var datamosh_mount: float = 0.0
@@ -29,7 +31,7 @@ func is_demo():
 	var _is_demo:bool = OS.has_feature("demo")
 	# Editor counts as demo
 	if OS.has_feature("editor"):
-		_is_demo = true
+		_is_demo = force_demo
 	#if not is_demo:
 	#	if not FileAccess.file_exists("res://not_demo.gd"):
 	#		print("Not demo")
