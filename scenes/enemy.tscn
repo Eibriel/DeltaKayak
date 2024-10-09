@@ -117,7 +117,7 @@ radius = 1.7
 height = 16.5
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_f3gxl"]
-size = Vector3(3.45215, 15.9248, 1)
+size = Vector3(3.45215, 16.5406, 1)
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_bdtrc"]
 radius = 1.7
@@ -248,15 +248,22 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 8.347)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1.05464)
 size = Vector3(0.399414, 0.207275, 2.04858)
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+[node name="CollisionShape3D_NotWorking" type="CollisionShape3D" parent="."]
+editor_description = "For some reason this CollisionShape don't work properly"
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0.537262, 0.0564319)
+shape = SubResource("CapsuleShape3D_c8bgx")
+disabled = true
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="."]
+editor_description = "Collision in use"
+transform = Transform3D(1.91069e-15, 4.37114e-08, 1, 1, -4.37114e-08, 0, 4.37114e-08, 1, -4.37114e-08, 0, 0.537262, 0.0564319)
 shape = SubResource("CapsuleShape3D_c8bgx")
 
 [node name="BoxCollisionShape" type="CollisionShape3D" parent="."]
 editor_description = "Capsule to capsule collision is not working properly.
 Adding this Box Collision as a workaround.
 Keeping it disabled, since I've added a similar Shape on the character."
-transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0.537262, 0.0564319)
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0.537262, 0.0651277)
 shape = SubResource("BoxShape3D_f3gxl")
 disabled = true
 

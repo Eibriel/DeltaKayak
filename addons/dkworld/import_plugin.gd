@@ -734,6 +734,7 @@ func add_physicsitem(item: Dictionary, item_id: String, main_node: Node3D):
 		"pistonbig": preload("res://scenes/piston_big.tscn"),
 		"heavybox": preload("res://scenes/heavy_box.tscn"),
 		"branchbox": preload("res://scenes/branch_box.tscn"),
+		"biggate": preload("res://scenes/door.tscn"),
 	}
 	if not PHYSICS_ITEMS.has(item.instance): return
 	var gltf_instance = PHYSICS_ITEMS[item.instance].instantiate()
