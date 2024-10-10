@@ -175,7 +175,8 @@ axis_lock_angular_z = true
 mass = 10.0
 physics_material_override = SubResource("PhysicsMaterial_w2uow")
 center_of_mass_mode = 1
-inertia = Vector3(0.01, 100, 0.01)
+inertia = Vector3(0.01, 10, 0.01)
+continuous_cd = true
 contact_monitor = true
 max_contacts_reported = 2
 script = ExtResource("1_ht45k")
@@ -256,7 +257,7 @@ disabled = true
 
 [node name="CollisionShape3D2" type="CollisionShape3D" parent="."]
 editor_description = "Collision in use"
-transform = Transform3D(1.91069e-15, 4.37114e-08, 1, 1, -4.37114e-08, 0, 4.37114e-08, 1, -4.37114e-08, 0, 0.537262, 0.0564319)
+transform = Transform3D(1.91069e-15, 4.37114e-08, 1, 1, -4.37114e-08, 0, 4.37114e-08, 1, -4.37114e-08, 0, 0, 0)
 shape = SubResource("CapsuleShape3D_c8bgx")
 
 [node name="BoxCollisionShape" type="CollisionShape3D" parent="."]

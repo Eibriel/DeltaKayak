@@ -846,6 +846,7 @@ func _add_colliders(gltf_instance:Node3D) -> void:
 	for c in gltf_instance.get_children():
 		if c.name.ends_with("-colonly"):
 			c.visible = false
+			c.collision_priority = 20
 		if c.name.ends_with("_occluder"):
 			c.visible = false
 			var occluder := OccluderInstance3D.new()
@@ -874,6 +875,7 @@ func _add_colliders(gltf_instance:Node3D) -> void:
 			collider.position = c.position
 			collider.rotation = c.rotation
 			#collider.scale = item.scale
+			collider.collision_priority = 20
 			
 			static_body.set_collision_layer_value(1, false)
 			static_body.set_collision_layer_value(5, true)

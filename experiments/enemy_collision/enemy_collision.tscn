@@ -1,0 +1,45 @@
+[gd_scene load_steps=7 format=3 uid="uid://c57ya5wcids2k"]
+
+[ext_resource type="PackedScene" uid="uid://mvc5qr5igrlq" path="res://scenes/enemy.tscn" id="1_c43vn"]
+[ext_resource type="Script" path="res://experiments/enemy_collision/enemy_collision.gd" id="1_up0yn"]
+[ext_resource type="PackedScene" uid="uid://r0o1qsmlq84u" path="res://character/character.tscn" id="2_rqtpf"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_n5bwx"]
+sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+ground_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+
+[sub_resource type="Sky" id="Sky_2r15t"]
+sky_material = SubResource("ProceduralSkyMaterial_n5bwx")
+
+[sub_resource type="Environment" id="Environment_epf4j"]
+background_mode = 2
+sky = SubResource("Sky_2r15t")
+tonemap_mode = 2
+glow_enabled = true
+
+[node name="Control" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("1_up0yn")
+
+[node name="EnemyCollision" type="Node3D" parent="."]
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="EnemyCollision"]
+transform = Transform3D(-0.866023, -0.433016, 0.250001, 0, 0.499998, 0.866027, -0.500003, 0.749999, -0.43301, 0, 0, 0)
+shadow_enabled = true
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="EnemyCollision"]
+environment = SubResource("Environment_epf4j")
+
+[node name="Enemy" parent="EnemyCollision" instance=ExtResource("1_c43vn")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0)
+
+[node name="character" parent="EnemyCollision" instance=ExtResource("2_rqtpf")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.138956, 0, -19.0726)
+
+[node name="CSGPolygon3D" type="CSGPolygon3D" parent="EnemyCollision"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, -0.1, 0)
+use_collision = true
+polygon = PackedVector2Array(45.8819, -29.4567, -43.2925, -33.132, -48.5153, 37.4725, 48.0097, 38.2463, 41.046, -29.8436, 49.9441, -27.7158, 55.5538, 43.469, -57.9938, 44.8231, -51.2235, -41.4498, 47.8163, -38.9351)

@@ -728,7 +728,7 @@ func _integrate_forces(state: PhysicsDirectBodyState3D) -> void:
 func handle_contacts(state: PhysicsDirectBodyState3D):
 	if state.get_contact_count() > 0:
 		var collision_impulse:float = state.get_contact_impulse(0).length()
-		print(collision_impulse)
+		#print(collision_impulse)
 		if collision_impulse > 20.0:
 			collision_damage.call_deferred()
 		if collision_impulse > 0.5:

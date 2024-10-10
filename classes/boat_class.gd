@@ -85,7 +85,7 @@ func _ready():
 	simple_boat_model.configure(10.0)
 	
 	boat_ray_cast = RayCast3D.new()
-	boat_ray_cast.position = Vector3(0,0,-3)
+	boat_ray_cast.position = Vector3(0,0,-6)
 	add_child(boat_ray_cast)
 	
 

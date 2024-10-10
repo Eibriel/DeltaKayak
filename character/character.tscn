@@ -1,4 +1,4 @@
-[gd_scene load_steps=81 format=3 uid="uid://r0o1qsmlq84u"]
+[gd_scene load_steps=80 format=3 uid="uid://r0o1qsmlq84u"]
 
 [ext_resource type="Script" path="res://character/character.gd" id="1_mnv7b"]
 [ext_resource type="Texture2D" uid="uid://dbr6od55galv2" path="res://models/world_textures/BoteMadera_diffuse.png" id="2_j3chf"]
@@ -412,9 +412,6 @@ Vector2i(2, 1): {
 }
 }
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_scd1v"]
-size = Vector3(0.1, 0.1, 0.1)
-
 [node name="character" type="RigidBody3D"]
 collision_layer = 2
 collision_mask = 63
@@ -423,6 +420,7 @@ axis_lock_linear_y = true
 axis_lock_angular_x = true
 axis_lock_angular_z = true
 physics_material_override = SubResource("PhysicsMaterial_p6dmh")
+continuous_cd = true
 contact_monitor = true
 max_contacts_reported = 2
 linear_damp = 0.1
@@ -463,6 +461,7 @@ editor_description = "Capsule to capsule collision is not working properly.
 Adding this Box Collision as a workaround."
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0)
 shape = SubResource("BoxShape3D_22xye")
+disabled = true
 
 [node name="CameraArea_middle" type="Area3D" parent="."]
 metadata/is_character_camera = true
@@ -760,14 +759,6 @@ transform = Transform3D(-0.7, 0, -1.05697e-07, 0, 0.7, 0, 1.05697e-07, 0, -0.7, 
 unique_name_in_owner = true
 transform = Transform3D(0.13677, -0.990603, 0, 0.990603, 0.13677, 0, 0, 0, 1, -0.00252755, -0.0550295, 0)
 
-[node name="RigidBody3D" type="AnimatableBody3D" parent="XRBase/CharacterXROrigin3D/RightController"]
-collision_layer = 64
-collision_mask = 4
-sync_to_physics = false
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="XRBase/CharacterXROrigin3D/RightController/RigidBody3D"]
-shape = SubResource("BoxShape3D_scd1v")
-
 [node name="LeftController" type="XRController3D" parent="XRBase/CharacterXROrigin3D"]
 unique_name_in_owner = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.10594, 0, 0)
@@ -788,14 +779,6 @@ transform = Transform3D(-0.7, 0, -1.05697e-07, 0, 0.7, 0, 1.05697e-07, 0, -0.7, 
 [node name="character_hand_left_open" parent="XRBase/CharacterXROrigin3D/LeftController" instance=ExtResource("31_n54bj")]
 unique_name_in_owner = true
 transform = Transform3D(-0.7, 0, 6.11959e-08, 0, 0.7, 0, -6.11959e-08, 0, -0.7, 0, 0, 0)
-
-[node name="RigidBody3D" type="AnimatableBody3D" parent="XRBase/CharacterXROrigin3D/LeftController"]
-collision_layer = 64
-collision_mask = 4
-sync_to_physics = false
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="XRBase/CharacterXROrigin3D/LeftController/RigidBody3D"]
-shape = SubResource("BoxShape3D_scd1v")
 
 [node name="Paddle" type="Node3D" parent="XRBase/CharacterXROrigin3D"]
 unique_name_in_owner = true
