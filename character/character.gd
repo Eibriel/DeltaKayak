@@ -206,6 +206,7 @@ func handle_buoyancy(delta:float):
 		buoyancy_time = 0.0
 	buoyancy_instability -= delta
 	buoyancy_instability = max(1.0, buoyancy_instability)
+	#print(buoyancy_instability)
 	var rotation_amount = sin(buoyancy_time*buoyancy_instability)
 	%Kayak.rotation.z = deg_to_rad(2) * rotation_amount
 	#%Kayak.rotation.x = deg_to_rad(2) * rotation_amount
@@ -634,6 +635,7 @@ func handle_grabbing():
 		release_grab()
 
 func release_grab()->void:
+	if grabbing_state != GRABBING.YES: return
 	%GrabRay.visible = false
 	grabbing_state = GRABBING.NO
 	Global.grab_joint.set_node_a(NodePath(""))
@@ -804,7 +806,7 @@ func collision_damage():
 
 func set_damage()->void:
 	if damage_timer > 0: return
-	damage += 0.5
+	damage += 3.0
 	damage_timer = 1.0
 	Global.main_scene.set_player_state("monster_damage")
 	buoyancy_instability += 2.0

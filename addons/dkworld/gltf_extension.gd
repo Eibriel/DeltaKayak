@@ -15,7 +15,7 @@ func apply_material(json, node, filename: String):
 	if node is not ImporterMeshInstance3D: return
 	var inode := node as ImporterMeshInstance3D
 	var mat := inode.mesh.get_surface_material(0) as StandardMaterial3D
-	if not inode.name.ends_with("_obj"): return
+	if not inode.name.split(".")[0].ends_with("_obj"): return
 	var path := "res://models/world_textures/%s_diffuse.png" % filename
 	#prints(inode.name, path)
 	if not FileAccess.file_exists(path):

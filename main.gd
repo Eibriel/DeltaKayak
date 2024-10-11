@@ -846,7 +846,7 @@ func grab_kayak():
 		#Global.grab_kayak2.set_node_a(%KayakGrabber.get_path())
 		#Global.grab_kayak2.set_node_b(kayak_k1.get_path())
 	
-	%BlockPathOtherSide.position.y = -20
+	#%BlockPathOtherSide.position.y = -20
 	
 	var tt := [
 		Vector3(2, 0, 1),
@@ -910,7 +910,7 @@ func del_player_state(value:String):
 		player_state.erase(value)
 
 func block_backtracking():
-	%BlockPath.position.y = 0
+	#%BlockPath.position.y = 0
 	set_enemy_home(%EnemyHome00)
 	Global.enemy.home_position = %EnemyHome01.global_position
 	Global.enemy.current_state = Global.enemy.STATE.GO_HOME

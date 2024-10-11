@@ -87,7 +87,8 @@ func _render_callback(p_effect_callback_type, p_render_data):
 			else:
 				var usage_bits : int = RenderingDevice.TEXTURE_USAGE_SAMPLING_BIT | RenderingDevice.TEXTURE_USAGE_STORAGE_BIT
 				#render_scene_buffers.create_texture(context, texture, RenderingDevice.DATA_FORMAT_R16_UNORM, usage_bits, RenderingDevice.TEXTURE_SAMPLES_1, size, 1, 1, true)
-				render_scene_buffers.create_texture(context, texture, RenderingDevice.DATA_FORMAT_R16G16B16A16_SFLOAT, usage_bits, RenderingDevice.TEXTURE_SAMPLES_1, size, 1, 1, true)
+				#render_scene_buffers.create_texture(context, texture, RenderingDevice.DATA_FORMAT_R16G16B16A16_SFLOAT, usage_bits, RenderingDevice.TEXTURE_SAMPLES_1, size, 1, 1, true)
+				render_scene_buffers.create_texture(context, texture, RenderingDevice.DATA_FORMAT_R8G8B8A8_SNORM, usage_bits, RenderingDevice.TEXTURE_SAMPLES_1, size, 1, 1, true)
 				Global.refresh_frame = true
 				print("recreate")
 

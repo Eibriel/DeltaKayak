@@ -846,7 +846,7 @@ func _add_colliders(gltf_instance:Node3D) -> void:
 	for c in gltf_instance.get_children():
 		if c.name.ends_with("-colonly"):
 			c.visible = false
-			c.collision_priority = 20
+			#c.collision_priority = 20
 		if c.name.ends_with("_occluder"):
 			c.visible = false
 			var occluder := OccluderInstance3D.new()
@@ -866,6 +866,7 @@ func _add_colliders(gltf_instance:Node3D) -> void:
 			var static_body := StaticBody3D.new()
 			gltf_instance.add_child(static_body)
 			static_body.set_owner(gltf_instance)
+			static_body.collision_priority = 20
 			var collider := CollisionShape3D.new()
 			var box_shape := BoxShape3D.new()
 			collider.shape = box_shape
@@ -875,7 +876,6 @@ func _add_colliders(gltf_instance:Node3D) -> void:
 			collider.position = c.position
 			collider.rotation = c.rotation
 			#collider.scale = item.scale
-			collider.collision_priority = 20
 			
 			static_body.set_collision_layer_value(1, false)
 			static_body.set_collision_layer_value(5, true)

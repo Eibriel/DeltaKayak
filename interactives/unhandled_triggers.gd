@@ -40,6 +40,8 @@ func _on_unhandled_trigger(main_scene, _game_state, trigger_id:String, trigger_t
 				main_scene.say_dialogue("demo_exit_point")
 			"triggerpath_demo_exit_003":
 				main_scene.set_demo_completed()
+			"triggerpath_jumpscare_003":
+				main_scene.grab_kayak()
 			_:
 				handled = false
 	elif trigger_type == "primary_action":

@@ -188,7 +188,7 @@ theme = ExtResource("1_qo26v")
 script = ExtResource("1_xxenq")
 game_preferences = ExtResource("2_wexnt")
 game_state = ExtResource("3_nh3h6")
-initial_position = NodePath("Main3D/InitialPositionPuzzle")
+initial_position = NodePath("Main3D/InitialPositionGrab")
 SKIP_INTRO = true
 
 [node name="Node2D" type="Node2D" parent="."]
@@ -1121,10 +1121,10 @@ gizmo_extents = 5.0
 [node name="Carpinchos" type="Node3D" parent="Main3D"]
 
 [node name="Carpincho" parent="Main3D/Carpinchos" instance=ExtResource("20_wsws0")]
-transform = Transform3D(0.728323, 0, 0.685233, 0, 1, 0, -0.685233, 0, 0.728323, -247.08, 0.1, -322.298)
+transform = Transform3D(0.156866, 0, 0.987619, 0, 1, 0, -0.987619, 0, 0.156866, -248.948, 0.629915, -320.973)
 
 [node name="Carpincho2" parent="Main3D/Carpinchos" instance=ExtResource("20_wsws0")]
-transform = Transform3D(0.943512, 0, -0.331338, 0, 1, 0, 0.331338, 0, 0.943512, -21.269, 0.1, -32.296)
+transform = Transform3D(0.432872, 0, -0.901455, 0, 1, 0, 0.901455, 0, 0.432872, -23.8145, 0.76268, -32.296)
 
 [node name="OccluderInstance3D" type="OccluderInstance3D" parent="Main3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -131.317, 0, -101.865)

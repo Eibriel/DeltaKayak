@@ -88,7 +88,7 @@ func _process(delta: float) -> void:
 	inside_turn_radius = is_target_inside_rotation_radius()
 	handle_sounds()
 	handle_music()
-	handle_buoyancy(delta)
+	#handle_buoyancy(delta)
 	handle_is_moving(delta)
 	
 	%PhantomArea1.position = global_position - (real_velocity * 1)
@@ -134,6 +134,9 @@ func handle_music():
 	%MusicPlayer.volume_db = remap(dist, 0, 50, -10, -30)
 
 func handle_sounds():
+	var forward_direction := (transform.basis * Vector3.FORWARD).normalized()
+	var forward_component: Vector3 = forward_direction * linear_velocity.dot(forward_direction)
+	forward_force = forward_component.x
 	var new_forward_force = lerpf(forward_force, -last_applied_force.rotated(Vector3.UP, -rotation.y).z, 0.1)
 	if new_forward_force > 0.0 and forward_force < 0.0:
 		#print("Shift forward")
