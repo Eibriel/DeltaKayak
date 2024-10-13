@@ -228,8 +228,8 @@ func _unhandled_input(event: InputEvent) -> void:
 	_mouse_input = event is InputEventMouseMotion \
 		and Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED
 	if _mouse_input:
-		_rotation_input = -event.relative.x * Global.mouse_sensibility
-		_tilt_input = -event.relative.y * Global.mouse_sensibility
+		_rotation_input = -event.screen_relative.x * Global.mouse_sensibility
+		_tilt_input = -event.screen_relative.y * Global.mouse_sensibility
 
 func reset_camera_rotation():
 	_mouse_rotation = Vector3.ZERO

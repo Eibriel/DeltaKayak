@@ -205,6 +205,7 @@ func add_greyboxes(greybox_array: Array, sector_id:String, main_node:Node3D):
 		var packed_vertices: PackedVector3Array
 		var packed_normals:PackedVector3Array
 		var packed_polygons: PackedInt32Array
+		var packed_uvs: PackedVector2Array
 		#for v in greybox.vertices:
 		#	packed_vertices.append(Vector3(v[0], v[1], v[2]))
 		for p in greybox.polygons:
@@ -222,17 +223,31 @@ func add_greyboxes(greybox_array: Array, sector_id:String, main_node:Node3D):
 				packed_normals.append(norm)
 		#for n in greybox.normals:
 		#	packed_normals.append(Vector3(n[0], n[1], n[2]))
+		#packed_uvs.resize(greybox.uvs.size)
+		for n in int(float(greybox.uvs.size())/3):
+			var nn := n*3
+			packed_uvs.append(Vector2(greybox.uvs[nn+2][0], 1.0-greybox.uvs[nn+2][1]))
+			packed_uvs.append(Vector2(greybox.uvs[nn+1][0], 1.0-greybox.uvs[nn+1][1]))
+			packed_uvs.append(Vector2(greybox.uvs[nn][0], 1.0-greybox.uvs[nn][1]))
 		var grey_mesh := []
 		grey_mesh.resize(Mesh.ARRAY_MAX)
 		grey_mesh.fill(null)
 		grey_mesh[Mesh.ARRAY_VERTEX] = packed_vertices
 		#grey_mesh[Mesh.ARRAY_INDEX] = packed_polygons
 		grey_mesh[Mesh.ARRAY_NORMAL] = packed_normals
+		grey_mesh[Mesh.ARRAY_TEX_UV] = packed_uvs
 		navigation_mesh.add_surface_from_arrays(
 			Mesh.PrimitiveType.PRIMITIVE_TRIANGLES,
 			grey_mesh)
 		#navigation_mesh.regen_normal_maps()
-		navigation_mesh.surface_set_material(0, grey_mat)
+		var tex_mat := StandardMaterial3D.new()
+		tex_mat.albedo_color = Color.DIM_GRAY
+		tex_mat.cull_mode = BaseMaterial3D.CULL_DISABLED
+		tex_mat.metallic_specular = 0
+		if greybox.texture != "":
+			tex_mat.albedo_texture = load("res://textures/%s" % greybox.texture)
+			tex_mat.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
+		navigation_mesh.surface_set_material(0, tex_mat)
 
 func get_normal_from_triangle(p1:Vector3, p2:Vector3, p3:Vector3) -> Vector3:
 	var A := p2 - p1

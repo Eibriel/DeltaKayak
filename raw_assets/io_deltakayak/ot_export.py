@@ -357,12 +357,16 @@ class DKT_OT_ExportWorld(bpy.types.Operator):
                 "vertices": [],
                 "polygons": [],
                 "normals": [],
+                "uvs": [],
                 "position": self.location_to_godot(greybox_obj.location),
                 "rotation": self.rotation_to_godot(greybox_obj.rotation_euler),
+                "texture": greybox_obj.dkt_properties.override_texture
             }
 
             bm = bmesh.new()
-            bm.from_mesh(greybox_obj.data)
+            dg = bpy.context.evaluated_depsgraph_get()
+            greybox_obj_eval = greybox_obj.evaluated_get(dg)
+            bm.from_mesh(greybox_obj_eval.data)
             bmesh.ops.triangulate(bm, faces=bm.faces)
             tri_mesh = bpy.data.meshes.new("Mesh")
             bm.to_mesh(tri_mesh)
@@ -383,6 +387,8 @@ class DKT_OT_ExportWorld(bpy.types.Operator):
             else:
                 for n in tri_mesh.vertex_normals:
                     mesh_def["normals"].append(self.location_to_godot(n.vector))
+            for uvl in tri_mesh.uv_layers[0].uv:
+                mesh_def["uvs"].append([uvl.vector.x, uvl.vector.y])
             greybox_def.append(mesh_def)
 
         return greybox_def
