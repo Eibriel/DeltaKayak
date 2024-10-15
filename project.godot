@@ -183,6 +183,9 @@ common/enable_object_picking=false
 
 textures/canvas_textures/default_texture_filter=0
 textures/vram_compression/import_etc2_astc=true
+lights_and_shadows/directional_shadow/size=1024
+lights_and_shadows/directional_shadow/soft_shadow_filter_quality=0
+lights_and_shadows/positional_shadow/soft_shadow_filter_quality=0
 reflections/sky_reflections/texture_array_reflections=false
 anti_aliasing/screen_space_roughness_limiter/enabled=false
 textures/decals/filter=0
@@ -193,6 +196,8 @@ environment/volumetric_fog/use_filter=0
 environment/defaults/default_clear_color=Color(0, 0, 0, 1)
 occlusion_culling/use_occlusion_culling=true
 vrs/mode=2
+lights_and_shadows/positional_shadow/atlas_size=2048
+lights_and_shadows/positional_shadow/atlas_size.mobile=1024
 
 [xr]
 

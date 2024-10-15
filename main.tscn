@@ -188,7 +188,7 @@ theme = ExtResource("1_qo26v")
 script = ExtResource("1_xxenq")
 game_preferences = ExtResource("2_wexnt")
 game_state = ExtResource("3_nh3h6")
-initial_position = NodePath("Main3D/InitialPositionHub")
+initial_position = NodePath("Main3D/InitialPosition")
 SKIP_INTRO = true
 
 [node name="Node2D" type="Node2D" parent="."]
@@ -793,11 +793,11 @@ directional_shadow_mode = 0
 
 [node name="DebugSunLight" type="DirectionalLight3D" parent="Main3D"]
 unique_name_in_owner = true
-transform = Transform3D(-0.979372, -0.124014, -0.159538, -3.01012e-08, -0.789524, 0.61372, -0.202069, 0.60106, 0.773237, 0, 18.834, 0)
-visible = false
+transform = Transform3D(0.927302, 0.229724, 0.29553, -3.01012e-08, -0.789524, 0.61372, 0.374315, -0.569104, -0.732127, 0, 22.3377, 0)
 light_energy = 2.0
 light_volumetric_fog_energy = 0.0
 shadow_opacity = 0.9
+editor_only = true
 directional_shadow_mode = 0
 sky_mode = 1
 
