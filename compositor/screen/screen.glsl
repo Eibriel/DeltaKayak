@@ -143,7 +143,7 @@ void main() {
 		quantized_color = quantize_color(color.rgb, 55-50+(200-amount));
 	}
 
-	float dither_strength = 0.5;
+	float dither_strength = 0.2;
 	float brightness = dot(quantized_color, vec3(0.3, 0.59, 0.11));
 	brightness += dither_strength * (dither(uvp, brightness) - 0.5);
 	quantized_color *= (1.0 + dither_strength * (dither(uvp, brightness) - 0.5));
