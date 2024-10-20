@@ -102,6 +102,8 @@ func _import(source_file, save_path, options, r_platform_variants, r_gen_files):
 		add_rooms(sector.rooms, sector_id, main_node, sector)
 		add_lights(sector.lights, sector_id, main_node)
 		add_greyboxes(sector.greyboxes, sector_id, main_node)
+		add_cables(sector.cables, sector_id, main_node)
+		add_npcs(sector.npcs, sector_id, main_node)
 	
 	add_water(main_node)
 	
@@ -114,6 +116,30 @@ func _import(source_file, save_path, options, r_platform_variants, r_gen_files):
 	else:
 		return result
 		#return null
+
+func add_cables(cables_array: Array, sector_id:String, main_node:Node3D):
+	for cable in cables_array:
+		var cable_mesh := MeshInstance3D.new()
+		cable_mesh.visibility_range_end = 100
+		cable_mesh.position = array_to_vector3(cable.position)
+		cable_mesh.rotation = array_to_vector3(cable.rotation)
+		var cable_curve = Curve3D.new()
+		for p in cable.points:
+			var point_vect := Vector3(p[0][0],p[0][1],p[0][2])
+			cable_curve.add_point(
+				point_vect,
+				Vector3(p[1][0],p[1][1],p[1][2]) - point_vect,
+				Vector3(p[2][0],p[2][1],p[2][2]) - point_vect,
+			)
+		var st = SurfaceTool.new()
+		st.begin(Mesh.PRIMITIVE_LINE_STRIP)
+		for cp in cable_curve.get_baked_points():
+			st.add_vertex(cp)
+		#cable_curve.free() # NOTE error: Attempted to free a RefCounted object
+		var mesh = st.commit()
+		cable_mesh.mesh = mesh
+		main_node.add_child(cable_mesh)
+		cable_mesh.set_owner(main_node)
 
 func add_lights(lights_array: Array, sector_id:String, main_node:Node3D):
 	for light in lights_array:
@@ -189,65 +215,72 @@ func add_navmesh(navmesh_array: Array, sector_id:String, main_node:Node3D):
 		for p in navmesh.polygons:
 			navigation_mesh.add_polygon(PackedInt32Array(p))
 
+func add_npcs(npcs_array: Array, sector_id:String, main_node:Node3D):
+	for npc in npcs_array:
+		get_mesh(npc, main_node)
+
 func add_greyboxes(greybox_array: Array, sector_id:String, main_node:Node3D):
-	var grey_mat := StandardMaterial3D.new()
-	grey_mat.albedo_color = Color.DIM_GRAY
-	grey_mat.cull_mode = BaseMaterial3D.CULL_DISABLED
+	#var grey_mat := StandardMaterial3D.new()
+	#grey_mat.albedo_color = Color.DIM_GRAY
+	#grey_mat.cull_mode = BaseMaterial3D.CULL_DISABLED
 	for greybox in greybox_array:
-		var navigation_region := MeshInstance3D.new()
-		navigation_region.name = greybox.name
-		var navigation_mesh := ArrayMesh.new()
-		main_node.add_child(navigation_region)
-		navigation_region.set_owner(main_node)
-		navigation_region.mesh = navigation_mesh
-		navigation_region.position = array_to_vector3(greybox.position)
-		navigation_region.rotation = array_to_vector3(greybox.rotation)
-		var packed_vertices: PackedVector3Array
-		var packed_normals:PackedVector3Array
-		var packed_polygons: PackedInt32Array
-		var packed_uvs: PackedVector2Array
-		#for v in greybox.vertices:
-		#	packed_vertices.append(Vector3(v[0], v[1], v[2]))
-		for p in greybox.polygons:
-			#packed_polygons.append(p[2])
-			#packed_polygons.append(p[1])
-			#packed_polygons.append(p[0])
-			var norm := get_normal_from_triangle(
-				Vector3(greybox.vertices[p[0]][0], greybox.vertices[p[0]][1], greybox.vertices[p[0]][2]),
-				Vector3(greybox.vertices[p[1]][0], greybox.vertices[p[1]][1], greybox.vertices[p[1]][2]),
-				Vector3(greybox.vertices[p[2]][0], greybox.vertices[p[2]][1], greybox.vertices[p[2]][2]),
-			)
-			for v in 3:
-				var ver = greybox.vertices[p[2-v]]
-				packed_vertices.append(Vector3(ver[0], ver[1], ver[2]))
-				packed_normals.append(norm)
-		#for n in greybox.normals:
-		#	packed_normals.append(Vector3(n[0], n[1], n[2]))
-		#packed_uvs.resize(greybox.uvs.size)
-		for n in int(float(greybox.uvs.size())/3):
-			var nn := n*3
-			packed_uvs.append(Vector2(greybox.uvs[nn+2][0], 1.0-greybox.uvs[nn+2][1]))
-			packed_uvs.append(Vector2(greybox.uvs[nn+1][0], 1.0-greybox.uvs[nn+1][1]))
-			packed_uvs.append(Vector2(greybox.uvs[nn][0], 1.0-greybox.uvs[nn][1]))
-		var grey_mesh := []
-		grey_mesh.resize(Mesh.ARRAY_MAX)
-		grey_mesh.fill(null)
-		grey_mesh[Mesh.ARRAY_VERTEX] = packed_vertices
-		#grey_mesh[Mesh.ARRAY_INDEX] = packed_polygons
-		grey_mesh[Mesh.ARRAY_NORMAL] = packed_normals
-		grey_mesh[Mesh.ARRAY_TEX_UV] = packed_uvs
-		navigation_mesh.add_surface_from_arrays(
-			Mesh.PrimitiveType.PRIMITIVE_TRIANGLES,
-			grey_mesh)
-		#navigation_mesh.regen_normal_maps()
-		var tex_mat := StandardMaterial3D.new()
-		tex_mat.albedo_color = Color.DIM_GRAY
-		tex_mat.cull_mode = BaseMaterial3D.CULL_DISABLED
-		tex_mat.metallic_specular = 0
-		if greybox.texture != "":
-			tex_mat.albedo_texture = load("res://textures/%s" % greybox.texture)
-			tex_mat.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
-		navigation_mesh.surface_set_material(0, tex_mat)
+		get_mesh(greybox, main_node)
+
+func get_mesh(object:Dictionary, main_node):
+	var navigation_region := MeshInstance3D.new()
+	navigation_region.name = object.name
+	var navigation_mesh := ArrayMesh.new()
+	main_node.add_child(navigation_region)
+	navigation_region.set_owner(main_node)
+	navigation_region.mesh = navigation_mesh
+	navigation_region.position = array_to_vector3(object.position)
+	navigation_region.rotation = array_to_vector3(object.rotation)
+	var packed_vertices: PackedVector3Array
+	var packed_normals:PackedVector3Array
+	var packed_polygons: PackedInt32Array
+	var packed_uvs: PackedVector2Array
+	#for v in greybox.vertices:
+	#	packed_vertices.append(Vector3(v[0], v[1], v[2]))
+	for p in object.polygons:
+		#packed_polygons.append(p[2])
+		#packed_polygons.append(p[1])
+		#packed_polygons.append(p[0])
+		var norm := get_normal_from_triangle(
+			Vector3(object.vertices[p[0]][0], object.vertices[p[0]][1], object.vertices[p[0]][2]),
+			Vector3(object.vertices[p[1]][0], object.vertices[p[1]][1], object.vertices[p[1]][2]),
+			Vector3(object.vertices[p[2]][0], object.vertices[p[2]][1], object.vertices[p[2]][2]),
+		)
+		for v in 3:
+			var ver = object.vertices[p[2-v]]
+			packed_vertices.append(Vector3(ver[0], ver[1], ver[2]))
+			packed_normals.append(norm)
+	#for n in greybox.normals:
+	#	packed_normals.append(Vector3(n[0], n[1], n[2]))
+	#packed_uvs.resize(greybox.uvs.size)
+	for n in int(float(object.uvs.size())/3):
+		var nn := n*3
+		packed_uvs.append(Vector2(object.uvs[nn+2][0], 1.0-object.uvs[nn+2][1]))
+		packed_uvs.append(Vector2(object.uvs[nn+1][0], 1.0-object.uvs[nn+1][1]))
+		packed_uvs.append(Vector2(object.uvs[nn][0], 1.0-object.uvs[nn][1]))
+	var grey_mesh := []
+	grey_mesh.resize(Mesh.ARRAY_MAX)
+	grey_mesh.fill(null)
+	grey_mesh[Mesh.ARRAY_VERTEX] = packed_vertices
+	#grey_mesh[Mesh.ARRAY_INDEX] = packed_polygons
+	grey_mesh[Mesh.ARRAY_NORMAL] = packed_normals
+	grey_mesh[Mesh.ARRAY_TEX_UV] = packed_uvs
+	navigation_mesh.add_surface_from_arrays(
+		Mesh.PrimitiveType.PRIMITIVE_TRIANGLES,
+		grey_mesh)
+	#navigation_mesh.regen_normal_maps()
+	var tex_mat := StandardMaterial3D.new()
+	tex_mat.albedo_color = Color.DIM_GRAY
+	tex_mat.cull_mode = BaseMaterial3D.CULL_DISABLED
+	tex_mat.metallic_specular = 0
+	if object.texture != "":
+		tex_mat.albedo_texture = load("res://textures/%s" % object.texture)
+		tex_mat.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
+	navigation_mesh.surface_set_material(0, tex_mat)
 
 func get_normal_from_triangle(p1:Vector3, p2:Vector3, p3:Vector3) -> Vector3:
 	var A := p2 - p1

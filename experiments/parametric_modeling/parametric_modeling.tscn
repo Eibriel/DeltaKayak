@@ -1,6 +1,13 @@
-[gd_scene load_steps=2 format=3 uid="uid://vupa8ksqaiw3"]
+[gd_scene load_steps=3 format=3 uid="uid://vupa8ksqaiw3"]
 
 [ext_resource type="Material" uid="uid://3q8kof4xrq7a" path="res://materials/wood_material.tres" id="1_o36wo"]
+
+[sub_resource type="Curve3D" id="Curve3D_yhgsg"]
+_data = {
+"points": PackedVector3Array(0, 0, 0, 0, 0, 0, -0.43134, 0, -0.481557, 0, 0, 0, 0, 0, 0, -2.97224, 0, 2.7572, 0, 0, 0, 0, 0, 0, 1.07173, 0, 6.62224, 0, 0, 0, 0, 0, 0, 2.0022, 0, 8.80527),
+"tilts": PackedFloat32Array(0, 0, 0, 0)
+}
+point_count = 4
 
 [node name="ParametricModeling" type="Node3D"]
 
@@ -53,6 +60,7 @@ polygon = PackedVector2Array(0.286462, -0.177377, -0.278283, -0.172895, -0.27380
 depth = 0.2
 
 [node name="CSGMesh3D" type="CSGMesh3D" parent="."]
+visible = false
 
 [node name="CSGBox3D" type="CSGBox3D" parent="CSGMesh3D"]
 size = Vector3(2.4375, 0.076416, 0.835938)
@@ -99,3 +107,20 @@ height = 8.83703
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 1.05346, -0.201399, 3.55236)
 radius = 0.138759
 height = 8.83703
+
+[node name="CSGPolygon3D" type="CSGPolygon3D" parent="."]
+mode = 2
+path_node = NodePath("../Path3D")
+path_interval_type = 0
+path_interval = 1.0
+path_simplify_angle = 0.0
+path_rotation = 2
+path_local = true
+path_continuous_u = true
+path_u_distance = 1.0
+path_joined = false
+
+[node name="Path3D" type="Path3D" parent="."]
+curve = SubResource("Curve3D_yhgsg")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
