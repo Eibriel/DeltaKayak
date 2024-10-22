@@ -31,6 +31,8 @@ var camera_switch_delta := 90.0
 var camera_time := 0.0
 var select_cameras := false
 
+var npc_heads := []
+
 func _ready():
 	Global.camera = initial_camera
 	Global.camera_path = initial_camera_path
@@ -50,12 +52,30 @@ func _ready():
 	add_child(camera_sphere)
 	
 	select_best_camera()
+	
+	for c in get_children():
+		if c.has_meta("follows_player"):
+			npc_heads.append(c)
 
 func _process(delta: float) -> void:
 	handle_cameras(delta)
 	switch_camera(delta)
+	handle_npcs(delta)
 
-func switch_camera(delta):
+func handle_npcs(delta:float) -> void:
+	for nh: Node3D in npc_heads:
+		var first_rotation := nh.rotation
+		var new_rotation := nh.get_meta("original_rotation")
+		if Global.character.global_position.distance_to(nh.global_position) < 6:
+			nh.look_at(Global.character.global_position, Vector3.UP, true)
+			new_rotation = nh.rotation
+		var lerp_weight := 1.0 * delta
+		nh.rotation.x = lerp_angle(first_rotation.x,new_rotation.x,lerp_weight)
+		nh.rotation.y = lerp_angle(first_rotation.y,new_rotation.y,lerp_weight)
+		nh.rotation.z = lerp_angle(first_rotation.z,new_rotation.z,lerp_weight)
+		
+
+func switch_camera(delta:float) -> void:
 	camera_switch_delta += delta
 	if camera_switch_delta < 1: return
 	camera_switch_delta = 0.0
@@ -63,7 +83,7 @@ func switch_camera(delta):
 	Global.camera = next_camera
 	#Global.camera_path = camera_to_path[next_camera]
 
-func handle_cameras(delta)->void:
+func handle_cameras(delta:float)->void:
 	if not select_cameras: return
 	# TODO Looks like process starts before world is fully initiated
 	if Global.camera == null: return

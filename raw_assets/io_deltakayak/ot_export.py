@@ -422,6 +422,9 @@ class DKT_OT_ExportWorld(bpy.types.Operator):
             mesh_def["position"] = self.location_to_godot(npc_obj.location)
             mesh_def["rotation"] = self.rotation_to_godot(npc_obj.rotation_euler)
             mesh_def["texture"] = npc_obj.dkt_properties.override_texture
+            mesh_def["parent"] = ""
+            if npc_obj.parent != None:
+                mesh_def["parent"] = npc_obj.parent.name
             npcs_def.append(mesh_def)
         
         return npcs_def

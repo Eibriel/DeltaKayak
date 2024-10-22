@@ -217,7 +217,10 @@ func add_navmesh(navmesh_array: Array, sector_id:String, main_node:Node3D):
 
 func add_npcs(npcs_array: Array, sector_id:String, main_node:Node3D):
 	for npc in npcs_array:
-		get_mesh(npc, main_node)
+		var npc_node := get_mesh(npc, main_node)
+		if npc.name.ends_with("Head"):
+			npc_node.set_meta("follows_player", true)
+			npc_node.set_meta("original_rotation", npc_node.rotation)
 
 func add_greyboxes(greybox_array: Array, sector_id:String, main_node:Node3D):
 	#var grey_mat := StandardMaterial3D.new()
@@ -226,7 +229,7 @@ func add_greyboxes(greybox_array: Array, sector_id:String, main_node:Node3D):
 	for greybox in greybox_array:
 		get_mesh(greybox, main_node)
 
-func get_mesh(object:Dictionary, main_node):
+func get_mesh(object:Dictionary, main_node) -> MeshInstance3D:
 	var navigation_region := MeshInstance3D.new()
 	navigation_region.name = object.name
 	var navigation_mesh := ArrayMesh.new()
@@ -281,6 +284,8 @@ func get_mesh(object:Dictionary, main_node):
 		tex_mat.albedo_texture = load("res://textures/%s" % object.texture)
 		tex_mat.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
 	navigation_mesh.surface_set_material(0, tex_mat)
+	
+	return navigation_region
 
 func get_normal_from_triangle(p1:Vector3, p2:Vector3, p3:Vector3) -> Vector3:
 	var A := p2 - p1
