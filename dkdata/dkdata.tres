@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="DKDataResource" load_steps=144 format=3 uid="uid://bi1rugic742u0"]
+[gd_resource type="Resource" script_class="DKDataResource" load_steps=150 format=3 uid="uid://bi1rugic742u0"]
 
 [ext_resource type="Script" path="res://data_resources/dkdata_resource.gd" id="1_mesef"]
 [ext_resource type="Script" path="res://data_resources/dialogue_resource.gd" id="1_yf062"]
@@ -145,7 +145,7 @@ script = ExtResource("1_yf062")
 id = "disabled_item"
 character = 1
 image = ""
-enabled = null
+enabled = true
 text = "Hay que volver antes de que refresque."
 
 [sub_resource type="Resource" id="Resource_fharu"]
@@ -440,7 +440,7 @@ script = ExtResource("1_yf062")
 id = "new_item"
 character = 1
 image = ""
-enabled = null
+enabled = true
 text = "Tengo que ir para el otro lado"
 
 [sub_resource type="Resource" id="Resource_rxu58"]
@@ -453,7 +453,7 @@ script = ExtResource("1_yf062")
 id = "new_item"
 character = 1
 image = ""
-enabled = null
+enabled = true
 text = "No puedo pasar, está lleno de camalotes."
 
 [sub_resource type="Resource" id="Resource_b2qif"]
@@ -461,7 +461,7 @@ script = ExtResource("1_yf062")
 id = "new_item"
 character = 1
 image = ""
-enabled = null
+enabled = true
 text = "Y no puedo volver sin Pepa."
 
 [sub_resource type="Resource" id="Resource_spd0s"]
@@ -474,7 +474,7 @@ script = ExtResource("1_yf062")
 id = "new_item"
 character = 1
 image = ""
-enabled = null
+enabled = true
 text = "Por favor Gauchito, ayudame a salir de esta."
 
 [sub_resource type="Resource" id="Resource_g7fdc"]
@@ -487,7 +487,7 @@ script = ExtResource("1_yf062")
 id = "new_item"
 character = 1
 image = ""
-enabled = null
+enabled = true
 text = "Esos dos palos arman un arco de fútbol."
 
 [sub_resource type="Resource" id="Resource_40v23"]
@@ -500,7 +500,7 @@ script = ExtResource("1_yf062")
 id = "new_item"
 character = 1
 image = ""
-enabled = null
+enabled = true
 text = "El carpincho me transmite un poquito de paz."
 
 [sub_resource type="Resource" id="Resource_ngsq0"]
@@ -513,7 +513,7 @@ script = ExtResource("1_yf062")
 id = "new_item"
 character = 1
 image = ""
-enabled = null
+enabled = true
 text = "¡Goooooooooooooooool!"
 
 [sub_resource type="Resource" id="Resource_rldek"]
@@ -526,7 +526,7 @@ script = ExtResource("1_yf062")
 id = "new_item"
 character = 1
 image = ""
-enabled = null
+enabled = true
 text = "¡Que golazo que metí!"
 
 [sub_resource type="Resource" id="Resource_6ynwi"]
@@ -534,7 +534,7 @@ script = ExtResource("1_yf062")
 id = "new_item"
 character = 1
 image = ""
-enabled = null
+enabled = true
 text = "Me hizo olvidar las penurias por un segundo."
 
 [sub_resource type="Resource" id="Resource_l0ysl"]
@@ -547,7 +547,7 @@ script = ExtResource("1_yf062")
 id = "new_item"
 character = 1
 image = ""
-enabled = null
+enabled = true
 text = "¡Que bicho noble el carpincho!"
 
 [sub_resource type="Resource" id="Resource_ooev8"]
@@ -555,7 +555,7 @@ script = ExtResource("1_yf062")
 id = "new_item"
 character = 1
 image = ""
-enabled = null
+enabled = true
 text = "¡Dan ganas de estrujarlo!"
 
 [sub_resource type="Resource" id="Resource_wtm7n"]
@@ -568,7 +568,7 @@ script = ExtResource("1_yf062")
 id = "new_item"
 character = 1
 image = ""
-enabled = null
+enabled = true
 text = "El canal que bloquea la estatua es posible que me lleve a Pepa."
 
 [sub_resource type="Resource" id="Resource_37wcy"]
@@ -581,7 +581,7 @@ script = ExtResource("1_yf062")
 id = "new_item"
 character = 1
 image = ""
-enabled = null
+enabled = true
 text = "Una de las estatuas mira al cielo."
 
 [sub_resource type="Resource" id="Resource_x65su"]
@@ -829,6 +829,46 @@ script = ExtResource("2_xdm14")
 id = "coughing_water"
 dialogues = Array[ExtResource("1_yf062")]([SubResource("Resource_7iywm")])
 
+[sub_resource type="Resource" id="Resource_33mke"]
+script = ExtResource("1_yf062")
+id = "new_item"
+character = 4
+image = ""
+enabled = true
+text = "Pescador"
+
+[sub_resource type="Resource" id="Resource_a37o8"]
+script = ExtResource("2_xdm14")
+id = "fisherman_demo"
+dialogues = Array[ExtResource("1_yf062")]([SubResource("Resource_33mke")])
+
+[sub_resource type="Resource" id="Resource_u744e"]
+script = ExtResource("1_yf062")
+id = "new_item"
+character = 5
+image = ""
+enabled = true
+text = "Sacerdote text
+"
+
+[sub_resource type="Resource" id="Resource_lepgl"]
+script = ExtResource("2_xdm14")
+id = "sacerdote_demo"
+dialogues = Array[ExtResource("1_yf062")]([SubResource("Resource_u744e")])
+
+[sub_resource type="Resource" id="Resource_cm27q"]
+script = ExtResource("1_yf062")
+id = "new_item"
+character = 6
+image = ""
+enabled = true
+text = "Boss text"
+
+[sub_resource type="Resource" id="Resource_wdnsn"]
+script = ExtResource("2_xdm14")
+id = "boss_demo"
+dialogues = Array[ExtResource("1_yf062")]([SubResource("Resource_cm27q")])
+
 [sub_resource type="Resource" id="Resource_4afsv"]
 script = ExtResource("3_0x3yn")
 id = "weird_tree"
@@ -935,5 +975,5 @@ script = ExtResource("1_mesef")
 character_position = Vector3(80, 15, 50)
 character_rotation = Vector3(0, 180, 0)
 items = Array[ExtResource("3_xhkj4")]([SubResource("Resource_ga3d1"), SubResource("Resource_e5p6k"), SubResource("Resource_7a2sk"), SubResource("Resource_l8snq"), SubResource("Resource_1pyr4"), SubResource("Resource_5rue2")])
-exchanges = Array[ExtResource("2_xdm14")]([SubResource("Resource_crw41"), SubResource("Resource_6vcu1"), SubResource("Resource_k71eb"), SubResource("Resource_sadyd"), SubResource("Resource_cvpa0"), SubResource("Resource_wynqj"), SubResource("Resource_wq0u6"), SubResource("Resource_fjacd"), SubResource("Resource_fharu"), SubResource("Resource_uqqxk"), SubResource("Resource_by1tc"), SubResource("Resource_wq70w"), SubResource("Resource_j7v1r"), SubResource("Resource_qf5l5"), SubResource("Resource_vcg4n"), SubResource("Resource_ve10j"), SubResource("Resource_epkml"), SubResource("Resource_rjkha"), SubResource("Resource_6mhsj"), SubResource("Resource_5jswg"), SubResource("Resource_7ubm2"), SubResource("Resource_6tc6t"), SubResource("Resource_t3vlm"), SubResource("Resource_t71o4"), SubResource("Resource_2bwol"), SubResource("Resource_31k87"), SubResource("Resource_onwjx"), SubResource("Resource_rxu58"), SubResource("Resource_spd0s"), SubResource("Resource_g7fdc"), SubResource("Resource_40v23"), SubResource("Resource_ngsq0"), SubResource("Resource_rldek"), SubResource("Resource_l0ysl"), SubResource("Resource_wtm7n"), SubResource("Resource_37wcy"), SubResource("Resource_x65su"), SubResource("Resource_321tj"), SubResource("Resource_dxose"), SubResource("Resource_25wfs"), SubResource("Resource_4c8q2"), SubResource("Resource_k2la7"), SubResource("Resource_le6s4"), SubResource("Resource_6j1d6"), SubResource("Resource_estup"), SubResource("Resource_1aymj"), SubResource("Resource_1d0ym"), SubResource("Resource_svk87"), SubResource("Resource_cx0ke"), SubResource("Resource_bfojx"), SubResource("Resource_0qeaq"), SubResource("Resource_m541r"), SubResource("Resource_4k17i")])
+exchanges = Array[ExtResource("2_xdm14")]([SubResource("Resource_crw41"), SubResource("Resource_6vcu1"), SubResource("Resource_k71eb"), SubResource("Resource_sadyd"), SubResource("Resource_cvpa0"), SubResource("Resource_wynqj"), SubResource("Resource_wq0u6"), SubResource("Resource_fjacd"), SubResource("Resource_fharu"), SubResource("Resource_uqqxk"), SubResource("Resource_by1tc"), SubResource("Resource_wq70w"), SubResource("Resource_j7v1r"), SubResource("Resource_qf5l5"), SubResource("Resource_vcg4n"), SubResource("Resource_ve10j"), SubResource("Resource_epkml"), SubResource("Resource_rjkha"), SubResource("Resource_6mhsj"), SubResource("Resource_5jswg"), SubResource("Resource_7ubm2"), SubResource("Resource_6tc6t"), SubResource("Resource_t3vlm"), SubResource("Resource_t71o4"), SubResource("Resource_2bwol"), SubResource("Resource_31k87"), SubResource("Resource_onwjx"), SubResource("Resource_rxu58"), SubResource("Resource_spd0s"), SubResource("Resource_g7fdc"), SubResource("Resource_40v23"), SubResource("Resource_ngsq0"), SubResource("Resource_rldek"), SubResource("Resource_l0ysl"), SubResource("Resource_wtm7n"), SubResource("Resource_37wcy"), SubResource("Resource_x65su"), SubResource("Resource_321tj"), SubResource("Resource_dxose"), SubResource("Resource_25wfs"), SubResource("Resource_4c8q2"), SubResource("Resource_k2la7"), SubResource("Resource_le6s4"), SubResource("Resource_6j1d6"), SubResource("Resource_estup"), SubResource("Resource_1aymj"), SubResource("Resource_1d0ym"), SubResource("Resource_svk87"), SubResource("Resource_cx0ke"), SubResource("Resource_bfojx"), SubResource("Resource_0qeaq"), SubResource("Resource_m541r"), SubResource("Resource_4k17i"), SubResource("Resource_a37o8"), SubResource("Resource_lepgl"), SubResource("Resource_wdnsn")])
 misc_data = SubResource("Resource_b1bh4")

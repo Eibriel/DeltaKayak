@@ -97,6 +97,13 @@ func _on_unhandled_trigger(main_scene, _game_state, trigger_id:String, trigger_t
 				main_scene.say_dialogue("look_path")
 			"triggerpath_keep_out_signs_003":
 				main_scene.say_dialogue("keep_out_signs")
+			"triggerpath_pescador_003":
+				main_scene.say_dialogue("fisherman_demo")
+			"triggerpath_npc_sacerdote_003":
+				main_scene.say_dialogue("sacerdote_demo")
+			"triggerpath_boss_003":
+				main_scene.say_dialogue("boss_demo")
+				Global.force_datamosh = 0.6
 			_:
 				handled = false
 	else:

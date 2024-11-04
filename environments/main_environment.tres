@@ -1,8 +1,10 @@
-[gd_resource type="Environment" load_steps=3 format=3 uid="uid://xpf4ng2ym0n4"]
+[gd_resource type="Environment" load_steps=4 format=3 uid="uid://xpf4ng2ym0n4"]
+
+[ext_resource type="Texture2D" uid="uid://b0x6sr25dobw7" path="res://environments/color_correction/color_correction_warm.tres" id="1_wo1xd"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_gamhf"]
-sky_top_color = Color(0.14, 0.14, 0.14, 1)
-sky_horizon_color = Color(0.285546, 0.239385, 0.277246, 1)
+sky_top_color = Color(0.148, 0.154067, 0.2, 1)
+sky_horizon_color = Color(0.273, 0.278133, 0.35, 1)
 sky_curve = 0.0256133
 sky_energy_multiplier = 0.2
 ground_bottom_color = Color(0, 0, 0, 1)
@@ -20,7 +22,7 @@ sky_material = SubResource("ProceduralSkyMaterial_gamhf")
 background_mode = 2
 sky = SubResource("Sky_iph5d")
 ambient_light_source = 2
-ambient_light_color = Color(1, 1, 1, 1)
+ambient_light_color = Color(0.847, 0.83, 1, 1)
 ambient_light_sky_contribution = 0.0
 ambient_light_energy = 0.02
 reflected_light_source = 1
@@ -41,9 +43,13 @@ fog_sky_affect = 0.103
 fog_height_density = 0.5129
 fog_depth_curve = 0.5
 volumetric_fog_enabled = true
+volumetric_fog_albedo = Color(0.93, 0.932333, 1, 1)
 volumetric_fog_anisotropy = 0.0
 volumetric_fog_length = 200.0
 volumetric_fog_detail_spread = 3.95852
 volumetric_fog_ambient_inject = 0.2
 adjustment_enabled = true
-adjustment_saturation = 1.2
+adjustment_brightness = 1.93
+adjustment_contrast = 0.9
+adjustment_saturation = 1.51
+adjustment_color_correction = ExtResource("1_wo1xd")

@@ -394,7 +394,24 @@ func handle_dialogue(delta:float) -> void:
 		return
 	var key: String = "%s_dialogue_text" % d.resource_scene_unique_id
 	var character_string:String = d.Character.keys()[d.character]
+	var color_font := Color(0.731, 0.79, 0.85)
+	var color_outline := Color(0.67, 0.473, 0.342)
+	match d.character:
+		d.Character.PRIEST:
+			color_font = Color("f3cd4c")
+		d.Character.FISHERMAN:
+			color_font = Color("f3cd4c")
+		d.Character.PEPA:
+			color_font = Color.LIGHT_GREEN
+		d.Character.BOSS:
+			color_font = Color.FIREBRICK
+			color_outline = Color.WEB_MAROON
+	
 	%CharNameLabel.text = tr(character_string)
+	%CharNameLabel.add_theme_color_override("font_color", color_font)
+	%CharNameLabel.add_theme_color_override("font_outline_color", color_outline)
+	dialogue_label.add_theme_color_override("default_color", color_font)
+	dialogue_label.add_theme_color_override("font_outline_color", color_outline)
 	dialogue_label.text = tr(key)
 	dialogue_label.visible_ratio = 0
 	write_speed = dialogue_label.text.length() * 0.08
@@ -611,9 +628,21 @@ func _input(event: InputEvent) -> void:
 			#teleport_enemy(1)
 			#say_dialogue("demo_other_side")
 			#game_over.call_deferred()
-			Global.enemy.enemy_camera.current = !Global.enemy.enemy_camera.current
+			#Global.enemy.enemy_camera.current = !Global.enemy.enemy_camera.current
 			#var f = func (): Global.enemy.global_position = %EnemyHome03.global_position
 			#f.call_deferred()
+			var color_corrections := [
+				preload("res://environments/color_correction/color_correction_blue.tres"),
+				preload("res://environments/color_correction/color_correction_green.tres"),
+				preload("res://environments/color_correction/color_correction_pink.tres"),
+				preload("res://environments/color_correction/color_correction_red.tres"),
+				preload("res://environments/color_correction/color_correction_warm.tres")
+			]
+			%WorldEnvironment.environment.adjustment_color_correction = color_corrections[cc_id]
+			cc_id += 1
+			if cc_id > color_corrections.size()-1:
+				cc_id = 0
+var cc_id := 0
 
 func say_some_dialogue()->void:
 	if player_state.size() > 0:

@@ -704,6 +704,7 @@ spot_angle = 41.0167
 
 [node name="SpotLight3D3" type="SpotLight3D" parent="POVCameraController"]
 transform = Transform3D(1, -1.41718e-08, -1.05431e-09, 1.4164e-08, 0.999975, -0.00710326, 1.15495e-09, 0.00710326, 0.999975, 1.41226e-07, 0.341395, -0.114481)
+light_color = Color(0.82, 0.865, 1, 1)
 light_energy = 10.0
 light_volumetric_fog_energy = 0.2
 light_projector = ExtResource("3_xitmn")
@@ -714,6 +715,7 @@ spot_angle = 58.47
 
 [node name="POVCamera3D" type="Camera3D" parent="POVCameraController"]
 unique_name_in_owner = true
+fov = 80.0
 metadata/fog_density = 0.005
 
 [node name="XRBase" type="Node3D" parent="."]

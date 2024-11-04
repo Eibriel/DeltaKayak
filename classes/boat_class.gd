@@ -76,6 +76,7 @@ func _ready():
 	add_child(path_visualization)
 	boat_pathfinding_debug = MeshInstance3D.new()
 	add_child(boat_pathfinding_debug)
+	boat_pathfinding_debug.visible = false
 	boat_pathfinding_debug.name = "PathfindingDebug"
 	boat_pathfinding_debug.mesh = ImmediateMesh.new()
 	context_steering = ContextSteering.new()

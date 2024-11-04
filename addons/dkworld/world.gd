@@ -66,7 +66,10 @@ func handle_npcs(delta:float) -> void:
 	for nh: Node3D in npc_heads:
 		var first_rotation := nh.rotation
 		var new_rotation := nh.get_meta("original_rotation")
-		if Global.character.global_position.distance_to(nh.global_position) < 6:
+		var min_distance := 6
+		if nh.name.begins_with("Boss"):
+			min_distance = 30
+		if Global.character.global_position.distance_to(nh.global_position) < min_distance:
 			nh.look_at(Global.character.global_position, Vector3.UP, true)
 			new_rotation = nh.rotation
 		var lerp_weight := 1.0 * delta

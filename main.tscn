@@ -188,8 +188,7 @@ theme = ExtResource("1_qo26v")
 script = ExtResource("1_xxenq")
 game_preferences = ExtResource("2_wexnt")
 game_state = ExtResource("3_nh3h6")
-initial_position = NodePath("Main3D/InitialPositionHub")
-SKIP_INTRO = true
+initial_position = NodePath("Main3D/InitialPositionGrab")
 
 [node name="Node2D" type="Node2D" parent="."]
 
@@ -6300,35 +6299,35 @@ shape = SubResource("BoxShape3D_0ev4o")
 [node name="PysicsObjects" type="Node3D" parent="Main3D"]
 
 [node name="FloatingBox" parent="Main3D/PysicsObjects" instance=ExtResource("9_kolyd")]
-transform = Transform3D(0.0265782, 0, -0.999647, 0, 1, 0, 0.999647, 0, 0.0265782, 7.31382, 3.7883, -363.853)
+transform = Transform3D(0.0265782, 0, -0.999647, 0, 1, 0, 0.999647, 0, 0.0265782, -83.0385, 3.7883, -284.453)
 
 [node name="FloatingBox2" parent="Main3D/PysicsObjects" instance=ExtResource("9_kolyd")]
-transform = Transform3D(0.0233155, 0, 0.999728, 0, 1, 0, -0.999728, 0, 0.0233155, 45.3268, 0, -387.379)
+transform = Transform3D(0.0233155, 0, 0.999728, 0, 1, 0, -0.999728, 0, 0.0233155, -45.0255, 0, -307.979)
 
 [node name="FloatingBox3" parent="Main3D/PysicsObjects" instance=ExtResource("9_kolyd")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.71781, 0, -368.916)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -82.6345, 0, -289.516)
 
 [node name="LShapedFloatingBox" parent="Main3D/PysicsObjects" instance=ExtResource("10_tov8v")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 33.5498, 0, -385.313)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -56.8025, 0, -305.913)
 
 [node name="Switch" parent="Main3D/PysicsObjects" instance=ExtResource("12_uwfp4")]
-transform = Transform3D(-0.753242, 0, 0.657743, 0, 1, 0, -0.657743, 0, -0.753242, 15.2319, 0, -386.771)
+transform = Transform3D(-0.753242, 0, 0.657743, 0, 1, 0, -0.657743, 0, -0.753242, -75.1204, 0, -307.371)
 state = true
 
 [node name="Door" parent="Main3D/PysicsObjects" instance=ExtResource("11_mh163")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 19.2828, 0, -381.36)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -71.0695, 0, -301.96)
 
 [node name="Door2" parent="Main3D/PysicsObjects" instance=ExtResource("11_mh163")]
-transform = Transform3D(0.03319, 0, -0.999449, 0, 1, 0, 0.999449, 0, 0.03319, 22.2758, 0, -373.824)
+transform = Transform3D(0.03319, 0, -0.999449, 0, 1, 0, 0.999449, 0, 0.03319, -68.0765, 0, -294.424)
 
 [node name="Door3" parent="Main3D/PysicsObjects" instance=ExtResource("11_mh163")]
-transform = Transform3D(-0.112822, 0, -0.993615, 0, 1, 0, 0.993615, 0, -0.112822, 16.6508, 0, -376.875)
+transform = Transform3D(-0.112822, 0, -0.993615, 0, 1, 0, 0.993615, 0, -0.112822, -73.7015, 0, -297.475)
 
 [node name="Chain" parent="Main3D/PysicsObjects" instance=ExtResource("13_60n28")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.99581, 0, -379.937)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -82.3565, 0, -300.537)
 
 [node name="Pendulum" parent="Main3D/PysicsObjects" instance=ExtResource("14_80ibj")]
-transform = Transform3D(0.0861995, 0, -0.996278, 0, 1, 0, 0.996278, 0, 0.0861995, 7.94282, 0, -374.103)
+transform = Transform3D(0.0861995, 0, -0.996278, 0, 1, 0, 0.996278, 0, 0.0861995, -82.4095, 0, -294.703)
 
 [node name="GrabJoint3D" type="Generic6DOFJoint3D" parent="Main3D/PysicsObjects"]
 unique_name_in_owner = true
