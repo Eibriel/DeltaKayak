@@ -40,3 +40,5 @@ Note that not all items in the list are currently in use.
 - "Segmented lowpoly base female PS1 style" (https://skfb.ly/6XNRC) by BitHack is licensed under Creative Commons Attribution (http://creativecommons.org/licenses/by/4.0/).
 - "Capybara PS1 style" (https://skfb.ly/oAWtu) by Kabuum is licensed under Creative Commons Attribution (http://creativecommons.org/licenses/by/4.0/).
 - "Generator" (https://skfb.ly/oSKv6) by victorberdugo1 is licensed under Creative Commons Attribution (http://creativecommons.org/licenses/by/4.0/).
+
+Check more information at the [Delta Kayak](https://delta-kayak.com) website.
