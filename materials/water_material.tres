@@ -30,7 +30,7 @@ noise = SubResource("FastNoiseLite_m8djf")
 [resource]
 render_priority = 1
 shader = ExtResource("1_oh05p")
-shader_parameter/albedo = Color(0.69, 0.465405, 0.2553, 1)
+shader_parameter/albedo = Color(0.436584, 0.282927, 0.137045, 1)
 shader_parameter/ssr_resolution = 2.0
 shader_parameter/ssr_max_travel = 200.0
 shader_parameter/ssr_max_diff = 4.0

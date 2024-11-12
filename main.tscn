@@ -188,7 +188,8 @@ theme = ExtResource("1_qo26v")
 script = ExtResource("1_xxenq")
 game_preferences = ExtResource("2_wexnt")
 game_state = ExtResource("3_nh3h6")
-initial_position = NodePath("Main3D/InitialPositionGrab")
+initial_position = NodePath("Main3D/InitialPositionHub")
+SKIP_INTRO = true
 
 [node name="Node2D" type="Node2D" parent="."]
 
@@ -6512,7 +6513,7 @@ transform = Transform3D(0.789128, 0, -0.61423, 0, 1, 0, 0.61423, 0, 0.789128, -1
 gizmo_extents = 5.0
 
 [node name="InitialPositionHub" type="Marker3D" parent="Main3D"]
-transform = Transform3D(0.789128, 0, -0.61423, 0, 1, 0, 0.61423, 0, 0.789128, -21.9952, 0, -416.447)
+transform = Transform3D(0.789128, 0, -0.61423, 0, 1, 0, 0.61423, 0, 0.789128, 179.031, 0, -449.196)
 gizmo_extents = 5.0
 
 [node name="InitialPositionCarpincho" type="Marker3D" parent="Main3D"]
