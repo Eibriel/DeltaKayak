@@ -55,20 +55,6 @@ tracks/1/keys = {
 "update": 0,
 "values": [0.0, 1.0]
 }
-tracks/2/type = "method"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("Path3D")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(19.9),
-"transitions": PackedFloat32Array(1),
-"values": [{
-"args": [],
-"method": &"exit_test"
-}]
-}
 
 [sub_resource type="Animation" id="Animation_xj17k"]
 length = 0.001
