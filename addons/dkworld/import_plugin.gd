@@ -132,9 +132,36 @@ func add_cables(cables_array: Array, sector_id:String, main_node:Node3D):
 				Vector3(p[2][0],p[2][1],p[2][2]) - point_vect,
 			)
 		var st = SurfaceTool.new()
-		st.begin(Mesh.PRIMITIVE_LINE_STRIP)
-		for cp in cable_curve.get_baked_points():
-			st.add_vertex(cp)
+		st.begin(Mesh.PRIMITIVE_TRIANGLES)
+		var shape := [
+			Vector3(1, 1, 0),
+			Vector3(-1, 1, 0),
+			Vector3(-1, -1, 0),
+			Vector3(1, -1, 0),
+		]
+		var patterns := [
+			[[0,0], [1,0], [0,1]],
+			[[1,0], [1,1], [0,1]],
+			[[1,1], [1,0], [2,0]],
+			[[2,1], [1,1], [2,0]],
+			[[0,0], [0,1], [3,0]],
+			[[0,0], [0,1], [3,0]],
+			[[3,0], [0,1], [3,1]],
+			[[3,0], [0,1], [3,1]],
+			[[3,0], [3,1], [2,1]],
+			[[2,0], [3,0], [2,1]],
+		]
+		var curve_length := cable_curve.get_baked_length()
+		for cp in 100-1:
+			for pa in patterns:
+				for po in pa:
+					var ccp:int = cp + po[1]
+					var p_transform := _get_point_transform(ccp*0.01, cable_curve)
+					#st.set_smooth_group(-1)
+					st.add_vertex(p_transform * (shape[po[0]] * 0.05))
+		st.generate_normals()
+		#for cp in cable_curve.get_baked_points():
+		#	st.add_vertex(cp)
 		#cable_curve.free() # NOTE error: Attempted to free a RefCounted object
 		var mesh = st.commit()
 		cable_mesh.mesh = mesh
@@ -949,3 +976,10 @@ func _get_priority() -> float:
 
 func _get_import_order() -> int:
 	return 1
+
+func _get_point_transform(offset:float, curve: Curve3D) -> Transform3D:
+	return curve.sample_baked_with_rotation(
+			offset*curve.get_baked_length(),
+			false,
+			true
+		)

@@ -45,6 +45,12 @@ window/stretch/aspect="keep_height"
 window/vsync/vsync_mode=0
 window/size/mode.release=3
 
+[editor]
+
+movie_writer/mjpeg_quality=0.92
+movie_writer/movie_file="/home/gabriel/Documentos/Eibriel/Proyectos/Delta/RedesSociales/Reddit/deltakayak_rollercoaster.avi"
+movie_writer/fps=30
+
 [editor_plugins]
 
 enabled=PackedStringArray("res://addons/dkdata_inspector/plugin.cfg", "res://addons/dkworld/plugin.cfg", "res://addons/godot_resource_groups/plugin.cfg")

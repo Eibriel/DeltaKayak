@@ -1,0 +1,145 @@
+[gd_scene load_steps=11 format=3 uid="uid://camcuspk83hmb"]
+
+[ext_resource type="Script" path="res://experiments/track_generation/track.gd" id="1_5vwoc"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_57oqs"]
+sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+ground_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+
+[sub_resource type="Sky" id="Sky_i3ygh"]
+sky_material = SubResource("ProceduralSkyMaterial_57oqs")
+
+[sub_resource type="Environment" id="Environment_vgwba"]
+background_mode = 2
+sky = SubResource("Sky_i3ygh")
+tonemap_mode = 2
+glow_enabled = true
+
+[sub_resource type="Curve3D" id="Curve3D_sae7v"]
+bake_interval = 0.1
+_data = {
+"points": PackedVector3Array(1.22752, -0.598022, -0.829812, -1.22752, 0.598022, 0.829812, -1.02411, 3.40063, -7.84827, 0.257812, 0.356201, -1.08307, -0.257812, -0.356201, 1.08307, -2.67261, -0.152832, -6.20197, 0.677979, -1.0062, -0.0954905, -0.677979, 1.0062, 0.0954905, -4.20459, 1.57446, -1.65002, -0.831787, -0.14563, 1.87177, 0.831787, 0.14563, -1.87177, -5.0481, 3.38928, -4.58081, 0.340942, 1.04486, -2.22683, -0.340942, -1.04486, 2.22683, -5.33557, -0.00415039, -4.90887, -0.918096, -0.0893555, -2.02062, 0.918096, 0.0893555, 2.02062, -6.09387, -0.0335693, 1.12061, -3.03055, -0.108765, 0.568115, 3.03055, 0.108765, -0.568115, 1.98672, -1.34973, 3.15784, 0.100122, 0.0129395, 2.05344, -0.100122, -0.0129395, -2.05344, 7.24717, 1.672, -1.9569, 1.95431, 0.0632324, 0.488436, -1.95431, -0.0632324, -0.488436, 4.0145, 0.284424, -7.69958, 0.369698, -1.06384, 0.165793, -0.369698, 1.06384, -0.165793, 1.21033, 1.59424, -8.39146, 0.711395, -0.313202, -0.311523, -0.711395, 0.313202, 0.311523, -1.024, 3.401, -7.848),
+"tilts": PackedFloat32Array(0, -0.509408, 0.571926, 0.305879, 0.264609, -0.307497, -0.84036, -0.282869, 0, 0.756387, 1.38878)
+}
+point_count = 11
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_ct5ch"]
+radius = 0.25
+height = 1.0
+
+[sub_resource type="Animation" id="Animation_1g4en"]
+resource_name = "new_animation"
+length = 20.0
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Node3D:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 20),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector3(0, 0, 0), Vector3(0, 6.28319, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Path3D/PathFollow3D:progress_ratio")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 20),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [0.0, 1.0]
+}
+tracks/2/type = "method"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Path3D")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(19.9),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [],
+"method": &"exit_test"
+}]
+}
+
+[sub_resource type="Animation" id="Animation_xj17k"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Node3D:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0, 0, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Path3D/PathFollow3D:progress_ratio")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_55fhk"]
+_data = {
+"RESET": SubResource("Animation_xj17k"),
+"new_animation": SubResource("Animation_1g4en")
+}
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_iiioa"]
+animation = &"new_animation"
+
+[node name="TrackGeneration" type="Node3D"]
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.866023, -0.323065, 0.381618, 0, 0.763231, 0.646126, -0.500003, 0.55956, -0.660976, 0, 0, 0)
+light_energy = 3.541
+shadow_enabled = true
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_vgwba")
+
+[node name="Node3D" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0114614, 0, -1.66608)
+
+[node name="Camera3D" type="Camera3D" parent="Node3D"]
+transform = Transform3D(1, 0, 0, 0, 0.947221, 0.32058, 0, -0.32058, 0.947221, 0, 4.73295, 10.8457)
+
+[node name="Path3D" type="Path3D" parent="."]
+curve = SubResource("Curve3D_sae7v")
+script = ExtResource("1_5vwoc")
+
+[node name="PathFollow3D" type="PathFollow3D" parent="Path3D"]
+transform = Transform3D(0.559984, 0.310039, -0.768165, 1.48995e-08, 0.92722, 0.374236, 0.828368, -0.209589, 0.519287, -0.946591, 3.63246, -7.90067)
+v_offset = 0.25
+use_model_front = true
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Path3D/PathFollow3D"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0)
+mesh = SubResource("CapsuleMesh_ct5ch")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_55fhk")
+}
+
+[node name="AnimationTree" type="AnimationTree" parent="."]
+tree_root = SubResource("AnimationNodeAnimation_iiioa")
+anim_player = NodePath("../AnimationPlayer")
