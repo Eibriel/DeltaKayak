@@ -1,9 +1,9 @@
-# Delta Kayak
+# Delta Park
 Horror game, made in Godot 4
 
 > Navigate an open-world island in your kayak, avoid the giant boat stalking you, and venture deep into the unknown to find your missing pet.
 
-Wishlist on [Steam](https://store.steampowered.com/app/2632680/Delta_Kayak/) ❤️
+Wishlist on [Steam](https://store.steampowered.com/app/2632680/Delta_Park/?utm_source=github&utm_content=readme) ❤️
 
 ![Delta Kayak Logo](textures/menu_background.jpg)
 
