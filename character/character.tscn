@@ -716,7 +716,7 @@ spot_angle = 58.47
 
 [node name="POVCamera3D" type="Camera3D" parent="POVCameraController"]
 unique_name_in_owner = true
-fov = 60.0
+fov = 65.0
 metadata/fog_density = 0.005
 
 [node name="XRBase" type="Node3D" parent="."]

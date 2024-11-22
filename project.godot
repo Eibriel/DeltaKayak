@@ -186,19 +186,19 @@ common/enable_object_picking=false
 
 [rendering]
 
-textures/canvas_textures/default_texture_filter=0
 textures/vram_compression/import_etc2_astc=true
 lights_and_shadows/directional_shadow/size=1024
 lights_and_shadows/directional_shadow/soft_shadow_filter_quality=0
 lights_and_shadows/positional_shadow/soft_shadow_filter_quality=0
 reflections/sky_reflections/texture_array_reflections=false
+camera/depth_of_field/depth_of_field_bokeh_quality=2
+camera/depth_of_field/depth_of_field_use_jitter=true
 anti_aliasing/screen_space_roughness_limiter/enabled=false
-textures/decals/filter=0
-textures/light_projectors/filter=0
 environment/volumetric_fog/volume_size=32
 environment/volumetric_fog/volume_depth=32
 environment/volumetric_fog/use_filter=0
 environment/defaults/default_clear_color=Color(0, 0, 0, 1)
+anti_aliasing/quality/msaa_3d=2
 occlusion_culling/use_occlusion_culling=true
 vrs/mode=2
 lights_and_shadows/positional_shadow/atlas_size=2048

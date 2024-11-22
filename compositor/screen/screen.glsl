@@ -96,8 +96,8 @@ void main() {
         int amount = params.amount;
 
 	ivec2 uv = ivec2(gl_GlobalInvocationID.xy);
-	ivec2 uvp = ivec2(gl_GlobalInvocationID.xy / 2.0) * 2;
-	//ivec2 uvp = uv; // Disabling pixelation
+	//ivec2 uvp = ivec2(gl_GlobalInvocationID.xy / 2.0) * 2;
+	ivec2 uvp = uv; // Disabling pixelation
 
 	ivec2 ghost_shift = ivec2(1,1);
 	vec4 color = imageLoad(color_image, uv);

@@ -178,6 +178,7 @@ class DKT_OT_ExportWorld(bpy.types.Operator):
             sector_def["greyboxes"] = self.get_greybox(sector)
             sector_def["cables"] = self.get_cables(sector)
             sector_def["npcs"] = self.get_npcs(sector)
+            sector_def["tracks"] = self.get_tracks(sector)
             definition[sector.name] = sector_def
 
         definition_path = context.scene.dkt_gltfsexportsetup.definition_path
@@ -332,6 +333,16 @@ class DKT_OT_ExportWorld(bpy.types.Operator):
             cables_def.append(data)
         return cables_def
 
+    def get_tracks(self, sector):
+        tracks_def = []
+        track_name = "Tracks_" + sector.name.split("_")[1]
+        if not track_name in sector.children: return tracks_def
+        for track_obj in sector.children[track_name].objects:
+            data = self.get_curve_data(track_obj)
+            data["position"] = self.location_to_godot(track_obj.location)
+            data["rotation"] = self.rotation_to_godot(track_obj.rotation_euler)
+            tracks_def.append(data)
+        return tracks_def
 
     def get_navmesh(self, sector):
         navmesh_def = []
@@ -557,7 +568,8 @@ class DKT_OT_ExportWorld(bpy.types.Operator):
             point_definition = [
                 self.location_to_godot(p.co),
                 self.location_to_godot(p.handle_left),
-                self.location_to_godot(p.handle_right)
+                self.location_to_godot(p.handle_right),
+                p.tilt
             ]
             points.append(point_definition)
         return points

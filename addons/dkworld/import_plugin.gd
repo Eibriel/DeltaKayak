@@ -104,6 +104,7 @@ func _import(source_file, save_path, options, r_platform_variants, r_gen_files):
 		add_greyboxes(sector.greyboxes, sector_id, main_node)
 		add_cables(sector.cables, sector_id, main_node)
 		add_npcs(sector.npcs, sector_id, main_node)
+		add_tracks(sector.tracks, sector_id, main_node)
 	
 	add_water(main_node)
 	
@@ -116,6 +117,85 @@ func _import(source_file, save_path, options, r_platform_variants, r_gen_files):
 	else:
 		return result
 		#return null
+
+const TRACK_SLEEPERS_CUBE = preload("res://meshes/track_sleeper_rollercoaster.res")
+func add_tracks(tracks_array: Array, sector_id:String, main_node:Node3D):
+	var track_mat = StandardMaterial3D.new()
+	track_mat.albedo_color = Color("605b3b")
+	track_mat.roughness = 1.0
+	track_mat.specular_mode = BaseMaterial3D.SPECULAR_DISABLED
+	var base_mat = StandardMaterial3D.new()
+	base_mat.albedo_color = Color("303836")
+	base_mat.roughness = 1.0
+	base_mat.specular_mode = BaseMaterial3D.SPECULAR_DISABLED
+	for track in tracks_array:
+		var track_mesh := MeshInstance3D.new()
+		#track_mesh.visibility_range_end = 100
+		track_mesh.position = array_to_vector3(track.position)
+		track_mesh.rotation = array_to_vector3(track.rotation)
+		var track_curve = Curve3D.new()
+		#track_curve.set_bake_interval(0.01)
+		for p in track.points:
+			var point_vect := Vector3(p[0][0],p[0][1],p[0][2])
+			track_curve.add_point(
+				point_vect,
+				Vector3(p[1][0],p[1][1],p[1][2]) - point_vect,
+				Vector3(p[2][0],p[2][1],p[2][2]) - point_vect,
+			)
+		for p in track_curve.point_count:
+			track_curve.set_point_tilt(p, track.points[p][3])
+		var curve_length := track_curve.get_baked_length()
+		var track_resolution = 1 * curve_length # TODO make it relative to length
+		track_resolution = max(track_resolution, 2)
+		
+		var st = SurfaceTool.new()
+		var offsets := [
+			Vector3(0.8,0,0),
+			Vector3(-0.8,0,0),
+			Vector3(0,-0.4,0)
+		]
+		var mesh := ArrayMesh.new()
+		for offset in offsets:
+			st.begin(Mesh.PRIMITIVE_TRIANGLES)
+			var shape := [
+				Vector3(1, 1, 0),
+				Vector3(-1, 1, 0),
+				Vector3(-1, -1, 0),
+				Vector3(1, -1, 0),
+			]
+			var patterns := [
+				[[0,0], [1,0], [0,1]],
+				[[1,0], [1,1], [0,1]],
+				[[1,1], [1,0], [2,0]],
+				[[2,1], [1,1], [2,0]],
+				[[0,0], [0,1], [3,0]],
+				[[0,0], [0,1], [3,0]],
+				[[3,0], [0,1], [3,1]],
+				[[3,0], [0,1], [3,1]],
+				[[3,0], [3,1], [2,1]],
+				[[2,0], [3,0], [2,1]],
+			]
+			
+			for cp in track_resolution:
+				for pa in patterns:
+					for po in pa:
+						var ccp:int = cp + po[1]
+						var p_transform := _get_point_transform(float(ccp)/track_resolution, track_curve)
+						st.add_vertex(p_transform * ((shape[po[0]] * 0.08)+offset))
+			st.generate_normals()
+			mesh = st.commit(mesh)
+		for cp in track_resolution:
+			var p_transform := _get_point_transform(float(cp)/track_resolution, track_curve)
+			p_transform = p_transform.scaled_local(Vector3.ONE * 1.0)
+			st.append_from(TRACK_SLEEPERS_CUBE, 0, p_transform)
+		mesh = st.commit(mesh)
+		mesh.surface_set_material(0, track_mat) # Track
+		mesh.surface_set_material(1, track_mat) # Track
+		mesh.surface_set_material(2, base_mat) # Base
+		mesh.surface_set_material(3, base_mat) # Sleepers
+		track_mesh.mesh = mesh
+		main_node.add_child(track_mesh)
+		track_mesh.set_owner(main_node)
 
 func add_cables(cables_array: Array, sector_id:String, main_node:Node3D):
 	for cable in cables_array:
@@ -152,7 +232,7 @@ func add_cables(cables_array: Array, sector_id:String, main_node:Node3D):
 			[[2,0], [3,0], [2,1]],
 		]
 		var curve_length := cable_curve.get_baked_length()
-		for cp in 100-1:
+		for cp in 100:
 			for pa in patterns:
 				for po in pa:
 					var ccp:int = cp + po[1]

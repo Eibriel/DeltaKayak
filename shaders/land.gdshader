@@ -1,7 +1,7 @@
 shader_type spatial;
 
-uniform sampler2D texture_up: filter_nearest, source_color;
-uniform sampler2D texture_side: filter_nearest, source_color;
+uniform sampler2D texture_up: filter_nearest, source_color; // 
+uniform sampler2D texture_side: filter_nearest, source_color; // 
 uniform sampler2D texture_gradient;
 
 varying vec3 vertex_normal;

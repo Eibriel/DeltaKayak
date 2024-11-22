@@ -631,6 +631,8 @@ func _input(event: InputEvent) -> void:
 			#Global.enemy.enemy_camera.current = !Global.enemy.enemy_camera.current
 			#var f = func (): Global.enemy.global_position = %EnemyHome03.global_position
 			#f.call_deferred()
+			var ff = func(): Global.character.global_position.y = 10.0
+			#ff.call_deferred()
 			var color_corrections := [
 				preload("res://environments/color_correction/color_correction_blue.tres"),
 				preload("res://environments/color_correction/color_correction_green.tres"),
